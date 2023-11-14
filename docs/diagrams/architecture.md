@@ -80,7 +80,7 @@ graph LR
 ## 📓 Glossary
 
 ### User
-The end user/client accessing the application, which includes both publishers and subscribers.
+The end user/client accessing the application. This includes both publishers and subscribers. Different user interfaces will lead to different interactions with the underlying services.
 
 ### Ingress
 A cluster ingress that ensure the requests coming from the outside world are routed correctly to the respective services. In the initial design, all incoming user-driven traffic will go through HTTP/HTTPS.
@@ -89,16 +89,16 @@ A cluster ingress that ensure the requests coming from the outside world are rou
 The subscription service tracks which users/wallets have subscribed (or explicitly unsubscribed) from which message types, projects etc. It allows the publishing service to access this information when something is announced, and the end user to change their subscription preferences.
 
 ### Verification Service
-The verification services allows publishers and subscribers to verify their project or wallet ownership. Depending on the type, different verification mechanisms will be supported. It is possible that multiple verification services will be developed instead of just one. This is to be determined as the complexity of the different verifications (wallet vs. SPO vs DIDs) is evaluated. The verification service will delegate some persistence storage to the subscription service (for example a verified wallet can be linked to one or more social account).
+The verification services allows publishers and subscribers to verify their project or wallet ownership. Depending on the type, different verification mechanisms will be supported. It is possible that multiple verification services will be developed instead of just one. This will be to be determined when the complexity of the different verifications (wallet vs. SPO vs DIDs) has been evaluated. The verification service will delegate some persistence storage to the subscription service (for example a verified wallet can be linked to one or more social account).
 
 ### Publishing Service
-The publishing service is where verified publishers can send announcements. The service will check publishing permissions for the submitting entity. Following successful validation, it will access the subscription service to determine eligible recipients and message types to distribute and provide them to a queue for further processing.
+The publishing service allows verified publishers to send announcements. The service will check publishing permissions for the submitting entity. After successful validation, it will access the subscription service to determine eligible recipients and message types to distribute and provide them to a queue for further processing.
 
 ### Chain Indexer (verification)
 A chain indexing solution for Cardano that is suitable for accessing the information required to verify wallets, DIDs etc. Multiple indexers may be required, depending on the implementation.
 
 ### Chain Indexer (publishing)
-If a supported publishing method is through on-chain metadata (to be determined), an optional chain indexing solution for Cardano that can ingest publishing requests may be added to the application.
+The standard publishing approach will be through a web interface and APIs. However, it is technically also possible to also publish through on-chain metadata. If this additional submission mechanism is implemented, an optional chain indexing solution for Cardano that can ingest publishing requests may be added to the application.
 
 ### Database
 A database solution (relational, document-based, or other) that stores the subscription preferences and maps wallets of subscribers to their verified social media and messaging accounts. In the future, some or all of that information can be stored on-chain and make the solution more decentralized. For this however to safely happen, a privacy-preserving blockchain needs to be available or encryption-mechanisms used, which is out of scope of the initial prototype.
@@ -110,7 +110,7 @@ Any queuing solution that allows persistent storage of messages that should be p
 The publishing integrations are the different systems that will be built to bring the published messages to the end users. They read messages from the publishing queue and are solely responsible for the delivery. When messages reach the integration, all decisions with regards to eligibility and verification should have been made, and only integration-related issues should prevent the delivery (for example rejecting direct messages from the corresponding Discord bot or blocked email addresses).
 
 ### Cardano, Discord, Twilio, etc...
-These external systems already exist and are connected to either as read, read-write or write-only systems.
+These external systems already exist and are connected to as read, read-write or write-only systems, depending on the associated service/integration.
 
 ## 📝 Notes
 
