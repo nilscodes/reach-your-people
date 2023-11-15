@@ -7,12 +7,11 @@ deciders: Nils Codes
 
 ## Context and Problem Statement
 
-To make progress and prove the feasibility of the overall architecture and solution, an existing instant messaging or social media application needs to be chosen to build the first integration for. It should have a large amount of adoption (1000+ users) within the existing Cardano ecosystem, to allow early rollout and beta testing. The application also needs to have good enough documentation to allow building an integration for.
+To make progress and prove the feasibility of the overall architecture and solution, an existing instant messaging or social media application needs to be chosen to build the first integration for. It should have a large amount of adoption within the existing Cardano ecosystem, to allow early rollout and beta testing. The application also needs to have good enough documentation to enable building an integration for RYP ("Reach Your People").
 
 ## Decision Drivers
 
-* Proven user-base on Cardano
-* 1000+ users
+* Proven user-base of at least 1000 users on Cardano
 * Easy to integrate
 * Easy to verify ownership
 * Cost
@@ -37,8 +36,8 @@ A Discord integration is free from ongoing costs, as opposed to some of the more
 
 The downside of choosing Discord is the initial exclusion of people that do not use it. However, since there are plans to add additional integrations as part of the project roadmap, the impact should be minor, as the first integration is primarily for validating the service itself and alpha testing.
 
-Slack and MS Teams, while accepted in the enterprise setting, do not have enough adoption within the Cardano Ecosystem. Telegram has adoption, however is used by less projects, and as such is a good candidate for a second or third integration.
+Slack and MS Teams, while accepted in the enterprise setting, do not have enough adoption within the Cardano Ecosystem. Telegram has adoption, however is used by less projects. As such, it is a good candidate for a second or third integration.
 
 ## More Information
 
-There is an existing open-source Discord integration that can be leveraged to develop faster, as it is maintained by the same team that is building the "Reach Your People" app: [Vibrant](https://www.github.com/nilscodes/hazelnet)
+There is an existing open-source Discord integration that can be leveraged to develop faster. It is maintained by the same team that is building the "Reach Your People" (RYP) application: [Vibrant](https://www.github.com/nilscodes/hazelnet).
