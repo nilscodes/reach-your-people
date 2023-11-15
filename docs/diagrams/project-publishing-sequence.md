@@ -38,3 +38,5 @@ sequenceDiagram
     PUB -) Q: Publish announcement
     PUB -->> -P: Announcement published
 ```
+### 🔗 SVG Link
+[/docs/diagrams/project-publishing-sequence-01.svg](./project-publishing-sequence-01.svg)
