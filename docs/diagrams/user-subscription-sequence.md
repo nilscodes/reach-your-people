@@ -1,14 +1,14 @@
-# Subscription Sequence Diagram
+# Subscription Sequence Diagrams
 
-## 💡 Purpose
-This shows sequence of events that occurs when a new user wants to subscribe to a project named A, using notifications through a social media account at X.
+## Wallet Verification and Social Media Authorization
 
-### Assumptions
-The user is completely new to the service and has no previous verified wallets and not yet authorized the RYP application to interact with the social media app.
+### 💡 Purpose
+This shows the sequence of events that occurs when a new user wants to subscribe to a project named A, using notifications through a social media account at X (formerly Twitter). This diagram focuses on the successful flow and does not model any error conditions.
 
-## 🖼️ Diagram
+### ⚠️ Assumptions
+The user is completely new to the service and has no previous verified wallets and not yet authorized the RYP (Reach Your People) application to interact with the social media app.
 
-### Wallet Verification and Social Media Authentication Sequence
+### 🖼️ Diagram
 
 ```mermaid
 sequenceDiagram
@@ -22,20 +22,20 @@ sequenceDiagram
     U ->> +V: Verify this wallet
     V -->> +U: Please sign this data/transaction
     U ->> -V: Send signed data/transaction
-    V ->> V: Confirm signature
+    V ->> V: <br>Confirm signature
     Note right of V: Signature verification<br>on backend
     V -->> -U: Wallet confirmed, please select your notification service
     activate U
     U ->> +V: Use Social Media App X
     deactivate U
-    V -->> U: Please authorize your account with X
+    V -->> U: Please authenticate with X
     activate U
-    U ->> +X: Allow Verification Service to access X account
+    U ->> +X: Allow "Reach Your People" to access X account
     deactivate U
-    X -->> -V: User has confirmed access
-    V -->> +S: Confirm X account
+    X ->> -V: User has approved access
+    V ->> +S: Confirm X account
     deactivate V
-    S ->> S: Store subscription for project A in database
+    S ->> S: <br>Store subscription for<br>project A in database
     Note right of S: Subscription request<br>from step 1 is remembered
     S -->> -U: Subscription confirmed
 ```
