@@ -7,7 +7,7 @@ deciders: Nils Codes
 
 ## 💡 Purpose
 
-This article outlines the initial architectural design of the "Reach Your People" application. It will be adjusted as the architecture evolves and as we find functional and non-functional requirements and create ADRs for the specifics of each service.
+This article outlines the initial architectural design of the "Reach Your People" (RYP) application. It will be adjusted as the architecture evolves and as we find functional and non-functional requirements and create ADRs for the specifics of each service.
 
 ## 🖼️ Diagram
 
@@ -98,7 +98,7 @@ The publishing service allows verified publishers to send announcements. The ser
 A chain indexing solution for Cardano that is suitable for accessing the information required to verify wallets, DIDs etc. Multiple indexers may be required, depending on the implementation.
 
 ### Chain Indexer (publishing)
-The standard publishing approach will be through a web interface and APIs. However, it is technically also possible to also publish through on-chain metadata. If this additional submission mechanism is implemented, an optional chain indexing solution for Cardano that can ingest publishing requests may be added to the application.
+The standard publishing approach will be through a web interface and APIs. However, it is technically possible to also allow publishing through on-chain metadata. If this additional submission mechanism is implemented, an optional chain indexing solution for Cardano is needed. It would ingest the publishing transactions that then can be automatically verified and the associated announcement can be processed by RYP.
 
 ### Database
 A database solution (relational, document-based, or other) that stores the subscription preferences and maps wallets of subscribers to their verified social media and messaging accounts. In the future, some or all of that information can be stored on-chain and make the solution more decentralized. For this however to safely happen, a privacy-preserving blockchain needs to be available or encryption-mechanisms used, which is out of scope of the initial prototype.
