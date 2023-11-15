@@ -39,3 +39,5 @@ sequenceDiagram
     Note right of S: Subscription request<br>from step 1 is remembered
     S -->> -U: Subscription confirmed
 ```
+### 🔗 SVG Link
+[/docs/diagrams/user-subscription-sequence-01.svg](./user-subscription-sequence-01.svg)
