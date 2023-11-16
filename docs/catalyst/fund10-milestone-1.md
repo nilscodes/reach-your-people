@@ -7,7 +7,7 @@ date: 2023-11-15
 ## 💡 Purpose
 This document outlines the goals and outcomes of Milestone 1 of the Catalyst Fund 10 project "Reach your people - social media and messaging integrations for DAOs and NFT projects" (further referenced to as RYP).
 
-It starts with the project ID, project and milestone links, the outputs, acceptance criteria and evidence provided for the Proof of Achievement in the milestone module, and after that a results section that lists links, and explanations and supporting documentation.
+It starts with the project ID, project and milestone links, the outputs, acceptance criteria and proposed evidence for the Proof of Achievement in the milestone module. After that follows a results section that includes the evidence, links, explanations, and supporting documentation.
 
 ## 🆔 Project ID
 `1000156`
