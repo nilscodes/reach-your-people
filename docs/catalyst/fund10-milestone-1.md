@@ -7,7 +7,7 @@ date: 2023-11-15
 ## 💡 Purpose
 This document outlines the goals and outcomes of Milestone 1 of the Catalyst Fund 10 project "Reach your people - social media and messaging integrations for DAOs and NFT projects" (further referenced to as RYP).
 
-The  contains the project ID, project and milestone links, the outputs, acceptance criteria and evidence provided for the Proof of Achievement.
+It starts with the project ID, project and milestone links, the outputs, acceptance criteria and evidence provided for the Proof of Achievement in the milestone module, and after that a results section that lists links, and explanations and supporting documentation.
 
 ## 🆔 Project ID
 `1000156`
@@ -40,6 +40,11 @@ The  contains the project ID, project and milestone links, the outputs, acceptan
 
 ## 🚀 Results
 The following sections provide all documentation and context and detailed links for each output where applicable:
+
+### Public Repository
+A public GitLab repository has been created and this document is part of it.
+
+Link: <https://gitlab.com/vibrantnet/ryp>
 
 ### Research of existing CIPs for use in this protocol to create the below outputs
 Various CIPs have been read and analyzed with regards to applicability for this project:
@@ -95,8 +100,3 @@ In addition to creating the tracker, a roadmap including all milestones as epics
 - [RYP Roadmap Screenshot](./fund10-milestone-1-roadmap.png)
 
 Additional stories and tasks for the actual implementation will be created throughout the coming milestones. Participation by the community is encouraged.
-
-### Public Repository
-A public GitLab repository has been created and this document is part of it.
-
-Link: <https://gitlab.com/vibrantnet/ryp>
