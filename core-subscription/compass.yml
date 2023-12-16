@@ -1,0 +1,19 @@
+name: Subscription Service
+description: >-
+  The subscription service tracks which users/wallets have subscribed (or explicitly unsubscribed) from which message types, projects etc. It allows the publishing service to access this information when something is announced, and the end user to change their subscription preferences.
+configVersion: 1
+typeId: SERVICE
+ownerId: 'ari:cloud:teams::team/a11b6e12-8472-4036-bec7-fc0e0e731ec2'
+fields:
+  lifecycle: Pre-release
+  tier: 4
+links:
+  - name: null
+    type: REPOSITORY
+    url: 'https://gitlab.com/vibrantnet/ryp'
+  - name: ''
+    type: PROJECT
+    url: 'https://vibrantnet.atlassian.net/browse/RYP'
+relationships: {}
+labels: null
+customFields: null
