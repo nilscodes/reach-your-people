@@ -1,0 +1,23 @@
+name: Verification Service
+id: 'ari:cloud:compass:4c3f32f3-01b7-4921-ab0c-3a1975dad07e:component/a67bfaf7-9a2c-4004-8078-b828315a66ae/20aa0a6e-3f65-400c-9dc2-03611405a4c3'
+description: >-
+  The verification services allows publishers and subscribers to verify their project or wallet ownership. Depending on the type, different
+  verification mechanisms will be supported. It is possible that multiple verification services will be developed instead of just one. This will be to
+  be determined when the complexity of the different verifications (wallet vs. SPO vs DIDs) has been evaluated. The verification service will delegate
+  some persistence storage to the subscription service (for example a verified wallet can be linked to one or more social account).
+configVersion: 1
+typeId: SERVICE
+ownerId: 'ari:cloud:teams::team/a11b6e12-8472-4036-bec7-fc0e0e731ec2'
+fields:
+  lifecycle: Pre-release
+  tier: 4
+links:
+  - name: null
+    type: REPOSITORY
+    url: 'https://gitlab.com/vibrantnet/ryp'
+  - name: ''
+    type: PROJECT
+    url: 'https://vibrantnet.atlassian.net/browse/RYP'
+relationships: {}
+labels: null
+customFields: null
