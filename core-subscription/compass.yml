@@ -1,4 +1,5 @@
 name: Subscription Service
+id: 'ari:cloud:compass:4c3f32f3-01b7-4921-ab0c-3a1975dad07e:component/a67bfaf7-9a2c-4004-8078-b828315a66ae/43c12ce2-0070-424d-adb1-fd3f7f9d83d3'
 description: >-
   The subscription service tracks which users/wallets have subscribed (or explicitly unsubscribed) from which message types, projects etc. It allows the publishing service to access this information when something is announced, and the end user to change their subscription preferences.
 configVersion: 1
