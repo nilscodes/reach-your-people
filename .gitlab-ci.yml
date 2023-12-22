@@ -1,20 +1,76 @@
-# You can override the included template(s) by including variable overrides
-# SAST customization: https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings
-# Secret Detection customization: https://docs.gitlab.com/ee/user/application_security/secret_detection/#customizing-settings
-# Dependency Scanning customization: https://docs.gitlab.com/ee/user/application_security/dependency_scanning/#customizing-the-dependency-scanning-settings
-# Container Scanning customization: https://docs.gitlab.com/ee/user/application_security/container_scanning/#customizing-the-container-scanning-settings
-# Note that environment variables can be set in several places
-# See https://docs.gitlab.com/ee/ci/variables/#cicd-variable-precedence
-stages:
-- test
-sast:
-  stage: test
-variables:
-  SAST_JAVA_VERSION: 17 # Use Java 17 for SAST since 21 is not yet available
 include:
-- template: Security/SAST.gitlab-ci.yml
+  - template: Security/SAST.gitlab-ci.yml
+
+stages:
+  - build
+  - test
+  - docker
 
 spotbugs-sast:
+  stage: test
   rules:
-    - if: $CI_COMMIT_BRANCH != "main"
-      when: never
+    - if: "$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH"
+      when: always
+    - when: never
+
+variables:
+  SAST_JAVA_VERSION: 17 # Use Java 17 for SAST since 21 is not yet available
+
+gradle-build:
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+    - if: $CI_PIPELINE_SOURCE == "web"
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      changes:
+        - "core-verification/**/*"
+        - "build.gradle.kts"
+        - "settings.gradle.kts"
+        - ".gitlab-ci.yml"
+
+  image: gradle:jdk21-alpine
+
+  variables:
+    GRADLE_OPTS: "-Dorg.gradle.daemon=false"
+
+  before_script:
+    - export GRADLE_USER_HOME=`pwd`/.gradle
+
+  stage: build
+  script: gradle --build-cache build
+  artifacts:
+    paths:
+      - core-verification/build/libs
+  cache:
+    key: "$CI_COMMIT_REF_NAME"
+    paths:
+      - build
+      - .gradle
+
+core-verification-docker:
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+    - if: $CI_PIPELINE_SOURCE == "web"
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      changes:
+        - "core-verification/**/*"
+        - "build.gradle.kts"
+        - "settings.gradle.kts"
+        - ".gitlab-ci.yml"
+  image: docker:latest
+  stage: docker
+  services:
+    - docker:dind
+  before_script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+  script:
+    - cd core-verification
+    - |
+      if [[ "$CI_COMMIT_BRANCH" == "$CI_DEFAULT_BRANCH" ]]; then
+        tag=""
+        echo "Running on default branch '$CI_DEFAULT_BRANCH': tag = 'latest'"
+      else
+        tag=":$CI_COMMIT_REF_SLUG"
+        echo "Running on branch '$CI_COMMIT_BRANCH': tag = $tag"
+      fi
+    - docker build --pull -t "$CI_REGISTRY_IMAGE/core-verification${tag}" .
+    - docker push "$CI_REGISTRY_IMAGE/core-verification${tag}"
