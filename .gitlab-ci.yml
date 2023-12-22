@@ -13,3 +13,8 @@ variables:
   SAST_JAVA_VERSION: 17 # Use Java 17 for SAST since 21 is not yet available
 include:
 - template: Security/SAST.gitlab-ci.yml
+
+spotbugs-sast:
+  rules:
+    - if: $CI_COMMIT_BRANCH != "main"
+      when: never
