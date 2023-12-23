@@ -42,6 +42,7 @@ gradle-build:
   artifacts:
     paths:
       - core-verification/build/libs
+      - core-verification/build/jacoco.xml
       - core-subscription/build/libs
       - core-publishing/build/libs
   cache:
