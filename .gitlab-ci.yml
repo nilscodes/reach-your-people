@@ -23,6 +23,7 @@ gradle-build:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
       changes:
         - "core-verification/**/*"
+        - "core-subscription/**/*"
         - "build.gradle.kts"
         - "settings.gradle.kts"
         - ".gitlab-ci.yml"
@@ -40,8 +41,9 @@ gradle-build:
   artifacts:
     paths:
       - core-verification/build/libs
+      - core-subscription/build/libs
   cache:
-    key: "$CI_COMMIT_REF_NAME"
+    key: "$CI_JOB_NAME_SLUG"
     paths:
       - build
       - .gradle
@@ -74,3 +76,32 @@ core-verification-docker:
       fi
     - docker build --pull -t "$CI_REGISTRY_IMAGE/core-verification${tag}" .
     - docker push "$CI_REGISTRY_IMAGE/core-verification${tag}"
+
+core-subscription-docker:
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+    - if: $CI_PIPELINE_SOURCE == "web"
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      changes:
+        - "core-subscription/**/*"
+        - "build.gradle.kts"
+        - "settings.gradle.kts"
+        - ".gitlab-ci.yml"
+  image: docker:latest
+  stage: docker
+  services:
+    - docker:dind
+  before_script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+  script:
+    - cd core-subscription
+    - |
+      if [[ "$CI_COMMIT_BRANCH" == "$CI_DEFAULT_BRANCH" ]]; then
+        tag=""
+        echo "Running on default branch '$CI_DEFAULT_BRANCH': tag = 'latest'"
+      else
+        tag=":$CI_COMMIT_REF_SLUG"
+        echo "Running on branch '$CI_COMMIT_BRANCH': tag = $tag"
+      fi
+    - docker build --pull -t "$CI_REGISTRY_IMAGE/core-subscription${tag}" .
+    - docker push "$CI_REGISTRY_IMAGE/core-subscription${tag}"
