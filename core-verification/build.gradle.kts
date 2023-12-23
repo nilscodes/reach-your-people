@@ -5,6 +5,7 @@ plugins {
 	id("io.spring.dependency-management") version "1.1.4"
 	kotlin("jvm")
 	kotlin("plugin.spring")
+	jacoco
 }
 
 group = "io.vibrantnet.ryp"
@@ -16,6 +17,10 @@ java {
 
 repositories {
 	mavenCentral()
+}
+
+jacoco {
+	toolVersion = "0.8.11"
 }
 
 dependencies {
@@ -38,4 +43,18 @@ tasks.withType<KotlinCompile> {
 
 tasks.withType<Test> {
 	useJUnitPlatform()
+}
+
+tasks.test {
+	finalizedBy(tasks.jacocoTestReport) // report is always generated after tests run
+}
+
+tasks.jacocoTestReport {
+	dependsOn(tasks.test) // tests are required to run before generating the report
+	reports {
+		xml.required = true
+		xml.outputLocation = layout.buildDirectory.file("jacoco.xml")
+		csv.required = false
+		html.required = false
+	}
 }
