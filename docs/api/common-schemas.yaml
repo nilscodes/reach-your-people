@@ -1,0 +1,343 @@
+openapi: 3.1.0
+x-stoplight:
+  id: n8nzbbk9w4m9r
+info:
+  title: common-schemas
+  version: '1.0'
+  description: Commonly used schemas for the APIs used by he Cardano Blockchain announcement and notification application "Reach Your People"
+  summary: Shared Components for use in the RYP service
+  contact:
+    name: Nils Codes
+    url: 'https://vibrantnet.io'
+    email: contact@vibrantnet.io
+  license:
+    name: Apache 2.0
+    url: 'https://www.apache.org/licenses/LICENSE-2.0'
+components:
+  parameters:
+    accountId:
+      name: accountId
+      in: path
+      required: true
+      schema:
+        type: integer
+        format: int64
+      description: The numeric ID of an account
+    externalAccountId:
+      name: externalAccountId
+      in: path
+      required: true
+      schema:
+        type: integer
+        format: int64
+      description: The numeric ID of an external account
+    projectId:
+      name: projectId
+      in: path
+      required: true
+      schema:
+        type: integer
+        format: int64
+      description: The numeric ID of a Project
+  schemas:
+    Project:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        dreps:
+          type: array
+          items:
+            $ref: '#/components/schemas/Drep'
+        stakepools:
+          type: array
+          items:
+            $ref: '#/components/schemas/Stakepool'
+        policies:
+          type: array
+          items:
+            $ref: '#/components/schemas/Policy'
+        socials:
+          type: array
+          items:
+            $ref: '#/components/schemas/Social'
+        wallets:
+          type: array
+          items:
+            $ref: '#/components/schemas/StakeAddressView'
+    Drep:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        drepId:
+          type: string
+          pattern: '^drep1[0-9a-z]{38}$'
+        bech32:
+          type: string
+    Stakepool:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        ticker:
+          type: string
+        poolId:
+          $ref: '#/components/schemas/StakepoolHash'
+        bech32:
+          $ref: '#/components/schemas/PoolView'
+    Policy:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        policyId:
+          $ref: '#/components/schemas/TokenPolicyId'
+    Token:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        policyId:
+          $ref: '#/components/schemas/TokenPolicyId'
+        assetName:
+          type: string
+    Social:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        referenceId:
+          type: string
+        referenceName:
+          type: string
+        type:
+          type: string
+          enum:
+            - TWITTER
+            - DISCORD
+    Subscription:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 23
+          readOnly: true
+        projectId:
+          type: integer
+          format: int64
+          example: 172
+          description: 'A project ID or empty, if explicitly subscribed to everything'
+        status:
+          $ref: '#/components/schemas/SubscriptionStatus'
+        accountId:
+          type: integer
+          x-stoplight:
+            id: bkjldebzfo168
+          format: int64
+          example: 12
+          description: Referenced Account ID that owns this subscription setting
+      required:
+        - status
+        - accountId
+    NewSubscription:
+      type: object
+      x-stoplight:
+        id: k18vm65rtuwzr
+      properties:
+        projectId:
+          type: integer
+          format: int64
+          example: 172
+          description: 'A project ID or empty, if explicitly subscribed to everything'
+        status:
+          $ref: '#/components/schemas/SubscriptionStatus'
+      required:
+        - status
+    SubscriptionStatus:
+      type: string
+      enum:
+        - SUBSCRIBED
+        - BLOCKED
+    TokenPolicyId:
+      type: string
+      description: The Policy ID
+      example: ceb5dedd6cda3f0b4a98919b5d3827e15e324771642b57e0e6aabd57
+      pattern: '^[A-Za-z0-9]{56}$'
+    StakepoolHash:
+      type: string
+      description: The Stakepool hash
+      example: be80794a946cf5e578846fc81e3c62ac13f4ab3335e0f5dc046edad4
+      pattern: '^[A-Za-z0-9]{56}$'
+    PoolView:
+      type: string
+      description: 'The pool ID of a wallet, in viewable Bech32 format'
+      example: pool1uyhvepgdsd7s07q5cdx9vdemnar4axpe0e9edw2chyd8dpgqnsffq
+      pattern: '^pool1[a-zA-Z0-9]{53}$'
+    StakeAddressView:
+      type: string
+      description: 'The staking address of a wallet, in viewable Bech32 format'
+      example: stake1uyhvepgdsd7s07q5cdx9vdemnar4axpe0e9edw2chyd8dpgqnsffq
+      pattern: '^stake1[a-zA-Z0-9]{53}$'
+    Account:
+      title: Account
+      x-stoplight:
+        id: ywj95ewcj1j6s
+      type: object
+      properties:
+        id:
+          type: integer
+          x-stoplight:
+            id: lb886zl0hmtsn
+          format: int64
+          example: 12
+          readOnly: true
+        displayName:
+          type: string
+          x-stoplight:
+            id: bayk8gr8x58o3
+          example: Jim Jergens
+        createTime:
+          readOnly: true
+          type: string
+          format: date-time
+          example: 2020-05-02T14:00:00Z
+      required:
+        - displayName
+    AccountPartial:
+      title: AccountPartial
+      x-stoplight:
+        id: 0bzdpc27ijjvv
+      type: object
+      properties:
+        displayName:
+          type: string
+          example: Jim Jergens
+      description: ''
+    ExternalAccount:
+      type: object
+      required:
+        - type
+        - referenceId
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 9124
+          readOnly: true
+        registrationTime:
+          readOnly: true
+          type: string
+          format: date-time
+          example: 2021-11-10T13:20:57Z
+        type:
+          type: string
+          example: DISCORD
+        referenceId:
+          type: string
+          minLength: 1
+          maxLength: 200
+          example: '18290890588'
+        referenceName:
+          type: string
+          maxLength: 200
+          example: 'NilsCodes'
+    LinkedExternalAccount:
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 9124
+        roles:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExternalAccountRole'
+        linkTime:
+          readOnly: true
+          type: string
+          format: date-time
+          example: 2021-11-10T13:20:57Z
+    ExternalAccountRole:
+      type: string
+      enum:
+        - OWNER
+        - ADMIN
+        - PUBLISHER
+        - SUBSCRIBER
+    ActivityStreamsAnnouncement:
+      type: object
+      required:
+        - "@context"
+        - type
+        - actor
+        - content
+      properties:
+        "@context":
+          type: string
+          example: "https://www.w3.org/ns/activitystreams"
+        type:
+          type: string
+          enum:
+            - Announce
+          example: "Announce"
+        actor:
+          type: object
+          required:
+            - type
+            - id
+          properties:
+            type:
+              type: string
+              enum:
+                - Application
+                - Group
+                - Organization
+                - Person
+                - Service
+              example: "Person"
+            id:
+              type: string
+              format: uri
+              example: "http://example.org/person/1234"
+        content:
+          type: string
+          example: "This is an announcement content."
+        to:
+          type: array
+          items:
+            type: string
+            format: uri
+          example:
+            - "https://example.org/followers/janedoe"
+        published:
+          type: string
+          format: date-time
+          example: "2023-12-25T12:00:00Z"
+        summary:
+          type: string
+          example: "New Year Celebration"
+tags:
+  - name: publishing
+    description: Related to publishing content for subscribers
+  - name: subscription
+    description: Related to subscribing to announcements
+  - name: verification
+    description: Related to verification of subscriber and publisher accounts

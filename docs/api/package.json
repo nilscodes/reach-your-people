@@ -1,0 +1,18 @@
+{
+  "name": "api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build-core-verification-api": "openapi-generator-cli generate -i ./core-verification-service.yaml -g kotlin-spring -o ./skeleton/core-verification -c core-verification-settings.json",
+    "build-core-subscription-api": "openapi-generator-cli generate -i ./core-subscription-service.yaml -g kotlin-spring -o ./skeleton/core-subscription -c core-subscription-settings.json",
+    "build-core-publishing-api": "openapi-generator-cli generate -i ./core-publishing-service.yaml -g kotlin-spring -o ./skeleton/core-publishing -c core-publishing-settings.json"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ASL 2.0",
+  "dependencies": {
+    "@openapitools/openapi-generator-cli": "^2.9.0"
+  }
+}

@@ -1,0 +1,69 @@
+openapi: 3.1.0
+x-stoplight:
+  id: 7h3w556doa4lw
+info:
+  title: Core Publishing Service
+  version: '1.0'
+  description: The API for the core publishing service of the Cardano Blockchain announcement and notification application "Reach Your People"
+  contact:
+    name: Nils Codes
+    url: 'https://vibrantnet.io'
+    email: contact@vibrantnet.io
+  license:
+    name: Apache 2.0
+    url: 'https://www.apache.org/licenses/LICENSE-2.0'
+servers:
+  - url: 'http://localhost:8072'
+    description: Local Build
+paths:
+  '/announcements/{projectId}':
+    parameters:
+      - $ref: ./common-schemas.yaml#/components/parameters/projectId
+    post:
+      summary: Publish new announcement for a specific project
+      tags: []
+      responses: {}
+      operationId: publishAnnouncementForProject
+      x-stoplight:
+        id: pdvltrzrnflha
+      requestBody:
+        description: Can be either a JSON object with the required data or the raw Activity Streams 2.0 Announcement JSON body
+        required: true        
+        content:
+          application/activity+json:
+            schema:
+              $ref: ./common-schemas.yaml#/components/schemas/ActivityStreamsAnnouncement
+            examples:
+              Example 1:
+                value:
+                  '@context': 'https://www.w3.org/ns/activitystreams'
+                  type: Announce
+                  actor:
+                    type: Person
+                    id: 'http://example.org/person/1234'
+                  content: This is an announcement content.
+                  to:
+                    - 'https://example.org/followers/janedoe'
+                  published: '2023-12-25T12:00:00Z'
+                  summary: New Year Celebration
+              Example 2:
+                value:
+                  '@context': 'https://www.w3.org/ns/activitystreams'
+                  summary: We are proud to present our new roadmap to all our delegators!
+                  content: Super long roadmap explanation...
+                  type: Announce
+                  actor:
+                    type: Group
+                    id: https://www.hazelpool.com
+                    name: HAZEL Stakepool
+                  object:
+                    type: Arrive
+                    actor: https://www.hazelpool.com
+                    location:
+                      type: Page
+                      name: HAZEL 2024 Roadmap
+                      url: 'https://hazelpool.com/roadmap'
+      description: 'Publish an announcement for a project, token policy, SPO, dRep or social media account to all verified holders that have subscribed to updates, without exposing any social media or messaging identifiers to the publisher.'
+tags:
+  - name: publishing
+    description: Related to publishing content for subscribers

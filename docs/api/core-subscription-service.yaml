@@ -1,0 +1,225 @@
+openapi: 3.1.0
+x-stoplight:
+  id: e9wovef4dbuyy
+info:
+  title: Core Subscription Service
+  version: '1.0'
+  contact:
+    name: Nils Codes
+    url: 'https://vibrantnet.io'
+    email: contact@vibrantnet.io
+  license:
+    name: Apache 2.0
+    url: 'https://www.apache.org/licenses/LICENSE-2.0'
+  description: The API for the core subscription management service of the Cardano Blockchain announcement and notification application "Reach Your People"
+servers:
+  - url: 'http://localhost:8071'
+    description: Local Build
+paths:
+  '/accounts/{accountId}':
+    parameters:
+      - $ref: ./common-schemas.yaml#/components/parameters/accountId
+    get:
+      summary: Get Account Info by numeric ID
+      tags: []
+      responses:
+        '200':
+          description: User Found
+          content:
+            application/json:
+              schema:
+                $ref: ./common-schemas.yaml#/components/schemas/Account
+        '404':
+          description: User Not Found
+      operationId: getAccountById
+      description: Retrieve the information of the account with the matching account ID.
+      x-stoplight:
+        id: ipnp9ptrgr4dl
+    patch:
+      summary: Update Account Information
+      operationId: updateAccountById
+      responses:
+        '200':
+          description: Account Updated
+          content:
+            application/json:
+              schema:
+                $ref: ./common-schemas.yaml#/components/schemas/Account
+              examples:
+                Updated User Jim Jergens:
+                  value:
+                    id: 12
+                    displayName: Jim Jergens
+        '404':
+          description: User Not Found
+        '409':
+          description: Email Already Taken
+      description: Update the information of an existing user.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ./common-schemas.yaml#/components/schemas/AccountPartial
+        description: Patch user properties to update.
+      x-stoplight:
+        id: pdobztddqvmgi
+  /accounts:
+    post:
+      summary: Create New Account
+      operationId: createAccount
+      responses:
+        '200':
+          description: Account Created
+          content:
+            application/json:
+              schema:
+                $ref: ./common-schemas.yaml#/components/schemas/Account
+              examples:
+                New Account for Jim Jergens:
+                  value:
+                    id: 12
+                    createTime: '2024-02-18T11:15:09.618911-08:00'
+                    displayName: Jim Jergens
+        '400':
+          description: Missing Required Information
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ./common-schemas.yaml#/components/schemas/Account
+        description: Post the necessary fields for the API to create a new user.
+      description: Create a new account.
+      x-stoplight:
+        id: 8jtzxiobtzdlv
+  /externalaccounts:
+    post:
+      summary: Create External Account
+      operationId: createExternalAccount
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ./common-schemas.yaml#/components/schemas/ExternalAccount
+      responses:
+        '201':
+          description: External account data
+          content:
+            application/json:
+              schema:
+                $ref: ./common-schemas.yaml#/components/schemas/ExternalAccount
+  '/accounts/{accountId}/externalaccounts':
+    parameters:
+      - schema:
+          type: string
+        name: accountId
+        in: path
+        required: true
+    get:
+      summary: Show linked external accounts
+      tags: []
+      responses:
+        '200':
+          description: List of linked external accounts
+      operationId: getLinkedExternalAccounts
+      x-stoplight:
+        id: px63n1t2mqtro
+  '/accounts/{accountId}/externalaccounts/{externalAccountId}':
+    put:
+      parameters:
+        - schema:
+            type: string
+          name: externalAccountId
+          in: path
+          required: true
+      summary: Link existing external account
+      tags: []
+      responses:
+        '200':
+          description: The linked external account
+          content:
+            application/json:
+              schema:
+                $ref: ./common-schemas.yaml#/components/schemas/LinkedExternalAccount
+      operationId: linkExternalAccount
+      x-stoplight:
+        id: hfcuc63auafcx
+      description: Links an existing external account to this account (if possible)
+    parameters:
+      - schema:
+          type: string
+        name: accountId
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: externalAccountId
+        in: path
+        required: true
+    delete:
+      summary: Unlink external account
+      tags: []
+      responses:
+        '204':
+          description: Unlinking successful
+      operationId: unlinkExternalAccount
+      x-stoplight:
+        id: f17l3pkx0a4pg
+      description: Unlink the external account from this account
+  '/subscriptions/accounts/{accountId}':
+    parameters:
+      - $ref: ./common-schemas.yaml#/components/parameters/accountId
+    get:
+      summary: Get all subscriptions for an account
+      tags: []
+      responses: {}
+      operationId: getAllSubscriptionsForAccount
+      x-stoplight:
+        id: qk4w35eu877pa
+    post:
+      summary: Add new subscription for this account
+      tags: []
+      responses: {}
+      operationId: subscribeAccountToProject
+      x-stoplight:
+        id: isfuv89qmt4kt
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ./common-schemas.yaml#/components/schemas/NewSubscription
+  '/subscriptions/projects/{projectId}':
+    parameters:
+      - $ref: ./common-schemas.yaml#/components/parameters/projectId
+    get:
+      summary: Get all subscription for a project
+      tags: []
+      responses: {}
+      operationId: getAllSubscriptionsForProject
+      x-stoplight:
+        id: x287weh6zfpss
+  /subscriptions/global:
+    get:
+      summary: Get global subscriptions
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: ./common-schemas.yaml#/components/schemas/Subscription
+                  x-stoplight:
+                    id: se5rt8zpsvp4c
+      operationId: getGlobalSubscriptions
+      x-stoplight:
+        id: 712q45f4ylevk
+      description: Get all subscriptions that are global and as such relate to everything that occurs to projects related in an account's wallet.
+tags:
+  - name: subscription
+    description: Related to subscribing to announcements
