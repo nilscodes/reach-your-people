@@ -1,0 +1,13 @@
+{
+  "basePackage": "io.vibrantnet.ryp.core.verification",
+  "packageName": "io.vibrantnet.ryp.core.verification",
+  "apiPackage": "io.vibrantnet.ryp.core.verification.controller",
+  "modelPackage": "io.vibrantnet.ryp.core.verification.model",
+  "documentationProvider": "none",
+  "artifactId": "core-verification",
+  "groupId": "io.vibrantnet.ryp",
+  "title": "Reach your People - Core Verification Service",
+  "useSpringBoot3": true,
+  "useSwaggerUI": false,
+  "serviceInterface": true
+}

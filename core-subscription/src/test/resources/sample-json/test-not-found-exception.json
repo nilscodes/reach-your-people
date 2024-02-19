@@ -1,0 +1,9 @@
+{
+  "messages": [
+    {
+      "message": "Account not found."
+    }
+  ],
+  "httpStatus": "NOT_FOUND",
+  "httpStatusCode": 404
+}

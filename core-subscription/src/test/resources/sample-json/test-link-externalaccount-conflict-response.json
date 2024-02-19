@@ -1,0 +1,9 @@
+{
+  "messages": [
+    {
+      "message": "Account 69 already linked to external account 921"
+    }
+  ],
+  "httpStatus": "CONFLICT",
+  "httpStatusCode": 409
+}
