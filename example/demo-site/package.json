@@ -1,0 +1,36 @@
+{
+  "name": "demo-site",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@chakra-ui/next-js": "^2.2.0",
+    "@chakra-ui/pro-theme": "^0.10.0",
+    "@chakra-ui/react": "^2.8.2",
+    "@emotion/react": "^11.11.3",
+    "@emotion/styled": "^11.11.0",
+    "@fontsource/aldrich": "^5.0.18",
+    "@fontsource/rajdhani": "^5.0.8",
+    "@meshsdk/react": "^1.1.10-beta.3",
+    "axios": "^1.6.7",
+    "framer-motion": "^11.0.5",
+    "next": "14.1.0",
+    "next-auth": "^4.24.6",
+    "react": "^18",
+    "react-dom": "^18",
+    "react-icons": "^5.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "eslint": "^8",
+    "eslint-config-next": "14.1.0",
+    "typescript": "^5"
+  }
+}
