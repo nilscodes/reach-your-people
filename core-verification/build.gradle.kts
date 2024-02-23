@@ -25,6 +25,7 @@ jacoco {
 
 val loggingVersion: String by rootProject.extra
 val mockkVersion: String by rootProject.extra
+val equalsVerifierVersion: String by rootProject.extra
 
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-actuator")
@@ -43,6 +44,7 @@ dependencies {
 	testImplementation("io.mockk:mockk:$mockkVersion")
 	testImplementation("com.h2database:h2")
 	testImplementation("com.squareup.okhttp3:mockwebserver")
+	testImplementation("nl.jqno.equalsverifier:equalsverifier:$equalsVerifierVersion")
 }
 
 tasks.withType<KotlinCompile> {

@@ -14,25 +14,26 @@ class CheckApiServiceVibrant(
     private val cip66Dao: Cip66Dao,
     @Qualifier("ipfsClient") private val ipfsClient: WebClient
 ) : CheckApiService {
-    override fun getCip66InfoByPolicyId(policyId: String): Mono<Cip66PayloadDto> = Mono.just(cip66Dao.getCip66Payload(policyId))
+    override fun getCip66InfoByPolicyId(policyId: String): Mono<Cip66PayloadDto> = cip66Dao.getCip66Payload(policyId)
 
     override fun verify(policyId: String, serviceName: String, referenceId: String): Mono<Boolean> {
-        val policyInfo = cip66Dao.getCip66Payload(policyId)
-        val ipfsUrl = policyInfo.policies[PolicyId(policyId)]?.files?.firstOrNull()?.src
+        return cip66Dao.getCip66Payload(policyId)
+            .flatMap { policyInfo ->
+                val ipfsUrl = policyInfo.policies[PolicyId(policyId)]?.files?.firstOrNull()?.src
 
-        return if (ipfsUrl != null) {
-            val ipfsHash = ipfsUrl.split("/").last()
-            return ipfsClient.get()
-                .uri("/$ipfsHash")
-                .retrieve()
-                .bodyToMono(IamXDid::class.java)
-                .map {
-                  it.isValidMatch(serviceName, referenceId)
+                if (ipfsUrl != null) {
+                    val ipfsHash = ipfsUrl.split("/").last()
+                    ipfsClient.get()
+                        .uri("/$ipfsHash")
+                        .retrieve()
+                        .bodyToMono(IamXDid::class.java)
+                        .map {
+                            it.isValidMatch(serviceName, referenceId)
+                        }
+                } else {
+                    Mono.just(false)
                 }
-
-        } else {
-            Mono.just(false)
-        }
+            }
     }
 
 }

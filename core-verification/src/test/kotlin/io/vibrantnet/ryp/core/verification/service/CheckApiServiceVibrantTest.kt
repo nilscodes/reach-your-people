@@ -14,6 +14,7 @@ import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.springframework.web.reactive.function.client.WebClient
+import reactor.core.publisher.Mono
 import reactor.test.StepVerifier
 
 val cip66Payload = Cip66PayloadDto(
@@ -39,7 +40,7 @@ internal class CheckApiServiceVibrantTest {
     fun `test getCip66InfoByPolicyId for empty CIP-0066 payload`() {
         val cip66Dao = mockk<Cip66Dao>()
         val checkApiServiceVibrant = CheckApiServiceVibrant(cip66Dao, mockk())
-        every { cip66Dao.getCip66Payload("0b80b4ac493eb53970282b9d19174d44892ca86a52e080fb013eed5b") } returns Cip66PayloadDto("1.0", emptyMap())
+        every { cip66Dao.getCip66Payload("0b80b4ac493eb53970282b9d19174d44892ca86a52e080fb013eed5b") } returns Mono.just(Cip66PayloadDto("1.0", emptyMap()))
         val result = checkApiServiceVibrant.getCip66InfoByPolicyId("0b80b4ac493eb53970282b9d19174d44892ca86a52e080fb013eed5b")
         StepVerifier.create(result)
             .expectNext(Cip66PayloadDto("1.0", emptyMap()))
@@ -51,7 +52,7 @@ internal class CheckApiServiceVibrantTest {
         mockBackend.enqueue(MockResponse().setResponseCode(200).setBody("{}"))
         val cip66Dao = mockk<Cip66Dao>()
         val checkApiServiceVibrant = CheckApiServiceVibrant(cip66Dao, WebClient.builder().baseUrl(String.format("http://localhost:%s", mockBackend.port)).build())
-        every { cip66Dao.getCip66Payload("0b80b4ac493eb53970282b9d19174d44892ca86a52e080fb013eed5b") } returns Cip66PayloadDto("1.0", emptyMap())
+        every { cip66Dao.getCip66Payload("0b80b4ac493eb53970282b9d19174d44892ca86a52e080fb013eed5b") } returns Mono.just(Cip66PayloadDto("1.0", emptyMap()))
         val result = checkApiServiceVibrant.verify("0b80b4ac493eb53970282b9d19174d44892ca86a52e080fb013eed5b", "service", "reference")
         StepVerifier.create(result)
             .expectNext(false)
@@ -77,7 +78,7 @@ internal class CheckApiServiceVibrantTest {
             cip66Dao,
             WebClient.builder().baseUrl(String.format("http://localhost:%s", mockBackend.port)).build()
         )
-        every { cip66Dao.getCip66Payload("0b80b4ac493eb53970282b9d19174d44892ca86a52e080fb013eed5b") } returns cip66Payload
+        every { cip66Dao.getCip66Payload("0b80b4ac493eb53970282b9d19174d44892ca86a52e080fb013eed5b") } returns Mono.just(cip66Payload)
         val result = checkApiServiceVibrant.verify(
             "0b80b4ac493eb53970282b9d19174d44892ca86a52e080fb013eed5b",
             "discord",

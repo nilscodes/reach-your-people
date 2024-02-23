@@ -8,6 +8,8 @@ import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.core.RowMapper
+import reactor.core.publisher.Mono
+import reactor.test.StepVerifier
 import java.sql.ResultSet
 
 internal class Cip66DaoCardanoDbSyncTest {
@@ -31,6 +33,8 @@ internal class Cip66DaoCardanoDbSyncTest {
         }
 
         val result = cip66CardanoDbSyncService.getCip66Payload(policyId)
-        assertEquals(cip66PayloadDto, result)
+        StepVerifier.create(result)
+            .expectNext(cip66PayloadDto)
+            .verifyComplete()
     }
 }

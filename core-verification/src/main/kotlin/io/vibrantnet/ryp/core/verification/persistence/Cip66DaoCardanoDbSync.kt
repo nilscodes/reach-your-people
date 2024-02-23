@@ -1,12 +1,14 @@
 package io.vibrantnet.ryp.core.verification.persistence
 
 import com.fasterxml.jackson.core.type.TypeReference
-import com.fasterxml.jackson.databind.ObjectMapper
-import io.hazelnet.cardano.connect.data.token.PolicyId
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import io.vibrantnet.ryp.core.verification.model.Cip66PayloadDto
-import io.vibrantnet.ryp.core.verification.model.Cip66PolicyDto
+import io.vibrantnet.ryp.core.verification.model.makeCip66PayloadDtoFromMetadata
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Repository
+import reactor.core.publisher.Mono
 import java.sql.ResultSet
 
 const val SQL_GET_CIP_66_METADATA_FROM_POLICY = """
@@ -35,39 +37,22 @@ const val SQL_GET_CIP_66_METADATA_FROM_POLICY = """
         """
 
 @Repository
+@ConditionalOnProperty(prefix = "io.vibrantnet.ryp", name = ["type"], havingValue = "cardano-db-sync")
 class Cip66DaoCardanoDbSync(
     private val jdbcTemplate: JdbcTemplate
 ) : Cip66Dao {
 
-    override fun getCip66Payload(policyId: String): Cip66PayloadDto {
-        return jdbcTemplate.queryForObject(SQL_GET_CIP_66_METADATA_FROM_POLICY.trimIndent(), { rs, _ ->
+    override fun getCip66Payload(policyId: String): Mono<Cip66PayloadDto> {
+        return Mono.just(jdbcTemplate.queryForObject(SQL_GET_CIP_66_METADATA_FROM_POLICY.trimIndent(), { rs, _ ->
             mapCip66Info(rs)
-        }, policyId, "", CIP66_METADATA_KEY)!!
+        }, policyId, "", CIP66_METADATA_KEY)!!)
     }
 
     private fun mapCip66Info(
         rs: ResultSet,
     ): Cip66PayloadDto {
-        val objectMapper = ObjectMapper()
+        val objectMapper = jacksonObjectMapper().registerKotlinModule()
         val mintMetadata = objectMapper.readValue(rs.getString("json"), object : TypeReference<Map<String, Any>>() {})
-        val policyData = mutableMapOf<PolicyId, Cip66PolicyDto>()
-        var version = DEFAULT_CIP66_VERSION
-        mintMetadata.entries.forEach {
-            if (it.key == "version" && it.value is String) {
-                version = it.value as String
-            } else {
-                try {
-                    val policyId = PolicyId(it.key)
-                    val policyInfo = objectMapper.convertValue(it.value, Cip66PolicyDto::class.java)
-                    policyData[policyId] = policyInfo
-                } catch(e: Exception) {
-                    e.printStackTrace()
-                }
-            }
-        }
-        return Cip66PayloadDto(
-            version,
-            policyData
-        )
+        return makeCip66PayloadDtoFromMetadata(mintMetadata, objectMapper)
     }
 }

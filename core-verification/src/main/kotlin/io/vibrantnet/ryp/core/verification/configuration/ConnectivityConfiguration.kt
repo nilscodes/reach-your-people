@@ -11,7 +11,7 @@ class ConnectivityConfiguration(
     private val configuration: CoreVerificationConfiguration,
 ) {
     @Bean
-    fun ipfsClient() =
+    fun ipfsClient(): WebClient =
         WebClient.builder()
             .baseUrl(configuration.ipfslink)
             .exchangeStrategies(
