@@ -5,5 +5,12 @@ import org.springframework.boot.context.properties.bind.ConstructorBinding
 
 @ConfigurationProperties(prefix = "io.vibrantnet.ryp")
 data class CoreVerificationConfiguration @ConstructorBinding constructor(
-    val ipfslink: String
+    val type: String = "cardano-db-sync",
+    val ipfslink: String,
+    val blockfrost: BlockfrostConfig?,
+)
+
+data class BlockfrostConfig(
+    val url: String,
+    val apiKey: String,
 )
