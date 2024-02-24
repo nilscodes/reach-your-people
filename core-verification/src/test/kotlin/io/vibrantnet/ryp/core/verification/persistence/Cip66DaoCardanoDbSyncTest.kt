@@ -3,9 +3,11 @@ package io.vibrantnet.ryp.core.verification.persistence
 import io.mockk.every
 import io.mockk.mockk
 import io.vibrantnet.ryp.core.verification.model.Cip66PayloadDto
+import io.vibrantnet.ryp.core.verification.model.NoCip66DataAvailable
 import io.vibrantnet.ryp.core.verification.service.cip66Payload
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
+import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.core.RowMapper
 import reactor.core.publisher.Mono
@@ -36,5 +38,20 @@ internal class Cip66DaoCardanoDbSyncTest {
         StepVerifier.create(result)
             .expectNext(cip66PayloadDto)
             .verifyComplete()
+    }
+
+    @Test
+    fun `getCip66Payload should return NoCip66DataAvailable when no data is found`() {
+        val jdbcTemplate = mockk<JdbcTemplate>()
+        val cip66CardanoDbSyncService = Cip66DaoCardanoDbSync(jdbcTemplate)
+
+        every {
+            jdbcTemplate.queryForObject(any(), any<RowMapper<Cip66PayloadDto>>(), any<String>(), any<String>(), any<String>())
+        } throws EmptyResultDataAccessException(1)
+
+        val result = cip66CardanoDbSyncService.getCip66Payload("0b80b4ac493eb53970282b9d19174d44892ca86a52e080fb013eed5b")
+        StepVerifier.create(result)
+            .expectError(NoCip66DataAvailable::class.java)
+            .verify()
     }
 }

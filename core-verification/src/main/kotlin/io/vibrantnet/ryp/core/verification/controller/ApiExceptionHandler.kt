@@ -1,6 +1,7 @@
 package io.vibrantnet.ryp.core.verification.controller
 
 import io.hazelnet.shared.data.ApiErrorResponse
+import io.vibrantnet.ryp.core.verification.model.NoCip66DataAvailable
 import mu.KotlinLogging
 import org.springframework.core.annotation.Order
 import org.springframework.http.HttpStatus
@@ -22,5 +23,14 @@ class ApiExceptionHandler {
         logger.info { ex }
         return ApiErrorResponse(ex.message ?: "", HttpStatus.NOT_FOUND)
     }
+
+    @ExceptionHandler(NoCip66DataAvailable::class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseBody
+    fun processNoCip66DataAvailableError(ex: NoCip66DataAvailable): ApiErrorResponse {
+        logger.info { ex }
+        return ApiErrorResponse(ex.message ?: "", HttpStatus.NOT_FOUND)
+    }
+
 
 }
