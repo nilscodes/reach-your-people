@@ -1,0 +1,37 @@
+version: "3.3"
+
+services:
+    core-verification:
+        image: registry.gitlab.com/vibrantnet/ryp/core-verification:latest
+        restart: on-failure
+        environment:
+            - DB_SYNC_POSTGRES_URL=jdbc:postgresql://cardano-db-sync-postgres:5432/cexplorer
+            - DB_SYNC_POSTGRES_USER=postgres
+            - INDEXER_TYPE=cardano-db-sync
+            - BLOCKFROST_URL=
+        logging:
+            driver: "json-file"
+            options:
+                max-size: "100m"
+                max-file: "10"
+
+    core-subscription:
+        image: registry.gitlab.com/vibrantnet/ryp/core-subscription:latest
+        restart: on-failure
+        environment:
+            - RYP_POSTGRES_URL=jdbc:postgresql://postgres:5432/ryp
+            - RYP_POSTGRES_USER=postgres
+        logging:
+            driver: "json-file"
+            options:
+                max-size: "100m"
+                max-file: "10"
+
+    core-publishing:
+        image: registry.gitlab.com/vibrantnet/ryp/core-publishing:latest
+        restart: on-failure
+        logging:
+            driver: "json-file"
+            options:
+                max-size: "100m"
+                max-file: "10"
