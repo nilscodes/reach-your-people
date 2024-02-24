@@ -1,0 +1,25 @@
+version: "3.3"
+
+services:
+    core-verification:
+
+        container_name: core_verification_prod
+        environment:
+            - DB_SYNC_POSTGRES_URL=jdbc:postgresql://cardano-db-sync-postgres:5432/cexplorer
+            - DB_SYNC_POSTGRES_PASSWORD=
+            - BLOCKFROST_URL=https://cardano-mainnet.blockfrost.io/api/v0
+            - BLOCKFROST_PROJECT_ID=
+        ports:
+            - "8070:8070"
+
+    core-subscription:
+
+        container_name: core_subscription_prod
+        environment:
+            - RYP_POSTGRES_PASSWORD=
+
+
+
+    core-publishing:
+
+        container_name: core_publishing_prod
