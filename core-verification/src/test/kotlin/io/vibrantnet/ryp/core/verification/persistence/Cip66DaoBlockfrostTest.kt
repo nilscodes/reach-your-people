@@ -1,6 +1,7 @@
 package io.vibrantnet.ryp.core.verification.persistence
 
 import io.vibrantnet.ryp.core.verification.model.Cip66PayloadDto
+import io.vibrantnet.ryp.core.verification.model.NoCip66DataAvailable
 import io.vibrantnet.ryp.core.verification.service.cip66Payload
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
@@ -62,6 +63,16 @@ internal class Cip66DaoBlockfrostTest {
         assertEquals("/assets/0b80b4ac493eb53970282b9d19174d44892ca86a52e080fb013eed5b", assetRequest?.path)
         val metadataRequest = mockBackend.takeRequest(1, TimeUnit.SECONDS)
         assertEquals("/txs/89235681afb41d7d94989ab3652e924de0d687015e634fb0a8f384a9fff0b0eb/metadata", metadataRequest?.path)
+    }
+
+    @Test
+    fun `CIP-0066 payload not found in Blockfrost`() {
+        mockBackend.enqueue(MockResponse().setResponseCode(404))
+        val cip66Dao = Cip66DaoBlockfrost(WebClient.builder().baseUrl(String.format("http://localhost:%s", mockBackend.port)).build())
+        val result = cip66Dao.getCip66Payload("0b80b4ac493eb53970282b9d19174d44892ca86a52e080fb013eed5b")
+        StepVerifier.create(result)
+            .expectErrorMatches { it is NoCip66DataAvailable && it.message == "CIP-0066 metadata not found in Blockfrost for policy 0b80b4ac493eb53970282b9d19174d44892ca86a52e080fb013eed5b." }
+            .verify()
     }
 
     companion object {

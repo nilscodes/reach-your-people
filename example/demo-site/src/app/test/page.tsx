@@ -12,7 +12,8 @@ import {
   Text,
   useToast,
 } from '@chakra-ui/react';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
+import { request } from 'http';
 import { useState } from "react";
 
 // Get the verification URL from the environment
@@ -27,12 +28,12 @@ export default function Test() {
   const options = ["Discord", "Google", "Twitter", "LinkedIn", "Steam", "Apple", "GitHub", "Twitch"];
 
   const handleVerification = async () => {
+    let errorMessage = "An unknown error occurred while verifying the policy.";
     try {
       const response = await axios.get(`${verificationUrl}/cip66/${policyId}/${serviceName}/${referenceId}`);
       const isValid = await response.data;
 
       if (isValid) {
-        // Display success toast
         toast({
           title: "Verified",
           status: "success",
@@ -41,21 +42,24 @@ export default function Test() {
           position: "top",
           variant: "solid",
         });
+        return;
       } else {
-        // Display error toast
-        toast({
-          title: "Verification Failed",
-          status: "error",
-          duration: 5000,
-          isClosable: true,
-          position: "top",
-          variant: "solid",
-        });
+        errorMessage = "CIP-0066 data found but verification for requested identifier failed";
       }
-    } catch (error) {
-      console.error("Verification error:", error);
+    } catch (error: any) {
+      if (error.response && error.response.status === 404) {
+        errorMessage = "Policy did not have valid CIP-0066 verification data available";
+      }
     }
-  };
+    toast({
+      title: errorMessage,
+      status: "error",
+      duration: 5000,
+      isClosable: true,
+      position: "top",
+      variant: "solid",
+    });
+};
 
   return (
     <Container py={{ base: '4', md: '8' }}>

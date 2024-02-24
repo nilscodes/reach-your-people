@@ -4,8 +4,10 @@ import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import io.vibrantnet.ryp.core.verification.model.Cip66PayloadDto
+import io.vibrantnet.ryp.core.verification.model.NoCip66DataAvailable
 import io.vibrantnet.ryp.core.verification.model.makeCip66PayloadDtoFromMetadata
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
+import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Repository
 import reactor.core.publisher.Mono
@@ -43,9 +45,13 @@ class Cip66DaoCardanoDbSync(
 ) : Cip66Dao {
 
     override fun getCip66Payload(policyId: String): Mono<Cip66PayloadDto> {
-        return Mono.just(jdbcTemplate.queryForObject(SQL_GET_CIP_66_METADATA_FROM_POLICY.trimIndent(), { rs, _ ->
-            mapCip66Info(rs)
-        }, policyId, "", CIP66_METADATA_KEY)!!)
+        return try {
+            Mono.just(jdbcTemplate.queryForObject(SQL_GET_CIP_66_METADATA_FROM_POLICY.trimIndent(), { rs, _ ->
+                mapCip66Info(rs)
+            }, policyId, "", CIP66_METADATA_KEY)!!)
+        } catch (e: EmptyResultDataAccessException) {
+            Mono.error(NoCip66DataAvailable("CIP-0066 metadata not found in the connected db-sync database for policy $policyId."))
+        }
     }
 
     private fun mapCip66Info(
