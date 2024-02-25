@@ -54,4 +54,4 @@ Positive
 Negative
 * Bringing on board other maintainers may be harder due to the smaller footprint in the software development landscape with regards to Kotlin
 * Both languages are slightly harder to learn than their more established counterparts. This assessment is based on ten years of experience onboarding software developers at a Technology company that uses all of these languages.
-* Performance maxmiums may not be as high as for example with Rust
+* Performance maximums may not be as high as for example with Rust
