@@ -124,7 +124,6 @@ class PolicyIdDeserializer : JsonDeserializer<String?>() {
     override fun deserialize(p: JsonParser, ctxt: DeserializationContext): String? {
         val node: JsonNode = p.codec.readTree(p)
         return when {
-            node.isObject && node.isEmpty -> null
             node.isTextual -> node.asText()
             else -> null
         }
