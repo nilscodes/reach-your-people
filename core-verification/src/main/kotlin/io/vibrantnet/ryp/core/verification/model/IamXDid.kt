@@ -36,7 +36,7 @@ data class IamXDid @JsonCreator constructor(
 
 data class IamXDidPayload @JsonCreator constructor(
     @JsonProperty("date") val date: OffsetDateTime,
-    @JsonProperty("policyID") val policyId: String,
+    @JsonProperty("policyID") @JsonDeserialize(using = PolicyIdDeserializer::class) val policyId: String?,
     @JsonProperty("accounts") @JsonDeserialize(using = AccountsDeserializer::class) val accounts: List<Account>,
     @JsonProperty("version") val version: String,
 )
@@ -117,5 +117,16 @@ class AccountsDeserializer : JsonDeserializer<List<Account>>() {
         }
 
         return accounts
+    }
+}
+
+class PolicyIdDeserializer : JsonDeserializer<String?>() {
+    override fun deserialize(p: JsonParser, ctxt: DeserializationContext): String? {
+        val node: JsonNode = p.codec.readTree(p)
+        return when {
+            node.isObject && node.isEmpty -> null
+            node.isTextual -> node.asText()
+            else -> null
+        }
     }
 }
