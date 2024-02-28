@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*
 import org.springframework.validation.annotation.Validated
 
 import jakarta.validation.Valid
+import org.springframework.http.HttpStatus
 import org.springframework.web.server.ServerWebExchange
 import org.springframework.web.util.UriComponentsBuilder
 import reactor.core.publisher.Mono
@@ -27,6 +28,7 @@ class ExternalAccountsApiController(
         produces = ["application/json"],
         consumes = ["application/json"]
     )
+    @ResponseStatus(HttpStatus.OK)
     fun createExternalAccount(@Valid @RequestBody externalAccountDto: ExternalAccountDto, exchange: ServerWebExchange): Mono<ResponseEntity<ExternalAccountDto>> {
         return service.createExternalAccount(externalAccountDto)
             .map { savedEntity ->
@@ -35,4 +37,15 @@ class ExternalAccountsApiController(
             }
 
     }
+
+    @RequestMapping(
+        method = [RequestMethod.GET],
+        value = ["/externalaccounts/{providerType}/{referenceId}"],
+        produces = ["application/json"]
+    )
+    @ResponseStatus(HttpStatus.OK)
+    fun findExternalAccountByProviderAndReferenceId(
+        @PathVariable("providerType") providerType: String,
+        @PathVariable("referenceId") referenceId: String
+    ) = service.findExternalAccountByProviderAndReferenceId(providerType, referenceId)
 }

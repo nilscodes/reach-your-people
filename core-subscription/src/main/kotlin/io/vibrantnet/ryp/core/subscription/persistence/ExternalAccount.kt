@@ -18,6 +18,9 @@ class ExternalAccount(
         @Column(name = "external_reference_name")
         var referenceName: String?,
 
+        @Column(name = "display_name")
+        var displayName: String?,
+
         @Temporal(TemporalType.TIMESTAMP)
         @Column(name = "registration_time", updatable = false)
         var registrationTime: OffsetDateTime = OffsetDateTime.now(),
@@ -31,6 +34,7 @@ class ExternalAccount(
         id = id,
         referenceId = referenceId,
         referenceName = referenceName,
+        displayName = displayName,
         registrationTime = registrationTime,
         type = type,
     )
@@ -52,7 +56,7 @@ class ExternalAccount(
     }
 
     override fun toString(): String {
-        return "ExternalAccount(id=$id, referenceId='$referenceId', referenceName=$referenceName, registrationTime=$registrationTime, type='$type')"
+        return "ExternalAccount(id=$id, referenceId='$referenceId', referenceName=$referenceName, displayName=$displayName, registrationTime=$registrationTime, type='$type')"
     }
 
 }

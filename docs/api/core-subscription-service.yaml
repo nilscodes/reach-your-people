@@ -1,6 +1,6 @@
 openapi: 3.1.0
 x-stoplight:
-  id: e9wovef4dbuyy
+  id: vxosojp7gbe4n
 info:
   title: Core Subscription Service
   version: '1.0'
@@ -34,7 +34,7 @@ paths:
       operationId: getAccountById
       description: Retrieve the information of the account with the matching account ID.
       x-stoplight:
-        id: ipnp9ptrgr4dl
+        id: paz9atrd81lb3
     patch:
       summary: Update Account Information
       operationId: updateAccountById
@@ -63,7 +63,7 @@ paths:
               $ref: ./common-schemas.yaml#/components/schemas/AccountPartial
         description: Patch user properties to update.
       x-stoplight:
-        id: pdobztddqvmgi
+        id: hub7c9md2sodt
   /accounts:
     post:
       summary: Create New Account
@@ -92,7 +92,7 @@ paths:
         description: Post the necessary fields for the API to create a new user.
       description: Create a new account.
       x-stoplight:
-        id: 8jtzxiobtzdlv
+        id: osfbv5epro02s
   /externalaccounts:
     post:
       summary: Create External Account
@@ -110,30 +110,76 @@ paths:
             application/json:
               schema:
                 $ref: ./common-schemas.yaml#/components/schemas/ExternalAccount
+  '/externalaccounts/{providerType}/{referenceId}':
+    parameters:
+      - $ref: ./common-schemas.yaml#/components/parameters/providerType
+      - $ref: ./common-schemas.yaml#/components/parameters/referenceId
+    get:
+      summary: Find External Account by Provider
+      tags: []
+      responses:
+        '200':
+          description: A matching external account for the provider/reference ID combination provided.
+          content:
+            application/json:
+              schema:
+                $ref: ./common-schemas.yaml#/components/schemas/ExternalAccount
+        '404':
+          description: No external account under that provider type and reference ID was found.
+      operationId: findExternalAccountByProviderAndReferenceId
+      x-stoplight:
+        id: nzuvr98kjth4m
+      description: 'Look up an external account by provider and the corresponding reference ID, to see if the external account is used somewhere, without knowing the internal ID.'
+  '/accounts/{providerType}/{referenceId}':
+    parameters:
+      - $ref: ./common-schemas.yaml#/components/parameters/providerType
+      - $ref: ./common-schemas.yaml#/components/parameters/referenceId
+    get:
+      summary: Find Account by External Account Provider
+      tags: []
+      responses:
+        '200':
+          description: >-
+            A matching account for the provider/reference ID combination
+            provided.
+          content:
+            application/json:
+              schema:
+                $ref: ./common-schemas.yaml#/components/schemas/Account
+        '404':
+          description: >-
+            No account under that provider type and reference ID was
+            found.
+      operationId: findAccountByProviderAndReferenceId
+      description: >-
+        Look up an account by provider and the corresponding reference
+        ID, to see if the account is used somewhere, without knowing the
+        internal ID of the linked OWNER account
   '/accounts/{accountId}/externalaccounts':
     parameters:
-      - schema:
-          type: string
-        name: accountId
-        in: path
-        required: true
+      - $ref: ./common-schemas.yaml#/components/parameters/accountId
     get:
       summary: Show linked external accounts
       tags: []
       responses:
         '200':
           description: List of linked external accounts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: ./common-schemas.yaml#/components/schemas/LinkedExternalAccount
+                  x-stoplight:
+                    id: 7grhvhy96bjob
       operationId: getLinkedExternalAccounts
       x-stoplight:
-        id: px63n1t2mqtro
+        id: j8re5pa662xoi
   '/accounts/{accountId}/externalaccounts/{externalAccountId}':
+    parameters:
+      - $ref: ./common-schemas.yaml#/components/parameters/accountId
+      - $ref: ./common-schemas.yaml#/components/parameters/externalAccountId
     put:
-      parameters:
-        - schema:
-            type: string
-          name: externalAccountId
-          in: path
-          required: true
       summary: Link existing external account
       tags: []
       responses:
@@ -145,19 +191,8 @@ paths:
                 $ref: ./common-schemas.yaml#/components/schemas/LinkedExternalAccount
       operationId: linkExternalAccount
       x-stoplight:
-        id: hfcuc63auafcx
+        id: mjt84x6rlvvgr
       description: Links an existing external account to this account (if possible)
-    parameters:
-      - schema:
-          type: string
-        name: accountId
-        in: path
-        required: true
-      - schema:
-          type: string
-        name: externalAccountId
-        in: path
-        required: true
     delete:
       summary: Unlink external account
       tags: []
@@ -166,7 +201,7 @@ paths:
           description: Unlinking successful
       operationId: unlinkExternalAccount
       x-stoplight:
-        id: f17l3pkx0a4pg
+        id: pgxcykih0shh0
       description: Unlink the external account from this account
   '/subscriptions/accounts/{accountId}':
     parameters:
@@ -177,14 +212,14 @@ paths:
       responses: {}
       operationId: getAllSubscriptionsForAccount
       x-stoplight:
-        id: qk4w35eu877pa
+        id: avvc7tu7x8sio
     post:
       summary: Add new subscription for this account
       tags: []
       responses: {}
       operationId: subscribeAccountToProject
       x-stoplight:
-        id: isfuv89qmt4kt
+        id: p22i1rs402yq3
       requestBody:
         required: true
         content:
@@ -200,7 +235,7 @@ paths:
       responses: {}
       operationId: getAllSubscriptionsForProject
       x-stoplight:
-        id: x287weh6zfpss
+        id: oom60rtr3642b
   /subscriptions/global:
     get:
       summary: Get global subscriptions
@@ -215,10 +250,10 @@ paths:
                 items:
                   $ref: ./common-schemas.yaml#/components/schemas/Subscription
                   x-stoplight:
-                    id: se5rt8zpsvp4c
+                    id: kshusczjoik1g
       operationId: getGlobalSubscriptions
       x-stoplight:
-        id: 712q45f4ylevk
+        id: candiq0d6nerz
       description: Get all subscriptions that are global and as such relate to everything that occurs to projects related in an account's wallet.
 tags:
   - name: subscription

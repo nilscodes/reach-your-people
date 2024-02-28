@@ -90,7 +90,7 @@ internal class IamXDidTest {
 
     @Test
     fun `parsing a IamX DID payload works`() {
-        val om = ObjectMapper().registerModule(JavaTimeModule()).configure(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS, false);
+        val om = ObjectMapper().registerModule(JavaTimeModule()).configure(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS, false)
         val actualDid = om.readValue(PAYLOAD, IamXDid::class.java)
         val expectedDid = IamXDid(
             IamXDidPayload(
@@ -115,7 +115,7 @@ internal class IamXDidTest {
 
     @Test
     fun `parsing an IamX DID payload with an empty object for a policy ID works`() {
-        val om = ObjectMapper().registerModule(JavaTimeModule()).configure(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS, false);
+        val om = ObjectMapper().registerModule(JavaTimeModule()).configure(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS, false)
         val actualDid = om.readValue(PAYLOAD_WITH_POLICYID_OBJECT, IamXDid::class.java)
         val expectedDid = IamXDid(
             IamXDidPayload(

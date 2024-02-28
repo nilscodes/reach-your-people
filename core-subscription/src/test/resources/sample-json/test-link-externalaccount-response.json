@@ -1,5 +1,12 @@
 {
-  "externalAccountId": 921,
+  "externalAccount": {
+    "id": 921,
+    "referenceId": "123",
+    "referenceName": "jeff",
+    "displayName": "The Real Jeff",
+    "registrationTime": "2019-01-01T18:00:00Z",
+    "type": "discord"
+  },
   "role": "OWNER",
   "linkTime": "2019-01-01T19:00:00Z"
 }

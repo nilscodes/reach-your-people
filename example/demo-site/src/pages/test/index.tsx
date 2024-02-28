@@ -1,5 +1,3 @@
-"use client";
-
 import {
   Button,
   Container,
@@ -12,8 +10,7 @@ import {
   Text,
   useToast,
 } from '@chakra-ui/react';
-import axios, { AxiosError } from 'axios';
-import { request } from 'http';
+import axios from 'axios';
 import { useState } from "react";
 
 // Get the verification URL from the environment

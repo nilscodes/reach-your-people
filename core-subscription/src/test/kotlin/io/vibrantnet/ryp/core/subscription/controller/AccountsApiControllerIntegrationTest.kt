@@ -7,6 +7,7 @@ import io.mockk.mockk
 import io.vibrantnet.ryp.core.loadJsonFromResource
 import io.vibrantnet.ryp.core.subscription.model.AccountDto
 import io.vibrantnet.ryp.core.subscription.model.ExternalAccountAlreadyLinkedException
+import io.vibrantnet.ryp.core.subscription.model.ExternalAccountDto
 import io.vibrantnet.ryp.core.subscription.model.LinkedExternalAccountDto
 import io.vibrantnet.ryp.core.subscription.service.AccountsApiService
 import org.junit.jupiter.api.Test
@@ -28,7 +29,7 @@ private val defaultAccountDto = AccountDto(
     createTime = OffsetDateTime.parse("2018-08-01T03:00:00Z"),
 )
 private val defaultLinkedExternalAccountDto = LinkedExternalAccountDto(
-    externalAccountId = 921,
+    externalAccount = ExternalAccountDto(921, "123", "jeff", "The Real Jeff", OffsetDateTime.parse("2019-01-01T18:00:00Z"), "discord"),
     role = LinkedExternalAccountDto.ExternalAccountRole.OWNER,
     linkTime = OffsetDateTime.parse("2019-01-01T19:00:00Z")
 )

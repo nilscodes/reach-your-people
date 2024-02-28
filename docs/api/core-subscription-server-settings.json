@@ -1,0 +1,13 @@
+{
+  "basePackage": "io.vibrantnet.ryp.core.subscription",
+  "packageName": "io.vibrantnet.ryp.core.subscription",
+  "apiPackage": "io.vibrantnet.ryp.core.subscription.controller",
+  "modelPackage": "io.vibrantnet.ryp.core.subscription.model",
+  "documentationProvider": "none",
+  "artifactId": "core-subscription",
+  "groupId": "io.vibrantnet.ryp",
+  "title": "Reach your People - Core Subscription Service",
+  "useSpringBoot3": true,
+  "useSwaggerUI": false,
+  "serviceInterface": true
+}

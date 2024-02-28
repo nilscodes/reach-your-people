@@ -41,27 +41,30 @@ class AccountsApiController(
             }
     }
 
-
     @RequestMapping(
         method = [RequestMethod.GET],
         value = ["/accounts/{accountId}"],
         produces = ["application/json"]
     )
     @ResponseStatus(HttpStatus.OK)
-    fun getAccountById(@PathVariable("accountId") accountId: Long): Mono<AccountDto> {
-        return service.getAccountById(accountId)
-    }
+    fun getAccountById(@PathVariable("accountId") accountId: Long) = service.getAccountById(accountId)
 
+    @RequestMapping(
+        method = [RequestMethod.GET],
+        value = ["/accounts/{providerType}/{referenceId}"],
+        produces = ["application/json"]
+    )
+    @ResponseStatus(HttpStatus.OK)
+    fun findAccountByProviderAndReferenceId(
+        @PathVariable("providerType") providerType: String,
+        @PathVariable("referenceId") referenceId: String) = service.findAccountByProviderAndReferenceId(providerType, referenceId)
 
     @RequestMapping(
         method = [RequestMethod.GET],
         value = ["/accounts/{accountId}/externalaccounts"]
     )
     @ResponseStatus(HttpStatus.OK)
-    fun getLinkedExternalAccounts(@PathVariable("accountId") accountId: Long): Flux<LinkedExternalAccountDto> {
-        return service.getLinkedExternalAccounts(accountId)
-    }
-
+    fun getLinkedExternalAccounts(@PathVariable("accountId") accountId: Long) = service.getLinkedExternalAccounts(accountId)
 
     @RequestMapping(
         method = [RequestMethod.PUT],
@@ -72,10 +75,7 @@ class AccountsApiController(
     fun linkExternalAccount(
         @PathVariable("externalAccountId") externalAccountId: Long,
         @PathVariable("accountId") accountId: Long
-    ): Mono<LinkedExternalAccountDto> {
-        return service.linkExternalAccount(externalAccountId, accountId)
-    }
-
+    ) = service.linkExternalAccount(externalAccountId, accountId)
 
     @RequestMapping(
         method = [RequestMethod.DELETE],
@@ -85,10 +85,7 @@ class AccountsApiController(
     fun unlinkExternalAccount(
         @PathVariable("accountId") accountId: Long,
         @PathVariable("externalAccountId") externalAccountId: Long
-    ) {
-        service.unlinkExternalAccount(accountId, externalAccountId)
-    }
-
+    ) = service.unlinkExternalAccount(accountId, externalAccountId)
 
     @RequestMapping(
         method = [RequestMethod.PATCH],
@@ -100,7 +97,5 @@ class AccountsApiController(
     fun updateAccountById(
         @PathVariable("accountId") accountId: Long,
         @Valid @RequestBody accountPartialDto: AccountPartialDto
-    ): Mono<AccountDto> {
-        return service.updateAccountById(accountId, accountPartialDto)
-    }
+    ) = service.updateAccountById(accountId, accountPartialDto)
 }

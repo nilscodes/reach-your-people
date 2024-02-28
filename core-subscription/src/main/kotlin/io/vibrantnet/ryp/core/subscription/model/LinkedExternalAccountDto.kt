@@ -2,15 +2,16 @@ package io.vibrantnet.ryp.core.subscription.model
 
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty
+import jakarta.validation.Valid
 import jakarta.validation.constraints.Min
 import jakarta.validation.constraints.NotNull
 import java.time.OffsetDateTime
 
 data class LinkedExternalAccountDto @JsonCreator constructor(
 
-    @JsonProperty("externalAccountId", required = true)
-    @field:Min(1)
-    val externalAccountId: Long,
+    @JsonProperty("externalAccount", required = true)
+    @field:Valid
+    val externalAccount: ExternalAccountDto,
 
     @JsonProperty("role")
     @field:NotNull

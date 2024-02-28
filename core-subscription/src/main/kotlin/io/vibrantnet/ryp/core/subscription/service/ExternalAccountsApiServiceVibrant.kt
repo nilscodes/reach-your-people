@@ -15,8 +15,18 @@ class ExternalAccountsApiServiceVibrant(
         val newExternalAccount = ExternalAccount(
             referenceId = externalAccountDto.referenceId,
             referenceName = externalAccountDto.referenceName,
+            displayName = externalAccountDto.displayName,
             type = externalAccountDto.type,
         )
         return Mono.just(externalAccountRepository.save(newExternalAccount).toDto())
+    }
+
+    override fun findExternalAccountByProviderAndReferenceId(providerType: String, referenceId: String): Mono<ExternalAccountDto> {
+        val externalAccount = externalAccountRepository.findByTypeAndReferenceId(providerType, referenceId)
+        return if (externalAccount.isPresent) {
+            Mono.just(externalAccount.get().toDto())
+        } else {
+            Mono.error(NoSuchElementException("No external account with provider type $providerType and reference ID $referenceId found"))
+        }
     }
 }
