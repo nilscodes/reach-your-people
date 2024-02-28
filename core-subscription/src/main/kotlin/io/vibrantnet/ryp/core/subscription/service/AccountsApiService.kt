@@ -31,6 +31,18 @@ interface AccountsApiService {
     fun getAccountById(accountId: Long): Mono<AccountDto>
 
     /**
+     * GET /accounts/{providerType}/{referenceId} : Find Account by External Account Provider
+     * Look up an account by provider and the corresponding reference ID, to see if the account is used somewhere, without knowing the internal ID of the linked OWNER account
+     *
+     * @param providerType The provider or integration type for an external account (required)
+     * @param referenceId The reference ID used to identify the user in the external provider/integration (required)
+     * @return A matching account for the provider/reference ID combination provided. (status code 200)
+     *         or No account under that provider type and reference ID was found. (status code 404)
+     * @see AccountsApi#findAccountByProviderAndReferenceId
+     */
+    fun findAccountByProviderAndReferenceId(providerType: String, referenceId: String): Mono<AccountDto>
+
+    /**
      * GET /accounts/{accountId}/externalaccounts : Show linked external accounts
      *
      * @param accountId  (required)

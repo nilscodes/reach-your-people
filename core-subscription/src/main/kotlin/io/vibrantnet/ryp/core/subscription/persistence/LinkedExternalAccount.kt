@@ -6,8 +6,9 @@ import java.time.OffsetDateTime
 
 @Embeddable
 class LinkedExternalAccount(
-    @Column(name = "external_account_id")
-    var externalAccountId: Long,
+    @ManyToOne
+    @JoinColumn(name = "external_account_id")
+    var externalAccount: ExternalAccount,
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "link_time", updatable = false)
@@ -19,11 +20,11 @@ class LinkedExternalAccount(
 
 
     override fun toString(): String {
-        return "LinkedExternalAccount(externalAccountId=$externalAccountId, linkTime=$linkTime, role=$role)"
+        return "LinkedExternalAccount(externalAccountId=${externalAccount.id}, linkTime=$linkTime, role=$role)"
     }
 
     fun toDto() = LinkedExternalAccountDto(
-        externalAccountId = externalAccountId,
+        externalAccount = externalAccount.toDto(),
         linkTime = linkTime,
         role = role,
     )
@@ -32,15 +33,17 @@ class LinkedExternalAccount(
         if (this === other) return true
         if (other !is LinkedExternalAccount) return false
 
-        if (externalAccountId != other.externalAccountId) return false
+        if (externalAccount.id != other.externalAccount.id) return false
         if (role != other.role) return false
 
         return true
     }
 
     override fun hashCode(): Int {
-        var result = externalAccountId.hashCode()
+        var result = externalAccount.hashCode()
         result = 31 * result + role.hashCode()
         return result
     }
+
+
 }

@@ -6,6 +6,7 @@ import io.vibrantnet.ryp.core.subscription.model.ExternalAccountAlreadyLinkedExc
 import io.vibrantnet.ryp.core.subscription.model.LinkedExternalAccountDto
 import io.vibrantnet.ryp.core.subscription.persistence.Account
 import io.vibrantnet.ryp.core.subscription.persistence.AccountRepository
+import io.vibrantnet.ryp.core.subscription.persistence.ExternalAccountRepository
 import io.vibrantnet.ryp.core.subscription.persistence.LinkedExternalAccount
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -15,6 +16,7 @@ import reactor.core.publisher.Mono
 @Service
 class AccountsApiServiceVibrant(
     val accountRepository: AccountRepository,
+    val externalAccountRepository: ExternalAccountRepository,
 ): AccountsApiService {
 
     override fun createAccount(accountDto: AccountDto): Mono<AccountDto> {
@@ -28,6 +30,11 @@ class AccountsApiServiceVibrant(
         return Mono.just(accountRepository.findById(accountId).orElseThrow().toDto())
     }
 
+    override fun findAccountByProviderAndReferenceId(providerType: String, referenceId: String): Mono<AccountDto> {
+        val externalAccount = externalAccountRepository.findByTypeAndReferenceId(providerType, referenceId).orElseThrow()
+        return Mono.just(accountRepository.findByLinkedExternalAccountsExternalAccountId(externalAccount.id!!).first().toDto())
+    }
+
     @Transactional
     override fun getLinkedExternalAccounts(accountId: Long): Flux<LinkedExternalAccountDto> {
         val account = accountRepository.findById(accountId).orElseThrow()
@@ -37,8 +44,9 @@ class AccountsApiServiceVibrant(
     @Transactional
     override fun linkExternalAccount(externalAccountId: Long, accountId: Long): Mono<LinkedExternalAccountDto> {
         val account = accountRepository.findById(accountId).orElseThrow()
+        val externalAccount = externalAccountRepository.findById(externalAccountId).orElseThrow()
         val newLinkedExternalAccount = LinkedExternalAccount(
-            externalAccountId = externalAccountId,
+            externalAccount = externalAccount,
             role = LinkedExternalAccountDto.ExternalAccountRole.OWNER,
         )
         val added = account.linkedExternalAccounts.add(newLinkedExternalAccount)
@@ -53,9 +61,13 @@ class AccountsApiServiceVibrant(
     @Transactional
     override fun unlinkExternalAccount(accountId: Long, externalAccountId: Long) {
         val account = accountRepository.findById(accountId).orElseThrow()
-        val removed = account.linkedExternalAccounts.removeIf { it.externalAccountId == externalAccountId }
+        val removed = account.linkedExternalAccounts.removeIf { it.externalAccount.id == externalAccountId }
         if (removed) {
             accountRepository.save(account)
+            // Delete external account if its the last link
+            if (accountRepository.findByLinkedExternalAccountsExternalAccountId(externalAccountId).isEmpty()) {
+                externalAccountRepository.deleteById(externalAccountId)
+            }
         } else {
             throw NoSuchElementException("Failed to unlink external account: Not found")
         }

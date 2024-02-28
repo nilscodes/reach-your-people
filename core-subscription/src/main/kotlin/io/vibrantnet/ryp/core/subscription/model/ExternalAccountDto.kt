@@ -19,6 +19,10 @@ data class ExternalAccountDto @JsonCreator constructor(
     @field:Size(max = 200)
     val referenceName: String? = null,
 
+    @JsonProperty("displayName")
+    @field:Size(max = 200)
+    val displayName: String? = null,
+
     @JsonProperty("registrationTime")
     val registrationTime: OffsetDateTime? = null,
 

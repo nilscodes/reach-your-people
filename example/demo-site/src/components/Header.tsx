@@ -1,5 +1,3 @@
-'use client';
-
 import {
   Avatar,
   Box,
@@ -12,6 +10,7 @@ import { useSession } from "next-auth/react";
 import { Logo } from '@/components/Logo'
 import AuthButton from './AuthButton';
 import NextLink from './NextLink';
+import { ColorModeSwitcher } from './ColorModeSwitcher';
 
 export default function Header() {
   const { data: session } = useSession();
@@ -31,11 +30,13 @@ export default function Header() {
             display={{ base: 'none', lg: 'flex' }}
           >
             <NextLink href="/test"><Button>Verify NFT Project Publisher</Button></NextLink>
+            {session?.user && <NextLink href="/dashboard"><Button>Accounts</Button></NextLink>}
           </ButtonGroup>
         </HStack>
         <HStack spacing={{ base: '2', md: '4' }}>
+          <ColorModeSwitcher />
           <AuthButton />
-          {session?.user?.image && (<Avatar boxSize="10" src={session?.user?.image} />)}
+          {session?.user?.image && (<Avatar boxSize="10" src={session?.user?.image} bgColor='white' />)}
         </HStack>
       </HStack>
     </Container>
