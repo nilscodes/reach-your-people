@@ -106,6 +106,21 @@ class AccountsApiControllerIntegrationTest {
     }
 
     @Test
+    fun `get account by provider type and reference ID works`() {
+        every { accountsApiService.findAccountByProviderAndReferenceId("discord", "123") } answers {
+            Mono.just(defaultAccountDto)
+        }
+
+        val responseJson = loadJsonFromResource("sample-json/test-default-account-response.json")
+
+        webClient.get()
+            .uri("/accounts/discord/123")
+            .exchange()
+            .expectStatus().isOk
+            .expectBody().json(responseJson)
+    }
+
+    @Test
     fun `get linked external accounts works if account with ID is present`() {
         every { accountsApiService.getLinkedExternalAccounts(69) } answers {
             Flux.fromIterable(listOf(defaultLinkedExternalAccountDto))

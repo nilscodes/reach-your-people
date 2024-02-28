@@ -78,4 +78,25 @@ class ExternalAccountsApiControllerIntegrationTest {
             .exchange()
             .expectStatus().isBadRequest
     }
+
+    @Test
+    fun `get account by provider type and reference ID works`() {
+        every { externalAccountsApiService.findExternalAccountByProviderAndReferenceId("discord", "123") } answers {
+            Mono.just(ExternalAccountDto(
+                id = 14,
+                referenceId = "123",
+                referenceName = "Test",
+                type = "DISCORD_SOUP",
+                registrationTime = OffsetDateTime.parse("2021-08-01T00:00:00Z"),
+            ))
+        }
+
+        val responseJson = loadJsonFromResource("sample-json/test-create-externalaccount-response.json")
+
+        webClient.get()
+            .uri("/externalaccounts/discord/123")
+            .exchange()
+            .expectStatus().isOk
+            .expectBody().json(responseJson)
+    }
 }
