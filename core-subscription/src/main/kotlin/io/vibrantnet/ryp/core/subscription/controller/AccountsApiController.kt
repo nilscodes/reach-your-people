@@ -2,7 +2,6 @@ package io.vibrantnet.ryp.core.subscription.controller
 
 import io.vibrantnet.ryp.core.subscription.model.AccountDto
 import io.vibrantnet.ryp.core.subscription.model.AccountPartialDto
-import io.vibrantnet.ryp.core.subscription.model.LinkedExternalAccountDto
 import io.vibrantnet.ryp.core.subscription.service.AccountsApiService
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
@@ -11,7 +10,6 @@ import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ServerWebExchange
 import org.springframework.web.util.UriComponentsBuilder
-import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 
 @RestController
