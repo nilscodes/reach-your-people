@@ -2,7 +2,7 @@
 status: completed
 date: 2023-11-15
 ---
-# 1️⃣ Architecture Modeling and Research	
+# 1️⃣ Architecture Modeling and Research
 
 ## 💡 Purpose
 This document outlines the goals and outcomes of Milestone 1 of the Catalyst Fund 10 project "Reach your people - social media and messaging integrations for DAOs and NFT projects" (further referenced to as RYP).
