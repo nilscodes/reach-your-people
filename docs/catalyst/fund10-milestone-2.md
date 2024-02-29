@@ -1,8 +1,8 @@
 ---
 status: completed
-date: 2024-01-15
+date: 2024-02-24
 ---
-# 2️⃣ Prototyping Indexing and Core Services	
+# 2️⃣ Prototyping Indexing and Core Services
 
 ## 💡 Purpose
 This document outlines the goals and outcomes of Milestone 2 of the Catalyst Fund 10 project "Reach your people - social media and messaging integrations for DAOs and NFT projects" (further referenced to as RYP).
