@@ -1,6 +1,6 @@
 import { SessionProvider } from "next-auth/react"
 import { AppProps } from 'next/app'
-import { ChakraProvider, extendTheme, theme as baseTheme, Box } from '@chakra-ui/react'
+import { ChakraProvider, extendTheme, theme as baseTheme, Box, useColorModeValue as mode, } from '@chakra-ui/react'
 import { theme as proTheme } from '@chakra-ui/pro-theme'
 import type { Session } from "next-auth"
 import "@fontsource/aldrich"
@@ -42,7 +42,9 @@ export default function App({ Component, pageProps: { session, ...pageProps } }:
       <ApiProvider>
         <Box as="section" minH="lg">
           <Header />
-          <Component {...pageProps} />
+          <Box pb={6}>
+            <Component {...pageProps} />
+          </Box>
         </Box>
       </ApiProvider>
     </ChakraProvider>

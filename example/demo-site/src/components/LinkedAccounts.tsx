@@ -1,15 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Heading, Text, Button, Box, VStack, Stack, useToast } from '@chakra-ui/react';
-import { useRouter } from 'next/router';
-import accessDenied from '../../public/access-denied.webp';
-import Image from './Image';
 import { Account, GetLinkedExternalAccounts200ResponseInner } from '@/lib/ryp-api';
 import { CardanoIcon, providerList, providersConfig } from './ProviderIcons';
-import { FaCheck } from 'react-icons/fa';
 import { signIn } from 'next-auth/react';
 import { LinkedAccount } from './LinkedAccount';
-import { coreSubscriptionApi } from '@/lib/core-subscription-api';
-import axios from 'axios';
 import WalletLogin from './WalletLogin';
 import { BrowserWallet, Wallet } from '@meshsdk/core';
 import { useApi } from '@/contexts/ApiProvider';
