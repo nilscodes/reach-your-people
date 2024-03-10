@@ -82,9 +82,14 @@ components:
           content: "All the details that are extremely relevant\n\nAlso some other text, separately. Even emojis \U0001F49A"
           link: 'https://ryp.vibrantnet.io'
       required:
+        - author
         - title
         - content
       properties:
+        author:
+          type: integer
+          format: int64
+          description: The subscription service account ID of the user account submitting the announcement
         title:
           type: string
           x-stoplight:

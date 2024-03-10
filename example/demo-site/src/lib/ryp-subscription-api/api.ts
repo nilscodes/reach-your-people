@@ -105,6 +105,33 @@ export interface CreateExternalAccountRequest {
     'displayName'?: string;
 }
 /**
+ * An explicit subscription to a single project and an associated status
+ * @export
+ * @interface GetAllSubscriptionsForAccount200ResponseInner
+ */
+export interface GetAllSubscriptionsForAccount200ResponseInner {
+    /**
+     * 
+     * @type {number}
+     * @memberof GetAllSubscriptionsForAccount200ResponseInner
+     */
+    'projectId': number;
+    /**
+     * 
+     * @type {string}
+     * @memberof GetAllSubscriptionsForAccount200ResponseInner
+     */
+    'status': GetAllSubscriptionsForAccount200ResponseInnerStatusEnum;
+}
+
+export const GetAllSubscriptionsForAccount200ResponseInnerStatusEnum = {
+    Subscribed: 'SUBSCRIBED',
+    Blocked: 'BLOCKED'
+} as const;
+
+export type GetAllSubscriptionsForAccount200ResponseInnerStatusEnum = typeof GetAllSubscriptionsForAccount200ResponseInnerStatusEnum[keyof typeof GetAllSubscriptionsForAccount200ResponseInnerStatusEnum];
+
+/**
  * 
  * @export
  * @interface GetGlobalSubscriptions200ResponseInner
@@ -563,12 +590,6 @@ export type ListProjects200ResponseCategoryEnum = typeof ListProjects200Response
  * @interface SubscribeAccountToProjectRequest
  */
 export interface SubscribeAccountToProjectRequest {
-    /**
-     * A project ID or empty, if explicitly subscribed to everything
-     * @type {number}
-     * @memberof SubscribeAccountToProjectRequest
-     */
-    'projectId'?: number;
     /**
      * 
      * @type {string}
@@ -1050,19 +1071,23 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         },
         /**
          * 
-         * @summary Add new subscription for this account
+         * @summary Add explicit subscription for this account and this project
          * @param {number} accountId The numeric ID of an account
+         * @param {number} projectId The numeric ID of a Project
          * @param {SubscribeAccountToProjectRequest} subscribeAccountToProjectRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        subscribeAccountToProject: async (accountId: number, subscribeAccountToProjectRequest: SubscribeAccountToProjectRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        subscribeAccountToProject: async (accountId: number, projectId: number, subscribeAccountToProjectRequest: SubscribeAccountToProjectRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'accountId' is not null or undefined
             assertParamExists('subscribeAccountToProject', 'accountId', accountId)
+            // verify required parameter 'projectId' is not null or undefined
+            assertParamExists('subscribeAccountToProject', 'projectId', projectId)
             // verify required parameter 'subscribeAccountToProjectRequest' is not null or undefined
             assertParamExists('subscribeAccountToProject', 'subscribeAccountToProjectRequest', subscribeAccountToProjectRequest)
-            const localVarPath = `/accounts/{accountId}/subscriptions`
-                .replace(`{${"accountId"}}`, encodeURIComponent(String(accountId)));
+            const localVarPath = `/accounts/{accountId}/subscriptions/projects/{projectId}`
+                .replace(`{${"accountId"}}`, encodeURIComponent(String(accountId)))
+                .replace(`{${"projectId"}}`, encodeURIComponent(String(projectId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -1070,7 +1095,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
                 baseOptions = configuration.baseOptions;
             }
 
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
@@ -1104,6 +1129,44 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
             const localVarPath = `/accounts/{accountId}/externalaccounts/{externalAccountId}`
                 .replace(`{${"accountId"}}`, encodeURIComponent(String(accountId)))
                 .replace(`{${"externalAccountId"}}`, encodeURIComponent(String(externalAccountId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Remove explicit subscription for this account and project
+         * @param {number} accountId The numeric ID of an account
+         * @param {number} projectId The numeric ID of a Project
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        unsubscribeAccountFromProject: async (accountId: number, projectId: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'accountId' is not null or undefined
+            assertParamExists('unsubscribeAccountFromProject', 'accountId', accountId)
+            // verify required parameter 'projectId' is not null or undefined
+            assertParamExists('unsubscribeAccountFromProject', 'projectId', projectId)
+            const localVarPath = `/accounts/{accountId}/subscriptions/projects/{projectId}`
+                .replace(`{${"accountId"}}`, encodeURIComponent(String(accountId)))
+                .replace(`{${"projectId"}}`, encodeURIComponent(String(projectId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -1264,7 +1327,7 @@ export const DefaultApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getAllSubscriptionsForAccount(accountId: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+        async getAllSubscriptionsForAccount(accountId: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<GetAllSubscriptionsForAccount200ResponseInner>>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.getAllSubscriptionsForAccount(accountId, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['DefaultApi.getAllSubscriptionsForAccount']?.[localVarOperationServerIndex]?.url;
@@ -1349,14 +1412,15 @@ export const DefaultApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @summary Add new subscription for this account
+         * @summary Add explicit subscription for this account and this project
          * @param {number} accountId The numeric ID of an account
+         * @param {number} projectId The numeric ID of a Project
          * @param {SubscribeAccountToProjectRequest} subscribeAccountToProjectRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async subscribeAccountToProject(accountId: number, subscribeAccountToProjectRequest: SubscribeAccountToProjectRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.subscribeAccountToProject(accountId, subscribeAccountToProjectRequest, options);
+        async subscribeAccountToProject(accountId: number, projectId: number, subscribeAccountToProjectRequest: SubscribeAccountToProjectRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SubscribeAccountToProjectRequest>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.subscribeAccountToProject(accountId, projectId, subscribeAccountToProjectRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['DefaultApi.subscribeAccountToProject']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -1373,6 +1437,20 @@ export const DefaultApiFp = function(configuration?: Configuration) {
             const localVarAxiosArgs = await localVarAxiosParamCreator.unlinkExternalAccount(accountId, externalAccountId, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['DefaultApi.unlinkExternalAccount']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Remove explicit subscription for this account and project
+         * @param {number} accountId The numeric ID of an account
+         * @param {number} projectId The numeric ID of a Project
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async unsubscribeAccountFromProject(accountId: number, projectId: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.unsubscribeAccountFromProject(accountId, projectId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DefaultApi.unsubscribeAccountFromProject']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -1469,7 +1547,7 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getAllSubscriptionsForAccount(accountId: number, options?: any): AxiosPromise<void> {
+        getAllSubscriptionsForAccount(accountId: number, options?: any): AxiosPromise<Array<GetAllSubscriptionsForAccount200ResponseInner>> {
             return localVarFp.getAllSubscriptionsForAccount(accountId, options).then((request) => request(axios, basePath));
         },
         /**
@@ -1533,14 +1611,15 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
         },
         /**
          * 
-         * @summary Add new subscription for this account
+         * @summary Add explicit subscription for this account and this project
          * @param {number} accountId The numeric ID of an account
+         * @param {number} projectId The numeric ID of a Project
          * @param {SubscribeAccountToProjectRequest} subscribeAccountToProjectRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        subscribeAccountToProject(accountId: number, subscribeAccountToProjectRequest: SubscribeAccountToProjectRequest, options?: any): AxiosPromise<void> {
-            return localVarFp.subscribeAccountToProject(accountId, subscribeAccountToProjectRequest, options).then((request) => request(axios, basePath));
+        subscribeAccountToProject(accountId: number, projectId: number, subscribeAccountToProjectRequest: SubscribeAccountToProjectRequest, options?: any): AxiosPromise<SubscribeAccountToProjectRequest> {
+            return localVarFp.subscribeAccountToProject(accountId, projectId, subscribeAccountToProjectRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * Unlink the external account from this account
@@ -1552,6 +1631,17 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
          */
         unlinkExternalAccount(accountId: number, externalAccountId: number, options?: any): AxiosPromise<void> {
             return localVarFp.unlinkExternalAccount(accountId, externalAccountId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Remove explicit subscription for this account and project
+         * @param {number} accountId The numeric ID of an account
+         * @param {number} projectId The numeric ID of a Project
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        unsubscribeAccountFromProject(accountId: number, projectId: number, options?: any): AxiosPromise<void> {
+            return localVarFp.unsubscribeAccountFromProject(accountId, projectId, options).then((request) => request(axios, basePath));
         },
         /**
          * Update the information of an existing user.
@@ -1734,15 +1824,16 @@ export class DefaultApi extends BaseAPI {
 
     /**
      * 
-     * @summary Add new subscription for this account
+     * @summary Add explicit subscription for this account and this project
      * @param {number} accountId The numeric ID of an account
+     * @param {number} projectId The numeric ID of a Project
      * @param {SubscribeAccountToProjectRequest} subscribeAccountToProjectRequest 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DefaultApi
      */
-    public subscribeAccountToProject(accountId: number, subscribeAccountToProjectRequest: SubscribeAccountToProjectRequest, options?: RawAxiosRequestConfig) {
-        return DefaultApiFp(this.configuration).subscribeAccountToProject(accountId, subscribeAccountToProjectRequest, options).then((request) => request(this.axios, this.basePath));
+    public subscribeAccountToProject(accountId: number, projectId: number, subscribeAccountToProjectRequest: SubscribeAccountToProjectRequest, options?: RawAxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).subscribeAccountToProject(accountId, projectId, subscribeAccountToProjectRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -1756,6 +1847,19 @@ export class DefaultApi extends BaseAPI {
      */
     public unlinkExternalAccount(accountId: number, externalAccountId: number, options?: RawAxiosRequestConfig) {
         return DefaultApiFp(this.configuration).unlinkExternalAccount(accountId, externalAccountId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Remove explicit subscription for this account and project
+     * @param {number} accountId The numeric ID of an account
+     * @param {number} projectId The numeric ID of a Project
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DefaultApi
+     */
+    public unsubscribeAccountFromProject(accountId: number, projectId: number, options?: RawAxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).unsubscribeAccountFromProject(accountId, projectId, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

@@ -1,8 +1,6 @@
 package io.vibrantnet.ryp.core.subscription.service
 
-import io.vibrantnet.ryp.core.subscription.model.AccountDto
-import io.vibrantnet.ryp.core.subscription.model.AccountPartialDto
-import io.vibrantnet.ryp.core.subscription.model.LinkedExternalAccountDto
+import io.vibrantnet.ryp.core.subscription.model.*
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 
@@ -85,4 +83,34 @@ interface AccountsApiService {
      * @see AccountsApi#updateAccountById
      */
     fun updateAccountById(accountId: Long, accountPartialDto: AccountPartialDto): Mono<AccountDto>
+
+    /**
+     * PUT /accounts/{accountId}/subscriptions/projects/{projectId} : Add explicit subscription for this account and this project
+     *
+     * @param accountId The numeric ID of an account (required)
+     * @param projectId The numeric ID of a Project (required)
+     * @param newSubscription  (required)
+     * @return OK (status code 200)
+     * @see AccountsApi#subscribeAccountToProject
+     */
+    fun subscribeAccountToProject(accountId: Long, projectId: Long, newSubscription: NewSubscriptionDto): Mono<NewSubscriptionDto>
+
+    /**
+     * DELETE /accounts/{accountId}/subscriptions/projects/{projectId} : Remove explicit subscription for this account and project
+     *
+     * @param accountId The numeric ID of an account (required)
+     * @param projectId The numeric ID of a Project (required)
+     * @return Successful removal of explict subscriptioon status, rev (status code 204)
+     * @see AccountsApi#unsubscribeAccountFromProject
+     */
+    fun unsubscribeAccountFromProject(accountId: Long, projectId: Long): Mono<Void>
+
+    /**
+     * GET /accounts/{accountId}/subscriptions : Get all subscriptions for an account
+     *
+     * @param accountId The numeric ID of an account (required)
+     * @return All explicit subscriptions (subscribed and blocked) for this account. (status code 200)
+     * @see AccountsApi#getAllSubscriptionsForAccount
+     */
+    fun getAllSubscriptionsForAccount(accountId: Long): Flux<ProjectSubscriptionDto>
 }

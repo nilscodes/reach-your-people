@@ -212,16 +212,27 @@ components:
       type: object
       x-stoplight:
         id: k18vm65rtuwzr
+      required:
+        - status
+      properties:
+        status:
+          $ref: '#/components/schemas/SubscriptionStatus'
+    ProjectSubscription:
+      type: object
+      x-stoplight:
+        id: 17ci8kkbypmmn
+      required:
+        - projectId
+        - status
       properties:
         projectId:
           type: integer
+          x-stoplight:
+            id: xe4cqr92nrvu4
           format: int64
-          example: 172
-          description: 'A project ID or empty, if explicitly subscribed to everything'
         status:
           $ref: '#/components/schemas/SubscriptionStatus'
-      required:
-        - status
+      description: An explicit subscription to a single project and an associated status
     SubscriptionStatus:
       type: string
       enum:
