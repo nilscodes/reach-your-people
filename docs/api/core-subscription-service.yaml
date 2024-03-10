@@ -311,11 +311,27 @@ paths:
       operationId: listProjects
       x-stoplight:
         id: j8vk041jr9ctw
+  '/projects/{projectId}':
+    parameters:
+      - $ref: ./common-schemas.yaml#/components/parameters/projectId
+    get:
+      summary: Get a specific project by project ID
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: ./common-schemas.yaml#/components/schemas/Project
+      operationId: getProject
+      x-stoplight:
+        id: vl4ip8rezz1cs
   '/projects/{projectId}/subscriptions':
     parameters:
       - $ref: ./common-schemas.yaml#/components/parameters/projectId
     get:
-      summary: Get all subscription for a project
+      summary: Get all subscriptions for a project
       tags: []
       responses: {}
       operationId: getAllSubscriptionsForProject

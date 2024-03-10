@@ -17,6 +17,7 @@ repositories {
 dependencies {
     // Uses the same version as our spring boot implementation
     implementation("org.springframework:spring-web")
+    implementation("org.springframework.boot:spring-boot-starter-validation")
     // Uses the same version as our spring boot implementation
     implementation("com.fasterxml.jackson.core:jackson-databind")
     testImplementation("org.jetbrains.kotlin:kotlin-test")

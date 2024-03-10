@@ -3,7 +3,7 @@ package io.vibrantnet.ryp.core.subscription.controller
 import io.mockk.every
 import io.mockk.mockk
 import io.vibrantnet.ryp.core.loadJsonFromResource
-import io.vibrantnet.ryp.core.subscription.model.ExternalAccountDto
+import io.ryp.shared.model.ExternalAccountDto
 import io.vibrantnet.ryp.core.subscription.service.ExternalAccountsApiService
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -32,13 +32,15 @@ class ExternalAccountsApiControllerIntegrationTest {
     @Test
     fun `create external account works with correct payload`() {
         every { externalAccountsApiService.createExternalAccount(any()) } answers {
-            Mono.just(ExternalAccountDto(
+            Mono.just(
+                ExternalAccountDto(
                 id = 14,
                 referenceId = firstArg<ExternalAccountDto>().referenceId,
                 referenceName = firstArg<ExternalAccountDto>().referenceName,
                 type = firstArg<ExternalAccountDto>().type,
                 registrationTime = OffsetDateTime.parse("2021-08-01T00:00:00Z"),
-            ))
+            )
+            )
         }
 
         val requestJson = loadJsonFromResource("sample-json/test-create-externalaccount-request.json")
@@ -82,13 +84,15 @@ class ExternalAccountsApiControllerIntegrationTest {
     @Test
     fun `get account by provider type and reference ID works`() {
         every { externalAccountsApiService.findExternalAccountByProviderAndReferenceId("discord", "123") } answers {
-            Mono.just(ExternalAccountDto(
+            Mono.just(
+                ExternalAccountDto(
                 id = 14,
                 referenceId = "123",
                 referenceName = "Test",
                 type = "DISCORD_SOUP",
                 registrationTime = OffsetDateTime.parse("2021-08-01T00:00:00Z"),
-            ))
+            )
+            )
         }
 
         val responseJson = loadJsonFromResource("sample-json/test-create-externalaccount-response.json")

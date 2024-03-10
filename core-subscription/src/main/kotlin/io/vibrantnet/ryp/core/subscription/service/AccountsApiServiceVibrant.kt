@@ -1,5 +1,6 @@
 package io.vibrantnet.ryp.core.subscription.service
 
+import io.ryp.shared.model.LinkedExternalAccountDto
 import io.vibrantnet.ryp.core.subscription.model.*
 import io.vibrantnet.ryp.core.subscription.persistence.*
 import org.springframework.stereotype.Service
@@ -102,7 +103,7 @@ class AccountsApiServiceVibrant(
     }
 
     @Transactional
-    override fun unsubscribeAccountFromProject(accountId: Long, projectId: Long): Mono<Void> {
+    override fun unsubscribeAccountFromProject(accountId: Long, projectId: Long): Mono<Unit> {
         val account = accountRepository.findById(accountId)
         if (account.isPresent) {
             account.get().subscriptions.removeIf { it.projectId == projectId }

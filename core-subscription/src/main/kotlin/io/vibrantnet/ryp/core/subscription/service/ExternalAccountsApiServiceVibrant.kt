@@ -1,6 +1,6 @@
 package io.vibrantnet.ryp.core.subscription.service
 
-import io.vibrantnet.ryp.core.subscription.model.ExternalAccountDto
+import io.ryp.shared.model.ExternalAccountDto
 import io.vibrantnet.ryp.core.subscription.persistence.ExternalAccount
 import io.vibrantnet.ryp.core.subscription.persistence.ExternalAccountRepository
 import org.springframework.stereotype.Service

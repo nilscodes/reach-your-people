@@ -1,7 +1,7 @@
 package io.vibrantnet.ryp.core.subscription.persistence
 
 import io.hazelnet.cardano.connect.data.token.PolicyId
-import io.vibrantnet.ryp.core.subscription.model.PolicyDto
+import io.ryp.shared.model.PolicyDto
 import nl.jqno.equalsverifier.EqualsVerifier
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test

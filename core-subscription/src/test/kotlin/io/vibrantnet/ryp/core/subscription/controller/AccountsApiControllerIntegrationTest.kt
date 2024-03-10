@@ -7,8 +7,8 @@ import io.mockk.mockk
 import io.vibrantnet.ryp.core.loadJsonFromResource
 import io.vibrantnet.ryp.core.subscription.model.AccountDto
 import io.vibrantnet.ryp.core.subscription.model.ExternalAccountAlreadyLinkedException
-import io.vibrantnet.ryp.core.subscription.model.ExternalAccountDto
-import io.vibrantnet.ryp.core.subscription.model.LinkedExternalAccountDto
+import io.ryp.shared.model.ExternalAccountDto
+import io.ryp.shared.model.LinkedExternalAccountDto
 import io.vibrantnet.ryp.core.subscription.service.AccountsApiService
 import io.vibrantnet.ryp.core.subscription.service.ProjectsApiService
 import org.junit.jupiter.api.Test
@@ -16,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
-import org.springframework.http.HttpStatusCode
 import org.springframework.http.MediaType
 import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.web.reactive.function.BodyInserters

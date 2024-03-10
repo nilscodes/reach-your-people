@@ -97,7 +97,7 @@ const ButtonPopoverTrigger = forwardRef(function TriggerRef(props: ButtonPopover
 });
 
 export default function SubscriptionStatusButton({ subscription, onStatusChange, ...props }: SubscriptionStatusButtonProps) {
-    const [radioValue, setRadioValue] = useState(subscription?.currentStatus || SubscriptionStatus.Default);
+    const [, setRadioValue] = useState(subscription?.currentStatus || SubscriptionStatus.Default);
 
     const handleChange = (nextValue: SubscriptionStatus) => {
         setRadioValue(nextValue);
@@ -119,7 +119,7 @@ export default function SubscriptionStatusButton({ subscription, onStatusChange,
                         <PopoverCloseButton />
                         <PopoverBody>
                             <RadioCardGroup
-                                defaultValue={subscription?.currentStatus}
+                                defaultValue={subscription?.currentStatus ?? SubscriptionStatus.Default}
                                 spacing="3"
                                 onChange={(nextValue: SubscriptionStatus) => {
                                     handleChange(nextValue);
@@ -127,7 +127,7 @@ export default function SubscriptionStatusButton({ subscription, onStatusChange,
                                 }}>
                                 {availableOptions.map((option) => (
                                     <RadioCard key={option.value} value={option.value} icon={option.icon} iconVariant={option.variant}>
-                                        <Text color="fg.emphasized" fontWeight="medium" fontSize="sm">
+                                        <Text color="fg.emphasized" fontWeight="bold" fontSize="sm">
                                             {option.label}
                                         </Text>
                                         <Text color="fg.muted" textStyle="sm">

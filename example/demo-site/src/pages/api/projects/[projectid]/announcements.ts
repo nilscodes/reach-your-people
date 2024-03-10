@@ -17,11 +17,15 @@ export default async function handler(
     const projectId = Number(req.query.projectid);
     const basicAnnouncement = req.body;
     basicAnnouncement.author = session.userId;
-    const response = await corePublishingApi.publishAnnouncementForProject(projectId, basicAnnouncement, {
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    });
-    res.status(response.status).json(response.data);
+    try {
+      const response = await corePublishingApi.publishAnnouncementForProject(projectId, basicAnnouncement, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      res.status(response.status).json(response.data);
+    } catch (error: any) {
+      res.status(error.response.status).json(error.response.data);
+    }
   }
 }

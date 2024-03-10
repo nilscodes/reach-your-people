@@ -1,6 +1,6 @@
 package io.vibrantnet.ryp.core.subscription.controller
 
-import io.vibrantnet.ryp.core.subscription.model.ExternalAccountDto
+import io.ryp.shared.model.ExternalAccountDto
 import io.vibrantnet.ryp.core.subscription.service.ExternalAccountsApiService
 import org.springframework.http.ResponseEntity
 

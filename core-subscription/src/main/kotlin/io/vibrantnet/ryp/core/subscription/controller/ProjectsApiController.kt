@@ -1,6 +1,6 @@
 package io.vibrantnet.ryp.core.subscription.controller
 
-import io.vibrantnet.ryp.core.subscription.model.ProjectDto
+import io.ryp.shared.model.ProjectDto
 import io.vibrantnet.ryp.core.subscription.service.ProjectsApiService
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
@@ -44,6 +44,14 @@ class ProjectsApiController(val service: ProjectsApiService) {
     )
     @ResponseStatus(HttpStatus.OK)
     fun listProjects() = service.listProjects()
+
+    @RequestMapping(
+        method = [RequestMethod.GET],
+        value = ["/projects/{projectId}"],
+        produces = ["application/json"]
+    )
+    @ResponseStatus(HttpStatus.OK)
+    fun getProject(@PathVariable("projectId") projectId: Long) = service.getProject(projectId)
 
 //    @RequestMapping(
 //        method = [RequestMethod.GET],

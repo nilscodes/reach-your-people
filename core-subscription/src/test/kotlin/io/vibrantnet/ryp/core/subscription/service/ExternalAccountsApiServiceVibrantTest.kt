@@ -3,13 +3,9 @@ package io.vibrantnet.ryp.core.subscription.service
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot
-import io.vibrantnet.ryp.core.subscription.model.AccountDto
-import io.vibrantnet.ryp.core.subscription.model.ExternalAccountDto
-import io.vibrantnet.ryp.core.subscription.persistence.Account
-import io.vibrantnet.ryp.core.subscription.persistence.AccountRepository
+import io.ryp.shared.model.ExternalAccountDto
 import io.vibrantnet.ryp.core.subscription.persistence.ExternalAccount
 import io.vibrantnet.ryp.core.subscription.persistence.ExternalAccountRepository
-import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import reactor.test.StepVerifier
 import java.time.OffsetDateTime

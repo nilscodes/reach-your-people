@@ -1,10 +1,10 @@
 package io.vibrantnet.ryp.core.subscription.persistence
 
 import io.hazelnet.cardano.connect.data.token.PolicyId
-import io.vibrantnet.ryp.core.subscription.model.PolicyDto
-import io.vibrantnet.ryp.core.subscription.model.ProjectCategory
-import io.vibrantnet.ryp.core.subscription.model.ProjectDto
-import io.vibrantnet.ryp.core.subscription.model.ProjectRole
+import io.ryp.shared.model.PolicyDto
+import io.ryp.shared.model.ProjectCategory
+import io.ryp.shared.model.ProjectDto
+import io.ryp.shared.model.ProjectRole
 import nl.jqno.equalsverifier.EqualsVerifier
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
@@ -33,7 +33,8 @@ internal class ProjectTest {
             roles = mutableSetOf(ProjectRoleAssignment(ProjectRole.OWNER, 5)),
         )
         val dto = project.toDto()
-        Assertions.assertEquals(ProjectDto(
+        Assertions.assertEquals(
+            ProjectDto(
             id = 13,
             name = "name",
             logo = "abc",
