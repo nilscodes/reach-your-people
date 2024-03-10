@@ -1,9 +1,10 @@
-import { Box, Container, Stack, VStack } from '@chakra-ui/react'
-import { Account } from '@/lib/ryp-api';
+import { Alert, AlertIcon, Box, Container, Stack, VStack, useToast } from '@chakra-ui/react'
+import { Account } from '../../lib/ryp-subscription-api';
 import ProjectsHeader from './ProjectsHeader';
 import { useRouter } from 'next/router';
 import PublishAnnouncementForm from './PublishAnnouncementForm';
 import { useState } from 'react';
+import { useApi } from '@/contexts/ApiProvider';
 
 type PublishAnnouncementProps = {
     account: Account;
@@ -29,6 +30,8 @@ interface AnnouncementFormProps {
 
 export default function PublishAnnouncement({ account }: PublishAnnouncementProps) {
     const router = useRouter();
+    const api = useApi();
+    const [publishSuccess, setPublishSuccess] = useState(false);
     const projectId = router.query.projectid as string;
 
     const [formData, setFormData] = useState(defaultFormData);
@@ -39,6 +42,11 @@ export default function PublishAnnouncement({ account }: PublishAnnouncementProp
         [field]: value,
         }));
     };
+
+    const publishAnnouncement = async () => {
+        await api.publishAnnouncement(projectId, formData);
+        setPublishSuccess(true);
+    }
 
     return (
         <Box
@@ -56,7 +64,11 @@ export default function PublishAnnouncement({ account }: PublishAnnouncementProp
             <Container py={{ base: '4', md: '8' }}>
                 <VStack spacing="0">
                     <Stack spacing="4" direction={{ base: 'row', md: 'column' }} minW="3xl">
-                        <PublishAnnouncementForm formData={formData} onFormChange={handleFormChange} />
+                        {!publishSuccess && <PublishAnnouncementForm formData={formData} onFormChange={handleFormChange} onSubmit={publishAnnouncement} />}
+                        {publishSuccess && (<Alert status="success">
+                            <AlertIcon />
+                            Announcement published. Wait for it to be received.
+                        </Alert>)}
                     </Stack>
                 </VStack>
             </Container>

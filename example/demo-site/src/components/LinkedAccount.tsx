@@ -1,4 +1,4 @@
-import { CreateExternalAccountRequest, GetLinkedExternalAccounts200ResponseInner } from '@/lib/ryp-api';
+import { CreateExternalAccountRequest, GetLinkedExternalAccounts200ResponseInner } from '../lib/ryp-subscription-api';
 import { Box, Button, Container, HStack, Stack, Text, useToast } from '@chakra-ui/react'
 import { Link } from '@chakra-ui/next-js'
 

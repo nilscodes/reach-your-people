@@ -4,7 +4,7 @@ import { getNextAuthOptions } from "../api/auth/[...nextauth]";
 import AccessDenied from "@/components/AccessDenied";
 import { coreSubscriptionApi } from "@/lib/core-subscription-api";
 import { InferGetServerSidePropsType } from "next";
-import { Account } from "@/lib/ryp-api";
+import { Account } from "../../lib/ryp-subscription-api";
 import { useRouter } from "next/router";
 import { SubscriptionsDashboard } from "@/components/subscriptions/SubscriptionsDashboard";
 

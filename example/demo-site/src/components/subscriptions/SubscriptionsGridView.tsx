@@ -3,7 +3,7 @@ import { Project } from '@/lib/types/Project';
 import ProjectCardSkeleton from '../projectcard/ProjectCardSkeleton';
 import ProjectCard from '../projectcard/ProjectCard';
 import { Subscription } from '@/lib/types/Subscription';
-import { Account } from '@/lib/ryp-api';
+import { Account } from '../../lib/ryp-subscription-api';
 
 export interface SubscriptionsViewProps extends SpaceProps {
   account: Account | null;

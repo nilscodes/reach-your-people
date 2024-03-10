@@ -1,4 +1,4 @@
-import { Account } from "./ryp-api";
+import { Account } from "./ryp-subscription-api";
 
 type JwtPayload = {
   userId?: Account["id"];

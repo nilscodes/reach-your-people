@@ -17,9 +17,10 @@ import { AnnouncementFormData } from './PublishAnnouncement';
 interface AnnouncementFormProps {
   formData: AnnouncementFormData;
   onFormChange: (field: keyof AnnouncementFormData, value: string) => void;
+  onSubmit: () => void;
 }
 
-export default function PublishAnnouncementForm({ formData, onFormChange }: AnnouncementFormProps) {
+export default function PublishAnnouncementForm({ formData, onFormChange, onSubmit }: AnnouncementFormProps) {
   return (
     <Container py={{ base: '4', md: '8' }}>
       <Stack spacing="5">
@@ -64,7 +65,7 @@ export default function PublishAnnouncementForm({ formData, onFormChange }: Anno
             />
           </FormControl>
 
-          <Button alignSelf="flex-end">Publish Announcement</Button>
+          <Button alignSelf="flex-end" onClick={onSubmit}>Publish Announcement</Button>
         </Stack>
       </Stack>
     </Container>

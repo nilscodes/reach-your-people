@@ -1,5 +1,5 @@
 import { Box, Container, Stack, StackDivider, Text } from '@chakra-ui/react'
-import { LinkExternalAccount200Response } from '@/lib/ryp-api';
+import { LinkExternalAccount200Response } from '../../lib/ryp-subscription-api';
 import WalletSettings from './WalletsSettings';
 
 export default function WalletSettingsForm({ wallet }: { wallet: LinkExternalAccount200Response }) {

@@ -1,4 +1,4 @@
-import { Account } from "@/lib/ryp-api";
+import { Account } from "../../lib/ryp-subscription-api";
 import NFTConfiguration from "./NFTConfiguration";
 import ProjectCategory from "@/lib/types/ProjectCategory";
 import { ComponentType } from "react";

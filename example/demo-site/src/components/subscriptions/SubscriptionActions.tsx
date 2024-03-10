@@ -1,4 +1,4 @@
-import { Account } from "@/lib/ryp-api";
+import { Account } from "../../lib/ryp-subscription-api";
 import SignInToSubscribeButton from "../SignInToSubscribeButton";
 import SubscriptionStatusButton from "./SubscriptionStatusButton";
 import { Project } from "@/lib/types/Project";

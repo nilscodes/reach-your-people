@@ -3,6 +3,7 @@ import { Project, ProjectCreationRequest } from "./types/Project";
 import ProjectCategory from "./types/ProjectCategory";
 import { Subscription } from "./types/Subscription";
 import { DefaultSubscriptionStatus, SubscriptionStatus } from "./types/SubscriptionStatus";
+import { AnnouncementFormData } from "@/components/projects/PublishAnnouncement";
 
 function getRandomDelay(): Promise<void> {
   const delay = Math.random() * (500 - 30) + 30;
@@ -41,6 +42,10 @@ export class RypSiteApi {
 
   async addNewProject(project: ProjectCreationRequest): Promise<Project> {
     return (await axios.post(`${this.baseUrl}/projects`, project)).data;
+  }
+
+  async publishAnnouncement(projectId: string, announcement: AnnouncementFormData): Promise<void> {
+    await axios.post(`${this.baseUrl}/projects/${projectId}/announcements`, announcement);
   }
 
   async getProjects(): Promise<Project[]> {

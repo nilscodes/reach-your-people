@@ -4,7 +4,7 @@ import { getNextAuthOptions } from "../api/auth/[...nextauth]";
 import AccessDenied from "@/components/AccessDenied";
 import { coreSubscriptionApi } from "@/lib/core-subscription-api";
 import { InferGetServerSidePropsType } from "next";
-import { Account, GetLinkedExternalAccounts200ResponseInner } from "@/lib/ryp-api";
+import { Account, GetLinkedExternalAccounts200ResponseInner } from "../../lib/ryp-subscription-api";
 import LinkedAccounts from "@/components/LinkedAccounts";
 
 export default function Home({

@@ -4,7 +4,7 @@ import ProjectGrid from './ProjectGrid'
 import { useApi } from '@/contexts/ApiProvider';
 import { Project } from '@/lib/types/Project';
 import { useEffect, useState } from 'react';
-import { Account } from '@/lib/ryp-api';
+import { Account } from '../../lib/ryp-subscription-api';
 import NextLink from '../NextLink';
 import ProjectsHeader from './ProjectsHeader';
 

@@ -13,14 +13,14 @@ import {
   import { FaArrowRight } from 'react-icons/fa'
   import { CategoryCard } from './CategoryCard'
   import { categories } from './_data'
-import { Account } from '@/lib/ryp-api';
+import { Account } from '../../lib/ryp-subscription-api';
 import NextLink from '../NextLink';
 
   type SubscriptionHomepageProps = {
     account: Account | null;
     subscriptions: any[];
   };
-  
+
   export const SubscriptionsHomepage = (props: SubscriptionHomepageProps) => (
     <Box
       maxW="7xl"
