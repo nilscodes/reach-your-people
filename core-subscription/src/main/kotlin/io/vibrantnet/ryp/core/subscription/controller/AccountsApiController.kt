@@ -2,6 +2,7 @@ package io.vibrantnet.ryp.core.subscription.controller
 
 import io.vibrantnet.ryp.core.subscription.model.AccountDto
 import io.vibrantnet.ryp.core.subscription.model.AccountPartialDto
+import io.vibrantnet.ryp.core.subscription.model.NewSubscriptionDto
 import io.vibrantnet.ryp.core.subscription.service.AccountsApiService
 import io.vibrantnet.ryp.core.subscription.service.ProjectsApiService
 import jakarta.validation.Valid
@@ -106,4 +107,35 @@ class AccountsApiController(
     )
     @ResponseStatus(HttpStatus.OK)
     fun getProjectsForAccount(@PathVariable("accountId") accountId: Long) = projectsService.getProjectsForAccount(accountId)
+
+    @RequestMapping(
+        method = [RequestMethod.PUT],
+        value = ["/accounts/{accountId}/subscriptions/projects/{projectId}"],
+        produces = ["application/json"],
+        consumes = ["application/json"]
+    )
+    @ResponseStatus(HttpStatus.OK)
+    fun subscribeAccountToProject(
+        @PathVariable("accountId") accountId: Long,
+        @PathVariable("projectId") projectId: Long,
+        @Valid @RequestBody subscribeAccountToProjectRequest: NewSubscriptionDto,
+    ) = accountService.subscribeAccountToProject(accountId, projectId, subscribeAccountToProjectRequest)
+
+    @RequestMapping(
+        method = [RequestMethod.DELETE],
+        value = ["/accounts/{accountId}/subscriptions/projects/{projectId}"]
+    )
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun unsubscribeAccountFromProject(
+        @PathVariable("accountId") accountId: Long,
+        @PathVariable("projectId") projectId: Long,
+    ) = accountService.unsubscribeAccountFromProject(accountId, projectId)
+
+    @RequestMapping(
+        method = [RequestMethod.GET],
+        value = ["/accounts/{accountId}/subscriptions"],
+        produces = ["application/json"]
+    )
+    @ResponseStatus(HttpStatus.OK)
+    fun getAllSubscriptionsForAccount(@PathVariable("accountId") accountId: Long) = accountService.getAllSubscriptionsForAccount(accountId)
 }

@@ -9,6 +9,7 @@ import ProjectCategory, { ProjectCategoryNames } from '../../lib/types/ProjectCa
 import { Project } from '@/lib/types/Project';
 import { Subscription } from '@/lib/types/Subscription';
 import { Account } from '../../lib/ryp-subscription-api';
+import { SubscriptionsContext } from '@/contexts/SubscriptionsProvider';
 
 type SubscriptionsDashboardProps = {
   account: Account | null;
@@ -85,8 +86,10 @@ export const SubscriptionsDashboard = (props: SubscriptionsDashboardProps) => {
   return (<StandardContentWithHeader
     header={<SubscriptionsHeader title={'All Projects'} currentType={isListView ? ProjectViewType.list : ProjectViewType.card} onChangeType={onChangeType} onSearch={onSearch} filterData={filterData} onChangeFilter={onChangeFilter} />}
     px="0">
-      {isListView && <SubscriptionsListView account={account} projects={filteredProjects} subscriptions={subscriptions} isProjectsLoading={isProjectsLoading} />}
-      {!isListView && <SubscriptionsGridView account={account} projects={filteredProjects} subscriptions={subscriptions} isProjectsLoading={isProjectsLoading} />}
+      <SubscriptionsContext.Provider value={{ subscriptions, setSubscriptions }}>
+        {isListView && <SubscriptionsListView account={account} projects={filteredProjects} subscriptions={subscriptions} isProjectsLoading={isProjectsLoading} />}
+        {!isListView && <SubscriptionsGridView account={account} projects={filteredProjects} subscriptions={subscriptions} isProjectsLoading={isProjectsLoading} />}
+      </SubscriptionsContext.Provider>
     </StandardContentWithHeader>);
 };
 ``

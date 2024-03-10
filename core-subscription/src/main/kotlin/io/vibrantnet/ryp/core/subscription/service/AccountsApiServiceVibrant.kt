@@ -1,13 +1,7 @@
 package io.vibrantnet.ryp.core.subscription.service
 
-import io.vibrantnet.ryp.core.subscription.model.AccountDto
-import io.vibrantnet.ryp.core.subscription.model.AccountPartialDto
-import io.vibrantnet.ryp.core.subscription.model.ExternalAccountAlreadyLinkedException
-import io.vibrantnet.ryp.core.subscription.model.LinkedExternalAccountDto
-import io.vibrantnet.ryp.core.subscription.persistence.Account
-import io.vibrantnet.ryp.core.subscription.persistence.AccountRepository
-import io.vibrantnet.ryp.core.subscription.persistence.ExternalAccountRepository
-import io.vibrantnet.ryp.core.subscription.persistence.LinkedExternalAccount
+import io.vibrantnet.ryp.core.subscription.model.*
+import io.vibrantnet.ryp.core.subscription.persistence.*
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import reactor.core.publisher.Flux
@@ -17,6 +11,7 @@ import reactor.core.publisher.Mono
 class AccountsApiServiceVibrant(
     val accountRepository: AccountRepository,
     val externalAccountRepository: ExternalAccountRepository,
+    val projectRepository: ProjectRepository,
 ): AccountsApiService {
 
     override fun createAccount(accountDto: AccountDto): Mono<AccountDto> {
@@ -87,4 +82,40 @@ class AccountsApiServiceVibrant(
         return Mono.just(account.toDto())
     }
 
+    @Transactional
+    override fun subscribeAccountToProject(accountId: Long, projectId: Long, newSubscription: NewSubscriptionDto): Mono<NewSubscriptionDto> {
+        val account = accountRepository.findById(accountId)
+        val project = projectRepository.findById(projectId)
+        return if (account.isPresent && project.isPresent) {
+            account.get().subscriptions.removeIf { it.projectId == projectId }
+            account.get().subscriptions.add(Subscription(
+                projectId = projectId,
+                status = newSubscription.status,
+            ))
+            accountRepository.save(account.get())
+            Mono.just(newSubscription)
+        } else if (account.isEmpty) {
+            Mono.error(NoSuchElementException("No account with ID $accountId found"))
+        } else {
+            Mono.error(NoSuchElementException("No project with ID $projectId found"))
+        }
+    }
+
+    @Transactional
+    override fun unsubscribeAccountFromProject(accountId: Long, projectId: Long): Mono<Void> {
+        val account = accountRepository.findById(accountId)
+        if (account.isPresent) {
+            account.get().subscriptions.removeIf { it.projectId == projectId }
+            accountRepository.save(account.get())
+            return Mono.empty()
+        } else {
+            return Mono.error(NoSuchElementException("No account with ID $accountId found"))
+        }
+    }
+
+    @Transactional
+    override fun getAllSubscriptionsForAccount(accountId: Long): Flux<ProjectSubscriptionDto> {
+        val account = accountRepository.findById(accountId).orElseThrow()
+        return Flux.fromIterable(account.subscriptions.map { it.toDto() })
+    }
 }

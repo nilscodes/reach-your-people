@@ -48,6 +48,10 @@ export class RypSiteApi {
     await axios.post(`${this.baseUrl}/projects/${projectId}/announcements`, announcement);
   }
 
+  async changeSubscriptionPreference(projectId: number, status: SubscriptionStatus): Promise<void> {
+    await axios.post(`${this.baseUrl}/account/subscriptions/${projectId}`, { status });
+  }
+
   async getProjects(): Promise<Project[]> {
     // await getRandomDelay();
     // return [{
@@ -116,31 +120,37 @@ export class RypSiteApi {
   }
 
   async getSubscriptions(): Promise<Subscription[]> {
-    await getRandomDelay();
-    return [{
-      projectId: 1,
-      defaultStatus: DefaultSubscriptionStatus.Subscribed,
-      currentStatus: SubscriptionStatus.Default,
+    // await getRandomDelay();
+    // return [{
+    //   projectId: 1,
+    //   defaultStatus: DefaultSubscriptionStatus.Subscribed,
+    //   currentStatus: SubscriptionStatus.Default,
+    //   favorite: true,
+    // }, {
+    //   projectId: 2,
+    //   defaultStatus: DefaultSubscriptionStatus.Unsubscribed,
+    //   currentStatus: SubscriptionStatus.Default,
+    // }, {
+    //   projectId: 3,
+    //   defaultStatus: DefaultSubscriptionStatus.Unsubscribed,
+    //   currentStatus: SubscriptionStatus.Subscribed,
+    //   favorite: true,
+    // }, {
+    //   projectId: 4,
+    //   defaultStatus: DefaultSubscriptionStatus.Unsubscribed,
+    //   currentStatus: SubscriptionStatus.Unsubscribed,
+    // }, {
+    //   projectId: 5,
+    //   defaultStatus: DefaultSubscriptionStatus.Subscribed,
+    //   currentStatus: SubscriptionStatus.Muted,
+    // }]
+    const subs = (await axios.get(`${this.baseUrl}/account/subscriptions`)).data;
+    return subs.map((sub: any) => ({
+      projectId: sub.projectId,
+      defaultStatus: DefaultSubscriptionStatus.Unsubscribed,
+      currentStatus: sub.status == "SUBSCRIBED" ? SubscriptionStatus.Subscribed : SubscriptionStatus.Unsubscribed,
       favorite: true,
-    }, {
-      projectId: 2,
-      defaultStatus: DefaultSubscriptionStatus.Unsubscribed,
-      currentStatus: SubscriptionStatus.Default,
-    }, {
-      projectId: 3,
-      defaultStatus: DefaultSubscriptionStatus.Unsubscribed,
-      currentStatus: SubscriptionStatus.Subscribed,
-      favorite: true,
-    }, {
-      projectId: 4,
-      defaultStatus: DefaultSubscriptionStatus.Unsubscribed,
-      currentStatus: SubscriptionStatus.Unsubscribed,
-    }, {
-      projectId: 5,
-      defaultStatus: DefaultSubscriptionStatus.Subscribed,
-      currentStatus: SubscriptionStatus.Muted,
-    }]
-    // return (await axios.get(`${this.baseUrl}/subscriptions`)).data;
+    }));
   }
 
 }

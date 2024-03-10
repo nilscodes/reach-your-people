@@ -174,23 +174,52 @@ paths:
     get:
       summary: Get all subscriptions for an account
       tags: []
-      responses: {}
+      responses:
+        '200':
+          description: All explicit subscriptions (subscribed and blocked) for this account.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: ./common-schemas.yaml#/components/schemas/ProjectSubscription
+                  x-stoplight:
+                    id: wgw6oqvi45uzp
       operationId: getAllSubscriptionsForAccount
       x-stoplight:
         id: avvc7tu7x8sio
-    post:
-      summary: Add new subscription for this account
+  '/accounts/{accountId}/subscriptions/projects/{projectId}':
+    parameters:
+      - $ref: ./common-schemas.yaml#/components/parameters/accountId
+      - $ref: ./common-schemas.yaml#/components/parameters/projectId
+    put:
+      summary: Add explicit subscription for this account and this project
       tags: []
-      responses: {}
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: ./common-schemas.yaml#/components/schemas/NewSubscription
       operationId: subscribeAccountToProject
-      x-stoplight:
-        id: p22i1rs402yq3
       requestBody:
         required: true
         content:
           application/json:
             schema:
               $ref: ./common-schemas.yaml#/components/schemas/NewSubscription
+      x-stoplight:
+        id: 5v3b8pzvmetss
+    delete:
+      summary: Remove explicit subscription for this account and project
+      tags: []
+      responses:
+        '204':
+          description: 'Successful removal of explict subscriptioon status, rev'
+      operationId: unsubscribeAccountFromProject
+      x-stoplight:
+        id: p2eln2vpy4o9d
   '/accounts/{accountId}/externalaccounts/{externalAccountId}':
     parameters:
       - $ref: ./common-schemas.yaml#/components/parameters/accountId

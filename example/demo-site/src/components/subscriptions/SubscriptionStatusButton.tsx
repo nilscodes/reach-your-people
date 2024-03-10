@@ -10,7 +10,7 @@ import { RadioCard, RadioCardGroup } from '../RadioCardGroup';
 
 interface SubscriptionStatusButtonProps extends ButtonProps {
     subscription?: Subscription;
-    onStatusChange?: (projectId: number, status: SubscriptionStatus) => void;
+    onStatusChange?: (status: SubscriptionStatus) => void;
 }
 
 const getButtonPropsFromSubscription = (subscription?: Subscription) => {
@@ -20,27 +20,32 @@ const getButtonPropsFromSubscription = (subscription?: Subscription) => {
             return {
                 label: 'Subscribed (Default)',
                 icon: <MdCheck />,
+                variant: 'outline',
             }
         } else if (subscription.currentStatus === SubscriptionStatus.Subscribed) {
             return {
                 label: 'Subscribed',
                 icon: <MdCheck />,
+                variant: 'solid',
             }
         } else if (subscription.currentStatus === SubscriptionStatus.Unsubscribed) {
             return {
                 label: 'Unsubscribed',
                 icon: <MdNotInterested />,
+                variant: 'solid',
             }
         } else if (subscription.currentStatus === SubscriptionStatus.Muted) {
             return {
                 label: 'Muted',
                 icon: <MdVolumeMute />,
+                variant: 'solid',
             }
         }
     }
     return {
         label: 'Unsubscribed (Default)',
         icon: <MdNotInterested />,
+        variant: 'outline',
     }
 }
 
@@ -96,36 +101,45 @@ export default function SubscriptionStatusButton({ subscription, onStatusChange,
 
     const handleChange = (nextValue: SubscriptionStatus) => {
         setRadioValue(nextValue);
-        subscription && onStatusChange && onStatusChange(subscription.projectId, nextValue as SubscriptionStatus);
+        onStatusChange && onStatusChange(nextValue as SubscriptionStatus);
     };
 
-    const { icon, label } = getButtonPropsFromSubscription(subscription);
+    const { icon, label, variant } = getButtonPropsFromSubscription(subscription);
     const availableOptions = getRadioCardOptions(subscription);
-    const variant = subscription?.currentStatus !== SubscriptionStatus.Default ? 'solid' : 'outline';
 
     return (
         <Popover>
-            <PopoverTrigger>
-                <ButtonPopoverTrigger icon={icon} label={label} variant={variant} {...props} />
-            </PopoverTrigger>
-            <PopoverContent>
-                <PopoverHeader fontWeight="semibold">Subscription Status</PopoverHeader>
-                <PopoverCloseButton />
-                <PopoverBody>
-                    <RadioCardGroup defaultValue={subscription?.currentStatus} spacing="3" onChange={handleChange}>
-                        {availableOptions.map((option) => (
-                            <RadioCard key={option.value} value={option.value} icon={option.icon} iconVariant={option.variant}>
-                                <Text color="fg.emphasized" fontWeight="medium" fontSize="sm">
-                                    {option.label}
-                                </Text>
-                                <Text color="fg.muted" textStyle="sm">
-                                    {option.description}
-                                </Text>
-                            </RadioCard>
-                        ))}
-                    </RadioCardGroup>
-                </PopoverBody>
-            </PopoverContent>
+            {({ onClose }) => (
+                <>
+                    <PopoverTrigger>
+                        <ButtonPopoverTrigger icon={icon} label={label} variant={variant} {...props} />
+                    </PopoverTrigger>
+                    <PopoverContent>
+                        <PopoverHeader fontWeight="semibold">Subscription Status</PopoverHeader>
+                        <PopoverCloseButton />
+                        <PopoverBody>
+                            <RadioCardGroup
+                                defaultValue={subscription?.currentStatus}
+                                spacing="3"
+                                onChange={(nextValue: SubscriptionStatus) => {
+                                    handleChange(nextValue);
+                                    onClose()
+                                }}>
+                                {availableOptions.map((option) => (
+                                    <RadioCard key={option.value} value={option.value} icon={option.icon} iconVariant={option.variant}>
+                                        <Text color="fg.emphasized" fontWeight="medium" fontSize="sm">
+                                            {option.label}
+                                        </Text>
+                                        <Text color="fg.muted" textStyle="sm">
+                                            {option.description}
+                                        </Text>
+                                    </RadioCard>
+                                ))}
+                            </RadioCardGroup>
+                        </PopoverBody>
+                    </PopoverContent>
+                </>
+            )}
         </Popover>
     );
 };

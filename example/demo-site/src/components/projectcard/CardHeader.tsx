@@ -9,8 +9,7 @@ interface CardHeaderProps extends FlexProps {
 }
 
 export default function CardHeader(props: CardHeaderProps) {
-  const { title, subscription, ...flexProps } = props;
-  const favoriteButton = props.favoriteButton ?? false;
+  const { title, subscription, favoriteButton, ...flexProps } = props;
   return (
     <Flex justifyContent="start" alignItems="center" {...flexProps} mb="4">
       <Heading size="sm" fontWeight="extrabold" letterSpacing="tight" marginEnd="2" noOfLines={2}>

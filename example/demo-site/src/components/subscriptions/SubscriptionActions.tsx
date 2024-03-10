@@ -3,7 +3,9 @@ import SignInToSubscribeButton from "../SignInToSubscribeButton";
 import SubscriptionStatusButton from "./SubscriptionStatusButton";
 import { Project } from "@/lib/types/Project";
 import { Subscription } from "@/lib/types/Subscription";
-import FavoriteButton from "./FavoriteButton";
+import { useApi } from "@/contexts/ApiProvider";
+import { SubscriptionStatus } from "@/lib/types/SubscriptionStatus";
+import { useSubscriptions } from "@/contexts/SubscriptionsProvider";
 
 type ProjectCardProps = {
     account: Account | null;
@@ -12,9 +14,17 @@ type ProjectCardProps = {
 };
 
 export default function SubscriptionActions({ account, project, subscription }: ProjectCardProps) {
+    const api = useApi();
+    const { setSubscriptions } = useSubscriptions();
+
+    const changeSubscriptionPreference = async (status: SubscriptionStatus) => {
+        await api.changeSubscriptionPreference(project.id, status);
+        setSubscriptions(await api.getSubscriptions());
+    };
+
     if (account != null) {
         return <>
-            <SubscriptionStatusButton subscription={subscription} />
+            <SubscriptionStatusButton subscription={subscription} onStatusChange={changeSubscriptionPreference} />
         </>;
     } else {
         return <SignInToSubscribeButton />;
