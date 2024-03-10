@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Heading, Text, Button, Box, VStack, Stack, useToast } from '@chakra-ui/react';
 import WalletSettingsForm from './WalletSettingsForm';
-import { Account, GetLinkedExternalAccounts200ResponseInner } from '@/lib/ryp-api';
+import { Account, GetLinkedExternalAccounts200ResponseInner } from '../../lib/ryp-subscription-api';
 
 type WalletSettingsListProps = {
     account: Account;
@@ -24,7 +24,7 @@ export default function WalletSettingsList({ account, wallets }: WalletSettingsL
                 wallet={wallet}
               />);
             })}
-            
+
         </Stack>
       </Stack>
     </Box>);

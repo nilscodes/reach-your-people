@@ -1,0 +1,13 @@
+{
+  "basePackage": "io.vibrantnet.ryp.core.publishing",
+  "packageName": "io.vibrantnet.ryp.core.publishing",
+  "apiPackage": "io.vibrantnet.ryp.core.publishing.controller",
+  "modelPackage": "io.vibrantnet.ryp.core.publishing.model",
+  "documentationProvider": "none",
+  "artifactId": "core-publishing",
+  "groupId": "io.vibrantnet.ryp",
+  "title": "Reach your People - Core Publishing Service",
+  "useSpringBoot3": true,
+  "useSwaggerUI": false,
+  "serviceInterface": true
+}

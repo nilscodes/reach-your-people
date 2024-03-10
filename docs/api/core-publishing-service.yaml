@@ -28,7 +28,7 @@ paths:
         id: pdvltrzrnflha
       requestBody:
         description: Can be either a JSON object with the required data or the raw Activity Streams 2.0 Announcement JSON body
-        required: true        
+        required: true
         content:
           application/activity+json:
             schema:
@@ -54,16 +54,46 @@ paths:
                   type: Announce
                   actor:
                     type: Group
-                    id: https://www.hazelpool.com
+                    id: 'https://www.hazelpool.com'
                     name: HAZEL Stakepool
                   object:
                     type: Arrive
-                    actor: https://www.hazelpool.com
+                    actor: 'https://www.hazelpool.com'
                     location:
                       type: Page
                       name: HAZEL 2024 Roadmap
                       url: 'https://hazelpool.com/roadmap'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BasicAnnouncement'
       description: 'Publish an announcement for a project, token policy, SPO, dRep or social media account to all verified holders that have subscribed to updates, without exposing any social media or messaging identifiers to the publisher.'
 tags:
   - name: publishing
     description: Related to publishing content for subscribers
+components:
+  schemas:
+    BasicAnnouncement:
+      title: BasicAnnouncement
+      x-stoplight:
+        id: x6zlpg24qirgm
+      type: object
+      examples:
+        - title: My important announcement
+          content: "All the details that are extremely relevant\n\nAlso some other text, separately. Even emojis \U0001F49A"
+          link: 'https://ryp.vibrantnet.io'
+      required:
+        - title
+        - content
+      properties:
+        title:
+          type: string
+          x-stoplight:
+            id: 82aep8cn4pgb4
+        content:
+          type: string
+          x-stoplight:
+            id: fs9how9y3td4u
+        link:
+          type: string
+          x-stoplight:
+            id: zwxkh3my3ukke

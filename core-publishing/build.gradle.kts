@@ -25,18 +25,22 @@ jacoco {
 
 val loggingVersion: String by rootProject.extra
 val mockkVersion: String by rootProject.extra
+val equalsVerifierVersion: String by rootProject.extra
 
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-actuator")
 	implementation("org.springframework.boot:spring-boot-starter-webflux")
+	implementation("org.springframework.boot:spring-boot-starter-validation")
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
 	implementation("io.github.microutils:kotlin-logging-jvm:$loggingVersion")
+	implementation(project(":core-api"))
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("io.projectreactor:reactor-test")
 	testImplementation("io.mockk:mockk:$mockkVersion")
+	testImplementation("nl.jqno.equalsverifier:equalsverifier:$equalsVerifierVersion")
 }
 
 tasks.withType<KotlinCompile> {

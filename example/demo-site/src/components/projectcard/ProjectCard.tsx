@@ -18,7 +18,7 @@ import { Project } from '@/lib/types/Project';
 import ProjectLogo from './ProjectLogo';
 import { Subscription } from '@/lib/types/Subscription';
 import SubscriptionStatusButton from '../subscriptions/SubscriptionStatusButton';
-import { Account } from '@/lib/ryp-api';
+import { Account } from '../../lib/ryp-subscription-api';
 import SignInToSubscribeButton from '../SignInToSubscribeButton';
 import SubscriptionActions from '../subscriptions/SubscriptionActions';
 

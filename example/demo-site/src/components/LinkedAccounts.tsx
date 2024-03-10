@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Heading, Text, Button, Box, VStack, Stack, useToast } from '@chakra-ui/react';
-import { Account, GetLinkedExternalAccounts200ResponseInner } from '@/lib/ryp-api';
+import { Account, GetLinkedExternalAccounts200ResponseInner } from '../lib/ryp-subscription-api';
 import { CardanoIcon, providerList, providersConfig } from './ProviderIcons';
 import { signIn } from 'next-auth/react';
 import { LinkedAccount } from './LinkedAccount';

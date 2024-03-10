@@ -8,7 +8,7 @@ import ProjectViewType from '../../lib/types/ProjectViewType';
 import ProjectCategory, { ProjectCategoryNames } from '../../lib/types/ProjectCategory';
 import { Project } from '@/lib/types/Project';
 import { Subscription } from '@/lib/types/Subscription';
-import { Account } from '@/lib/ryp-api';
+import { Account } from '../../lib/ryp-subscription-api';
 
 type SubscriptionsDashboardProps = {
   account: Account | null;
@@ -26,7 +26,7 @@ export const SubscriptionsDashboard = (props: SubscriptionsDashboardProps) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [typeFilterValue, setTypeFilterValue] = useState<ProjectCategory[]>([]);
   const [filteredProjects, setFilteredProjects] = useState<Project[]>([]);
-  
+
   const onChangeType = (val: string) => {
     setIsListView(val === 'list');
     window.localStorage.setItem('isListView', val === 'list' ? 'true' : 'false');

@@ -1,5 +1,5 @@
 import { Box, Button, Container, Stack, VStack } from '@chakra-ui/react'
-import { Account } from '@/lib/ryp-api';
+import { Account } from '../../lib/ryp-subscription-api';
 import ProjectTypeSelection from './ProjectTypeSelection';
 import { useState } from 'react';
 import ProjectConfiguration from './ProjectConfiguration';
