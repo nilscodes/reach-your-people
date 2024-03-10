@@ -27,7 +27,12 @@ class AccountsApiServiceVibrant(
     }
 
     override fun getAccountById(accountId: Long): Mono<AccountDto> {
-        return Mono.just(accountRepository.findById(accountId).orElseThrow().toDto())
+        val account = accountRepository.findById(accountId)
+        return if (account.isPresent) {
+            Mono.just(account.get().toDto())
+        } else {
+            Mono.error(NoSuchElementException("No account with ID $accountId found"))
+        }
     }
 
     override fun findAccountByProviderAndReferenceId(providerType: String, referenceId: String): Mono<AccountDto> {

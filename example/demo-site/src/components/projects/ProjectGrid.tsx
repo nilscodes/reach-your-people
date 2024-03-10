@@ -5,10 +5,10 @@ export default function ProjectGrid(props: SimpleGridProps) {
   const columns = useMemo(() => {
     const count = Children.toArray(props.children).filter(isValidElement).length
     return {
-      base: Math.min(2, count),
-      md: Math.min(3, count),
-      lg: Math.min(4, count),
-      xl: Math.min(5, count),
+      base: Math.min(2, Math.max(2, count)),
+      md: Math.min(3, Math.max(2, count)),
+      lg: Math.min(4, Math.max(2, count)),
+      xl: Math.min(5, Math.max(2, count)),
     }
   }, [props.children])
 

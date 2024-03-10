@@ -10,11 +10,10 @@ type ProjectsHeaderProps = {
     children?: React.ReactNode;
 }
 
-
 export default function ProjectsHeader({ backButtonLink, backButtonText, title, description, children }: ProjectsHeaderProps) {
     return (<Box as="section" pb={{ base: '4', md: '8' }}>
         <Box bg="bg.surface" px={{ base: '4', md: '6' }} py="5" boxShadow="sm" borderRadius="lg">
-            <Stack direction={{ base: 'column', sm: 'row' }} spacing="4" justify="start">
+            <Stack direction={{ base: 'column', sm: 'row' }} spacing="4" justify="start" alignItems="center">
                 {backButtonLink && (<NextLink href={backButtonLink}>
                     <Button variant="ghost" size="lg">
                         <HStack><FaArrowLeft /><Text>{backButtonText}</Text></HStack>

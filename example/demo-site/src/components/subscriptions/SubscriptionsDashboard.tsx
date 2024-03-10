@@ -80,7 +80,7 @@ export const SubscriptionsDashboard = (props: SubscriptionsDashboardProps) => {
     };
 
     fetchData();
-  }, [all]);
+  }, [all, api]);
 
   return (<StandardContentWithHeader
     header={<SubscriptionsHeader title={'All Projects'} currentType={isListView ? ProjectViewType.list : ProjectViewType.card} onChangeType={onChangeType} onSearch={onSearch} filterData={filterData} onChangeFilter={onChangeFilter} />}
