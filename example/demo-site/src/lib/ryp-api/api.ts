@@ -181,6 +181,241 @@ export type GetLinkedExternalAccounts200ResponseInnerRoleEnum = typeof GetLinked
 /**
  * 
  * @export
+ * @interface GetProjectsForAccount200ResponseInner
+ */
+export interface GetProjectsForAccount200ResponseInner {
+    /**
+     * 
+     * @type {number}
+     * @memberof GetProjectsForAccount200ResponseInner
+     */
+    'id': number;
+    /**
+     * 
+     * @type {string}
+     * @memberof GetProjectsForAccount200ResponseInner
+     */
+    'name': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof GetProjectsForAccount200ResponseInner
+     */
+    'category'?: GetProjectsForAccount200ResponseInnerCategoryEnum;
+    /**
+     * 
+     * @type {string}
+     * @memberof GetProjectsForAccount200ResponseInner
+     */
+    'logo': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof GetProjectsForAccount200ResponseInner
+     */
+    'url': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof GetProjectsForAccount200ResponseInner
+     */
+    'description'?: string;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof GetProjectsForAccount200ResponseInner
+     */
+    'tags'?: Array<string>;
+    /**
+     * 
+     * @type {string}
+     * @memberof GetProjectsForAccount200ResponseInner
+     */
+    'registrationTime'?: string;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof GetProjectsForAccount200ResponseInner
+     */
+    'verified'?: boolean;
+    /**
+     * 
+     * @type {Array<GetProjectsForAccount200ResponseInnerDrepsInner>}
+     * @memberof GetProjectsForAccount200ResponseInner
+     */
+    'dreps'?: Array<GetProjectsForAccount200ResponseInnerDrepsInner>;
+    /**
+     * 
+     * @type {Array<GetProjectsForAccount200ResponseInnerStakepoolsInner>}
+     * @memberof GetProjectsForAccount200ResponseInner
+     */
+    'stakepools'?: Array<GetProjectsForAccount200ResponseInnerStakepoolsInner>;
+    /**
+     * 
+     * @type {Array<GetProjectsForAccount200ResponseInnerPoliciesInner>}
+     * @memberof GetProjectsForAccount200ResponseInner
+     */
+    'policies'?: Array<GetProjectsForAccount200ResponseInnerPoliciesInner>;
+    /**
+     * 
+     * @type {Array<GetProjectsForAccount200ResponseInnerSocialsInner>}
+     * @memberof GetProjectsForAccount200ResponseInner
+     */
+    'socials'?: Array<GetProjectsForAccount200ResponseInnerSocialsInner>;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof GetProjectsForAccount200ResponseInner
+     */
+    'wallets'?: Array<string>;
+    /**
+     * 
+     * @type {string}
+     * @memberof GetProjectsForAccount200ResponseInner
+     */
+    ''?: string;
+}
+
+export const GetProjectsForAccount200ResponseInnerCategoryEnum = {
+    DeFi: 'DeFi',
+    Nft: 'NFT',
+    Spo: 'SPO',
+    DRep: 'dRep',
+    Dao: 'DAO',
+    Other: 'Other'
+} as const;
+
+export type GetProjectsForAccount200ResponseInnerCategoryEnum = typeof GetProjectsForAccount200ResponseInnerCategoryEnum[keyof typeof GetProjectsForAccount200ResponseInnerCategoryEnum];
+
+/**
+ * 
+ * @export
+ * @interface GetProjectsForAccount200ResponseInnerDrepsInner
+ */
+export interface GetProjectsForAccount200ResponseInnerDrepsInner {
+    /**
+     * 
+     * @type {number}
+     * @memberof GetProjectsForAccount200ResponseInnerDrepsInner
+     */
+    'id'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof GetProjectsForAccount200ResponseInnerDrepsInner
+     */
+    'name'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof GetProjectsForAccount200ResponseInnerDrepsInner
+     */
+    'drepId'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof GetProjectsForAccount200ResponseInnerDrepsInner
+     */
+    'bech32'?: string;
+}
+/**
+ * 
+ * @export
+ * @interface GetProjectsForAccount200ResponseInnerPoliciesInner
+ */
+export interface GetProjectsForAccount200ResponseInnerPoliciesInner {
+    /**
+     * 
+     * @type {string}
+     * @memberof GetProjectsForAccount200ResponseInnerPoliciesInner
+     */
+    'name'?: string;
+    /**
+     * The Policy ID
+     * @type {string}
+     * @memberof GetProjectsForAccount200ResponseInnerPoliciesInner
+     */
+    'policyId'?: string;
+}
+/**
+ * 
+ * @export
+ * @interface GetProjectsForAccount200ResponseInnerSocialsInner
+ */
+export interface GetProjectsForAccount200ResponseInnerSocialsInner {
+    /**
+     * 
+     * @type {number}
+     * @memberof GetProjectsForAccount200ResponseInnerSocialsInner
+     */
+    'id'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof GetProjectsForAccount200ResponseInnerSocialsInner
+     */
+    'referenceId'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof GetProjectsForAccount200ResponseInnerSocialsInner
+     */
+    'referenceName'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof GetProjectsForAccount200ResponseInnerSocialsInner
+     */
+    'type'?: GetProjectsForAccount200ResponseInnerSocialsInnerTypeEnum;
+}
+
+export const GetProjectsForAccount200ResponseInnerSocialsInnerTypeEnum = {
+    Twitter: 'TWITTER',
+    Discord: 'DISCORD'
+} as const;
+
+export type GetProjectsForAccount200ResponseInnerSocialsInnerTypeEnum = typeof GetProjectsForAccount200ResponseInnerSocialsInnerTypeEnum[keyof typeof GetProjectsForAccount200ResponseInnerSocialsInnerTypeEnum];
+
+/**
+ * 
+ * @export
+ * @interface GetProjectsForAccount200ResponseInnerStakepoolsInner
+ */
+export interface GetProjectsForAccount200ResponseInnerStakepoolsInner {
+    /**
+     * 
+     * @type {number}
+     * @memberof GetProjectsForAccount200ResponseInnerStakepoolsInner
+     */
+    'id'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof GetProjectsForAccount200ResponseInnerStakepoolsInner
+     */
+    'name'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof GetProjectsForAccount200ResponseInnerStakepoolsInner
+     */
+    'ticker'?: string;
+    /**
+     * The Stakepool hash
+     * @type {string}
+     * @memberof GetProjectsForAccount200ResponseInnerStakepoolsInner
+     */
+    'poolId'?: string;
+    /**
+     * The pool ID of a wallet, in viewable Bech32 format
+     * @type {string}
+     * @memberof GetProjectsForAccount200ResponseInnerStakepoolsInner
+     */
+    'bech32'?: string;
+}
+/**
+ * 
+ * @export
  * @interface LinkExternalAccount200Response
  */
 export interface LinkExternalAccount200Response {
@@ -216,6 +451,115 @@ export type LinkExternalAccount200ResponseRoleEnum = typeof LinkExternalAccount2
 /**
  * 
  * @export
+ * @interface ListProjects200Response
+ */
+export interface ListProjects200Response {
+    /**
+     * 
+     * @type {number}
+     * @memberof ListProjects200Response
+     */
+    'id': number;
+    /**
+     * 
+     * @type {string}
+     * @memberof ListProjects200Response
+     */
+    'name': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ListProjects200Response
+     */
+    'category'?: ListProjects200ResponseCategoryEnum;
+    /**
+     * 
+     * @type {string}
+     * @memberof ListProjects200Response
+     */
+    'logo': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ListProjects200Response
+     */
+    'url': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ListProjects200Response
+     */
+    'description'?: string;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof ListProjects200Response
+     */
+    'tags'?: Array<string>;
+    /**
+     * 
+     * @type {string}
+     * @memberof ListProjects200Response
+     */
+    'registrationTime'?: string;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof ListProjects200Response
+     */
+    'verified'?: boolean;
+    /**
+     * 
+     * @type {Array<GetProjectsForAccount200ResponseInnerDrepsInner>}
+     * @memberof ListProjects200Response
+     */
+    'dreps'?: Array<GetProjectsForAccount200ResponseInnerDrepsInner>;
+    /**
+     * 
+     * @type {Array<GetProjectsForAccount200ResponseInnerStakepoolsInner>}
+     * @memberof ListProjects200Response
+     */
+    'stakepools'?: Array<GetProjectsForAccount200ResponseInnerStakepoolsInner>;
+    /**
+     * 
+     * @type {Array<GetProjectsForAccount200ResponseInnerPoliciesInner>}
+     * @memberof ListProjects200Response
+     */
+    'policies'?: Array<GetProjectsForAccount200ResponseInnerPoliciesInner>;
+    /**
+     * 
+     * @type {Array<GetProjectsForAccount200ResponseInnerSocialsInner>}
+     * @memberof ListProjects200Response
+     */
+    'socials'?: Array<GetProjectsForAccount200ResponseInnerSocialsInner>;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof ListProjects200Response
+     */
+    'wallets'?: Array<string>;
+    /**
+     * 
+     * @type {string}
+     * @memberof ListProjects200Response
+     */
+    ''?: string;
+}
+
+export const ListProjects200ResponseCategoryEnum = {
+    DeFi: 'DeFi',
+    Nft: 'NFT',
+    Spo: 'SPO',
+    DRep: 'dRep',
+    Dao: 'DAO',
+    Other: 'Other'
+} as const;
+
+export type ListProjects200ResponseCategoryEnum = typeof ListProjects200ResponseCategoryEnum[keyof typeof ListProjects200ResponseCategoryEnum];
+
+/**
+ * 
+ * @export
  * @interface SubscribeAccountToProjectRequest
  */
 export interface SubscribeAccountToProjectRequest {
@@ -247,6 +591,47 @@ export type SubscribeAccountToProjectRequestStatusEnum = typeof SubscribeAccount
  */
 export const DefaultApiAxiosParamCreator = function (configuration?: Configuration) {
     return {
+        /**
+         * 
+         * @summary Add new project
+         * @param {ListProjects200Response} listProjects200Response 
+         * @param {number} [projectOwner] Account ID of the owner of the project
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        addNewProject: async (listProjects200Response: ListProjects200Response, projectOwner?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'listProjects200Response' is not null or undefined
+            assertParamExists('addNewProject', 'listProjects200Response', listProjects200Response)
+            const localVarPath = `/projects`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (projectOwner !== undefined) {
+                localVarQueryParameter['projectOwner'] = projectOwner;
+            }
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(listProjects200Response, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
         /**
          * Create a new account.
          * @summary Create New Account
@@ -439,7 +824,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         getAllSubscriptionsForAccount: async (accountId: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'accountId' is not null or undefined
             assertParamExists('getAllSubscriptionsForAccount', 'accountId', accountId)
-            const localVarPath = `/subscriptions/accounts/{accountId}`
+            const localVarPath = `/accounts/{accountId}/subscriptions`
                 .replace(`{${"accountId"}}`, encodeURIComponent(String(accountId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -473,7 +858,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         getAllSubscriptionsForProject: async (projectId: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'projectId' is not null or undefined
             assertParamExists('getAllSubscriptionsForProject', 'projectId', projectId)
-            const localVarPath = `/subscriptions/projects/{projectId}`
+            const localVarPath = `/projects/{projectId}/subscriptions`
                 .replace(`{${"projectId"}}`, encodeURIComponent(String(projectId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -562,6 +947,40 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
             };
         },
         /**
+         * Get all projects that this account is an owner of.
+         * @summary Get projects owned by this account
+         * @param {number} accountId The numeric ID of an account
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getProjectsForAccount: async (accountId: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'accountId' is not null or undefined
+            assertParamExists('getProjectsForAccount', 'accountId', accountId)
+            const localVarPath = `/accounts/{accountId}/projects`
+                .replace(`{${"accountId"}}`, encodeURIComponent(String(accountId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
          * Links an existing external account to this account (if possible)
          * @summary Link existing external account
          * @param {number} accountId The numeric ID of an account
@@ -601,6 +1020,36 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         },
         /**
          * 
+         * @summary List all projects
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        listProjects: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/projects`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary Add new subscription for this account
          * @param {number} accountId The numeric ID of an account
          * @param {SubscribeAccountToProjectRequest} subscribeAccountToProjectRequest 
@@ -612,7 +1061,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
             assertParamExists('subscribeAccountToProject', 'accountId', accountId)
             // verify required parameter 'subscribeAccountToProjectRequest' is not null or undefined
             assertParamExists('subscribeAccountToProject', 'subscribeAccountToProjectRequest', subscribeAccountToProjectRequest)
-            const localVarPath = `/subscriptions/accounts/{accountId}`
+            const localVarPath = `/accounts/{accountId}/subscriptions`
                 .replace(`{${"accountId"}}`, encodeURIComponent(String(accountId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -727,6 +1176,20 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
 export const DefaultApiFp = function(configuration?: Configuration) {
     const localVarAxiosParamCreator = DefaultApiAxiosParamCreator(configuration)
     return {
+        /**
+         * 
+         * @summary Add new project
+         * @param {ListProjects200Response} listProjects200Response 
+         * @param {number} [projectOwner] Account ID of the owner of the project
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async addNewProject(listProjects200Response: ListProjects200Response, projectOwner?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ListProjects200Response>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.addNewProject(listProjects200Response, projectOwner, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DefaultApi.addNewProject']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
         /**
          * Create a new account.
          * @summary Create New Account
@@ -846,6 +1309,19 @@ export const DefaultApiFp = function(configuration?: Configuration) {
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
+         * Get all projects that this account is an owner of.
+         * @summary Get projects owned by this account
+         * @param {number} accountId The numeric ID of an account
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getProjectsForAccount(accountId: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<GetProjectsForAccount200ResponseInner>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getProjectsForAccount(accountId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DefaultApi.getProjectsForAccount']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
          * Links an existing external account to this account (if possible)
          * @summary Link existing external account
          * @param {number} accountId The numeric ID of an account
@@ -857,6 +1333,18 @@ export const DefaultApiFp = function(configuration?: Configuration) {
             const localVarAxiosArgs = await localVarAxiosParamCreator.linkExternalAccount(accountId, externalAccountId, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['DefaultApi.linkExternalAccount']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary List all projects
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async listProjects(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ListProjects200Response>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.listProjects(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DefaultApi.listProjects']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -911,6 +1399,17 @@ export const DefaultApiFp = function(configuration?: Configuration) {
 export const DefaultApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
     const localVarFp = DefaultApiFp(configuration)
     return {
+        /**
+         * 
+         * @summary Add new project
+         * @param {ListProjects200Response} listProjects200Response 
+         * @param {number} [projectOwner] Account ID of the owner of the project
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        addNewProject(listProjects200Response: ListProjects200Response, projectOwner?: number, options?: any): AxiosPromise<ListProjects200Response> {
+            return localVarFp.addNewProject(listProjects200Response, projectOwner, options).then((request) => request(axios, basePath));
+        },
         /**
          * Create a new account.
          * @summary Create New Account
@@ -1003,6 +1502,16 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
             return localVarFp.getLinkedExternalAccounts(accountId, options).then((request) => request(axios, basePath));
         },
         /**
+         * Get all projects that this account is an owner of.
+         * @summary Get projects owned by this account
+         * @param {number} accountId The numeric ID of an account
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getProjectsForAccount(accountId: number, options?: any): AxiosPromise<Array<GetProjectsForAccount200ResponseInner>> {
+            return localVarFp.getProjectsForAccount(accountId, options).then((request) => request(axios, basePath));
+        },
+        /**
          * Links an existing external account to this account (if possible)
          * @summary Link existing external account
          * @param {number} accountId The numeric ID of an account
@@ -1012,6 +1521,15 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
          */
         linkExternalAccount(accountId: number, externalAccountId: number, options?: any): AxiosPromise<LinkExternalAccount200Response> {
             return localVarFp.linkExternalAccount(accountId, externalAccountId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary List all projects
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        listProjects(options?: any): AxiosPromise<ListProjects200Response> {
+            return localVarFp.listProjects(options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -1056,6 +1574,19 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
  * @extends {BaseAPI}
  */
 export class DefaultApi extends BaseAPI {
+    /**
+     * 
+     * @summary Add new project
+     * @param {ListProjects200Response} listProjects200Response 
+     * @param {number} [projectOwner] Account ID of the owner of the project
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DefaultApi
+     */
+    public addNewProject(listProjects200Response: ListProjects200Response, projectOwner?: number, options?: RawAxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).addNewProject(listProjects200Response, projectOwner, options).then((request) => request(this.axios, this.basePath));
+    }
+
     /**
      * Create a new account.
      * @summary Create New Account
@@ -1166,6 +1697,18 @@ export class DefaultApi extends BaseAPI {
     }
 
     /**
+     * Get all projects that this account is an owner of.
+     * @summary Get projects owned by this account
+     * @param {number} accountId The numeric ID of an account
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DefaultApi
+     */
+    public getProjectsForAccount(accountId: number, options?: RawAxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).getProjectsForAccount(accountId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
      * Links an existing external account to this account (if possible)
      * @summary Link existing external account
      * @param {number} accountId The numeric ID of an account
@@ -1176,6 +1719,17 @@ export class DefaultApi extends BaseAPI {
      */
     public linkExternalAccount(accountId: number, externalAccountId: number, options?: RawAxiosRequestConfig) {
         return DefaultApiFp(this.configuration).linkExternalAccount(accountId, externalAccountId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary List all projects
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DefaultApi
+     */
+    public listProjects(options?: RawAxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).listProjects(options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

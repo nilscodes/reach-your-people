@@ -3,6 +3,7 @@ package io.vibrantnet.ryp.core.subscription.controller
 import io.vibrantnet.ryp.core.subscription.model.AccountDto
 import io.vibrantnet.ryp.core.subscription.model.AccountPartialDto
 import io.vibrantnet.ryp.core.subscription.service.AccountsApiService
+import io.vibrantnet.ryp.core.subscription.service.ProjectsApiService
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -17,7 +18,8 @@ import reactor.core.publisher.Mono
 @RequestMapping("\${api.base-path:}")
 @CrossOrigin
 class AccountsApiController(
-    val service: AccountsApiService
+    val accountService: AccountsApiService,
+    val projectsService: ProjectsApiService,
 ) {
 
 
@@ -32,7 +34,7 @@ class AccountsApiController(
         @Valid @RequestBody accountDto: AccountDto,
         exchange: ServerWebExchange
     ): Mono<ResponseEntity<AccountDto>> {
-        return service.createAccount(accountDto)
+        return accountService.createAccount(accountDto)
             .map { savedEntity ->
                 ResponseEntity.created(exchange.request.uri.let { UriComponentsBuilder.fromUri(it).path("/{id}").buildAndExpand(savedEntity.id).toUri() })
                     .body(savedEntity)
@@ -45,7 +47,7 @@ class AccountsApiController(
         produces = ["application/json"]
     )
     @ResponseStatus(HttpStatus.OK)
-    fun getAccountById(@PathVariable("accountId") accountId: Long) = service.getAccountById(accountId)
+    fun getAccountById(@PathVariable("accountId") accountId: Long) = accountService.getAccountById(accountId)
 
     @RequestMapping(
         method = [RequestMethod.GET],
@@ -55,14 +57,14 @@ class AccountsApiController(
     @ResponseStatus(HttpStatus.OK)
     fun findAccountByProviderAndReferenceId(
         @PathVariable("providerType") providerType: String,
-        @PathVariable("referenceId") referenceId: String) = service.findAccountByProviderAndReferenceId(providerType, referenceId)
+        @PathVariable("referenceId") referenceId: String) = accountService.findAccountByProviderAndReferenceId(providerType, referenceId)
 
     @RequestMapping(
         method = [RequestMethod.GET],
         value = ["/accounts/{accountId}/externalaccounts"]
     )
     @ResponseStatus(HttpStatus.OK)
-    fun getLinkedExternalAccounts(@PathVariable("accountId") accountId: Long) = service.getLinkedExternalAccounts(accountId)
+    fun getLinkedExternalAccounts(@PathVariable("accountId") accountId: Long) = accountService.getLinkedExternalAccounts(accountId)
 
     @RequestMapping(
         method = [RequestMethod.PUT],
@@ -73,7 +75,7 @@ class AccountsApiController(
     fun linkExternalAccount(
         @PathVariable("externalAccountId") externalAccountId: Long,
         @PathVariable("accountId") accountId: Long
-    ) = service.linkExternalAccount(externalAccountId, accountId)
+    ) = accountService.linkExternalAccount(externalAccountId, accountId)
 
     @RequestMapping(
         method = [RequestMethod.DELETE],
@@ -83,7 +85,7 @@ class AccountsApiController(
     fun unlinkExternalAccount(
         @PathVariable("accountId") accountId: Long,
         @PathVariable("externalAccountId") externalAccountId: Long
-    ) = service.unlinkExternalAccount(accountId, externalAccountId)
+    ) = accountService.unlinkExternalAccount(accountId, externalAccountId)
 
     @RequestMapping(
         method = [RequestMethod.PATCH],
@@ -95,5 +97,13 @@ class AccountsApiController(
     fun updateAccountById(
         @PathVariable("accountId") accountId: Long,
         @Valid @RequestBody accountPartialDto: AccountPartialDto
-    ) = service.updateAccountById(accountId, accountPartialDto)
+    ) = accountService.updateAccountById(accountId, accountPartialDto)
+
+    @RequestMapping(
+        method = [RequestMethod.GET],
+        value = ["/accounts/{accountId}/projects"],
+        produces = ["application/json"]
+    )
+    @ResponseStatus(HttpStatus.OK)
+    fun getProjectsForAccount(@PathVariable("accountId") accountId: Long) = projectsService.getProjectsForAccount(accountId)
 }

@@ -20,7 +20,7 @@ import Dropzone from '../Dropzone'
 import { ProjectConfigurationProps } from './ProjectConfiguration'
 import { useEffect, useRef, useState } from 'react';
 
-export default function NFTConfiguration({ type, formData, onFormChange }: ProjectConfigurationProps) {
+export default function NFTConfiguration({ type, formData, onFormChange, onSubmit }: ProjectConfigurationProps) {
     const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
     const nameRef = useRef<HTMLInputElement>(null);
 
@@ -32,6 +32,7 @@ export default function NFTConfiguration({ type, formData, onFormChange }: Proje
     const onFileSelected = (file: Blob | MediaSource) => {
         const fileUrl = URL.createObjectURL(file);
         setAvatarUrl(fileUrl);
+        onFormChange('logo', fileUrl);
     };
 
     return (<Container py={{ base: '4', md: '8' }}>
@@ -126,7 +127,7 @@ export default function NFTConfiguration({ type, formData, onFormChange }: Proje
                 </FormControl>
 
                 <Flex direction="row-reverse">
-                    <Button>Create Project</Button>
+                    <Button onClick={onSubmit}>Create NFT project</Button>
                 </Flex>
             </Stack>
         </Stack>

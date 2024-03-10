@@ -1,4 +1,3 @@
-import { createNonce } from '@/lib/cardano';
 import { coreSubscriptionApi } from '@/lib/core-subscription-api';
 import type { NextApiRequest, NextApiResponse } from 'next'
  

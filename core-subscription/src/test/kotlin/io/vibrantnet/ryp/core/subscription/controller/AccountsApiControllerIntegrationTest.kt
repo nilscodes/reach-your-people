@@ -10,6 +10,7 @@ import io.vibrantnet.ryp.core.subscription.model.ExternalAccountAlreadyLinkedExc
 import io.vibrantnet.ryp.core.subscription.model.ExternalAccountDto
 import io.vibrantnet.ryp.core.subscription.model.LinkedExternalAccountDto
 import io.vibrantnet.ryp.core.subscription.service.AccountsApiService
+import io.vibrantnet.ryp.core.subscription.service.ProjectsApiService
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest
@@ -39,6 +40,7 @@ class AccountsApiControllerIntegrationTest {
     @TestConfiguration
     class TestConfig {
         @Bean fun accountsApiService() = mockk<AccountsApiService>()
+        @Bean fun projectsApiService() = mockk<ProjectsApiService>()
     }
 
     @Autowired

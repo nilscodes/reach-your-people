@@ -59,7 +59,7 @@ export default function LinkedAccounts({ account, linkedAccounts: linkedAccounts
   }, [showWalletConnection]);
 
   const unlinkExternalAccount = async (externalAccountId: number) => {
-    await api.unlinkExternalAccount(account.id!, externalAccountId);
+    await api.unlinkExternalAccount(externalAccountId);
     setLinkedAccounts(linkedAccounts.filter((linkedAccount) => linkedAccount.externalAccount.id !== externalAccountId));
   };
 

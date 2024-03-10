@@ -18,7 +18,7 @@ export default function ProjectsHomepage(props: ProjectsHomepageProps) {
     const [isProjectsLoading, setIsProjectsLoading] = useState(true);
 
     useEffect(() => {
-        api.getProjects().then((projects) => {
+        api.getProjectsForAccount().then((projects) => {
             setProjects(projects);
             setIsProjectsLoading(false);
         });
@@ -42,7 +42,7 @@ export default function ProjectsHomepage(props: ProjectsHomepageProps) {
         </ProjectsHeader>
         {isFirstProject && !isProjectsLoading && <Container py={{ base: '4', md: '8' }}>
             <Stack spacing="4" direction={{ base: 'row', md: 'column' }}>
-                <Text textStyle="lg" fontWeight="medium">You don't have any projects yet.</Text>
+                <Text textStyle="lg" fontWeight="medium">You don&apos;t have any projects yet.</Text>
                 <Text textStyle="sm" color="fg.muted">Create a new project to get started.</Text>
             </Stack>
         </Container>}
