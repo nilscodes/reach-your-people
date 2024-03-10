@@ -1,7 +1,7 @@
 package io.vibrantnet.ryp.core.subscription.persistence
 
-import io.vibrantnet.ryp.core.subscription.model.ProjectCategory
-import io.vibrantnet.ryp.core.subscription.model.ProjectDto
+import io.ryp.shared.model.ProjectCategory
+import io.ryp.shared.model.ProjectDto
 import jakarta.persistence.*
 import java.time.OffsetDateTime
 

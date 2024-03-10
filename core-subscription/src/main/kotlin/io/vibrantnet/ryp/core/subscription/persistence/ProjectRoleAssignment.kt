@@ -1,6 +1,6 @@
 package io.vibrantnet.ryp.core.subscription.persistence
 
-import io.vibrantnet.ryp.core.subscription.model.ProjectRole
+import io.ryp.shared.model.ProjectRole
 import jakarta.persistence.Column
 import jakarta.persistence.Embeddable
 import jakarta.persistence.EnumType

@@ -1,4 +1,4 @@
-package io.vibrantnet.ryp.core.subscription.model
+package io.ryp.shared.model
 
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty

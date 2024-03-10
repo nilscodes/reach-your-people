@@ -1,6 +1,6 @@
 package io.vibrantnet.ryp.core.subscription.persistence
 
-import io.vibrantnet.ryp.core.subscription.model.LinkedExternalAccountDto
+import io.ryp.shared.model.LinkedExternalAccountDto
 import jakarta.persistence.*
 import java.time.OffsetDateTime
 

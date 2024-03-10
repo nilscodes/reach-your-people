@@ -1,5 +1,6 @@
 package io.vibrantnet.ryp.core.subscription.service
 
+import io.ryp.shared.model.LinkedExternalAccountDto
 import io.vibrantnet.ryp.core.subscription.model.*
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
@@ -103,7 +104,7 @@ interface AccountsApiService {
      * @return Successful removal of explict subscriptioon status, rev (status code 204)
      * @see AccountsApi#unsubscribeAccountFromProject
      */
-    fun unsubscribeAccountFromProject(accountId: Long, projectId: Long): Mono<Void>
+    fun unsubscribeAccountFromProject(accountId: Long, projectId: Long): Mono<Unit>
 
     /**
      * GET /accounts/{accountId}/subscriptions : Get all subscriptions for an account

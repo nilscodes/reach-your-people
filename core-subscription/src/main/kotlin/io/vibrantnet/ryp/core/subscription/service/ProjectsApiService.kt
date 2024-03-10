@@ -1,6 +1,6 @@
 package io.vibrantnet.ryp.core.subscription.service
 
-import io.vibrantnet.ryp.core.subscription.model.ProjectDto
+import io.ryp.shared.model.ProjectDto
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 
@@ -32,6 +32,15 @@ interface ProjectsApiService {
      * @see ProjectsApi#getProjectsForAccount
      */
     fun getProjectsForAccount(accountId: Long): Flux<ProjectDto>
+
+    /**
+     * GET /projects/{projectId} : Get a specific project by project ID
+     *
+     * @param projectId The numeric ID of a Project (required)
+     * @return OK (status code 200)
+     * @see ProjectsApi#getProject
+     */
+    fun getProject(projectId: Long): Mono<ProjectDto>
 
     /**
      * GET /projects/{projectId}/subscriptions : Get all subscription for a project

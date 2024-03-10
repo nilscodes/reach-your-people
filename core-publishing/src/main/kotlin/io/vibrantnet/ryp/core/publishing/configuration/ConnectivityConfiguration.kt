@@ -1,0 +1,33 @@
+package io.vibrantnet.ryp.core.publishing.configuration
+
+import io.vibrantnet.ryp.core.publishing.CorePublishingConfiguration
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
+import org.springframework.web.reactive.function.client.ExchangeStrategies
+import org.springframework.web.reactive.function.client.WebClient
+
+@Configuration
+class ConnectivityConfiguration(
+    private val configuration: CorePublishingConfiguration,
+) {
+    @Bean
+    fun coreVerificationClient(): WebClient =
+        WebClient.builder()
+            .baseUrl(configuration.verifyServiceUrl)
+            .exchangeStrategies(
+                ExchangeStrategies.builder().codecs {
+                    it.defaultCodecs().maxInMemorySize(10000000)
+                }.build())
+            .build()
+
+    @Bean
+    fun coreSubscriptionClient(): WebClient =
+        WebClient.builder()
+            .baseUrl(configuration.subscriptionServiceUrl)
+            .exchangeStrategies(
+                ExchangeStrategies.builder().codecs {
+                    it.defaultCodecs().maxInMemorySize(10000000)
+                }.build())
+            .build()
+
+}

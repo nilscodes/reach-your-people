@@ -1,6 +1,6 @@
 package io.vibrantnet.ryp.core.subscription.service
 
-import io.vibrantnet.ryp.core.subscription.model.ExternalAccountDto
+import io.ryp.shared.model.ExternalAccountDto
 import reactor.core.publisher.Mono
 
 interface ExternalAccountsApiService {

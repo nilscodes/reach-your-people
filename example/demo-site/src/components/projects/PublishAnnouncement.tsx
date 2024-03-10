@@ -32,6 +32,7 @@ export default function PublishAnnouncement({ account }: PublishAnnouncementProp
     const router = useRouter();
     const api = useApi();
     const [publishSuccess, setPublishSuccess] = useState(false);
+    const toast = useToast();
     const projectId = router.query.projectid as string;
 
     const [formData, setFormData] = useState(defaultFormData);
@@ -44,8 +45,20 @@ export default function PublishAnnouncement({ account }: PublishAnnouncementProp
     };
 
     const publishAnnouncement = async () => {
-        await api.publishAnnouncement(projectId, formData);
-        setPublishSuccess(true);
+        try {
+            await api.publishAnnouncement(projectId, formData);
+            setPublishSuccess(true);
+        } catch (error: any) {
+            if (error?.response.status === 403) {
+                toast({
+                    title: 'Error publishing announcement',
+                    description: error.response.data.messages.map((messageContent: any) => messageContent.message).join('\n'),
+                    status: 'error',
+                    duration: 15000,
+                    isClosable: true,
+                });
+            }
+        }
     }
 
     return (

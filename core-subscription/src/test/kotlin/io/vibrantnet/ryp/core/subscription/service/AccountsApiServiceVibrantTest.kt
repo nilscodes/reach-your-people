@@ -4,7 +4,7 @@ import io.mockk.*
 import io.vibrantnet.ryp.core.subscription.model.AccountDto
 import io.vibrantnet.ryp.core.subscription.model.AccountPartialDto
 import io.vibrantnet.ryp.core.subscription.model.ExternalAccountAlreadyLinkedException
-import io.vibrantnet.ryp.core.subscription.model.LinkedExternalAccountDto
+import io.ryp.shared.model.LinkedExternalAccountDto
 import io.vibrantnet.ryp.core.subscription.persistence.*
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
