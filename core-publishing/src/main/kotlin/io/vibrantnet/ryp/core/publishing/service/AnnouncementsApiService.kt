@@ -1,6 +1,6 @@
 package io.vibrantnet.ryp.core.publishing.service
 
-import io.vibrantnet.ryp.core.publishing.model.BasicAnnouncementDto
+import io.ryp.shared.model.BasicAnnouncementDto
 import reactor.core.publisher.Mono
 
 fun interface AnnouncementsApiService {
