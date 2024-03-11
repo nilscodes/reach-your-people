@@ -23,3 +23,21 @@ services:
     core-publishing:
 
         container_name: core_publishing_prod
+
+
+
+    rabbitmq:
+        container_name: ryp_rabbitmq_prod
+        environment:
+            - RABBITMQ_DEFAULT_PASS=
+
+
+
+
+    redis:
+        container_name: redis_prod
+
+
+
+    redisdata:
+        container_name: redisinsight_prod

@@ -25,3 +25,21 @@ services:
         container_name: core_publishing_dev
         ports:
             - "8072:8072"
+
+    rabbitmq:
+        container_name: ryp_rabbitmq_dev
+        environment:
+            - RABBITMQ_DEFAULT_PASS=lovuD7PqR17BLgpDCVzn
+        ports:
+            - "8081:15672"
+            - "5672:5672"
+
+    redis:
+        container_name: redis_dev
+        ports:
+            - "6379:6379"
+
+    redisdata:
+        container_name: redisinsight_dev
+        ports:
+            - "8001:8001"

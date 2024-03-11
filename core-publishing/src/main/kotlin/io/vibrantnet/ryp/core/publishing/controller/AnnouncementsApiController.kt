@@ -1,6 +1,6 @@
 package io.vibrantnet.ryp.core.publishing.controller
 
-import io.vibrantnet.ryp.core.publishing.model.BasicAnnouncementDto
+import io.ryp.shared.model.BasicAnnouncementDto
 import io.vibrantnet.ryp.core.publishing.service.AnnouncementsApiService
 import org.springframework.web.bind.annotation.*
 import org.springframework.validation.annotation.Validated

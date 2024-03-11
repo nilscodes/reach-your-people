@@ -49,5 +49,5 @@ interface ProjectsApiService {
      * @return
      * @see ProjectsApi#getAllSubscriptionsForProject
      */
-    //fun getAllSubscriptionsForProject(projectId: kotlin.Long): Unit
+    // fun getAllSubscriptionsForProject(projectId: Long): Unit
 }

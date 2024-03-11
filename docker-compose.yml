@@ -35,3 +35,15 @@ services:
             options:
                 max-size: "100m"
                 max-file: "10"
+
+    rabbitmq:
+        image: rabbitmq:3-management
+        environment:
+            - RABBITMQ_DEFAULT_USER=ryp
+
+    redis:
+        image: redis:7.2.4-alpine
+        command: --save 60 1 --loglevel warning
+
+    redisdata:
+        image: redislabs/redisinsight:latest

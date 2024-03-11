@@ -1,13 +1,15 @@
 package io.vibrantnet.ryp.core.publishing.configuration
 
 import io.vibrantnet.ryp.core.publishing.CorePublishingConfiguration
+import org.springframework.amqp.core.Queue
+import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.web.reactive.function.client.ExchangeStrategies
 import org.springframework.web.reactive.function.client.WebClient
 
 @Configuration
-class ConnectivityConfiguration(
+class WebClientConfig(
     private val configuration: CorePublishingConfiguration,
 ) {
     @Bean
