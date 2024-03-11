@@ -76,7 +76,7 @@ export default function PublishAnnouncement({ account }: PublishAnnouncementProp
             />
             <Container py={{ base: '4', md: '8' }}>
                 <VStack spacing="0">
-                    <Stack spacing="4" direction={{ base: 'row', md: 'column' }} minW="3xl">
+                    <Stack spacing="4" direction={{ base: 'row', md: 'column' }} w="full">
                         {!publishSuccess && <PublishAnnouncementForm formData={formData} onFormChange={handleFormChange} onSubmit={publishAnnouncement} />}
                         {publishSuccess && (<Alert status="success">
                             <AlertIcon />
