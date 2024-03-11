@@ -1,5 +1,6 @@
 package io.vibrantnet.ryp.core.publishing.service
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import io.ryp.shared.model.*
 import io.vibrantnet.ryp.core.publishing.model.UserNotAuthorizedToPublishException
 import org.springframework.amqp.rabbit.annotation.RabbitListener
@@ -15,6 +16,7 @@ class AnnouncementsApiServiceVibrant(
     val verifyService: VerifyService,
     val rabbitTemplate: RabbitTemplate,
     val redisTemplate: RedisTemplate<String, Any>,
+    val objectMapper: ObjectMapper,
 ) : AnnouncementsApiService {
 
     override fun publishAnnouncementForProject(
@@ -54,8 +56,6 @@ class AnnouncementsApiServiceVibrant(
     ): Mono<Unit> = if (!verified) {
         Mono.error(UserNotAuthorizedToPublishException("User with account ID ${announcement.author} is not authorized to publish announcements for project $projectId"))
     } else {
-        println("Publishing announcement for project $projectId")
-        println(announcement)
         redisTemplate.opsForValue()["announcementsdata:$projectId"] = announcement
         redisTemplate.expire("announcementsdata:$projectId", 48, java.util.concurrent.TimeUnit.HOURS)
         rabbitTemplate.convertAndSend("announcements", projectId)
@@ -64,8 +64,10 @@ class AnnouncementsApiServiceVibrant(
 
     @RabbitListener(queues = ["completed"])
     fun sendAnnouncementToSubscribers(projectId: Long) {
-        val recipients = redisTemplate.opsForList().range("announcements:$projectId", 0, -1) as List<AnnouncementRecipientDto>
-        val announcement = redisTemplate.opsForValue()["announcementsdata:$projectId"] as BasicAnnouncementDto
+        val recipientsRaw = redisTemplate.opsForList().range("announcements:$projectId", 0, -1)
+        val recipients = recipientsRaw?.map { objectMapper.convertValue(it, AnnouncementRecipientDto::class.java) } ?: emptyList()
+        val announcementRaw = redisTemplate.opsForValue()["announcementsdata:$projectId"]
+        val announcement = objectMapper.convertValue(announcementRaw, BasicAnnouncementDto::class.java)
         recipients.forEach { recipient ->
             rabbitTemplate.convertAndSend(recipient.type, MessageDto(
                 recipient.referenceId,
