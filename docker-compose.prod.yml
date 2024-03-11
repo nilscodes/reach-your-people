@@ -35,9 +35,9 @@ services:
 
 
     redis:
-        container_name: redis_prod
+        container_name: ryp_redis_prod
 
 
 
     redisdata:
-        container_name: redisinsight_prod
+        container_name: ryp_redisinsight_prod

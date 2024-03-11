@@ -1,0 +1,25 @@
+{
+  "name": "ryp-integration-discord",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "ts-node src/index.ts",
+    "build": "tsc -p ."
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "amqplib": "^0.10.3",
+    "discord.js": "^14.14.1",
+    "dotenv": "^16.4.5",
+    "pino": "^8.19.0"
+  },
+  "devDependencies": {
+    "@types/amqplib": "^0.10.5",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.2"
+  }
+}

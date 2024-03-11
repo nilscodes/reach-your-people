@@ -35,11 +35,11 @@ services:
             - "5672:5672"
 
     redis:
-        container_name: redis_dev
+        container_name: ryp_redis_dev
         ports:
             - "6379:6379"
 
     redisdata:
-        container_name: redisinsight_dev
+        container_name: ryp_redisinsight_dev
         ports:
             - "8001:8001"
