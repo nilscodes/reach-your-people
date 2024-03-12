@@ -9,6 +9,7 @@ services:
             - DB_SYNC_POSTGRES_PASSWORD=
             - BLOCKFROST_URL=https://cardano-mainnet.blockfrost.io/api/v0
             - BLOCKFROST_PROJECT_ID=
+            - RABBITMQ_PASSWORD=
         ports:
             - "8070:8070"
 
@@ -17,12 +18,15 @@ services:
         container_name: core_subscription_prod
         environment:
             - RYP_POSTGRES_PASSWORD=
+            - RABBITMQ_PASSWORD=
 
 
 
     core-publishing:
 
         container_name: core_publishing_prod
+        environment:
+            - RABBITMQ_PASSWORD=
 
 
 
