@@ -1,5 +1,5 @@
 import { generateNonce, checkSignature, DataSignature } from '@meshsdk/core';
-import { nonceCache } from './nonce-cache';
+import { redisClient } from './nonce-cache';
 
 type NonceCacheEntry = {
   nonce: string;
@@ -7,21 +7,19 @@ type NonceCacheEntry = {
   stakeAddress: string;
 };
 
-export function createNonce(userAddress: string, stakeAddress: string): string {
+export async function createNonce(userAddress: string, stakeAddress: string): Promise<string> {
   const nonce = generateNonce('Verifying your wallet for RYP: ');
-  nonceCache.set(stakeAddress, {
-    nonce,
-    userAddress,
-    stakeAddress,
+  const nonceEntry: NonceCacheEntry = { nonce, userAddress, stakeAddress };
+  await redisClient.set(`nonceCache:${stakeAddress}`, JSON.stringify(nonceEntry), {
+    EX: 600, // Set the expiry time (in seconds)
   });
-  console.log('Nonce cache entry created', stakeAddress, JSON.stringify(nonceCache.data));
   return nonce;
 }
 
-export function verifySignature(signature: DataSignature, stakeAddress: string): boolean {
-  const nonceCacheEntry = nonceCache.get(stakeAddress) as NonceCacheEntry | undefined;
-  console.log('Accessing nonce cache', stakeAddress, JSON.stringify(nonceCache.data));
-  if (nonceCacheEntry) {
+export async function verifySignature(signature: DataSignature, stakeAddress: string): Promise<boolean> {
+  const nonceEntryString = await redisClient.get(`nonceCache:${stakeAddress}`);
+  if (nonceEntryString) {
+    const nonceCacheEntry: NonceCacheEntry = JSON.parse(nonceEntryString);
     return checkSignature(nonceCacheEntry.nonce, nonceCacheEntry.stakeAddress, signature);
   }
   return false;
