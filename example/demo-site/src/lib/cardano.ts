@@ -14,11 +14,13 @@ export function createNonce(userAddress: string, stakeAddress: string): string {
     userAddress,
     stakeAddress,
   });
+  console.log('Nonce cache entry created', stakeAddress, JSON.stringify(nonceCache.data));
   return nonce;
 }
 
 export function verifySignature(signature: DataSignature, stakeAddress: string): boolean {
   const nonceCacheEntry = nonceCache.get(stakeAddress) as NonceCacheEntry | undefined;
+  console.log('Accessing nonce cache', stakeAddress, JSON.stringify(nonceCache.data));
   if (nonceCacheEntry) {
     return checkSignature(nonceCacheEntry.nonce, nonceCacheEntry.stakeAddress, signature);
   }

@@ -27,6 +27,7 @@ const providers: any = [
       try {
         const api = new RypSiteApi(`${process.env.NEXTAUTH_URL!}/api`);
         const confirmation = await api.verifySignature(JSON.parse(credentials!.signature), credentials!.stakeAddress);
+        console.log('Confirmation', confirmation)
         if (confirmation) {
           return {
             id: credentials!.stakeAddress,

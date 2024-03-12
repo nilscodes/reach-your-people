@@ -8,6 +8,7 @@ export default function handler(
   try {
     const { userAddress, stakeAddress } = req.body;
     const nonce = createNonce(userAddress, stakeAddress);
+    console.log('Generated nonce', nonce);
     return res.status(200).json({ nonce });
   } catch (err) {
     res.status(500).json({ error: 'failed to load data' })
