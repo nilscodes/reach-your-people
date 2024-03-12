@@ -13,7 +13,8 @@ class AccountsApiServiceVibrant(
     val accountRepository: AccountRepository,
     val externalAccountRepository: ExternalAccountRepository,
     val projectRepository: ProjectRepository,
-): AccountsApiService {
+    val verifyService: VerifyService,
+) : AccountsApiService {
 
     override fun createAccount(accountDto: AccountDto): Mono<AccountDto> {
         val newAccount = Account(
@@ -32,8 +33,11 @@ class AccountsApiServiceVibrant(
     }
 
     override fun findAccountByProviderAndReferenceId(providerType: String, referenceId: String): Mono<AccountDto> {
-        val externalAccount = externalAccountRepository.findByTypeAndReferenceId(providerType, referenceId).orElseThrow()
-        return Mono.just(accountRepository.findByLinkedExternalAccountsExternalAccountId(externalAccount.id!!).first().toDto())
+        val externalAccount =
+            externalAccountRepository.findByTypeAndReferenceId(providerType, referenceId).orElseThrow()
+        return Mono.just(
+            accountRepository.findByLinkedExternalAccountsExternalAccountId(externalAccount.id!!).first().toDto()
+        )
     }
 
     @Transactional
@@ -84,15 +88,21 @@ class AccountsApiServiceVibrant(
     }
 
     @Transactional
-    override fun subscribeAccountToProject(accountId: Long, projectId: Long, newSubscription: NewSubscriptionDto): Mono<NewSubscriptionDto> {
+    override fun subscribeAccountToProject(
+        accountId: Long,
+        projectId: Long,
+        newSubscription: NewSubscriptionDto
+    ): Mono<NewSubscriptionDto> {
         val account = accountRepository.findById(accountId)
         val project = projectRepository.findById(projectId)
         return if (account.isPresent && project.isPresent) {
             account.get().subscriptions.removeIf { it.projectId == projectId }
-            account.get().subscriptions.add(Subscription(
-                projectId = projectId,
-                status = newSubscription.status,
-            ))
+            account.get().subscriptions.add(
+                Subscription(
+                    projectId = projectId,
+                    status = newSubscription.status,
+                )
+            )
             accountRepository.save(account.get())
             Mono.just(newSubscription)
         } else if (account.isEmpty) {
@@ -117,6 +127,54 @@ class AccountsApiServiceVibrant(
     @Transactional
     override fun getAllSubscriptionsForAccount(accountId: Long): Flux<ProjectSubscriptionDto> {
         val account = accountRepository.findById(accountId).orElseThrow()
-        return Flux.fromIterable(account.subscriptions.map { it.toDto() })
+        val walletBasedSubscriptions = getCardanoWalletBasedSubscriptions(account)
+
+        val explicitSubscriptions = Flux.fromIterable(account.subscriptions.map { it.toDto() })
+
+        return mergeExplicitAndWalletBasedSubscriptions(explicitSubscriptions, walletBasedSubscriptions)
+    }
+
+    /**
+     * Merge so that the default status is SUBSCRIBED if any of the subscriptions are wallet-subscribed
+     *  and the current status is set to whatever the explicit subscription setting is, if any is available
+     */
+    private fun mergeExplicitAndWalletBasedSubscriptions(
+        explicitSubscriptions: Flux<ProjectSubscriptionDto>?,
+        walletBasedSubscriptions: Flux<ProjectSubscriptionDto>
+    ): Flux<ProjectSubscriptionDto> =
+        Flux.merge(explicitSubscriptions, walletBasedSubscriptions)
+            .groupBy { it.projectId }
+            .flatMap { groupedFlux ->
+                groupedFlux.reduce { acc, current ->
+                    ProjectSubscriptionDto(
+                        projectId = acc.projectId,
+                        defaultStatus = if (current.defaultStatus == DefaultSubscriptionStatus.SUBSCRIBED || acc.defaultStatus == DefaultSubscriptionStatus.SUBSCRIBED) DefaultSubscriptionStatus.SUBSCRIBED else DefaultSubscriptionStatus.UNSUBSCRIBED,
+                        currentStatus = if (acc.currentStatus != SubscriptionStatus.DEFAULT) acc.currentStatus else current.currentStatus
+                    )
+                }
+            }
+
+    /**
+     * Get wallet-based subscriptions for Cardano by querying the verify service for policies in the account's wallets,
+     * then get associated projects. Every policy that is present will result in a default-subscription.
+     */
+    private fun getCardanoWalletBasedSubscriptions(account: Account): Flux<ProjectSubscriptionDto> {
+        val ownedCardanoWallets = account.linkedExternalAccounts.filter { it.externalAccount.type == "cardano" }
+            .map { it.externalAccount.referenceId }
+
+        return Flux.fromIterable(ownedCardanoWallets)
+            .flatMap { verifyService.getPoliciesInWallet(it) }
+            .map { it.policyIdWithOptionalAssetFingerprint }
+            .collectList()
+            .flatMapMany { policyIds ->
+                Flux.fromIterable(projectRepository.findByPoliciesPolicyIdIn(policyIds))
+                    .map { project ->
+                        ProjectSubscriptionDto(
+                            projectId = project.id!!,
+                            defaultStatus = DefaultSubscriptionStatus.SUBSCRIBED,
+                            currentStatus = SubscriptionStatus.DEFAULT
+                        )
+                    }
+            }
     }
 }

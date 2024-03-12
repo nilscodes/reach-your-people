@@ -15,7 +15,7 @@ internal class AccountsApiServiceVibrantTest {
     @Test
     fun `creating an account works`() {
         val accountRepository = mockk<AccountRepository>()
-        val service = AccountsApiServiceVibrant(accountRepository, mockk(), mockk())
+        val service = AccountsApiServiceVibrant(accountRepository, mockk(), mockk(), mockk())
         val slot = slot<Account>()
         every { accountRepository.save(capture(slot)) } answers { Account(
             id = 12,
@@ -38,7 +38,7 @@ internal class AccountsApiServiceVibrantTest {
     @Test
     fun `getting an account by id works`() {
         val accountRepository = mockk<AccountRepository>()
-        val service = AccountsApiServiceVibrant(accountRepository, mockk(), mockk())
+        val service = AccountsApiServiceVibrant(accountRepository, mockk(), mockk(), mockk())
         val now = OffsetDateTime.now()
         every { accountRepository.findById(12) } returns java.util.Optional.of(
             Account(
@@ -62,7 +62,7 @@ internal class AccountsApiServiceVibrantTest {
     @Test
     fun `correct exception thrown when getting account by ID fails`() {
         val accountRepository = mockk<AccountRepository>()
-        val service = AccountsApiServiceVibrant(accountRepository, mockk(), mockk())
+        val service = AccountsApiServiceVibrant(accountRepository, mockk(), mockk(), mockk())
         every { accountRepository.findById(12) } returns java.util.Optional.empty()
         assertThrows(NoSuchElementException::class.java) {
             service.getAccountById(12).block()
@@ -73,7 +73,7 @@ internal class AccountsApiServiceVibrantTest {
     fun `getting an account by provider and reference ID of an external account works`() {
         val accountRepository = mockk<AccountRepository>()
         val externalAccountRepository = mockk<ExternalAccountRepository>()
-        val service = AccountsApiServiceVibrant(accountRepository, externalAccountRepository, mockk())
+        val service = AccountsApiServiceVibrant(accountRepository, externalAccountRepository, mockk(), mockk())
         val now = OffsetDateTime.now()
         every { externalAccountRepository.findByTypeAndReferenceId("discord", "123") } returns java.util.Optional.of(makeExternalAccount(1, now))
         every { accountRepository.findByLinkedExternalAccountsExternalAccountId(1) } returns listOf(makeAccount(now))
@@ -93,7 +93,7 @@ internal class AccountsApiServiceVibrantTest {
     fun `getting an account by provider and reference ID throws an exception if no matching external account is found`() {
         val accountRepository = mockk<AccountRepository>()
         val externalAccountRepository = mockk<ExternalAccountRepository>()
-        val service = AccountsApiServiceVibrant(accountRepository, externalAccountRepository, mockk())
+        val service = AccountsApiServiceVibrant(accountRepository, externalAccountRepository, mockk(), mockk())
         every { externalAccountRepository.findByTypeAndReferenceId("discord", "123") } returns java.util.Optional.empty()
         assertThrows(NoSuchElementException::class.java) {
             service.findAccountByProviderAndReferenceId("discord", "123").block()
@@ -104,7 +104,7 @@ internal class AccountsApiServiceVibrantTest {
     fun `getting an account by provider and reference ID throws an exception if no matching account is found`() {
         val accountRepository = mockk<AccountRepository>()
         val externalAccountRepository = mockk<ExternalAccountRepository>()
-        val service = AccountsApiServiceVibrant(accountRepository, externalAccountRepository, mockk())
+        val service = AccountsApiServiceVibrant(accountRepository, externalAccountRepository, mockk(), mockk())
         val now = OffsetDateTime.now()
         every { externalAccountRepository.findByTypeAndReferenceId("discord", "123") } returns java.util.Optional.of(makeExternalAccount(1, now))
         every { accountRepository.findByLinkedExternalAccountsExternalAccountId(1) } returns emptyList()
@@ -116,7 +116,7 @@ internal class AccountsApiServiceVibrantTest {
     @Test
     fun `getting an existing linked external accounts works`() {
         val accountRepository = mockk<AccountRepository>()
-        val service = AccountsApiServiceVibrant(accountRepository, mockk(), mockk())
+        val service = AccountsApiServiceVibrant(accountRepository, mockk(), mockk(), mockk())
         val now = OffsetDateTime.now()
         val account = makeAccount(now)
         every { accountRepository.findById(12) } returns java.util.Optional.of(account)
@@ -135,7 +135,7 @@ internal class AccountsApiServiceVibrantTest {
     fun `linking an external account works`() {
         val accountRepository = mockk<AccountRepository>()
         val externalAccountRepository = mockk<ExternalAccountRepository>()
-        val service = AccountsApiServiceVibrant(accountRepository, externalAccountRepository, mockk())
+        val service = AccountsApiServiceVibrant(accountRepository, externalAccountRepository, mockk(), mockk())
         val account = makeAccount(OffsetDateTime.now())
         val externalAccount = makeExternalAccount(2, OffsetDateTime.now())
         every { accountRepository.findById(12) } returns java.util.Optional.of(account)
@@ -157,7 +157,7 @@ internal class AccountsApiServiceVibrantTest {
     fun `linking an external account that already exists throws the appropriate exception`() {
         val accountRepository = mockk<AccountRepository>()
         val externalAccountRepository = mockk<ExternalAccountRepository>()
-        val service = AccountsApiServiceVibrant(accountRepository, externalAccountRepository, mockk())
+        val service = AccountsApiServiceVibrant(accountRepository, externalAccountRepository, mockk(), mockk())
         val account = makeAccount(OffsetDateTime.now())
         every { accountRepository.findById(12) } returns java.util.Optional.of(account)
         every { externalAccountRepository.findById(1) } returns java.util.Optional.of(makeExternalAccount(1, OffsetDateTime.now()))
@@ -172,7 +172,7 @@ internal class AccountsApiServiceVibrantTest {
     fun `unlinking an external account works and does not delete the external account if not the last link`() {
         val accountRepository = mockk<AccountRepository>()
         val externalAccountRepository = mockk<ExternalAccountRepository>()
-        val service = AccountsApiServiceVibrant(accountRepository, externalAccountRepository, mockk())
+        val service = AccountsApiServiceVibrant(accountRepository, externalAccountRepository, mockk(), mockk())
         val account = makeAccount(OffsetDateTime.now())
         every { accountRepository.findById(12) } returns java.util.Optional.of(account)
         every { accountRepository.findByLinkedExternalAccountsExternalAccountId(1) } returns listOf(makeAccount(OffsetDateTime.now(), 13))
@@ -187,7 +187,7 @@ internal class AccountsApiServiceVibrantTest {
     fun `unlinking an external account works and does delete the external account if it was the last link`() {
         val accountRepository = mockk<AccountRepository>()
         val externalAccountRepository = mockk<ExternalAccountRepository>()
-        val service = AccountsApiServiceVibrant(accountRepository, externalAccountRepository, mockk())
+        val service = AccountsApiServiceVibrant(accountRepository, externalAccountRepository, mockk(), mockk())
         val account = makeAccount(OffsetDateTime.now())
         every { accountRepository.findById(12) } returns java.util.Optional.of(account)
         every { accountRepository.findByLinkedExternalAccountsExternalAccountId(1) } returns emptyList()
@@ -202,7 +202,7 @@ internal class AccountsApiServiceVibrantTest {
     @Test
     fun `unlinking a non-existing external accounts throws an appropriate exception`() {
         val accountRepository = mockk<AccountRepository>()
-        val service = AccountsApiServiceVibrant(accountRepository, mockk(), mockk())
+        val service = AccountsApiServiceVibrant(accountRepository, mockk(), mockk(), mockk())
         val account = makeAccount(OffsetDateTime.now())
         every { accountRepository.findById(12) } returns java.util.Optional.of(account)
         val slot = slot<Account>()
@@ -215,7 +215,7 @@ internal class AccountsApiServiceVibrantTest {
     @Test
     fun `updating an account with changes saves`() {
         val accountRepository = mockk<AccountRepository>()
-        val service = AccountsApiServiceVibrant(accountRepository, mockk(), mockk())
+        val service = AccountsApiServiceVibrant(accountRepository, mockk(), mockk(), mockk())
         val account = makeAccount(OffsetDateTime.now())
         every { accountRepository.findById(12) } returns java.util.Optional.of(account)
         val slot = slot<Account>()
@@ -236,7 +236,7 @@ internal class AccountsApiServiceVibrantTest {
     @Test
     fun `updating an account with no effective changes is a no-op`() {
         val accountRepository = mockk<AccountRepository>()
-        val service = AccountsApiServiceVibrant(accountRepository, mockk(), mockk())
+        val service = AccountsApiServiceVibrant(accountRepository, mockk(), mockk(), mockk())
         val account = makeAccount(OffsetDateTime.now())
         every { accountRepository.findById(12) } returns java.util.Optional.of(account)
         val updatedAccount = service.updateAccountById(12, AccountPartialDto(displayName = "test"))
@@ -255,7 +255,7 @@ internal class AccountsApiServiceVibrantTest {
     @Test
     fun `updating an account without providing any change data is a no-op`() {
         val accountRepository = mockk<AccountRepository>()
-        val service = AccountsApiServiceVibrant(accountRepository, mockk(), mockk())
+        val service = AccountsApiServiceVibrant(accountRepository, mockk(), mockk(), mockk())
         val account = makeAccount(OffsetDateTime.now())
         every { accountRepository.findById(12) } returns java.util.Optional.of(account)
         val updatedAccount = service.updateAccountById(12, AccountPartialDto())

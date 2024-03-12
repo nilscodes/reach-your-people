@@ -3,12 +3,16 @@ package io.vibrantnet.ryp.core.publishing.service
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.ryp.shared.model.*
 import io.vibrantnet.ryp.core.publishing.model.UserNotAuthorizedToPublishException
+import mu.KotlinLogging
 import org.springframework.amqp.rabbit.annotation.RabbitListener
 import org.springframework.amqp.rabbit.core.RabbitTemplate
 import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
+import java.util.*
+
+val logger = KotlinLogging.logger {}
 
 @Service
 class AnnouncementsApiServiceVibrant(
@@ -56,17 +60,23 @@ class AnnouncementsApiServiceVibrant(
     ): Mono<Unit> = if (!verified) {
         Mono.error(UserNotAuthorizedToPublishException("User with account ID ${announcement.author} is not authorized to publish announcements for project $projectId"))
     } else {
-        redisTemplate.opsForValue()["announcementsdata:$projectId"] = announcement
-        redisTemplate.expire("announcementsdata:$projectId", 48, java.util.concurrent.TimeUnit.HOURS)
-        rabbitTemplate.convertAndSend("announcements", projectId)
+        val announcementJob = AnnouncementJobDto(
+            projectId,
+            UUID.randomUUID(),
+        )
+        logger.info { "Publishing announcement ${announcementJob.announcementId} for project $projectId" }
+        redisTemplate.opsForValue()["announcementsdata:${announcementJob.announcementId}"] = announcement
+        redisTemplate.expire("announcementsdata:${announcementJob.announcementId}", 48, java.util.concurrent.TimeUnit.HOURS)
+        rabbitTemplate.convertAndSend("announcements", announcementJob)
         Mono.empty()
     }
 
     @RabbitListener(queues = ["completed"])
-    fun sendAnnouncementToSubscribers(projectId: Long) {
-        val recipientsRaw = redisTemplate.opsForList().range("announcements:$projectId", 0, -1)
+    fun sendAnnouncementToSubscribers(announcementJob: AnnouncementJobDto) {
+        val recipientsRaw = redisTemplate.opsForList().range("announcements:${announcementJob.announcementId}", 0, -1)
         val recipients = recipientsRaw?.map { objectMapper.convertValue(it, AnnouncementRecipientDto::class.java) } ?: emptyList()
-        val announcementRaw = redisTemplate.opsForValue()["announcementsdata:$projectId"]
+        logger.info { "Sending announcement ${announcementJob.announcementId} for project ${announcementJob.projectId} to ${recipients.size} subscribers" }
+        val announcementRaw = redisTemplate.opsForValue()["announcementsdata:${announcementJob.announcementId}"]
         val announcement = objectMapper.convertValue(announcementRaw, BasicAnnouncementDto::class.java)
         recipients.forEach { recipient ->
             rabbitTemplate.convertAndSend(recipient.type, MessageDto(
@@ -74,7 +84,7 @@ class AnnouncementsApiServiceVibrant(
                 announcement
             ))
          }
-        redisTemplate.delete("announcements:$projectId")
-        redisTemplate.delete("announcementsdata:$projectId")
+        redisTemplate.delete("announcements:${announcementJob.announcementId}")
+        redisTemplate.delete("announcementsdata:${announcementJob.announcementId}")
     }
 }

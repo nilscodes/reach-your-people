@@ -333,7 +333,17 @@ paths:
     get:
       summary: Get all subscriptions for a project
       tags: []
-      responses: {}
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: ./common-schemas.yaml#/components/schemas/ProjectSubscription
+                  x-stoplight:
+                    id: g5wgxjappihkc
       operationId: getAllSubscriptionsForProject
       x-stoplight:
         id: oom60rtr3642b

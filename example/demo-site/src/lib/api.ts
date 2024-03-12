@@ -144,13 +144,13 @@ export class RypSiteApi {
     //   defaultStatus: DefaultSubscriptionStatus.Subscribed,
     //   currentStatus: SubscriptionStatus.Muted,
     // }]
-    const subs = (await axios.get(`${this.baseUrl}/account/subscriptions`)).data;
-    return subs.map((sub: any) => ({
-      projectId: sub.projectId,
-      defaultStatus: DefaultSubscriptionStatus.Unsubscribed,
-      currentStatus: sub.status == "SUBSCRIBED" ? SubscriptionStatus.Subscribed : SubscriptionStatus.Unsubscribed,
-      favorite: true,
-    }));
+    return (await axios.get(`${this.baseUrl}/account/subscriptions`)).data;
+    // return subs.map((sub: any) => ({
+    //   projectId: sub.projectId,
+    //   defaultStatus: DefaultSubscriptionStatus.Unsubscribed,
+    //   currentStatus: sub.status == "SUBSCRIBED" ? SubscriptionStatus.Subscribed : SubscriptionStatus.Unsubscribed,
+    //   favorite: true,
+    // }));
   }
 
 }

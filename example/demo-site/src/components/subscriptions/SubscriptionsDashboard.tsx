@@ -18,7 +18,7 @@ type SubscriptionsDashboardProps = {
 };
 
 export const SubscriptionsDashboard = (props: SubscriptionsDashboardProps) => {
-  const { account, title, all } = props;
+  const { account } = props;
   const api = useApi();
   const [isProjectsLoading, setIsProjectsLoading] = useState(true);
   const [projects, setProjects] = useState<Project[]>([]);
@@ -69,9 +69,7 @@ export const SubscriptionsDashboard = (props: SubscriptionsDashboardProps) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const projectsPromise = all
-        ? api.getProjects()
-        : api.getProjects();
+      const projectsPromise = api.getProjects();
       const subscriptionsPromise = api.getSubscriptions();
 
       const [projectsData, subscriptionsData] = await Promise.all([projectsPromise, subscriptionsPromise]);
@@ -81,7 +79,7 @@ export const SubscriptionsDashboard = (props: SubscriptionsDashboardProps) => {
     };
 
     fetchData();
-  }, [all, api]);
+  }, [api]);
 
   return (<StandardContentWithHeader
     header={<SubscriptionsHeader title={'All Projects'} currentType={isListView ? ProjectViewType.list : ProjectViewType.card} onChangeType={onChangeType} onSearch={onSearch} filterData={filterData} onChangeFilter={onChangeFilter} />}

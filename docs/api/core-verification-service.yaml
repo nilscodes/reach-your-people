@@ -16,7 +16,55 @@ servers:
   - url: 'http://localhost:8070'
     description: Local Build
 components:
-  schemas: {}
+  parameters:
+    stakeAddress:
+      name: stakeAddress
+      in: path
+      description: The staking address of a wallet in view format
+      required: true
+      style: simple
+      schema:
+        $ref: '#/components/schemas/StakeAddressView'
+  schemas:
+    StakeAddressView:
+      type: string
+      description: 'The staking address of a wallet, in viewable format'
+      example: stake1uyhvepgdsd7s07q5cdx9vdemnar4axpe0e9edw2chyd8dpgqnsffq
+      pattern: '^stake1[a-zA-Z0-9]{53}$'
+    TokenOwnershipInfoWithAssetCount:
+      type: object
+      required:
+        - stakeAddress
+        - policyId
+        - assetCount
+      properties:
+        stakeAddress:
+          $ref: '#/components/schemas/StakeAddressView'
+        policyId:
+          $ref: ./common-schemas.yaml#/components/schemas/TokenPolicyId
+        assetCount:
+          type: integer
+          format: int64
 tags:
   - name: verification
     description: Related to verification of subscriber and publisher accounts
+paths:
+  '/stake/{stakeAddress}/assetcounts':
+    parameters:
+      - $ref: '#/components/parameters/stakeAddress'
+    get:
+      summary: Get policy IDs and asset counts for a stake address
+      tags: []
+      responses:
+        '200':
+          description: 'A list of token policies and associated asset counts currently owned by the stake address'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TokenOwnershipInfoWithAssetCount'
+      operationId: getMultiAssetCountForStakeAddress
+      x-stoplight:
+        id: 27yfis43nerv6
+      parameters: []
