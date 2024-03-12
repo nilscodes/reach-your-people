@@ -1,4 +1,4 @@
-package io.vibrantnet.ryp.core.subscription.configuration
+package io.vibrantnet.ryp.core.verification.configuration
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.KotlinFeature
@@ -20,7 +20,11 @@ class RedisConfig {
     }
 
     @Bean
-    fun jsonSerializer(): Jackson2JsonRedisSerializer<Any> {
+    fun redisTemplate(redisConnectionFactory: RedisConnectionFactory): RedisTemplate<String, Any> {
+        val template = RedisTemplate<String, Any>()
+        template.connectionFactory = redisConnectionFactory
+
+        val stringSerializer = StringRedisSerializer()
         val objectMapper = ObjectMapper().registerModule(
             KotlinModule.Builder()
                 .withReflectionCacheSize(512)
@@ -31,16 +35,7 @@ class RedisConfig {
                 .configure(KotlinFeature.StrictNullChecks, false)
                 .build()
         )
-        return Jackson2JsonRedisSerializer(objectMapper, Any::class.java)
-    }
-
-    @Bean
-    fun redisTemplate(redisConnectionFactory: RedisConnectionFactory, jsonSerializer: Jackson2JsonRedisSerializer<Any>): RedisTemplate<String, Any> {
-        val template = RedisTemplate<String, Any>()
-        template.connectionFactory = redisConnectionFactory
-
-        val stringSerializer = StringRedisSerializer()
-
+        val jsonSerializer = Jackson2JsonRedisSerializer(objectMapper, Any::class.java)
 
         template.keySerializer = stringSerializer
         template.valueSerializer = jsonSerializer

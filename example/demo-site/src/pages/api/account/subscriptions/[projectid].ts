@@ -23,7 +23,7 @@ export default async function handler(
         const response = await coreSubscriptionApi.unsubscribeAccountFromProject(accountId, projectId);
         res.status(response.status).end();
       } else {
-        const response = await coreSubscriptionApi.subscribeAccountToProject(accountId, projectId, { status: subscriptionStatus === SubscriptionStatus.Subscribed ? 'SUBSCRIBED' : 'BLOCKED' });
+        const response = await coreSubscriptionApi.subscribeAccountToProject(accountId, projectId, { status: subscriptionStatus as any });
         res.status(response.status).json(response.data);
       }
     }

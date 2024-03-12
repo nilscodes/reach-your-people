@@ -18,7 +18,7 @@ class Subscription(
 ) {
     fun toDto() = ProjectSubscriptionDto(
         projectId = projectId,
-        status = status,
+        currentStatus = status,
     )
 
     override fun equals(other: Any?): Boolean {
