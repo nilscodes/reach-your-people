@@ -1,13 +1,13 @@
 import { createNonce } from '@/lib/cardano';
 import type { NextApiRequest, NextApiResponse } from 'next'
  
-export default function handler(
+export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
   try {
     const { userAddress, stakeAddress } = req.body;
-    const nonce = createNonce(userAddress, stakeAddress);
+    const nonce = await createNonce(userAddress, stakeAddress);
     console.log('Generated nonce', nonce);
     return res.status(200).json({ nonce });
   } catch (err) {
