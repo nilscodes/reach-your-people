@@ -30,6 +30,12 @@ services:
 
 
 
+    integration-discord:
+
+        container_name: integration_discord_prod
+        environment:
+            - RABBITMQ_PASSWORD=
+
     rabbitmq:
         container_name: ryp_rabbitmq_prod
         environment:

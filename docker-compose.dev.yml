@@ -30,6 +30,12 @@ services:
         ports:
             - "8072:8072"
 
+    integration-discord:
+        image: integration-discord:latest
+        container_name: integration_discord_dev
+        environment:
+            - RABBITMQ_PASSWORD=
+
     rabbitmq:
         container_name: ryp_rabbitmq_dev
         environment:
