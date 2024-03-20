@@ -61,7 +61,7 @@ Various CIPs have been read and analyzed with regards to applicability for this 
 
 The findings are reflect in various choices for the initial architecture as well as authentication and verifications flows below. In addition, certain decisions could be made to exclude the need to spend effort on implementing some logic, like CIP-0089 not being relevant for RYP at this time.
 
-We have also reached out to [IAMX](https://iamx.id) (co-authors of this CIP) with regards to CIP-0066 to further discuss how the solution can be best used for the initial version of RYP.
+We have also reached out to [IAMX](https://iamx.id) (co-authors of this CIP) with regards to [CIP-0066](https://github.com/cardano-foundation/CIPs/pull/294) to further discuss how the solution can be best used for the initial version of RYP.
 
 With CIP-1694 on the horizon, it was also worth investigating how easy it is to add dRep verification and dRep announcements to the tool.
 
