@@ -42,7 +42,7 @@ It starts with the project ID, project and milestone links, the outputs, accepta
 The following sections provide all documentation and context and detailed links for each output where applicable:
 
 ### Indexing Video
-A YouTube video link that showcases the on-chain indexing solution, including a prototype site to interact with the verification service can be found below. Indexing for CIP-0066 verification can be done via Cardano DB sync (default) or Blockfrost (also shown in video):
+A YouTube video link that showcases the on-chain indexing solution, including a prototype site to interact with the verification service can be found below. Indexing for [CIP-0066](https://github.com/cardano-foundation/CIPs/pull/294) verification can be done via Cardano DB sync (default) or Blockfrost (also shown in video):
 
 <https://youtu.be/g2G-_nJnxMs>
 
