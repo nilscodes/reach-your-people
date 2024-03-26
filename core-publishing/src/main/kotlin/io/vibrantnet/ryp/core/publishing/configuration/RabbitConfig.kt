@@ -18,5 +18,8 @@ class RabbitConfig {
     fun discordQueue() = Queue("discord")
 
     @Bean
+    fun smsQueue() = Queue("sms")
+
+    @Bean
     fun messageConverter() = Jackson2JsonMessageConverter()
 }

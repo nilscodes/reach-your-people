@@ -21,7 +21,7 @@ export const LinkedAccount = ({
   linkedAccount, icon, canRemove, onRemove, showUrl,
 }: LinkedAccountsProps) => {
   const toast = useToast();
-  // Provider name is external account type with the first letter capitalized for now
+  // TODO Provider name is external account type with the first letter capitalized for now
   const providerName = linkedAccount.externalAccount.type.charAt(0).toUpperCase() + linkedAccount.externalAccount.type.slice(1);
   const url = showUrl ? buildUrlForExternalAccount(linkedAccount.externalAccount) : '';
   const hasUrl = url.length > 0;
