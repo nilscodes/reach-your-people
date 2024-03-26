@@ -1,9 +1,9 @@
 import axios from "axios";
 import { Project, ProjectCreationRequest } from "./types/Project";
-import ProjectCategory from "./types/ProjectCategory";
 import { Subscription } from "./types/Subscription";
-import { DefaultSubscriptionStatus, SubscriptionStatus } from "./types/SubscriptionStatus";
+import { SubscriptionStatus } from "./types/SubscriptionStatus";
 import { AnnouncementFormData } from "@/components/projects/PublishAnnouncement";
+import { GetLinkedExternalAccounts200ResponseInner } from "./ryp-subscription-api";
 
 function getRandomDelay(): Promise<void> {
   const delay = Math.random() * (500 - 30) + 30;
@@ -50,6 +50,18 @@ export class RypSiteApi {
 
   async changeSubscriptionPreference(projectId: number, status: SubscriptionStatus): Promise<void> {
     await axios.post(`${this.baseUrl}/account/subscriptions/${projectId}`, { status });
+  }
+
+  async startPhoneVerification(phoneNumber: string): Promise<string> {
+    return (await axios.post(`${this.baseUrl}/account/phone/start`, { phoneNumber })).data;
+  }
+
+  async verifyPhoneCode(phoneNumber: string, code: string): Promise<string> {
+    return (await axios.post(`${this.baseUrl}/account/phone/verify`, { phoneNumber, code })).data;
+  }
+
+  async getLinkedExternalAccounts(): Promise<GetLinkedExternalAccounts200ResponseInner[]> {
+    return (await axios.get(`${this.baseUrl}/account/externalaccounts`)).data;
   }
 
   async getProjects(): Promise<Project[]> {

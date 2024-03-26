@@ -9,7 +9,7 @@ const client = new Client({
   intents: [GatewayIntentBits.DirectMessages],
 });
 
-const logger = pino();
+const logger = pino({ level: process.env.LOG_LEVEL || 'info' });
 
 client.on('ready', () => {
     logger.info(`RYP bot is running. Logged in as ${client.user?.tag} (${client.user?.id})`);

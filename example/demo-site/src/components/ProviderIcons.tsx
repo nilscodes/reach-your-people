@@ -1,4 +1,5 @@
 import { createIcon } from '@chakra-ui/react'
+import { MdPhone } from 'react-icons/md';
 
 export const GoogleIcon = createIcon({
   displayName: 'GoogleIcon',
@@ -121,6 +122,11 @@ export const providerList: ProviderInfo[] = [
     id: "github",
     name: "GitHub",
     Component: <GitHubIcon />,
+  },
+  {
+    id: "sms",
+    name: "SMS",
+    Component: <MdPhone />,
   },
 ]
 

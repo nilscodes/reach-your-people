@@ -1,5 +1,5 @@
 import { getServerSession } from "next-auth";
-import { getNextAuthOptions } from "../../../auth/[...nextauth]";
+import { getNextAuthOptions } from "../../auth/[...nextauth]";
 import { coreSubscriptionApi } from '@/lib/core-subscription-api';
 import type { NextApiRequest, NextApiResponse } from 'next'
  
@@ -13,10 +13,9 @@ export default async function handler(
     getNextAuthOptions(req, res)
   );
 
-  if (req.method === 'DELETE' && session?.userId) {
+  if (req.method === 'GET' && session?.userId) {
     const accountId = session.userId;
-    const externalAccountId = +req.query.externalAccountId!;
-    const response = await coreSubscriptionApi.unlinkExternalAccount(accountId, externalAccountId);
-    res.status(response.status).end();
+    const response = await coreSubscriptionApi.getLinkedExternalAccounts(accountId);
+    res.status(response.status).json(response.data);
   }
 }
