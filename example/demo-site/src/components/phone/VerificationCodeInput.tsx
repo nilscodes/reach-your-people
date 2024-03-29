@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Button, HStack, Input, Text, VStack, useToast } from '@chakra-ui/react';
+import useTranslation from 'next-translate/useTranslation';
 
 type VerificationCodeInputProps = {
   phoneNumber: string;
@@ -9,6 +10,7 @@ type VerificationCodeInputProps = {
 
 export default function VerificationCodeInput({ phoneNumber, onGoBack, onSubmit }: VerificationCodeInputProps) {
   const toast = useToast();
+  const { t } = useTranslation('accounts');
   const [code, setCode] = useState(new Array(6).fill(''));
   const inputsRef = useRef<(HTMLInputElement | null)[]>([]);
   const isCodeComplete = code.every((digit) => digit.trim() !== '');
@@ -43,8 +45,8 @@ export default function VerificationCodeInput({ phoneNumber, onGoBack, onSubmit 
       focusNextInput(index, '');
     } else {
       toast({
-        title: 'Invalid input',
-        description: 'Only numeric values are allowed.',
+        title: t('codeInvalidDigit'),
+        description: t('codeInvalidDigitDescription'),
         status: 'error',
         duration: 2000,
         isClosable: true,
@@ -54,9 +56,9 @@ export default function VerificationCodeInput({ phoneNumber, onGoBack, onSubmit 
 
   return (
     <VStack spacing="3">
-      <Text mb="4">Verifying: {phoneNumber}
+      <Text mb="4">{t('verifyingCode', { phoneNumber })}
         <Button variant="link" colorScheme="blue" onClick={onGoBack} ml="4">
-          Change Number
+          {t('changePhoneNumber')}
         </Button>
       </Text>
       
@@ -75,7 +77,7 @@ export default function VerificationCodeInput({ phoneNumber, onGoBack, onSubmit 
         ))}
       </HStack>
       <Button isDisabled={!isCodeComplete} width="full" onClick={() => onSubmit(code.join(''))}>
-        Send Code
+        {t('sendCode')}
       </Button>
     </VStack>
   );

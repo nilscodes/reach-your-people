@@ -5,6 +5,7 @@ import { useRouter } from 'next/router';
 import PublishAnnouncementForm from './PublishAnnouncementForm';
 import { useState } from 'react';
 import { useApi } from '@/contexts/ApiProvider';
+import useTranslation from 'next-translate/useTranslation';
 
 type PublishAnnouncementProps = {
     account: Account;
@@ -13,7 +14,7 @@ type PublishAnnouncementProps = {
 export interface AnnouncementFormData {
     title: string;
     content: string;
-    link?: string; // Optional link
+    link?: string;
 }
 
 const defaultFormData: AnnouncementFormData = {
@@ -22,7 +23,6 @@ const defaultFormData: AnnouncementFormData = {
     link: ''
 };
 
-// Props type for the AnnouncementForm component
 interface AnnouncementFormProps {
     formData: AnnouncementFormData;
     onFormChange: (field: keyof AnnouncementFormData, value: string) => void;
@@ -33,6 +33,7 @@ export default function PublishAnnouncement({ account }: PublishAnnouncementProp
     const api = useApi();
     const [publishSuccess, setPublishSuccess] = useState(false);
     const toast = useToast();
+    const { t } = useTranslation('projects');
     const projectId = router.query.projectid as string;
 
     const [formData, setFormData] = useState(defaultFormData);
@@ -51,7 +52,7 @@ export default function PublishAnnouncement({ account }: PublishAnnouncementProp
         } catch (error: any) {
             if (error?.response.status === 403) {
                 toast({
-                    title: 'Error publishing announcement',
+                    title: t('publishError'),
                     description: error.response.data.messages.map((messageContent: any) => messageContent.message).join('\n'),
                     status: 'error',
                     duration: 15000,
@@ -70,9 +71,9 @@ export default function PublishAnnouncement({ account }: PublishAnnouncementProp
         >
             <ProjectsHeader
                 backButtonLink='/projects'
-                backButtonText="Back to list"
-                title="Publish announcement"
-                description="Give us your announcement details to publish it."
+                backButtonText={t('backToProjectList')}
+                title={t('publishAnnouncementTitle')}
+                description={t('publishAnnouncementDescription')}
             />
             <Container py={{ base: '4', md: '8' }}>
                 <VStack spacing="0">
@@ -80,7 +81,7 @@ export default function PublishAnnouncement({ account }: PublishAnnouncementProp
                         {!publishSuccess && <PublishAnnouncementForm formData={formData} onFormChange={handleFormChange} onSubmit={publishAnnouncement} />}
                         {publishSuccess && (<Alert status="success">
                             <AlertIcon />
-                            Announcement published. Wait for it to be received.
+                            {t('publishAnnouncementSuccess')}
                         </Alert>)}
                     </Stack>
                 </VStack>

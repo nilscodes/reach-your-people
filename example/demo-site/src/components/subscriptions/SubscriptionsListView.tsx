@@ -9,6 +9,7 @@ import ProjectTag from '../projectcard/ProjectTag';
 import VerifiedIcon from '../projectcard/VerifiedIcon';
 import SubscriptionActions from './SubscriptionActions';
 import FavoriteButton from './FavoriteButton';
+import useTranslation from 'next-translate/useTranslation';
 
 export default function SubscriptionsListView(props: SubscriptionsViewProps) {
   const {
@@ -19,13 +20,14 @@ export default function SubscriptionsListView(props: SubscriptionsViewProps) {
     ...rest
   } = props;
   const colSpan = useBreakpointValue({ base: 1, md: 3, lg: 4 });
+  const { t } = useTranslation('subscriptions');
   return (<Table variant="simple" whiteSpace={{ base: 'initial', lg: 'nowrap' }} {...rest}>
     <Thead>
       <Tr>
-        <Th>Name</Th>
-        <Th display={{ base: 'none', lg: 'table-cell' }}>URL</Th>
-        <Th display={{ base: 'none', md: 'table-cell' }}>Type</Th>
-        <Th display={{ base: 'none', md: 'table-cell' }}>Actions</Th>
+        <Th>{t('listView.headers.name')}</Th>
+        <Th display={{ base: 'none', lg: 'table-cell' }}>{t('listView.headers.url')}</Th>
+        <Th display={{ base: 'none', md: 'table-cell' }}>{t('listView.headers.type')}</Th>
+        <Th display={{ base: 'none', md: 'table-cell' }}>{t('listView.headers.actions')}</Th>
       </Tr>
       </Thead>
       <Tbody>

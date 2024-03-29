@@ -7,6 +7,7 @@ import ProjectCategory from '@/lib/types/ProjectCategory';
 import ProjectsHeader from './ProjectsHeader';
 import { useApi } from '@/contexts/ApiProvider';
 import { useRouter } from 'next/navigation';
+import useTranslation from 'next-translate/useTranslation';
 
 type NewProjectProps = {
     account: Account;
@@ -33,6 +34,7 @@ export default function NewProject({ account }: NewProjectProps) {
   const [formData, setFormData] = useState(defaultFormData);
   const api = useApi();
   const router = useRouter();
+  const { t } = useTranslation('projects');
 
   const handleFormChange = (field: keyof FormData, value: string): void => {
     setFormData((prev) => ({
@@ -70,16 +72,16 @@ export default function NewProject({ account }: NewProjectProps) {
     >
       <ProjectsHeader
             backButtonLink='/projects'
-            backButtonText="Back to list"
-            title="Create new project"
-            description="Provide your project details to enable publishing announcements."
+            backButtonText={t('backToProjectList')}
+            title={t('createNewProjectTitle')}
+            description={t('createNewProjectDescription')}
         />
       <Container py={{ base: '4', md: '8' }}>
         <VStack spacing="0">
           <Stack spacing="4" direction={{ base: 'row', md: 'column' }} minW="3xl">
             <Stack direction={{ base: 'column', md: 'row' }} alignContent="center" alignItems="center" justifyContent="space-between">
               <ProjectTypeSelection handleChange={(type) => pickType(type)} type={projectType} />
-              {projectType && <Button aria-label="Change type" onClick={() => setProjectType(null) } variant="text">Change type</Button>}
+              {projectType && <Button aria-label={t('add.changeType')} onClick={() => setProjectType(null) } variant="text">{t('add.changeType')}</Button>}
             </Stack>
             {projectType && (<ProjectConfiguration account={account} type={projectType} formData={formData} onFormChange={handleFormChange} onSubmit={addNewProject} />)}
           </Stack>

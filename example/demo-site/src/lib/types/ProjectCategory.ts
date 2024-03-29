@@ -8,12 +8,12 @@ enum ProjectCategory {
 }
 
 export const ProjectCategoryNames: Record<ProjectCategory, string> = {
-  [ProjectCategory.DeFi]: 'DeFi',
-  [ProjectCategory.NFT]: 'NFT',
-  [ProjectCategory.SPO]: 'SPO',
-  [ProjectCategory.dRep]: 'dRep',
-  [ProjectCategory.DAO]: 'DAO',
-  [ProjectCategory.Other]: 'Other',
+  [ProjectCategory.DeFi]: 'defi',
+  [ProjectCategory.NFT]: 'nft',
+  [ProjectCategory.SPO]: 'spo',
+  [ProjectCategory.dRep]: 'drep',
+  [ProjectCategory.DAO]: 'dao',
+  [ProjectCategory.Other]: 'other',
 };
 
 export default ProjectCategory;

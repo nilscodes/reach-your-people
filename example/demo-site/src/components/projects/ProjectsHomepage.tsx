@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 import { Account } from '../../lib/ryp-subscription-api';
 import NextLink from '../NextLink';
 import ProjectsHeader from './ProjectsHeader';
+import useTranslation from 'next-translate/useTranslation';
 
 type ProjectsHomepageProps = {
     account: Account;
@@ -16,6 +17,7 @@ export default function ProjectsHomepage(props: ProjectsHomepageProps) {
     const api = useApi();
     const [projects, setProjects] = useState<Project[]>([]);
     const [isProjectsLoading, setIsProjectsLoading] = useState(true);
+    const { t } = useTranslation('projects');
 
     useEffect(() => {
         api.getProjectsForAccount().then((projects) => {
@@ -33,17 +35,17 @@ export default function ProjectsHomepage(props: ProjectsHomepageProps) {
         py={{ base: '6', md: '8', lg: '12' }}
     >
         <ProjectsHeader
-            title="Your Projects"
-            description="See the projects you have a role in, publish announcements and set up your project details."
+            title={t('projectsTitle')}
+            description={t('projectsDescription')}
         >
             <NextLink href="/projects/new">
-                <Button variant={isFirstProject && !isProjectsLoading ? 'solid' : 'outline'}>Add new</Button>
+                <Button variant={isFirstProject && !isProjectsLoading ? 'solid' : 'outline'}>{t('addNewProjectButton')}</Button>
             </NextLink>
         </ProjectsHeader>
         {isFirstProject && !isProjectsLoading && <Container py={{ base: '4', md: '8' }}>
             <Stack spacing="4" direction={{ base: 'row', md: 'column' }}>
-                <Text textStyle="lg" fontWeight="medium">You don&apos;t have any projects yet.</Text>
-                <Text textStyle="sm" color="fg.muted">Create a new project to get started.</Text>
+                <Text textStyle="lg" fontWeight="medium">{t('noProjects')}</Text>
+                <Text textStyle="sm" color="fg.muted">{t('noProjectsCta')}</Text>
             </Stack>
         </Container>}
         {!isFirstProject && <ProjectGrid>

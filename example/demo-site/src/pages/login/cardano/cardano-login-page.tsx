@@ -6,12 +6,14 @@ import { useRouter } from 'next/navigation';
 import { Logo } from '@/components/Logo';
 import { useApi } from '@/contexts/ApiProvider';
 import WalletLogin from '@/components/WalletLogin';
+import useTranslation from 'next-translate/useTranslation';
 
 export default function CardanoLoginPage() {
   const [wallets, setWallets] = useState<Wallet[]>([]);
   const router = useRouter()
   const api = useApi();
   const toast = useToast();
+  const { t } = useTranslation('accounts');
 
   useEffect(() => {
     setWallets(BrowserWallet.getInstalledWallets());
@@ -33,7 +35,7 @@ export default function CardanoLoginPage() {
     } catch (error) {
       // Show chakra ui error toast
       toast({
-        title: 'Could not get signature from wallet. The signing flow was cancelled.',
+        title: t('walletSignInCancelled'),
         status: "error",
         duration: 15000,
         isClosable: true,
@@ -48,7 +50,7 @@ export default function CardanoLoginPage() {
       <Stack spacing="6">
         <Logo />
         <Stack spacing={{ base: '2', md: '3' }} textAlign="center">
-          <Heading size={{ base: 'xs', md: 'sm' }}>Log in to your account</Heading>
+          <Heading size={{ base: 'xs', md: 'sm' }}>{t('loginTitle')}</Heading>
         </Stack>
       </Stack>
       <WalletLogin wallets={wallets} handleSignIn={handleSignIn} onReturn={() => {

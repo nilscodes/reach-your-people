@@ -1,0 +1,26 @@
+{
+  "locales": [
+    "en"
+  ],
+  "defaultLocale": "en",
+  "pages": {
+    "*": [
+      "common"
+    ],
+    "/wallets": [
+      "wallets"
+    ],
+    "rgx:^/subscriptions": [
+      "subscriptions"
+    ],
+    "rgx:^/projects": [
+      "projects"
+    ],
+    "/dashboard": [
+      "accounts"
+    ],
+    "/login": [
+      "accounts"
+    ]
+  }
+}

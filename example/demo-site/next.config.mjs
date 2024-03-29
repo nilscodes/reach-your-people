@@ -1,3 +1,5 @@
+import nextTranslate from 'next-translate-plugin';
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
@@ -13,4 +15,4 @@ const nextConfig = {
   }
 };
 
-export default nextConfig;
+export default nextTranslate(nextConfig);

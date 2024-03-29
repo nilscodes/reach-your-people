@@ -1,6 +1,7 @@
 import {
     Button, Center, CenterProps, HStack, Icon, Square, Text, VStack,
 } from '@chakra-ui/react';
+import useTranslation from 'next-translate/useTranslation';
 import { useRef, useState } from 'react';
 import { FiUploadCloud } from 'react-icons/fi';
 
@@ -13,6 +14,7 @@ export default function Dropzone({ guidance, onChangeFile, ...rest }: DropzonePr
     const [file, setFile] = useState<File | null>(null);
     const [isDragOver, setIsDragOver] = useState(false);
     const fileInputRef = useRef<HTMLInputElement | null>(null);
+    const { t } = useTranslation('common');
 
     const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const selectedFile = e.target.files && e.target.files[0];
@@ -74,7 +76,7 @@ export default function Dropzone({ guidance, onChangeFile, ...rest }: DropzonePr
                                     }
                                 }}
                             >
-                                Change File
+                                {t('dropzone.changeFile')}
                             </Button>
                         </VStack>
                     </>
@@ -95,10 +97,10 @@ export default function Dropzone({ guidance, onChangeFile, ...rest }: DropzonePr
                                         }
                                     }}
                                 >
-                                    Click to upload
+                                    {t('dropzone.uploadClickCta')}
                                 </Button>
                                 <Text textStyle="sm" color="fg.muted">
-                                    or drag and drop
+                                    {t('dropzone.ctaAlternative')}
                                 </Text>
                             </HStack>
                             <Text textStyle="xs" color="fg.muted">

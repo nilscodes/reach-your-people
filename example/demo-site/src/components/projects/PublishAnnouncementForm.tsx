@@ -18,6 +18,7 @@ import {
 } from '@chakra-ui/react';
 import { AnnouncementFormData } from './PublishAnnouncement';
 import Markdown from 'react-markdown';
+import useTranslation from 'next-translate/useTranslation';
 
 
 interface AnnouncementFormProps {
@@ -40,6 +41,7 @@ export default function PublishAnnouncementForm({ formData, onFormChange, onSubm
   const [content, setContent] = useState(formData.content);
   const [title, setTitle] = useState(formData.title);
   const [markdown, setMarkdown] = useState(formData.content);
+  const { t } = useTranslation('projects');
 
   useEffect(() => {
     setMarkdown(`# ${title}\n\n${content}`);
@@ -48,20 +50,9 @@ export default function PublishAnnouncementForm({ formData, onFormChange, onSubm
   return (
     <Container py={{ base: '4', md: '8' }}>
       <Stack spacing="5">
-        <Stack spacing="4" direction={{ base: 'column', sm: 'row' }} justify="space-between">
-          <Box>
-            <Text textStyle="lg" fontWeight="medium">
-              Publish Announcement
-            </Text>
-            <Text color="fg.muted" textStyle="sm">
-              Provider your announcement details
-            </Text>
-          </Box>
-        </Stack>
-        <Divider />
         <Stack spacing="5" divider={<StackDivider />}>
           <FormControl id="title" isRequired>
-            <FormLabel>Title</FormLabel>
+            <FormLabel>{t('publish.form.title')}</FormLabel>
             <Input
               maxW={{ md: '50%' }}
               value={formData.title}
@@ -74,7 +65,7 @@ export default function PublishAnnouncementForm({ formData, onFormChange, onSubm
 
           <Stack direction={{ base: 'column', md: 'row' }} spacing="4">
             <FormControl id="content" isRequired w={{ base: '100%', md: '50%' }}>
-              <FormLabel>Content (Markdown allowed)</FormLabel>
+              <FormLabel>{t('publish.form.contentWithMarkdown')}</FormLabel>
               <Textarea
                 maxW={{ md: '100%' }}
                 rows={15}
@@ -87,13 +78,13 @@ export default function PublishAnnouncementForm({ formData, onFormChange, onSubm
               />
             </FormControl>
             <Box w={{ base: '100%', md: '50%' }} pl={{ base: 0, md: 5}}>
-              <FormLabel>Preview</FormLabel>
+              <FormLabel>{t('publish.form.preview')}</FormLabel>
               <Markdown components={components}>{markdown}</Markdown>
             </Box>
           </Stack>
 
           <FormControl id="link">
-            <FormLabel>Link (Optional)</FormLabel>
+            <FormLabel>{t('publish.form.link')}</FormLabel>
             <Input
               maxW={{ md: '50%' }}
               value={formData.link}
@@ -101,7 +92,7 @@ export default function PublishAnnouncementForm({ formData, onFormChange, onSubm
             />
           </FormControl>
 
-          <Button alignSelf="flex-end" onClick={onSubmit}>Publish Announcement</Button>
+          <Button alignSelf="flex-end" onClick={onSubmit}>{t('publishAnnouncementButton')}</Button>
         </Stack>
       </Stack>
     </Container>

@@ -4,6 +4,7 @@ import PhoneNumberInput from './PhoneNumberInput';
 import VerificationCodeInput from './VerificationCodeInput';
 import { useApi } from '@/contexts/ApiProvider';
 import { FaLeftLong } from 'react-icons/fa6';
+import useTranslation from 'next-translate/useTranslation';
 
 type PhoneVerificationProps = {
     onReturn: () => void;
@@ -16,6 +17,7 @@ export default function PhoneVerification({ onReturn }: PhoneVerificationProps) 
   const [fullPhoneNumber, setFullPhoneNumber] = useState('');
   const toast = useToast();
   const api = useApi();
+  const { t } = useTranslation('accounts');
 
   const handlePhoneNumberSubmit = (countryCode: string, number: string) => {
     setPhoneNumber(number);
@@ -35,7 +37,7 @@ export default function PhoneVerification({ onReturn }: PhoneVerificationProps) 
       const verification = await api.verifyPhoneCode(fullPhoneNumber.replace(/[^+\d]/g, ''), code);
       if (verification === 'approved') {
         toast({
-          title: 'Phone number verified successfully!',
+          title: t('phoneVerified'),
           status: 'success',
           duration: 5000,
           isClosable: true,
@@ -46,8 +48,8 @@ export default function PhoneVerification({ onReturn }: PhoneVerificationProps) 
     } catch (error) {
     }
     toast({
-      title: 'The code was not correct.',
-      description: 'Meep',
+      title: t('phoneCodeIncorrect'),
+      description: t('phoneCodeIncorrectDescription'),
       status: 'error',
       duration: 5000,
       isClosable: true,
@@ -63,7 +65,7 @@ export default function PhoneVerification({ onReturn }: PhoneVerificationProps) 
           cursor="pointer"
           onClick={onReturn}
         >
-          Back to social logins
+          {t('backToSocial')}
         </Button>
         <PhoneNumberInput countryCode={countryCode} phoneNumber={phoneNumber} onSubmit={handlePhoneNumberSubmit} />
       </>}

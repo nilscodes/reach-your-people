@@ -7,59 +7,61 @@ import {
 import { forwardRef, useState } from 'react';
 import { MdCheck, MdNotInterested, MdVolumeMute } from 'react-icons/md';
 import { RadioCard, RadioCardGroup } from '../RadioCardGroup';
+import useTranslation from 'next-translate/useTranslation';
+import { Translate } from 'next-translate';
 
 interface SubscriptionStatusButtonProps extends ButtonProps {
     subscription?: Subscription;
     onStatusChange?: (status: SubscriptionStatus) => void;
 }
 
-const getButtonPropsFromSubscription = (subscription?: Subscription) => {
+const getButtonPropsFromSubscription = (t: Translate, subscription?: Subscription) => {
     if (subscription) {
         // Current status default and default status unsubscribed is the default assumptions and returned if no other status is found or subscription entry is not available
         if (subscription.currentStatus === SubscriptionStatus.Default && subscription.defaultStatus === DefaultSubscriptionStatus.Subscribed) {
             return {
-                label: 'Subscribed (Default)',
+                label: t('subscriptionStatus.subscribedDefault.label'),
                 icon: <MdCheck />,
                 variant: 'outline',
             }
         } else if (subscription.currentStatus === SubscriptionStatus.Subscribed) {
             return {
-                label: 'Subscribed',
+                label: t('subscriptionStatus.subscribedExplicitly.label'),
                 icon: <MdCheck />,
                 variant: 'solid',
             }
         } else if (subscription.currentStatus === SubscriptionStatus.Unsubscribed) {
             return {
-                label: 'Unsubscribed',
+                label: t('subscriptionStatus.unsubscribedExplicitly.label'),
                 icon: <MdNotInterested />,
                 variant: 'solid',
             }
         } else if (subscription.currentStatus === SubscriptionStatus.Muted) {
             return {
-                label: 'Muted',
+                label: t('subscriptionStatus.muted.label'),
                 icon: <MdVolumeMute />,
                 variant: 'solid',
             }
         }
     }
     return {
-        label: 'Unsubscribed (Default)',
+        label: t('subscriptionStatus.unsubscribedDefault.label'),
         icon: <MdNotInterested />,
         variant: 'outline',
     }
 }
 
-const getRadioCardOptions = (subscription?: Subscription) => {
+const getRadioCardOptions = (t: Translate, subscription?: Subscription) => {
     const options = [{
         value: SubscriptionStatus.Subscribed,
-        label: 'Subscribed',
-        description: 'Excplicitly subscribed to this project regardless of wallet settings',
+        label: t('subscriptionStatus.subscribedExplicitly.label'),
+        description: t('subscriptionStatus.subscribedExplicitly.description'),
         icon: <MdCheck />,
         variant: 'solid',
     }, {
         value: SubscriptionStatus.Unsubscribed,
-        label: 'Unsubscribed',
-        description: 'Excplcitly unsubscribed from this project regardless of wallet settings',
+        label: t('subscriptionStatus.unsubscribedExplicitly.label'),
+        description: t('subscriptionStatus.unsubscribedExplicitly.description'),
         icon: <MdNotInterested />,
         variant: 'solid',
     }];
@@ -67,16 +69,16 @@ const getRadioCardOptions = (subscription?: Subscription) => {
     if (subscription?.defaultStatus === DefaultSubscriptionStatus.Subscribed) {
         options.unshift({
             value: SubscriptionStatus.Default,
-            label: 'Default (Subscribed)',
-            description: 'Subscribed by default due to wallet settings',
+            label: t('subscriptionStatus.subscribedDefault.label'),
+            description: t('subscriptionStatus.subscribedDefault.description'),
             icon: <MdCheck />,
             variant: 'outline',
         });
     } else {
         options.unshift({
             value: SubscriptionStatus.Default,
-            label: 'Default (Unsubscribed)',
-            description: 'Unsubscribed by default due to wallet settings',
+            label: t('subscriptionStatus.unsubscribedDefault.label'),
+            description: t('subscriptionStatus.unsubscribedDefault.description'),
             icon: <MdNotInterested />,
             variant: 'outline',
         });
@@ -98,14 +100,15 @@ const ButtonPopoverTrigger = forwardRef(function TriggerRef(props: ButtonPopover
 
 export default function SubscriptionStatusButton({ subscription, onStatusChange, ...props }: SubscriptionStatusButtonProps) {
     const [, setRadioValue] = useState(subscription?.currentStatus || SubscriptionStatus.Default);
+    const { t } = useTranslation('subscriptions');
 
     const handleChange = (nextValue: SubscriptionStatus) => {
         setRadioValue(nextValue);
         onStatusChange && onStatusChange(nextValue as SubscriptionStatus);
     };
 
-    const { icon, label, variant } = getButtonPropsFromSubscription(subscription);
-    const availableOptions = getRadioCardOptions(subscription);
+    const { icon, label, variant } = getButtonPropsFromSubscription(t, subscription);
+    const availableOptions = getRadioCardOptions(t, subscription);
 
     return (
         <Popover>
@@ -115,7 +118,7 @@ export default function SubscriptionStatusButton({ subscription, onStatusChange,
                         <ButtonPopoverTrigger icon={icon} label={label} variant={variant} {...props} />
                     </PopoverTrigger>
                     <PopoverContent>
-                        <PopoverHeader fontWeight="semibold">Subscription Status</PopoverHeader>
+                        <PopoverHeader fontWeight="semibold">{t('subscriptionStatus.label')}</PopoverHeader>
                         <PopoverCloseButton />
                         <PopoverBody>
                             <RadioCardGroup

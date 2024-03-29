@@ -19,10 +19,12 @@ import {
 import Dropzone from '../Dropzone'
 import { ProjectConfigurationProps } from './ProjectConfiguration'
 import { useEffect, useRef, useState } from 'react';
+import useTranslation from 'next-translate/useTranslation';
 
 export default function NFTConfiguration({ type, formData, onFormChange, onSubmit }: ProjectConfigurationProps) {
     const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
     const nameRef = useRef<HTMLInputElement>(null);
+    const { t } = useTranslation('projects');
 
     useEffect(() => {
         nameRef.current?.focus();
@@ -40,10 +42,10 @@ export default function NFTConfiguration({ type, formData, onFormChange, onSubmi
             <Stack spacing="4" direction={{ base: 'column', sm: 'row' }} justify="space-between">
                 <Box>
                     <Text textStyle="lg" fontWeight="medium">
-                        Your Project
+                        {t('add.form.title')}
                     </Text>
                     <Text color="fg.muted" textStyle="sm">
-                        Let us know your project details
+                        {t('add.form.cta')}
                     </Text>
                 </Box>
             </Stack>
@@ -55,7 +57,7 @@ export default function NFTConfiguration({ type, formData, onFormChange, onSubmi
                         spacing={{ base: '1.5', md: '8' }}
                         justify="space-between"
                     >
-                        <FormLabel variant="inline">Project Name</FormLabel>
+                        <FormLabel variant="inline">{t('add.form.name')}</FormLabel>
                         <Input maxW={{ md: '3xl' }} value={formData.name} ref={nameRef}
                             onChange={(e) => onFormChange('name', e.target.value) } />
                     </Stack>
@@ -66,7 +68,7 @@ export default function NFTConfiguration({ type, formData, onFormChange, onSubmi
                         spacing={{ base: '1.5', md: '8' }}
                         justify="space-between"
                     >
-                        <FormLabel variant="inline">Logo</FormLabel>
+                        <FormLabel variant="inline">{t('add.form.logo')}</FormLabel>
                         <Stack
                             spacing={{ base: '3', md: '5' }}
                             direction={{ base: 'column', sm: 'row' }}
@@ -74,7 +76,7 @@ export default function NFTConfiguration({ type, formData, onFormChange, onSubmi
                             maxW={{ md: '3xl' }}
                         >
                             {avatarUrl && <Avatar size="lg" src={avatarUrl} />}
-                            <Dropzone width="full" guidance="PNG, JPG or GIF up to 2MB" onChangeFile={onFileSelected} />
+                            <Dropzone width="full" guidance={t('add.form.logoFileGuidance')} onChangeFile={onFileSelected} />
                         </Stack>
                     </Stack>
                 </FormControl>
@@ -84,7 +86,7 @@ export default function NFTConfiguration({ type, formData, onFormChange, onSubmi
                         spacing={{ base: '1.5', md: '8' }}
                         justify="space-between"
                     >
-                        <FormLabel variant="inline">Website</FormLabel>
+                        <FormLabel variant="inline">{t('add.form.website')}</FormLabel>
                         <InputGroup maxW={{ md: '3xl' }}>
                             <InputLeftAddon>https://</InputLeftAddon>
                             <Input value={formData.url}
@@ -99,9 +101,9 @@ export default function NFTConfiguration({ type, formData, onFormChange, onSubmi
                         justify="space-between"
                     >
                         <Box>
-                            <FormLabel variant="inline">Description</FormLabel>
+                            <FormLabel variant="inline">{t('add.form.description')}</FormLabel>
                             <FormHelperText mt="0" color="fg.muted">
-                                Write a short introduction for your project
+                                {t('add.form.descriptionHelper')}
                             </FormHelperText>
                         </Box>
                         <Textarea maxW={{ md: '3xl' }} rows={5} resize="none" value={formData.description}
@@ -115,9 +117,9 @@ export default function NFTConfiguration({ type, formData, onFormChange, onSubmi
                         justify="space-between"
                     >
                         <Box>
-                            <FormLabel variant="inline">Policy ID</FormLabel>
+                            <FormLabel variant="inline">{t('add.form.logo')}</FormLabel>
                             <FormHelperText mt="0" color="fg.muted">
-                                The primary Cardano policy ID for your project
+                                {t('add.form.policyIdHelper')}
                             </FormHelperText>
                         </Box>
                         <Input maxW={{ md: '3xl' }} value={formData.policy}
@@ -127,7 +129,7 @@ export default function NFTConfiguration({ type, formData, onFormChange, onSubmi
                 </FormControl>
 
                 <Flex direction="row-reverse">
-                    <Button onClick={onSubmit}>Create NFT project</Button>
+                    <Button onClick={onSubmit}>{t('add.form.createNftProject')}</Button>
                 </Flex>
             </Stack>
         </Stack>
