@@ -15,6 +15,7 @@ import {
   import { Category } from './_data'
 import NextLink from '../NextLink'
 import { useRouter } from 'next/navigation'
+import useTranslation from 'next-translate/useTranslation'
   
   interface Props {
     category: Category
@@ -22,12 +23,13 @@ import { useRouter } from 'next/navigation'
   }
   
   export const CategoryCard = (props: Props) => {
-    const { category, rootProps } = props
-    const router = useRouter()
+    const { category, rootProps } = props;
+    const router = useRouter();
+    const { t } = useTranslation('subscriptions');
     return (
       <Box
         position="relative"
-        key={category.name}
+        key={category.type}
         borderRadius="xl"
         overflow="hidden"
         minH={{ base: 'sm', lg: 'auto' }}
@@ -37,7 +39,7 @@ import { useRouter } from 'next/navigation'
             src={category.imageUrl}
             height="full"
             objectFit="cover"
-            alt={category.name}
+            alt={t(`categories.${category.type}.name`)}
             fallback={<Skeleton />}
         />
         <Box
@@ -60,15 +62,15 @@ import { useRouter } from 'next/navigation'
             <Stack spacing="5">
                 <Stack spacing="1">
                 <Heading fontSize="2xl" fontWeight="extrabold">
-                    {category.name}
+                    {t(`categories.${category.type}.name`)}
                 </Heading>
                 <Text fontSize="lg" fontWeight="medium">
-                    {category.description}
+                    {t(`categories.${category.type}.description`)}
                 </Text>
                 </Stack>
                 <HStack>
                 <NextLink href="." fontSize="lg" fontWeight="bold" textDecoration="underline">
-                    Manage
+                    {t('manageSubscriptions')}
                 </NextLink>
                 <Icon as={FaChevronRight} />
                 </HStack>

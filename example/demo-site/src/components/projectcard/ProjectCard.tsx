@@ -19,6 +19,7 @@ import ProjectLogo from './ProjectLogo';
 import { Subscription } from '@/lib/types/Subscription';
 import { Account } from '../../lib/ryp-subscription-api';
 import SubscriptionActions from '../subscriptions/SubscriptionActions';
+import useTranslation from 'next-translate/useTranslation';
 
 type ProjectCardProps = {
   account: Account | null;
@@ -34,6 +35,7 @@ function formatISODateToCustomString(isoDateString: string) {
 }
 
 export default function ProjectCard({ account, project, subscription }: ProjectCardProps) {
+  const { t } = useTranslation('subscriptions');
   const {
     name, tags, registrationTime,
   } = project;
@@ -58,7 +60,7 @@ export default function ProjectCard({ account, project, subscription }: ProjectC
             </HStack>)}
         </Stack>
 
-        <Text fontWeight="semibold" mt="8" mb="2">Tags</Text>
+        <Text fontWeight="semibold" mt="8" mb="2">{t('project.tags')}</Text>
 
         <Wrap shouldWrapChildren>
           {category !== undefined && <ProjectTag category={category} />}

@@ -11,11 +11,12 @@ import {
     Text,
     useColorModeValue,
   } from '@chakra-ui/react'
-  import Rating from './Rating'
-  import FavouriteButton from './FavouriteButton'
-  import PriceTag from './PriceTag'
+import Rating from './Rating'
+import FavouriteButton from './FavouriteButton'
+import PriceTag from './PriceTag'
 import { Project } from '@/lib/types/Project'
 import NextLink from '../NextLink'
+import useTranslation from 'next-translate/useTranslation'
     
   interface Props {
     project: Project
@@ -23,8 +24,9 @@ import NextLink from '../NextLink'
   }
   
   export default function ProjectCard(props: Props) {
-    const { project, rootProps } = props
-    const { name, logo } = project
+    const { project, rootProps } = props;
+    const { t } = useTranslation('projects');
+    const { name, logo } = project;
 
     return (
       <Stack spacing={{ base: '4', md: '5' }} {...rootProps}>
@@ -62,7 +64,7 @@ import NextLink from '../NextLink'
         <Stack align="center">
           <NextLink href={`/projects/${project.id}/publish`} w="100%">
             <Button variant="outline" width="full">
-              Publish Announcement
+              {t('publishAnnouncementButton')}
             </Button>
           </NextLink>
           <NextLink href={`/projects/${project.id}/edit`}
@@ -70,7 +72,7 @@ import NextLink from '../NextLink'
             fontWeight="medium"
             color={useColorModeValue('gray.600', 'gray.400')}
           >
-            Edit
+            {t('editProjectButton')}
           </NextLink>
         </Stack>
       </Stack>

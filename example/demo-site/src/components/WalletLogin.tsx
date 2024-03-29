@@ -1,6 +1,6 @@
 import { Button, Stack, Img } from '@chakra-ui/react'
 import { Wallet } from '@meshsdk/core'
-import { useRouter } from 'next/router';
+import useTranslation from 'next-translate/useTranslation';
 import { FaLeftLong } from 'react-icons/fa6';
 
 type WalletLoginProps = {
@@ -12,6 +12,7 @@ type WalletLoginProps = {
 export default function WalletLogin({
   wallets, onReturn, handleSignIn
 }: WalletLoginProps) {
+  const { t } = useTranslation('accounts');
   return(<Stack spacing="3">
   <Button key="back"
       variant="secondary"
@@ -19,7 +20,7 @@ export default function WalletLogin({
       cursor="pointer"
       onClick={onReturn}
     >
-      Back to social logins
+      {t('backToSocial')}
     </Button>
   {wallets.map((wallet) => (
     <Button key={wallet.name}

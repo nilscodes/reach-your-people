@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { FormControl, FormLabel, Input, Select, Button, Stack, Text } from '@chakra-ui/react';
+import useTranslation from 'next-translate/useTranslation';
 
 type PhoneNumberInputProps = {
   countryCode: string;
@@ -10,6 +11,7 @@ type PhoneNumberInputProps = {
 export default function PhoneNumberInput({ countryCode: initialCountryCode, phoneNumber: initialPhoneNumber, onSubmit }: PhoneNumberInputProps) {
   const [countryCode, setCountryCode] = useState(initialCountryCode); // Default to US
   const [phoneNumber, setPhoneNumber] = useState(initialPhoneNumber);
+  const { t } = useTranslation('accounts');
 
   const handlePhoneNumberChange = (event: any) => {
     const { value } = event.target;
@@ -26,34 +28,38 @@ export default function PhoneNumberInput({ countryCode: initialCountryCode, phon
     onSubmit(countryCode, phoneNumber);
   };
 
+  // Additional countries can be added here
+  const countries = [{ code: '1', label: 'us' }]
+
   return (
     <form onSubmit={handleSubmit}>
       <Stack spacing={4}>
         <FormControl>
-          <FormLabel htmlFor="country">Country</FormLabel>
+          <FormLabel htmlFor="country">{t('country')}</FormLabel>
           <Select id="country" placeholder="Select country" value={countryCode} onChange={(e) => setCountryCode(e.target.value)} isReadOnly>
-            <option value="+1">United States (+1)</option>
-            {/* Additional countries can be added here */}
+            {countries.map((country) => (
+              <option key={country.code} value={`+${country.code}`}>{t('countrySelectOption', { country: t(`countries.${country.label}`), code: country.code })}</option>
+            ))}
           </Select>
         </FormControl>
 
         <FormControl>
-          <FormLabel htmlFor="phone-number">Phone Number</FormLabel>
+          <FormLabel htmlFor="phone-number">{t('phoneNumber')}</FormLabel>
           <Input
             id="phone-number"
             type="tel"
-            placeholder="Enter your phone number"
+            placeholder={t('phoneNumberPlaceholder')}
             value={phoneNumber}
             onChange={handlePhoneNumberChange}
           />
         </FormControl>
 
         <Button type="submit" width="full">
-          Send Verification Code
+          {t('sendPhoneCode')}
         </Button>
         
         <Text fontSize="xs" color="fg.muted">
-          By entering your number, you agree to our Terms of Service and Privacy Policy. Message and data rates may apply.
+          {t('phoneSubscriptionLegal')}
         </Text>
       </Stack>
     </form>

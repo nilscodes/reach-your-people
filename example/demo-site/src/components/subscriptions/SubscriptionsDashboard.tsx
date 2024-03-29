@@ -10,6 +10,7 @@ import { Project } from '@/lib/types/Project';
 import { Subscription } from '@/lib/types/Subscription';
 import { Account } from '../../lib/ryp-subscription-api';
 import { SubscriptionsContext } from '@/contexts/SubscriptionsProvider';
+import useTranslation from 'next-translate/useTranslation';
 
 type SubscriptionsDashboardProps = {
   account: Account | null;
@@ -27,6 +28,8 @@ export const SubscriptionsDashboard = (props: SubscriptionsDashboardProps) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [typeFilterValue, setTypeFilterValue] = useState<ProjectCategory[]>([]);
   const [filteredProjects, setFilteredProjects] = useState<Project[]>([]);
+  const { t } = useTranslation('subscriptions');
+  const { t: tc } = useTranslation('common');
 
   const onChangeType = (val: string) => {
     setIsListView(val === 'list');
@@ -58,12 +61,12 @@ export const SubscriptionsDashboard = (props: SubscriptionsDashboardProps) => {
   const filterData = {
     defaultValue: filteredProjects.map((item) => item.category),
     options: [
-      { label: ProjectCategoryNames[ProjectCategory.DeFi], value: ProjectCategory.DeFi, count: filteredProjects.filter((item) => item.category === ProjectCategory.DeFi).length },
-      { label: ProjectCategoryNames[ProjectCategory.NFT], value: ProjectCategory.NFT, count: filteredProjects.filter((item) => item.category === ProjectCategory.NFT).length },
-      { label: ProjectCategoryNames[ProjectCategory.SPO], value: ProjectCategory.SPO, count: filteredProjects.filter((item) => item.category === ProjectCategory.SPO).length },
-      { label: ProjectCategoryNames[ProjectCategory.dRep], value: ProjectCategory.dRep, count: filteredProjects.filter((item) => item.category === ProjectCategory.dRep).length },
-      { label: ProjectCategoryNames[ProjectCategory.DAO], value: ProjectCategory.DAO, count: filteredProjects.filter((item) => item.category === ProjectCategory.DAO).length },
-      { label: ProjectCategoryNames[ProjectCategory.Other], value: ProjectCategory.Other, count: filteredProjects.filter((item) => item.category === ProjectCategory.Other).length },
+      { label: tc(`categories.${ProjectCategoryNames[ProjectCategory.DeFi]}.name`), value: ProjectCategory.DeFi, count: filteredProjects.filter((item) => item.category === ProjectCategory.DeFi).length },
+      { label: tc(`categories.${ProjectCategoryNames[ProjectCategory.NFT]}.name`), value: ProjectCategory.NFT, count: filteredProjects.filter((item) => item.category === ProjectCategory.NFT).length },
+      { label: tc(`categories.${ProjectCategoryNames[ProjectCategory.SPO]}.name`), value: ProjectCategory.SPO, count: filteredProjects.filter((item) => item.category === ProjectCategory.SPO).length },
+      { label: tc(`categories.${ProjectCategoryNames[ProjectCategory.dRep]}.name`), value: ProjectCategory.dRep, count: filteredProjects.filter((item) => item.category === ProjectCategory.dRep).length },
+      { label: tc(`categories.${ProjectCategoryNames[ProjectCategory.DAO]}.name`), value: ProjectCategory.DAO, count: filteredProjects.filter((item) => item.category === ProjectCategory.DAO).length },
+      { label: tc(`categories.${ProjectCategoryNames[ProjectCategory.Other]}.name`), value: ProjectCategory.Other, count: filteredProjects.filter((item) => item.category === ProjectCategory.Other).length },
     ],
   };
 
@@ -82,7 +85,7 @@ export const SubscriptionsDashboard = (props: SubscriptionsDashboardProps) => {
   }, [api]);
 
   return (<StandardContentWithHeader
-    header={<SubscriptionsHeader title={'All Projects'} currentType={isListView ? ProjectViewType.list : ProjectViewType.card} onChangeType={onChangeType} onSearch={onSearch} filterData={filterData} onChangeFilter={onChangeFilter} />}
+    header={<SubscriptionsHeader title={t('allProjects')} currentType={isListView ? ProjectViewType.list : ProjectViewType.card} onChangeType={onChangeType} onSearch={onSearch} filterData={filterData} onChangeFilter={onChangeFilter} />}
     px="0">
       <SubscriptionsContext.Provider value={{ subscriptions, setSubscriptions }}>
         {isListView && <SubscriptionsListView account={account} projects={filteredProjects} subscriptions={subscriptions} isProjectsLoading={isProjectsLoading} />}

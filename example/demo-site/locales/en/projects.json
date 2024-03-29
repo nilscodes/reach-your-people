@@ -1,0 +1,41 @@
+{
+    "projectsTitle": "Your Projects",
+    "projectsDescription": "See the projects you have a role in, publish announcements and set up your project details.",
+    "addNewProjectButton": "Add new",
+    "noProjects": "You don't have any projects yet.",
+    "noProjectsCta": "Create a new project to get started.",
+    "backToProjectList": "Back to list",
+    "createNewProjectTitle": "Create new project",
+    "createNewProjectDescription": "Provide your project details to enable publishing announcements.",
+    "publishError": "Error publishing announcement",
+    "publishAnnouncementSuccess": "Announcement published. Wait for it to be received.",
+    "publishAnnouncementTitle": "Publish announcement",
+    "publishAnnouncementDescription": "Give us your announcement details to publish it.",
+    "publishAnnouncementButton": "Publish Announcement",
+    "editProjectButton": "Edit",
+    "publish": {
+        "form": {
+            "title": "Title",
+            "contentWithMarkdown": "Content (Markdown allowed)",
+            "preview": "Preview",
+            "link": "Link (Optional)"
+        }
+    },
+    "add": {
+        "changeType": "Change Type",
+        "form": {
+            "title": "Your Project",
+            "cta": "Let us know your project details",
+            "name": "Project Name",
+            "logo": "Logo",
+            "logoFileGuidance": "PNG, JPG or GIF up to 2MB",
+            "description": "Description",
+            "descriptionHelper": "Write a short introduction for your project",
+            "website": "Website",
+            "submit": "Create Project",
+            "policyId": "Policy ID",
+            "policyIdHelper": "The primary Cardano policy ID for your project",
+            "createNftProject": "Create NFT project"
+        }
+    }
+}

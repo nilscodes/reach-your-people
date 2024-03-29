@@ -17,22 +17,22 @@ const subscriptionLinks: NavItem[] = Object.keys(ProjectCategory).map((key) => {
 });
 
 const nav: NavItem[] = [{
-    label: 'Verify NFT Project Publisher',
+    label: 'nav.verify',
     path: '/test',
   }, {
-    label: 'Accounts',
+    label: 'nav.accounts',
     path: '/dashboard',
     onlyLoggedIn: true,
   }, {
-    label: 'Subscriptions',
+    label: 'nav.subscriptions',
     path: '/subscriptions',
 //    children: subscriptionLinks,
   }, {
-    label: 'Projects',
+    label: 'nav.projects',
     path: '/projects',
     onlyLoggedIn: true,
   }, {
-    label: 'Wallets',
+    label: 'nav.wallets',
     path: '/wallets',
     onlyLoggedIn: true,
   }

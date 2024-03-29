@@ -1,0 +1,45 @@
+{
+    "subscriptionsTitle": "Subscriptions",
+    "subscriptionsSeeAll": "See all",
+    "manageSubscriptions": "Manage",
+    "allProjects": "All projects",
+    "backToCategories": "Categories",
+    "searchProjectsPlaceholder": "Search Projects",
+    "typeFilterLabel": "Type",
+    "listView": {
+        "name": "List view",
+        "headers": {
+            "name": "Name",
+            "url": "URL",
+            "type": "Type",
+            "actions": "Actions"
+        }
+    },
+    "tileView": {
+        "name": "Tile view"
+    },
+    "subscriptionStatus": {
+        "label": "Subscription Status",
+        "subscribedDefault": {
+            "label": "Subscribed (Default)",
+            "description": "Subscribed by default due to wallet settings"
+        },
+        "subscribedExplicitly": {
+            "label": "Subscribed",
+            "description": "Excplicitly subscribed to this project regardless of wallet settings"
+        },
+        "unsubscribedDefault": {
+            "label": "Unsubscribed (Default)",
+            "description": "Unsubscribed by default due to wallet settings"
+        },
+        "unsubscribedExplicitly": {
+            "label": "Unsubscribed",
+            "description": "Excplcitly unsubscribed from this project regardless of wallet settings"
+        },
+        "muted": {
+            "label": "Muted"
+        }
+    },
+    "addToFavorites": "Add to favorites",
+    "removeFromFavorites": "Remove from favorites"
+}

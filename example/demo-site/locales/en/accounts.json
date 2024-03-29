@@ -1,0 +1,29 @@
+{
+    "loginTitle": "Log in to your account",
+    "linkedAccounts": "Your Linked Accounts",
+    "connectAccounts": "Connect additional accounts",
+    "unlink": "Unlink",
+    "walletSignInCancelled": "Could not get signature from wallet. The signing flow was cancelled.",
+    "cardanoWallet": "Cardano Wallet",
+    "mobilePhoneSms": "Mobile Phone (SMS)",
+    "backToSocial": "Back to social logins",
+
+    "phoneCodeIncorrect": "The code was not correct.",
+    "phoneVerified": "Phone number verified successfully!",
+    "codeInvalidDigit": "Invalid input",
+    "codeInvalidDigitDescription": "Only numeric values are allowed.",
+    "verifyingCode": "Verifying: {{phoneNumber}}",
+    "changePhoneNumber": "Change Number",
+    "sendCode": "Send Code",
+    "phoneCodeIncorrectDescription": "The code you entered was not correct. Please try again.",
+    "country": "Country",
+    "countrySelectOption": "{{country}} (+{{code}})",
+    "phoneNumber": "Phone Number",
+    "phoneNumberPlaceholder": "Enter your phone number",
+    "sendPhoneCode": "Send Verification Code",
+    "phoneSubscriptionLegal": "By entering your number, you agree to our Terms of Service and Privacy Policy. Message and data rates may apply.",
+
+    "countries": {
+        "us": "United States"
+    }
+}

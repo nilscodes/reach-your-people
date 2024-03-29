@@ -9,9 +9,11 @@ import { FaCheck } from 'react-icons/fa';
 import { signIn } from "next-auth/react";
 import { useRouter } from 'next/navigation';
 import { Logo } from '@/components/Logo';
+import useTranslation from 'next-translate/useTranslation';
 
 export default function LoginPage() {
-  const router = useRouter()
+  const router = useRouter();
+  const { t } = useTranslation('accounts');
 
   const handleSignIn = (provider: string) => {
     signIn(provider, { callbackUrl: '/dashboard' });
@@ -24,7 +26,7 @@ export default function LoginPage() {
       <Stack spacing="6">
         <Logo />
         <Stack spacing={{ base: '2', md: '3' }} textAlign="center">
-          <Heading size={{ base: 'xs', md: 'sm' }}>Log in to your account</Heading>
+          <Heading size={{ base: 'xs', md: 'sm' }}>{t('loginTitle')}</Heading>
         </Stack>
       </Stack>
       <Stack spacing="6">
@@ -53,7 +55,7 @@ export default function LoginPage() {
               router.push('/login/cardano');
             }}
           >
-            Cardano Wallet
+            {t('cardanoWallet')}
           </Button>
           {providersConfig.map((provider) => {
               const isLinked = linkedProviders.includes(provider.id);

@@ -22,9 +22,11 @@ import { FiSearch } from 'react-icons/fi';
 import { useRouter } from 'next/navigation';
 import MobileDrawer from './header/MobileDrawer';
 import NavPopover from './header/NavPopover';
+import useTranslation from 'next-translate/useTranslation'
 
 export default function Header() {
   const { data: session } = useSession();
+  const { t } = useTranslation('common')
   const router = useRouter();
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -49,13 +51,13 @@ export default function Header() {
           >
             {nav.filter((item) => !item.onlyLoggedIn || session?.userId).map((item) => {
               if (item.children?.length) {
-                return <NavPopover key={item.label} label={item.label} subnav={item.children} />
+                return <NavPopover key={item.label} label={t(item.label)} subnav={item.children} />
               }
               return (<Button key={item.label} onClick={() => {
                 if (!item.external) {
                   router.push(item.path);
                 }
-              }}>{item.label}</Button>)
+              }}>{t(item.label)}</Button>)
             })}
           </ButtonGroup>
         </HStack>
@@ -64,12 +66,12 @@ export default function Header() {
             <InputLeftElement>
               <Icon as={FiSearch} color="fg.accent.muted" fontSize="lg" />
             </InputLeftElement>
-            <Input placeholder="Search in RYP" variant={mode('outline', 'bg.surface')} onKeyUp={handleKeyPress} />
+            <Input placeholder={t('searchPlaceholder')} variant={mode('outline', 'bg.surface')} onKeyUp={handleKeyPress} />
           </InputGroup>
           <ButtonGroup spacing="1">
             <IconButton
               icon={<FiSearch />}
-              aria-label="Search in RYP"
+              aria-label={t('searchPlaceholder')}
               display={{ base: 'flex', lg: 'none' }}
               isRound
             />

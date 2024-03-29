@@ -1,0 +1,60 @@
+{
+    "title": "RYP",
+    "welcome": "Welcome to RYP",
+    "searchPlaceholder": "Search in RYP",
+    "signIn": "Sign in",
+    "signOut": "Sign out ({{username}})",
+    "nav": {
+        "verify": "Verify NFT Project Publisher",
+        "accounts": "Accounts",
+        "subscriptions": "Subscriptions",
+        "projects": "Projects",
+        "wallets": "Wallets"
+    },
+    "categories": {
+        "defi": {
+            "name": "De-Fi",
+            "tag": "De-Fi",
+            "description": "Your fungibles, your control",
+            "createInfo": "Create and sell digital assets"
+        },
+        "nft": {
+            "name": "NFT",
+            "tag": "NFT",
+            "description": "Stay up-to-date with your favorite JPGs",
+            "createInfo": "Decentralized finance"
+        },
+        "spo": {
+            "name": "SPO",
+            "tag": "Stakepool",
+            "description": "Be in the know when your Stake Pool Operators have something to say",
+            "createInfo": "Stake pool operator"
+        },
+        "drep": {
+            "name": "dRep",
+            "tag": "dRep",
+            "description": "The latest on governance from your decentralized representatives",
+            "createInfo": "Delegated representative"
+        },
+        "other": {
+            "name": "Other tokens",
+            "tag": "Other",
+            "description": "Memecoins, raffles tickets and whatnot",
+            "createInfo": "Other type of project"
+        },
+        "dao": {
+            "name": "DAO",
+            "tag": "Decentralized Organization",
+            "description": "Your organizations, your news",
+            "createInfo": "Decentralized autonomous organization"
+        }
+    },
+    "project": {
+        "tags": "Tags"
+    },
+    "dropzone": {
+        "changeFile": "Change Filessss",
+        "uploadClickCta": "Click to upload",
+        "ctaAlternative": "or drag and drop"
+    }
+}

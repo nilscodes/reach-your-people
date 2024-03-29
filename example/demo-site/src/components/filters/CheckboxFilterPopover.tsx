@@ -2,6 +2,7 @@ import { Popover } from '@chakra-ui/react';
 import CheckboxFilter, { FilterOption } from './CheckboxFilter';
 import { FilterPopoverButton, FilterPopoverContent } from './FilterPopover';
 import useFilterState from './useFilterState';
+import useTranslation from 'next-translate/useTranslation';
 
 export type FilterData = {
   defaultValue: string[];
@@ -13,9 +14,10 @@ export default function CheckboxFilterPopover({ filterData, onSubmit }: { filter
     defaultValue: filterData.defaultValue,
     onSubmit,
   });
+  const { t } = useTranslation('subscriptions');
   return (
     <Popover placement="bottom-start">
-      <FilterPopoverButton label="Type" />
+      <FilterPopoverButton label={t('typeFilterLabel')} />
       <FilterPopoverContent
         isCancelDisabled={!state.canCancel}
         onClickApply={state.onSubmit}

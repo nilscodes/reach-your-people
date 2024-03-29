@@ -9,6 +9,7 @@ import { BrowserWallet, Wallet } from '@meshsdk/core';
 import { useApi } from '@/contexts/ApiProvider';
 import { MdPhone } from 'react-icons/md';
 import PhoneVerification from './phone/PhoneVerification';
+import useTranslation from 'next-translate/useTranslation';
 
 type LinkedAccountsProps = {
   account: Account;
@@ -20,6 +21,7 @@ const isWalletExternalAccount = (type: string) => type === 'cardano';
 export default function LinkedAccounts({ account, linkedAccounts: linkedAccountsProp }: LinkedAccountsProps) {
   const api = useApi();
   const toast = useToast();
+  const { t } = useTranslation('accounts');
   const [linkedAccounts, setLinkedAccounts] = React.useState<GetLinkedExternalAccounts200ResponseInner[]>(linkedAccountsProp);
   const [showWalletConnection, setShowWalletConnection] = React.useState(false);
   const [showPhoneConnection, setShowPhoneConnection] = React.useState(false);
@@ -45,7 +47,7 @@ export default function LinkedAccounts({ account, linkedAccounts: linkedAccounts
     } catch (error) {
       // Show chakra ui error toast
       toast({
-        title: 'Could not get signature from wallet. The signing flow was cancelled.',
+        title: t('walletSignInCancelled'),
         status: "error",
         duration: 15000,
         isClosable: true,
@@ -77,7 +79,7 @@ export default function LinkedAccounts({ account, linkedAccounts: linkedAccounts
 
   return (<Container maxW="md" py={{ base: '12', md: '24' }}>
     <Stack spacing="8">
-      <Heading size={{ base: 'xs', md: 'sm' }}>Your Linked Accounts</Heading>
+      <Heading size={{ base: 'xs', md: 'sm' }}>{t('linkedAccounts')}</Heading>
       <Stack spacing="3">
         {linkedAccounts.map((linkedAccount) => {
             return (<LinkedAccount
@@ -90,7 +92,7 @@ export default function LinkedAccounts({ account, linkedAccounts: linkedAccounts
             />);
           })}
       </Stack>
-      <Heading size={{ base: 'xs', md: 'sm' }}>Connect additional accounts</Heading>
+      <Heading size={{ base: 'xs', md: 'sm' }}>{t('connectAccounts')}</Heading>
         {showWalletConnection && (<WalletLogin wallets={wallets} handleSignIn={handleWalletSignIn} onReturn={() => setShowWalletConnection(false)} />)}
         {showPhoneConnection && (<PhoneVerification onReturn={finalizePhoneAuth} />)}
         {!showWalletConnection && !showPhoneConnection && (<Stack spacing="3">
@@ -100,7 +102,7 @@ export default function LinkedAccounts({ account, linkedAccounts: linkedAccounts
             cursor="pointer"
             onClick={() => setShowWalletConnection(true)}
           >
-            Cardano Wallet
+            {t('cardanoWallet')}
           </Button>
           {!hasSms && <Button key="phone"
             variant="secondary"
@@ -108,7 +110,7 @@ export default function LinkedAccounts({ account, linkedAccounts: linkedAccounts
             cursor="pointer"
             onClick={() => setShowPhoneConnection(true)}
           >
-            Mobile Phone (SMS)
+            {t('mobilePhoneSms')}
           </Button>}
           {unlinkedProviders.map((provider) => {
               return (

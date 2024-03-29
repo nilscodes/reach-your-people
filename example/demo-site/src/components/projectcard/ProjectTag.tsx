@@ -4,8 +4,10 @@ import {
 import { MdApps, MdAssuredWorkload, MdBusiness, MdCurrencyExchange, MdOutlineError, MdWaterDrop } from 'react-icons/md';
 import { Tag, TagLabel, TagLeftIcon } from '@chakra-ui/react';
 import ProjectCategory from '@/lib/types/ProjectCategory';
+import useTranslation from 'next-translate/useTranslation';
 
 export default function ProjectTag({ category }: { category: ProjectCategory }) {
+  const { t } = useTranslation('common');
   let colorScheme;
   let icon;
   let tagText;
@@ -14,32 +16,32 @@ export default function ProjectTag({ category }: { category: ProjectCategory }) 
     case ProjectCategory.DeFi:
       icon = MdCurrencyExchange;
       colorScheme = 'green';
-      tagText = 'DeFi';
+      tagText = t('categories.defi.tag');
       break;
     case ProjectCategory.NFT:
       icon = FaStar;
       colorScheme = 'yellow';
-      tagText = 'NFT';
+      tagText = t('categories.nft.tag');
       break;
     case ProjectCategory.SPO:
       icon = MdWaterDrop;
       colorScheme = 'blue';
-      tagText = 'Stakepool';
+      tagText = t('categories.spo.tag');
       break;
     case ProjectCategory.dRep:
       icon = MdAssuredWorkload;
       colorScheme = 'purple';
-      tagText = 'dRep';
+      tagText = t('categories.drep.tag');
       break;
     case ProjectCategory.DAO:
       icon = MdBusiness;
       colorScheme = 'orange';
-      tagText = 'Decentralized Organization';
+      tagText = t('categories.dao.tag');
       break;
     case ProjectCategory.Other:
       icon = MdApps;
       colorScheme = 'red';
-      tagText = 'Other';
+      tagText = t('categories.other.tag');
       break;
     default:
       // Default case, if the category is not recognized
