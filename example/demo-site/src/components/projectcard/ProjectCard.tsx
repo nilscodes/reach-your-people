@@ -35,7 +35,7 @@ function formatISODateToCustomString(isoDateString: string) {
 }
 
 export default function ProjectCard({ account, project, subscription }: ProjectCardProps) {
-  const { t } = useTranslation('subscriptions');
+  const { t: tc } = useTranslation('common');
   const {
     name, tags, registrationTime,
   } = project;
@@ -60,7 +60,7 @@ export default function ProjectCard({ account, project, subscription }: ProjectC
             </HStack>)}
         </Stack>
 
-        <Text fontWeight="semibold" mt="8" mb="2">{t('project.tags')}</Text>
+        <Text fontWeight="semibold" mt="8" mb="2">{tc('project.tags')}</Text>
 
         <Wrap shouldWrapChildren>
           {category !== undefined && <ProjectTag category={category} />}

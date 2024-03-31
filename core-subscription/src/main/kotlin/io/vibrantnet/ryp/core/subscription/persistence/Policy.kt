@@ -2,11 +2,15 @@ package io.vibrantnet.ryp.core.subscription.persistence
 
 import io.hazelnet.cardano.connect.data.token.PolicyId
 import io.ryp.shared.model.PolicyDto
+import jakarta.persistence.Column
 import jakarta.persistence.Embeddable
 
 @Embeddable
 class Policy(
+    @Column(name = "name")
     var name: String,
+
+    @Column(name = "policy_id")
     var policyId: PolicyId,
 ) {
     fun toDto() = PolicyDto(

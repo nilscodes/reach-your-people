@@ -26,6 +26,7 @@ import useTranslation from 'next-translate/useTranslation'
     const { category, rootProps } = props;
     const router = useRouter();
     const { t } = useTranslation('subscriptions');
+    const { t: tc } = useTranslation('common');
     return (
       <Box
         position="relative"
@@ -62,10 +63,10 @@ import useTranslation from 'next-translate/useTranslation'
             <Stack spacing="5">
                 <Stack spacing="1">
                 <Heading fontSize="2xl" fontWeight="extrabold">
-                    {t(`categories.${category.type}.name`)}
+                    {tc(`categories.${category.type}.name`)}
                 </Heading>
                 <Text fontSize="lg" fontWeight="medium">
-                    {t(`categories.${category.type}.description`)}
+                    {tc(`categories.${category.type}.description`)}
                 </Text>
                 </Stack>
                 <HStack>
