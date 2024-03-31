@@ -117,7 +117,7 @@ export default function NFTConfiguration({ type, formData, onFormChange, onSubmi
                         justify="space-between"
                     >
                         <Box>
-                            <FormLabel variant="inline">{t('add.form.logo')}</FormLabel>
+                            <FormLabel variant="inline">{t('add.form.policyId')}</FormLabel>
                             <FormHelperText mt="0" color="fg.muted">
                                 {t('add.form.policyIdHelper')}
                             </FormHelperText>

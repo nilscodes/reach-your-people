@@ -16,13 +16,13 @@
             "name": "De-Fi",
             "tag": "De-Fi",
             "description": "Your fungibles, your control",
-            "createInfo": "Create and sell digital assets"
+            "createInfo": "Decentralized finance"
         },
         "nft": {
             "name": "NFT",
             "tag": "NFT",
             "description": "Stay up-to-date with your favorite JPGs",
-            "createInfo": "Decentralized finance"
+            "createInfo": "Create and sell digital assets"
         },
         "spo": {
             "name": "SPO",

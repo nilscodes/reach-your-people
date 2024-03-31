@@ -51,3 +51,12 @@ services:
 
     redisdata:
         container_name: ryp_redisinsight_prod
+
+
+
+    postgres:
+        container_name: ryp_postgres_prod
+        environment:
+            - POSTGRES_PASSWORD=
+        ports:
+            - "5434:5432"

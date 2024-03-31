@@ -42,12 +42,13 @@ dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
 	implementation("io.github.microutils:kotlin-logging-jvm:$loggingVersion")
-	implementation("com.h2database:h2")
+	implementation("org.postgresql:postgresql")
 	implementation(project(":core-api"))
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("io.projectreactor:reactor-test")
 	testImplementation("io.mockk:mockk:$mockkVersion")
 	testImplementation("nl.jqno.equalsverifier:equalsverifier:$equalsVerifierVersion")
+	testImplementation("com.h2database:h2")
 }
 
 allOpen {

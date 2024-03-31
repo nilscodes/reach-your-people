@@ -15,6 +15,7 @@ class LinkedExternalAccount(
     var linkTime: OffsetDateTime = OffsetDateTime.now(),
 
     @Column(name = "role")
+    @Enumerated(EnumType.ORDINAL)
     var role: LinkedExternalAccountDto.ExternalAccountRole,
 ) {
 
