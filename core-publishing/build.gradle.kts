@@ -26,6 +26,7 @@ jacoco {
 val loggingVersion: String by rootProject.extra
 val mockkVersion: String by rootProject.extra
 val equalsVerifierVersion: String by rootProject.extra
+val embeddedMongoVersion = "4.12.2"
 
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-actuator")
@@ -33,6 +34,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-validation")
 	implementation("org.springframework.boot:spring-boot-starter-amqp")
 	implementation("org.springframework.boot:spring-boot-starter-data-redis")
+	implementation("org.springframework.boot:spring-boot-starter-data-mongodb-reactive")
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
@@ -43,6 +45,8 @@ dependencies {
 	testImplementation("io.projectreactor:reactor-test")
 	testImplementation("io.mockk:mockk:$mockkVersion")
 	testImplementation("nl.jqno.equalsverifier:equalsverifier:$equalsVerifierVersion")
+	testImplementation("de.flapdoodle.embed:de.flapdoodle.embed.mongo:$embeddedMongoVersion")
+
 }
 
 tasks.withType<KotlinCompile> {
