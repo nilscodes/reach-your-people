@@ -60,3 +60,6 @@ services:
             - POSTGRES_PASSWORD=
         ports:
             - "5434:5432"
+
+    mongo:
+        container_name: ryp_mongo_prod

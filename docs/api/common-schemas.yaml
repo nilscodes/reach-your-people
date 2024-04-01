@@ -53,6 +53,14 @@ components:
         type: integer
         format: int64
       description: The numeric ID of a Project
+    announcementId:
+      name: announcementId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: The UUID of an announcement
   schemas:
     Project:
       type: object

@@ -1,6 +1,7 @@
 package io.vibrantnet.ryp.core.publishing.service
 
 import io.ryp.shared.model.BasicAnnouncementDto
+import io.vibrantnet.ryp.core.publishing.model.AnnouncementDto
 import reactor.core.publisher.Mono
 
 fun interface AnnouncementsApiService {
@@ -14,5 +15,5 @@ fun interface AnnouncementsApiService {
      * @return
      * @see AnnouncementsApi#publishAnnouncementForProject
      */
-    fun publishAnnouncementForProject(projectId: Long, announcement: BasicAnnouncementDto): Mono<Unit>
+    fun publishAnnouncementForProject(projectId: Long, announcement: BasicAnnouncementDto): Mono<AnnouncementDto>
 }

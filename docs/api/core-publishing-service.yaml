@@ -16,13 +16,15 @@ servers:
   - url: 'http://localhost:8072'
     description: Local Build
 paths:
-  '/announcements/{projectId}':
+  '/projects/{projectId}/announcements':
     parameters:
       - $ref: ./common-schemas.yaml#/components/parameters/projectId
     post:
       summary: Publish new announcement for a specific project
       tags: []
-      responses: {}
+      responses:
+        '201':
+          description: Created
       operationId: publishAnnouncementForProject
       x-stoplight:
         id: pdvltrzrnflha
@@ -67,6 +69,16 @@ paths:
             schema:
               $ref: '#/components/schemas/BasicAnnouncement'
       description: 'Publish an announcement for a project, token policy, SPO, dRep or social media account to all verified holders that have subscribed to updates, without exposing any social media or messaging identifiers to the publisher.'
+  '/announcements/{announcementId}':
+    parameters:
+      - $ref: ./common-schemas.yaml#/components/parameters/announcementId
+    get:
+      summary: Get announcement by ID
+      tags: []
+      responses: {}
+      operationId: getAnnouncementById
+      x-stoplight:
+        id: 2bracyiadlely
 tags:
   - name: publishing
     description: Related to publishing content for subscribers
@@ -102,3 +114,34 @@ components:
           type: string
           x-stoplight:
             id: zwxkh3my3ukke
+    Announcement:
+      title: Announcement
+      x-stoplight:
+        id: tn0kcqwaq5n3i
+      type: object
+      required:
+        - id
+        - projectId
+        - announcement
+      properties:
+        id:
+          type: string
+          format: uuid
+          x-stoplight:
+            id: 59y15mti42gy0
+        projectId:
+          type: integer
+          format: int64
+        announcement:
+          $ref: ./common-schemas.yaml#/components/schemas/ActivityStreamsAnnouncement
+          x-stoplight:
+            id: fmyvypl0l0lq2
+        status:
+          x-stoplight:
+            id: ip54hu9noazge
+          enum:
+            - PREPARED
+            - PENDING
+            - PUBLISHING
+            - PUBLISHED
+            - CANCELLED

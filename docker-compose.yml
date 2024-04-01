@@ -75,3 +75,8 @@ services:
             options:
                 max-size: "200k"
                 max-file: "10"
+
+    mongo:
+        image: mongo:latest
+        volumes:
+            - ./.docker-data/mongo/db:/data/db
