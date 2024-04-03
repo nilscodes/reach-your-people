@@ -3,8 +3,9 @@ package io.vibrantnet.ryp.core.publishing.service
 import io.ryp.shared.model.BasicAnnouncementDto
 import io.vibrantnet.ryp.core.publishing.model.AnnouncementDto
 import reactor.core.publisher.Mono
+import java.util.*
 
-fun interface AnnouncementsApiService {
+interface AnnouncementsApiService {
 
     /**
      * POST /announcements/{projectId} : Publish new announcement for a specific project
@@ -16,4 +17,13 @@ fun interface AnnouncementsApiService {
      * @see AnnouncementsApi#publishAnnouncementForProject
      */
     fun publishAnnouncementForProject(projectId: Long, announcement: BasicAnnouncementDto): Mono<AnnouncementDto>
+
+    /**
+     * GET /announcements/{announcementId} : Get announcement by ID
+     *
+     * @param announcementId The UUID of an announcement (required)
+     * @return
+     * @see AnnouncementsApi#getAnnouncementById
+     */
+    fun getAnnouncementById(announcementId: UUID): Mono<AnnouncementDto>
 }

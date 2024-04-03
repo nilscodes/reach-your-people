@@ -246,7 +246,7 @@ export type PublishAnnouncementForProjectRequestActorTypeEnum = typeof PublishAn
 export const DefaultApiAxiosParamCreator = function (configuration?: Configuration) {
     return {
         /**
-         * 
+         * Get an announcement and its details and status by announcement UUID
          * @summary Get announcement by ID
          * @param {string} announcementId The UUID of an announcement
          * @param {*} [options] Override http request option.
@@ -330,13 +330,13 @@ export const DefaultApiFp = function(configuration?: Configuration) {
     const localVarAxiosParamCreator = DefaultApiAxiosParamCreator(configuration)
     return {
         /**
-         * 
+         * Get an announcement and its details and status by announcement UUID
          * @summary Get announcement by ID
          * @param {string} announcementId The UUID of an announcement
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getAnnouncementById(announcementId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+        async getAnnouncementById(announcementId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Announcement>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.getAnnouncementById(announcementId, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['DefaultApi.getAnnouncementById']?.[localVarOperationServerIndex]?.url;
@@ -367,13 +367,13 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
     const localVarFp = DefaultApiFp(configuration)
     return {
         /**
-         * 
+         * Get an announcement and its details and status by announcement UUID
          * @summary Get announcement by ID
          * @param {string} announcementId The UUID of an announcement
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getAnnouncementById(announcementId: string, options?: any): AxiosPromise<void> {
+        getAnnouncementById(announcementId: string, options?: any): AxiosPromise<Announcement> {
             return localVarFp.getAnnouncementById(announcementId, options).then((request) => request(axios, basePath));
         },
         /**
@@ -398,7 +398,7 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
  */
 export class DefaultApi extends BaseAPI {
     /**
-     * 
+     * Get an announcement and its details and status by announcement UUID
      * @summary Get announcement by ID
      * @param {string} announcementId The UUID of an announcement
      * @param {*} [options] Override http request option.

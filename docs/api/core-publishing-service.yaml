@@ -75,10 +75,17 @@ paths:
     get:
       summary: Get announcement by ID
       tags: []
-      responses: {}
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Announcement'
       operationId: getAnnouncementById
       x-stoplight:
         id: 2bracyiadlely
+      description: Get an announcement and its details and status by announcement UUID
 tags:
   - name: publishing
     description: Related to publishing content for subscribers
