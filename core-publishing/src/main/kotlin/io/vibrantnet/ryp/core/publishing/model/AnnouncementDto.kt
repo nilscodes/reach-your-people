@@ -23,5 +23,6 @@ enum class AnnouncementStatus {
     PENDING, // Can be sent immediately
     PUBLISHING, // Currently sending
     PUBLISHED, // Fully sent
+    FAILED, // Error during publishing
     CANCELLED, // Cancelled before or during publishing
 }

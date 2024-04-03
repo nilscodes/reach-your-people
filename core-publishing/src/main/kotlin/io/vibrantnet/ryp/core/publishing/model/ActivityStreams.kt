@@ -1,5 +1,6 @@
 package io.vibrantnet.ryp.core.publishing.model
 
+import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonTypeInfo
@@ -15,18 +16,20 @@ sealed class ActivityStreamsObject
 @JsonTypeName("Person")
 data class Person(
     val name: String,
-    val url: String,
+    val id: String,
 ) : ActivityStreamsObject()
 
 @JsonTypeName("Organization")
 data class Organization(
     val name: String,
-    val url: String,
+    val id: String,
 ) : ActivityStreamsObject()
 
 @JsonTypeName("Note")
 data class Note(
     val content: String,
+    val summary: String?,
+    val url: String?,
 ) : ActivityStreamsObject()
 
 @JsonTypeName("Event")
@@ -51,4 +54,7 @@ data class ActivityStream(
     val type: String = "Announce",
     val actor: ActivityStreamsObject,
     val `object`: ActivityStreamsObject,
+    val attributedTo: ActivityStreamsObject? = null,
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssZ", timezone = "UTC")
+    val published: ZonedDateTime = ZonedDateTime.now(),
 )

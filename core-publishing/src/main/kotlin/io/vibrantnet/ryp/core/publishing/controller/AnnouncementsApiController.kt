@@ -3,16 +3,16 @@ package io.vibrantnet.ryp.core.publishing.controller
 import io.ryp.shared.model.BasicAnnouncementDto
 import io.vibrantnet.ryp.core.publishing.model.AnnouncementDto
 import io.vibrantnet.ryp.core.publishing.service.AnnouncementsApiService
-import org.springframework.web.bind.annotation.*
-import org.springframework.validation.annotation.Validated
-import org.springframework.beans.factory.annotation.Autowired
-
 import jakarta.validation.Valid
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.validation.annotation.Validated
+import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ServerWebExchange
 import org.springframework.web.util.UriComponentsBuilder
 import reactor.core.publisher.Mono
+import java.util.UUID
 
 @RestController
 @Validated
@@ -42,6 +42,14 @@ class AnnouncementsApiController(@Autowired val service: AnnouncementsApiService
                     .body(savedEntity)
             }
     }
+
+    @RequestMapping(
+        method = [RequestMethod.GET],
+        value = ["/announcements/{announcementId}"],
+        produces = ["application/json"]
+    )
+    @ResponseStatus(HttpStatus.OK)
+    fun getAnnouncementById(@PathVariable("announcementId") announcementId: UUID) = service.getAnnouncementById(announcementId)
 
 
 }

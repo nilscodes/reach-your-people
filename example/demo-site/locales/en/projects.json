@@ -13,6 +13,7 @@
     "publishAnnouncementDescription": "Give us your announcement details to publish it.",
     "publishAnnouncementButton": "Publish Announcement",
     "editProjectButton": "Edit",
+    "sourceUrl": "Source",
     "publish": {
         "form": {
             "title": "Title",

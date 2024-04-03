@@ -16,6 +16,9 @@
     "rgx:^/projects": [
       "projects"
     ],
+    "rgx:^/announcements": [
+      "projects"
+    ],
     "/dashboard": [
       "accounts"
     ],

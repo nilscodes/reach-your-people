@@ -3,22 +3,17 @@ import {
   Box,
   Button,
   Container,
-  Divider,
   FormControl,
   FormLabel,
-  Heading,
   Input,
-  ListItem,
-  OrderedList,
   Stack,
   StackDivider,
-  Text,
   Textarea,
-  UnorderedList,
 } from '@chakra-ui/react';
 import { AnnouncementFormData } from './PublishAnnouncement';
 import Markdown from 'react-markdown';
 import useTranslation from 'next-translate/useTranslation';
+import { components } from '../chakraMarkdownComponents';
 
 
 interface AnnouncementFormProps {
@@ -26,16 +21,6 @@ interface AnnouncementFormProps {
   onFormChange: (field: keyof AnnouncementFormData, value: string) => void;
   onSubmit: () => void;
 }
-
-const components = {
-  h1: (props: any) => <Heading as="h1" size="lg" {...props} />,
-  h2: (props: any) => <Heading as="h2" size="md" {...props} />,
-  h3: (props: any) => <Heading as="h3" size="sm" {...props} />,
-  p: (props: any) => <Text {...props} py={2} />,
-  ol: (props: any) => <OrderedList {...props} />,
-  ul: (props: any) => <UnorderedList {...props} />,
-  li: (props: any) => <ListItem {...props} />,
-};
 
 export default function PublishAnnouncementForm({ formData, onFormChange, onSubmit }: AnnouncementFormProps) {
   const [content, setContent] = useState(formData.content);

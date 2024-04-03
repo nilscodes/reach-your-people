@@ -60,13 +60,19 @@ class AnnouncementsApiServiceVibrant(
             announcementId.toString(),
             projectId,
             ActivityStream(
-                id = "https://ryp.vibrantnet.io/announcements/${announcementId}",
+                id = "https://ryp.vibrantnet.io/announcements/$announcementId",
                 actor = Person(
                     name = announcement.author.toString(),
-                    url = "https://ryp.vibrantnet.io/users/${announcement.author}"
+                    id = "https://ryp.vibrantnet.io/users/${announcement.author}"
                 ),
                 `object` = Note(
-                    content = announcement.content
+                    content = announcement.content,
+                    summary = announcement.title,
+                    url = announcement.link
+                ),
+                attributedTo = Organization(
+                    name = "RYP Project $projectId",
+                    id = "https://ryp.vibrantnet.io/projects/$projectId"
                 )
             ),
             AnnouncementStatus.PENDING,
@@ -113,17 +119,36 @@ class AnnouncementsApiServiceVibrant(
         val recipientsRaw = redisTemplate.opsForList().range("announcements:${announcementJob.announcementId}", 0, -1)
         val recipients = recipientsRaw?.map { objectMapper.convertValue(it, AnnouncementRecipientDto::class.java) } ?: emptyList()
         logger.info { "Sending announcement ${announcementJob.announcementId} for project ${announcementJob.projectId} to ${recipients.size} subscribers" }
-        val announcementRaw = redisTemplate.opsForValue()["announcementsdata:${announcementJob.announcementId}"]
-        val announcement = objectMapper.convertValue(announcementRaw, BasicAnnouncementDto::class.java)
-        recipients.forEach { recipient ->
-            rabbitTemplate.convertAndSend(recipient.type, MessageDto(
-                recipient.referenceId,
-                announcement
-            ))
-         }
-        redisTemplate.delete("announcements:${announcementJob.announcementId}")
-        redisTemplate.delete("announcementsdata:${announcementJob.announcementId}")
-        announcementUpdateService.updateAnnouncementStatus(announcementJob.announcementId.toString(), AnnouncementStatus.PUBLISHED)
-            .subscribe()
+        try {
+            val announcementRaw = redisTemplate.opsForValue()["announcementsdata:${announcementJob.announcementId}"]
+            val announcement = objectMapper.convertValue(announcementRaw, BasicAnnouncementDto::class.java)
+            recipients.forEach { recipient ->
+                rabbitTemplate.convertAndSend(
+                    recipient.type, MessageDto(
+                        recipient.referenceId,
+                        announcement
+                    )
+                )
+            }
+            redisTemplate.delete("announcements:${announcementJob.announcementId}")
+            redisTemplate.delete("announcementsdata:${announcementJob.announcementId}")
+            announcementUpdateService.updateAnnouncementStatus(
+                announcementJob.announcementId.toString(),
+                AnnouncementStatus.PUBLISHED
+            )
+                .subscribe()
+        } catch (e: Exception) {
+            logger.error(e) { "Failed to send announcement ${announcementJob.announcementId} for project ${announcementJob.projectId}" }
+            announcementUpdateService.updateAnnouncementStatus(
+                announcementJob.announcementId.toString(),
+                AnnouncementStatus.FAILED
+            )
+                .subscribe()
+        }
+    }
+
+    override fun getAnnouncementById(announcementId: UUID): Mono<AnnouncementDto> {
+        return announcementsRepository.findById(announcementId.toString())
+            .map { AnnouncementDto(UUID.fromString(it.id), it.projectId, it.announcement, it.status) }
     }
 }
