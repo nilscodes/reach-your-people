@@ -14,13 +14,13 @@
     "codeInvalidDigitDescription": "Only numeric values are allowed.",
     "verifyingCode": "Verifying: {{phoneNumber}}",
     "changePhoneNumber": "Change Number",
-    "sendCode": "Send Code",
+    "sendVerificationCode": "Verify",
     "phoneCodeIncorrectDescription": "The code you entered was not correct. Please try again.",
     "country": "Country",
     "countrySelectOption": "{{country}} (+{{code}})",
     "phoneNumber": "Phone Number",
     "phoneNumberPlaceholder": "Enter your phone number",
-    "sendPhoneCode": "Send Verification Code",
+    "sendPhoneCode": "Send verification code",
     "phoneSubscriptionLegal": "By entering your number, you agree to our Terms of Service and Privacy Policy. Message and data rates may apply.",
 
     "countries": {

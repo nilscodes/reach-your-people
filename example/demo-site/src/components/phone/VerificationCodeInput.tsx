@@ -5,13 +5,14 @@ import useTranslation from 'next-translate/useTranslation';
 type VerificationCodeInputProps = {
   phoneNumber: string;
   onGoBack: () => void;
-  onSubmit: (code: string) => void;
+  onSubmit: (code: string) => Promise<void>;
 };
 
 export default function VerificationCodeInput({ phoneNumber, onGoBack, onSubmit }: VerificationCodeInputProps) {
   const toast = useToast();
   const { t } = useTranslation('accounts');
   const [code, setCode] = useState(new Array(6).fill(''));
+  const [isSending, setIsSending] = useState(false); // Add a loading state for the button
   const inputsRef = useRef<(HTMLInputElement | null)[]>([]);
   const isCodeComplete = code.every((digit) => digit.trim() !== '');
 
@@ -30,8 +31,13 @@ export default function VerificationCodeInput({ phoneNumber, onGoBack, onSubmit 
 
     const fullCode = newCode.join('');
     if (fullCode.length === 6 && index === 5) {
-      onSubmit(fullCode);
+      sendCode(fullCode);
     }
+  };
+
+  const sendCode = (fullCode: string) => {
+    setIsSending(true);
+    onSubmit(fullCode).finally(() => setIsSending(false));
   };
 
   useEffect(() => {
@@ -76,8 +82,8 @@ export default function VerificationCodeInput({ phoneNumber, onGoBack, onSubmit 
           />
         ))}
       </HStack>
-      <Button isDisabled={!isCodeComplete} width="full" onClick={() => onSubmit(code.join(''))}>
-        {t('sendCode')}
+      <Button isDisabled={!isCodeComplete && !isSending} width="full" onClick={() => sendCode(code.join(''))} isLoading={isSending}>
+        {t('sendVerificationCode')}
       </Button>
     </VStack>
   );
