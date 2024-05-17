@@ -48,6 +48,20 @@ services:
                 max-size: "100m"
                 max-file: "10"
 
+    integration-twilio:
+        image: registry.gitlab.com/vibrantnet/ryp/integration-twilio:latest
+        restart: on-failure
+        environment:
+            - RABBITMQ_USER=ryp
+            - RABBITMQ_HOST=rabbitmq
+        ports:
+            - "3010:3000"
+        logging:
+            driver: "json-file"
+            options:
+                max-size: "100m"
+                max-file: "10"
+
     rabbitmq:
         image: rabbitmq:3-management
         environment:
