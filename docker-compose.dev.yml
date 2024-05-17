@@ -36,6 +36,15 @@ services:
         environment:
             - RABBITMQ_PASSWORD=
 
+    integration-twilio:
+        image: integration-twilio:latest
+        container_name: integration_twilio_dev
+        environment:
+            - RABBITMQ_PASSWORD=
+            - TWILIO_ACCOUNT_SID=
+            - TWILIO_AUTH_TOKEN=
+            - TWILIO_VERIFY_SERVICE_SID=
+
     rabbitmq:
         container_name: ryp_rabbitmq_dev
         environment:
