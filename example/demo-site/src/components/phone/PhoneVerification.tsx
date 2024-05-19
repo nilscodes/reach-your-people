@@ -33,26 +33,30 @@ export default function PhoneVerification({ onReturn }: PhoneVerificationProps) 
   }
 
   const handleVerificationSubmit = async (code: string) => {
-    try {
-      const verification = await api.verifyPhoneCode(fullPhoneNumber.replace(/[^+\d]/g, ''), code);
-      if (verification === 'approved') {
-        toast({
-          title: t('phoneVerified'),
-          status: 'success',
-          duration: 5000,
-          isClosable: true,
-        });
-        onReturn()
-        return;
+    return new Promise<void>(async (resolve, reject) => {
+      try {
+        const verification = await api.verifyPhoneCode(fullPhoneNumber.replace(/[^+\d]/g, ''), code);
+        if (verification === 'approved') {
+          toast({
+            title: t('phoneVerified'),
+            status: 'success',
+            duration: 5000,
+            isClosable: true,
+          });
+          onReturn()
+          resolve();
+          return;
+        }
+      } catch (error) {
       }
-    } catch (error) {
-    }
-    toast({
-      title: t('phoneCodeIncorrect'),
-      description: t('phoneCodeIncorrectDescription'),
-      status: 'error',
-      duration: 5000,
-      isClosable: true,
+      toast({
+        title: t('phoneCodeIncorrect'),
+        description: t('phoneCodeIncorrectDescription'),
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      });
+      reject(t('phoneCodeIncorrect'));      
     });
   };
 
