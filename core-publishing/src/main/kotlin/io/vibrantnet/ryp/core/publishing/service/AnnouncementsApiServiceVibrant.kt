@@ -33,8 +33,8 @@ class AnnouncementsApiServiceVibrant(
         announcement: BasicAnnouncementDto
     ): Mono<AnnouncementDto> {
         val linkedAccountsForAuthor = subscriptionService.getLinkedExternalAccounts(announcement.author)
-        val announcementId = UUID.randomUUID()
-        val persistedAnnouncement = createAnnouncement(announcement, announcementId, projectId)
+        val announcementWithId = announcement.toBasicAnnouncementWithIdDto(UUID.randomUUID())
+        val persistedAnnouncement = createAnnouncement(announcementWithId, projectId)
         return persistedAnnouncement.doOnSuccess {
             subscriptionService.getProject(projectId)
                 .flatMap { project ->
@@ -45,22 +45,21 @@ class AnnouncementsApiServiceVibrant(
                         }
                         .any { it } // If any of the verifications succeeded
                         .flatMap { verified ->
-                            checkVerificationStatusAndPublish(verified, announcementId, announcement, projectId)
+                            checkVerificationStatusAndPublish(verified, announcementWithId, projectId)
                         }
                 }.subscribe()
-        }.map { AnnouncementDto(announcementId, it.projectId, it.announcement, it.status) }
+        }.map { AnnouncementDto(announcementWithId.id, it.projectId, it.announcement, it.status) }
     }
 
     private fun createAnnouncement(
-        announcement: BasicAnnouncementDto,
-        announcementId: UUID,
+        announcement: BasicAnnouncementWithIdDto,
         projectId: Long
     ): Mono<Announcement> {
         val announcementToStore = Announcement(
-            announcementId.toString(),
+            announcement.id.toString(),
             projectId,
             ActivityStream(
-                id = "https://ryp.vibrantnet.io/announcements/$announcementId",
+                id = "https://ryp.vibrantnet.io/announcements/${announcement.id}",
                 actor = Person(
                     name = announcement.author.toString(),
                     id = "https://ryp.vibrantnet.io/users/${announcement.author}"
@@ -95,19 +94,18 @@ class AnnouncementsApiServiceVibrant(
 
     private fun checkVerificationStatusAndPublish(
         verified: Boolean,
-        announcementId: UUID,
-        announcement: BasicAnnouncementDto,
+        announcement: BasicAnnouncementWithIdDto,
         projectId: Long,
     ): Mono<Unit> = if (!verified) {
         Mono.error(UserNotAuthorizedToPublishException("User with account ID ${announcement.author} is not authorized to publish announcements for project $projectId"))
     } else {
         val announcementJob = AnnouncementJobDto(
             projectId,
-            announcementId,
+            announcement.id,
         )
 
-        logger.info { "Publishing announcement ${announcementId} for project $projectId" }
-        redisTemplate.opsForValue().set("announcementsdata:${announcementId}", announcement, 48, java.util.concurrent.TimeUnit.HOURS)
+        logger.info { "Publishing announcement ${announcement.id} for project $projectId" }
+        redisTemplate.opsForValue().set("announcementsdata:${announcement.id}", announcement, 48, java.util.concurrent.TimeUnit.HOURS)
         rabbitTemplate.convertAndSend("announcements", announcementJob)
         Mono.empty()
     }
@@ -121,12 +119,13 @@ class AnnouncementsApiServiceVibrant(
         logger.info { "Sending announcement ${announcementJob.announcementId} for project ${announcementJob.projectId} to ${recipients.size} subscribers" }
         try {
             val announcementRaw = redisTemplate.opsForValue()["announcementsdata:${announcementJob.announcementId}"]
-            val announcement = objectMapper.convertValue(announcementRaw, BasicAnnouncementDto::class.java)
+            val announcement = objectMapper.convertValue(announcementRaw, BasicAnnouncementWithIdDto::class.java)
             recipients.forEach { recipient ->
                 rabbitTemplate.convertAndSend(
                     recipient.type, MessageDto(
                         recipient.referenceId,
-                        announcement
+                        announcement,
+                        recipient.metadata,
                     )
                 )
             }

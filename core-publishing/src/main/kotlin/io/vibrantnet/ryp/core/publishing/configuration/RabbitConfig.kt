@@ -21,5 +21,8 @@ class RabbitConfig {
     fun smsQueue() = Queue("sms")
 
     @Bean
+    fun pushApiQueue() = Queue("pushapi")
+
+    @Bean
     fun messageConverter() = Jackson2JsonMessageConverter()
 }

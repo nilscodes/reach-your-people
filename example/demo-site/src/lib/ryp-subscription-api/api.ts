@@ -103,6 +103,12 @@ export interface CreateExternalAccountRequest {
      * @memberof CreateExternalAccountRequest
      */
     'displayName'?: string;
+    /**
+     * Any additional metadata for the external account (like a Push API subscription JSON blob), binary data encoded as base64.
+     * @type {string}
+     * @memberof CreateExternalAccountRequest
+     */
+    'metadata'?: string;
 }
 /**
  * An explicit subscription to a single project and an associated status

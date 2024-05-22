@@ -45,6 +45,16 @@ services:
             - TWILIO_AUTH_TOKEN=
             - TWILIO_VERIFY_SERVICE_SID=
 
+    integration-webpush:
+
+        container_name: integration_webpush_prod
+        environment:
+            - RABBITMQ_PASSWORD=
+            - VAPID_PUBLIC_KEY=
+            - VAPID_PRIVATE_KEY=
+            - VAPID_SUBJECT=
+            - PUBLIC_RYP_SITE=
+
     rabbitmq:
         container_name: ryp_rabbitmq_prod
         environment:

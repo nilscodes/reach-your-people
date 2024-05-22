@@ -7,6 +7,7 @@ import io.ryp.shared.model.SnapshotRequestDto
 import io.ryp.shared.model.TokenOwnershipInfoWithAssetCount
 import io.vibrantnet.ryp.core.subscription.model.SubscriptionStatus
 import io.vibrantnet.ryp.core.subscription.persistence.AccountRepository
+import io.vibrantnet.ryp.core.subscription.persistence.ExternalAccount
 import io.vibrantnet.ryp.core.subscription.persistence.ExternalAccountCustomRepository
 import jakarta.transaction.Transactional
 import mu.KotlinLogging
@@ -14,6 +15,7 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener
 import org.springframework.amqp.rabbit.core.RabbitTemplate
 import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.stereotype.Service
+import java.util.*
 
 val logger = KotlinLogging.logger {}
 
@@ -51,13 +53,23 @@ class SubscriptionServiceVibrant(
             projectId = projectId,
             status = SubscriptionStatus.SUBSCRIBED
         ).map {
-            AnnouncementRecipientDto(
-                type = it.type,
-                referenceId = it.referenceId
-            )
+            announcementRecipientDtoFromExternalAccount(it)
         }
         return recipients
     }
+
+    private fun announcementRecipientDtoFromExternalAccount(it: ExternalAccount) =
+        AnnouncementRecipientDto(
+            type = it.type,
+            referenceId = it.referenceId,
+            metadata = it.metadata.let { metadata ->
+                if (metadata != null) {
+                    Base64.getEncoder().encodeToString(metadata)
+                } else {
+                    null
+                }
+            },
+        )
 
     @RabbitListener(queues = ["snapshotcompleted"])
     fun processSnapshotCompleted(announcementJob: AnnouncementJobDto) {
@@ -68,10 +80,7 @@ class SubscriptionServiceVibrant(
         }
         val externalAccounts = externalAccountCustomRepository.findEligibleExternalAccounts(1, snapshotData.map { it.stakeAddress })
         val recipients = externalAccounts.map {
-            AnnouncementRecipientDto(
-                type = it.type,
-                referenceId = it.referenceId
-            )
+            announcementRecipientDtoFromExternalAccount(it)
         }.toMutableSet()
         recipients.addAll(getExplicitlySubscribedAccounts(announcementJob.projectId))
         if (recipients.isEmpty()) {

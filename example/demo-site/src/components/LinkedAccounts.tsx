@@ -7,9 +7,10 @@ import { LinkedAccount } from './LinkedAccount';
 import WalletLogin from './WalletLogin';
 import { BrowserWallet, Wallet } from '@meshsdk/core';
 import { useApi } from '@/contexts/ApiProvider';
-import { MdPhone } from 'react-icons/md';
+import { MdPhone, MdWeb } from 'react-icons/md';
 import PhoneVerification from './phone/PhoneVerification';
 import useTranslation from 'next-translate/useTranslation';
+import PushApiVerification from './pushapi/PushApiVerification';
 
 type LinkedAccountsProps = {
   account: Account;
@@ -25,6 +26,7 @@ export default function LinkedAccounts({ account, linkedAccounts: linkedAccounts
   const [linkedAccounts, setLinkedAccounts] = React.useState<GetLinkedExternalAccounts200ResponseInner[]>(linkedAccountsProp);
   const [showWalletConnection, setShowWalletConnection] = React.useState(false);
   const [showPhoneConnection, setShowPhoneConnection] = React.useState(false);
+  const [showPushApiConnection, setShowPushApiConnection] = React.useState(false);
   const [wallets, setWallets] = useState<Wallet[]>([]);
 
   const handleSignIn = (provider: string) => {
@@ -73,9 +75,18 @@ export default function LinkedAccounts({ account, linkedAccounts: linkedAccounts
     setLinkedAccounts(await api.getLinkedExternalAccounts());
   };
 
+  const finalizePushApi = async () => {
+    setShowPushApiConnection(false);
+    setLinkedAccounts(await api.getLinkedExternalAccounts());
+  }
+
+  const isNonSocialAccount = (type: string) => ['sms', 'pushapi'].includes(type);
+
   const canRemove = linkedAccounts.filter((linkedAccount) => providerList.some((provider) => provider.id === linkedAccount.externalAccount.type)).length > 1;
   const unlinkedProviders = providersConfig.filter((provider) => !linkedAccounts.some((linkedAccount) => linkedAccount.externalAccount.type === provider.id));
   const hasSms = linkedAccounts.some((linkedAccount) => linkedAccount.externalAccount.type === 'sms');
+  const hasPushApi = linkedAccounts.some((linkedAccount) => linkedAccount.externalAccount.type === 'pushapi');
+  const showSocialConnections = !showWalletConnection && !showPhoneConnection && !showPushApiConnection;
 
   return (<Container maxW="md" py={{ base: '12', md: '24' }}>
     <Stack spacing="8">
@@ -87,7 +98,7 @@ export default function LinkedAccounts({ account, linkedAccounts: linkedAccounts
               linkedAccount={linkedAccount}
               icon={providerList.find((provider) => provider.id === linkedAccount.externalAccount.type)?.Component || <CardanoIcon />}
               showUrl
-              canRemove={canRemove || (isWalletExternalAccount(linkedAccount.externalAccount.type) && linkedAccounts.length > 1)}
+              canRemove={canRemove || (isWalletExternalAccount(linkedAccount.externalAccount.type) && linkedAccounts.length > 1) || isNonSocialAccount(linkedAccount.externalAccount.type)}
               onRemove={unlinkExternalAccount}
             />);
           })}
@@ -95,7 +106,8 @@ export default function LinkedAccounts({ account, linkedAccounts: linkedAccounts
       <Heading size={{ base: 'xs', md: 'sm' }}>{t('connectAccounts')}</Heading>
         {showWalletConnection && (<WalletLogin wallets={wallets} handleSignIn={handleWalletSignIn} onReturn={() => setShowWalletConnection(false)} />)}
         {showPhoneConnection && (<PhoneVerification onReturn={finalizePhoneAuth} />)}
-        {!showWalletConnection && !showPhoneConnection && (<Stack spacing="3">
+        {showPushApiConnection && (<PushApiVerification onReturn={finalizePushApi} />)}
+        {showSocialConnections && (<Stack spacing="3">
           <Button key="cardano"
             variant="secondary"
             leftIcon={<CardanoIcon />}
@@ -111,6 +123,14 @@ export default function LinkedAccounts({ account, linkedAccounts: linkedAccounts
             onClick={() => setShowPhoneConnection(true)}
           >
             {t('mobilePhoneSms')}
+          </Button>}
+          {!hasPushApi && <Button key="pushapi"
+            variant="secondary"
+            leftIcon={<MdWeb />}
+            cursor="pointer"
+            onClick={() => setShowPushApiConnection(true)}
+          >
+            {t('pushApi')}
           </Button>}
           {unlinkedProviders.map((provider) => {
               return (
