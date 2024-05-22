@@ -333,6 +333,13 @@ components:
           type: string
           x-stoplight:
             id: h1ax74cglex3v
+        metadata:
+          type: string
+          contentEncoding: base64
+          description: 'Any additional metadata for the external account (like a Push API subscription JSON blob), binary data encoded as base64.'
+          x-stoplight:
+            id: i8ywnhabtzc9w
+          writeOnly: true
     LinkedExternalAccount:
       type: object
       required:

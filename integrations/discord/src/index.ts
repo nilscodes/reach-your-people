@@ -18,6 +18,7 @@ client.on('ready', () => {
 client.login(process.env.TOKEN);
 
 type BasicAnnouncementDto = {
+  id: string;
   author: number;
   title: string;
   content: string;

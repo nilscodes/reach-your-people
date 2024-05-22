@@ -60,6 +60,10 @@ export class RypSiteApi {
     return (await axios.post(`${this.baseUrl}/account/phone/verify`, { phoneNumber, code })).data;
   }
 
+  async linkPushApiSubscription(subscription: any, displayName: string): Promise<void> {
+    return (await axios.post(`${this.baseUrl}/account/pushapi/register`, { subscription, displayName })).data;
+  }
+
   async getLinkedExternalAccounts(): Promise<GetLinkedExternalAccounts200ResponseInner[]> {
     return (await axios.get(`${this.baseUrl}/account/externalaccounts`)).data;
   }

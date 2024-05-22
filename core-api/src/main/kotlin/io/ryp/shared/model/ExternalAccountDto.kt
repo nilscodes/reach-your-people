@@ -1,6 +1,7 @@
 package io.ryp.shared.model
 
 import com.fasterxml.jackson.annotation.JsonCreator
+import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
 import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Size
@@ -30,4 +31,8 @@ data class ExternalAccountDto @JsonCreator constructor(
     @field:NotNull
     @field:Size(min = 1, max = 64)
     val type: String,
+
+    @JsonProperty("metadata")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    val metadata: String? = null,
 )

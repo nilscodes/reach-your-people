@@ -62,6 +62,18 @@ services:
                 max-size: "100m"
                 max-file: "10"
 
+    integration-webpush:
+        image: registry.gitlab.com/vibrantnet/ryp/integration-webpush:latest
+        restart: on-failure
+        environment:
+            - RABBITMQ_USER=ryp
+            - RABBITMQ_HOST=rabbitmq
+        logging:
+            driver: "json-file"
+            options:
+                max-size: "100m"
+                max-file: "10"
+
     rabbitmq:
         image: rabbitmq:3-management
         environment:

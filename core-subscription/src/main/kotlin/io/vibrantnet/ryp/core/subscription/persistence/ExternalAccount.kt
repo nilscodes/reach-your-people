@@ -27,6 +27,10 @@ class ExternalAccount(
 
         @Column(name = "account_type")
         var type: String,
+
+        @Basic(fetch = FetchType.LAZY)
+        @Column(name = "metadata", columnDefinition = "bytea")
+        var metadata: ByteArray? = null,
 ) {
 
 
@@ -56,7 +60,7 @@ class ExternalAccount(
     }
 
     override fun toString(): String {
-        return "ExternalAccount(id=$id, referenceId='$referenceId', referenceName=$referenceName, displayName=$displayName, registrationTime=$registrationTime, type='$type')"
+        return "ExternalAccount(id=$id, referenceId='$referenceId', referenceName=$referenceName, displayName=$displayName, registrationTime=$registrationTime, type='$type', metadata=${metadata?.size} bytes)"
     }
 
 }

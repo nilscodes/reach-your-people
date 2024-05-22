@@ -17,6 +17,13 @@ class ExternalAccountsApiServiceVibrant(
             referenceName = externalAccountDto.referenceName,
             displayName = externalAccountDto.displayName,
             type = externalAccountDto.type,
+            metadata = externalAccountDto.metadata.let {
+                if (it != null) {
+                    java.util.Base64.getDecoder().decode(it)
+                } else {
+                    null
+                }
+            }
         )
         return Mono.just(externalAccountRepository.save(newExternalAccount).toDto())
     }

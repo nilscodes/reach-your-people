@@ -29,7 +29,7 @@ export async function getServerSideProps(context: any) {
   if (session?.userId) {
     account = (await coreSubscriptionApi.getAccountById(session.userId)).data;
   }
-  const announcementId = context.params.announcementid;
+  const announcementId = context.params.announcementId;
   const announcement = (await corePublishingApi.getAnnouncementById(announcementId)).data;
   const authorId = Number(announcement.announcement.actor.id.split('/').pop());
   const project = (await coreSubscriptionApi.getProject(announcement.projectId as number)).data;

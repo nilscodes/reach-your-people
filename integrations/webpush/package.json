@@ -1,0 +1,29 @@
+{
+  "name": "webpush",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "generate-keys": "ts-node src/generate-keys.ts",
+    "start": "ts-node src/index.ts",
+    "build": "tsc -p ."
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "amqplib": "^0.10.4",
+    "dotenv": "^16.4.5",
+    "marked": "^12.0.2",
+    "pino": "^9.1.0",
+    "web-push": "^3.6.7"
+  },
+  "devDependencies": {
+    "@types/amqplib": "^0.10.5",
+    "@types/pino": "^7.0.5",
+    "@types/web-push": "^3.6.3",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.5"
+  }
+}

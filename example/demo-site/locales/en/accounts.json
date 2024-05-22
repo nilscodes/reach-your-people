@@ -2,10 +2,12 @@
     "loginTitle": "Log in to your account",
     "linkedAccounts": "Your Linked Accounts",
     "connectAccounts": "Connect additional accounts",
+    "connectNotificationSystems": "Set up additional notifications",
     "unlink": "Unlink",
     "walletSignInCancelled": "Could not get signature from wallet. The signing flow was cancelled.",
     "cardanoWallet": "Cardano Wallet",
     "mobilePhoneSms": "Mobile Phone (SMS)",
+    "pushApi": "Browser Notification",
     "backToSocial": "Back to social logins",
 
     "phoneCodeIncorrect": "The code was not correct.",
@@ -22,6 +24,13 @@
     "phoneNumberPlaceholder": "Enter your phone number",
     "sendPhoneCode": "Send verification code",
     "phoneSubscriptionLegal": "By entering your number, you agree to our Terms of Service and Privacy Policy. Message and data rates may apply.",
+
+    "pushApiVerificationInfo": "To enable browser notifications, click the button below. You will be asked to grant permission to receive notifications from this website. Depending on your browser and your settings, the request may be automatically rejected and you may have to adjust your settings before making the request.",
+    "enableBrowserNotifications": "Enable Browser Notifications",
+    "browserNotificationsLegal": "By enabling browser notifications, you agree to our Terms of Service and Privacy Policy.",
+    "pushNotificationsEnabled": "Browser notifications enabled!",
+    "pushNotificationsDenied": "Access to browser notifications was not granted.",
+    "pushNotificationsDeniedDescription": "You can enable browser notifications for this page in your browser settings. Afterwards, click the button again to allow RYP to request permissions to send you notifications via your browser.",
 
     "countries": {
         "us": "United States"
