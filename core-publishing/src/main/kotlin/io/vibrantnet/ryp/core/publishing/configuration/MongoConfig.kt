@@ -2,6 +2,7 @@ package io.vibrantnet.ryp.core.publishing.configuration
 
 import com.mongodb.reactivestreams.client.MongoClient
 import com.mongodb.reactivestreams.client.MongoClients
+import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.convert.converter.Converter
 import org.springframework.data.mongodb.config.AbstractReactiveMongoConfiguration
@@ -12,16 +13,9 @@ import java.util.*
 
 
 @Configuration
-class MongoConfig : AbstractReactiveMongoConfiguration() {
-    override fun getDatabaseName(): String {
-        return "ryp"
-    }
-
-    override fun reactiveMongoClient(): MongoClient {
-        return MongoClients.create()
-    }
-
-    override fun customConversions(): MongoCustomConversions {
+class MongoConfig {
+    @Bean
+    fun customConversions(): MongoCustomConversions {
         return MongoCustomConversions(listOf(
             ZonedDateTimeReadConverter(),
             ZonedDateTimeWriteConverter()
