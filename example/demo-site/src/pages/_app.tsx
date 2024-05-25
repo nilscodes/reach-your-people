@@ -7,6 +7,7 @@ import "@fontsource/aldrich"
 import "@fontsource/rajdhani/500.css"
 import Header from '@/components/Header'
 import ApiProvider from "@/contexts/ApiProvider"
+import { Footer } from "@/components/footer/Footer"
 
 
 export default function App({ Component, pageProps: { session, ...pageProps } }: AppProps<{ session: Session }>) {
@@ -45,6 +46,7 @@ export default function App({ Component, pageProps: { session, ...pageProps } }:
           <Box pb={6}>
             <Component {...pageProps} />
           </Box>
+          <Footer />
         </Box>
       </ApiProvider>
     </ChakraProvider>
