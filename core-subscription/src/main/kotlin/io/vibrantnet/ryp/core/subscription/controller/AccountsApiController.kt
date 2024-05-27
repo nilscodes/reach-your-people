@@ -3,6 +3,7 @@ package io.vibrantnet.ryp.core.subscription.controller
 import io.vibrantnet.ryp.core.subscription.model.AccountDto
 import io.vibrantnet.ryp.core.subscription.model.AccountPartialDto
 import io.vibrantnet.ryp.core.subscription.model.NewSubscriptionDto
+import io.vibrantnet.ryp.core.subscription.model.SettingDto
 import io.vibrantnet.ryp.core.subscription.service.AccountsApiService
 import io.vibrantnet.ryp.core.subscription.service.ProjectsApiService
 import jakarta.validation.Valid
@@ -138,4 +139,39 @@ class AccountsApiController(
     )
     @ResponseStatus(HttpStatus.OK)
     fun getAllSubscriptionsForAccount(@PathVariable("accountId") accountId: Long) = accountService.getAllSubscriptionsForAccount(accountId)
+
+    @RequestMapping(
+        method = [RequestMethod.GET],
+        value = ["/accounts/{accountId}/settings"],
+        produces = ["application/json"]
+    )
+    @ResponseStatus(HttpStatus.OK)
+    fun getSettingsForAccount(@PathVariable("accountId") accountId: Long) = accountService.getSettingsForAccount(accountId)
+
+    @RequestMapping(
+        method = [RequestMethod.PUT],
+        value = ["/accounts/{accountId}/settings/{settingName}"],
+        produces = ["application/json"],
+        consumes = ["application/json"]
+    )
+    @ResponseStatus(HttpStatus.OK)
+    fun updateAccountSetting(
+        @PathVariable("accountId") accountId: Long,
+        @PathVariable("settingName") settingName: String,
+        @Valid @RequestBody setting: SettingDto,
+    ): Mono<SettingDto> {
+        require(setting.name == settingName) { "Account setting name in path $settingName did not match setting in request body ${setting.name}." }
+        return accountService.updateAccountSetting(accountId, settingName, setting)
+    }
+
+    @RequestMapping(
+        method = [RequestMethod.DELETE],
+        value = ["/accounts/{accountId}/settings/{settingName}"]
+    )
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun deleteAccountSetting(
+        @PathVariable("accountId") accountId: Long,
+        @PathVariable("settingName") settingName: String,
+    ) = accountService.deleteAccountSetting(accountId, settingName)
+
 }

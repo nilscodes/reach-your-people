@@ -114,4 +114,37 @@ interface AccountsApiService {
      * @see AccountsApi#getAllSubscriptionsForAccount
      */
     fun getAllSubscriptionsForAccount(accountId: Long): Flux<ProjectSubscriptionDto>
+
+    /**
+     * GET /accounts/{accountId}/settings : Get settings for this account
+     * Get all settings that this account has configured.
+     *
+     * @param accountId The numeric ID of an account (required)
+     * @return All settings for this account (status code 200)
+     * @see AccountsApi#getSettingsForAccount
+     */
+    fun getSettingsForAccount(accountId: Long): Mono<SettingsDto>
+
+    /**
+     * PUT /accounts/{accountId}/settings/{settingName} : Update account setting
+     * Create or update a single account setting with the provided value
+     *
+     * @param accountId The numeric ID of an account (required)
+     * @param settingName  (required)
+     * @param setting  (optional)
+     * @return AccountSetting (status code 200)
+     * @see AccountsApi#updateAccountSetting
+     */
+    fun updateAccountSetting(accountId: Long, settingName: String, setting: SettingDto): Mono<SettingDto>
+
+    /**
+     * DELETE /accounts/{accountId}/settings/{settingName} : Delete account setting
+     * Delete a single account setting
+     *
+     * @param accountId The numeric ID of an account (required)
+     * @param settingName  (required)
+     * @return Successful deletion (status code 204)
+     * @see AccountsApi#deleteAccountSetting
+     */
+    fun deleteAccountSetting(accountId: Long, settingName: String): Mono<Unit>
 }

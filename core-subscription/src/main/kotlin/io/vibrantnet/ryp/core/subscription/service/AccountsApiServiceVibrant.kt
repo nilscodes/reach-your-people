@@ -134,6 +134,33 @@ class AccountsApiServiceVibrant(
         return mergeExplicitAndWalletBasedSubscriptions(explicitSubscriptions, walletBasedSubscriptions)
     }
 
+    @Transactional
+    override fun getSettingsForAccount(accountId: Long): Mono<SettingsDto> {
+        val account = accountRepository.findById(accountId).orElseThrow()
+        return Mono.just(SettingsDto(account.settings.map { it.toDto() }.toSet()))
+    }
+
+    @Transactional
+    override fun updateAccountSetting(accountId: Long, settingName: String, setting: SettingDto): Mono<SettingDto> {
+        val account = accountRepository.findById(accountId).orElseThrow()
+        val newSetting = EmbeddableSetting(
+            name = settingName,
+            value = setting.value,
+        )
+        account.settings.removeIf { it.name == settingName }
+        account.settings.add(newSetting)
+        accountRepository.save(account)
+        return Mono.just(newSetting.toDto())
+    }
+
+    @Transactional
+    override fun deleteAccountSetting(accountId: Long, settingName: String): Mono<Unit> {
+        val account = accountRepository.findById(accountId).orElseThrow()
+        account.settings.removeIf { it.name == settingName }
+        accountRepository.save(account)
+        return Mono.empty()
+    }
+
     /**
      * Merge so that the default status is SUBSCRIBED if any of the subscriptions are wallet-subscribed
      *  and the current status is set to whatever the explicit subscription setting is, if any is available

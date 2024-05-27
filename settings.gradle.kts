@@ -6,5 +6,6 @@ include("core-verification")
 include("core-subscription")
 include("core-publishing")
 include("core-api")
+include("integrations:vibrant")
 
 System.setProperty("sonar.gradle.skipCompile", "true") // Skip implicit compile because it is deprecated - cannot be set via build.gradle.kts yet

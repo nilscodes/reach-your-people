@@ -5,9 +5,11 @@ import ToggleButton from './ToggleButton';
 import nav from '@/lib/nav';
 import NavCollapse from './NavCollapse';
 import NextLink from '../NextLink';
+import useTranslation from 'next-translate/useTranslation';
 
 export default function MobileDrawer() {
   const { isOpen, onToggle, onClose } = useDisclosure();
+  const { t } = useTranslation('common');
   return (
     <>
       <ToggleButton
@@ -25,16 +27,16 @@ export default function MobileDrawer() {
                   return (
                     <NavCollapse
                       key={item.label}
-                      label={item.label}
+                      label={t(item.label)}
                       subnav={item.children}
                       closeDrawer={onClose}
                     />
                   );
                 }
                 return (
-                  <NextLink href={item.path} key={item.label}>
+                  <NextLink href={item.path} key={item.label} onClick={() => onClose()}>
                     <Button variant="tertiary" justifyContent="start">
-                      {item.label}
+                      {t(item.label)}
                     </Button>
                   </NextLink>
                 );

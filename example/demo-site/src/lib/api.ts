@@ -76,4 +76,8 @@ export class RypSiteApi {
     return (await axios.get(`${this.baseUrl}/account/subscriptions`)).data;
   }
 
+  async getAccountSettings(): Promise<Record<string, string>> {
+    return (await axios.get(`${this.baseUrl}/account/settings`)).data;
+  }
+
 }

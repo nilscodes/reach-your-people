@@ -23,6 +23,7 @@ import { useRouter } from 'next/navigation';
 import MobileDrawer from './header/MobileDrawer';
 import NavPopover from './header/NavPopover';
 import useTranslation from 'next-translate/useTranslation'
+import { ProfileMenu } from './header/ProfileMenu';
 
 export default function Header() {
   const { data: session } = useSession();
@@ -68,17 +69,17 @@ export default function Header() {
             </InputLeftElement>
             <Input placeholder={t('searchPlaceholder')} variant={mode('outline', 'bg.surface')} onKeyUp={handleKeyPress} />
           </InputGroup>
-          <ButtonGroup spacing="1">
+          <ButtonGroup spacing="3">
             <IconButton
               icon={<FiSearch />}
               aria-label={t('searchPlaceholder')}
               display={{ base: 'flex', lg: 'none' }}
               isRound
             />
-            <ColorModeSwitcher isRound />
-            <AuthButton />
+            <ColorModeSwitcher isRound display={{ base: 'none', md: 'inherit' }} />
+            {!session && (<AuthButton />)}
           </ButtonGroup>
-          {session?.user?.image && (<Avatar boxSize="10" src={session?.user?.image} bgColor='white' />)}
+          {session?.user && (<ProfileMenu user={session.user} />)}
         </HStack>
       </HStack>
     </Container>

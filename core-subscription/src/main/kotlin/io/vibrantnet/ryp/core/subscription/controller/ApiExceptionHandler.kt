@@ -31,4 +31,12 @@ class ApiExceptionHandler {
         logger.info { ex }
         return ApiErrorResponse(ex.message ?: "", HttpStatus.CONFLICT)
     }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    fun processIllegalArgumentException(ex: IllegalArgumentException): ApiErrorResponse {
+        logger.info { ex }
+        return ApiErrorResponse(ex.message ?: "", HttpStatus.BAD_REQUEST)
+    }
 }

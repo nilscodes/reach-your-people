@@ -24,6 +24,10 @@ const getExternalAccountInfoFromProviderAccount = (user: User | AdapterUser, acc
   }
 }
 
+function isAxios404Error(e: any) {
+  return e instanceof AxiosError && e.response?.status === 404;
+}
+
 /**
  * Returns a NextAuthOptions object with extended functionality that requires a request and response object
  * In this specific case, the extended functionality allows for one user multiple accounts
@@ -51,6 +55,7 @@ export const getNextAuthOptions = <Req extends Request, Res extends Response>(
 
           // If there is a user logged in already that we recognize,
           // and we have an account that is being signed in with
+          // TODO This whole block can likely be simplified (has a bunch of repeating code) and split up into methods afterwards.
           if (account && currentUserId) {
             // Do the account linking
             try {
@@ -59,15 +64,31 @@ export const getNextAuthOptions = <Req extends Request, Res extends Response>(
                 throw new Error("Account is already connected to another user!");
               }
             } catch (e) {
-              if (!(e instanceof AxiosError) || e.response?.status !== 404) {
+              if (!isAxios404Error(e)) {
                 throw e; // Rethrow unexpected errors
               }
             }
             const externalAccount = await coreSubscriptionApi.createExternalAccount(getExternalAccountInfoFromProviderAccount(user, account));
             // TODO Prevent linking more than one non-cardano account of the same provider
             await coreSubscriptionApi.linkExternalAccount(currentUserId, externalAccount.data.id!);
+            return "/dashboard"; // Prevent the actual login flow, we just linked a new external account and don't need to log anyone in. Redirect to the dashboard instead.
+          } else if (account) {
+            // If there is no user logged in, but there is an account being signed in with, let's check if we recognize it - if not, create a new account
+            try {
+              await coreSubscriptionApi.findAccountByProviderAndReferenceId(account.provider, account.providerAccountId);
+            } catch (e) {
+              if (isAxios404Error(e)) {
+                const newAccount = await coreSubscriptionApi.createAccount({
+                  displayName: user.name ?? 'Unknown',
+                });
 
-            return "/dashboard";
+                const externalAccount = await coreSubscriptionApi.createExternalAccount(getExternalAccountInfoFromProviderAccount(user, account));
+
+                await coreSubscriptionApi.linkExternalAccount(newAccount.data.id!, externalAccount.data.id!);
+              } else {
+                throw e; // Rethrow unexpected errors
+              }
+            }
           }
 
           return true;
@@ -79,24 +100,8 @@ export const getNextAuthOptions = <Req extends Request, Res extends Response>(
           // If there is an account for which we are generating JWT for (e.g on sign in)
           // then attach our userId to the token
           if (account) {
-            try {
-              const existingAccount = await coreSubscriptionApi.findAccountByProviderAndReferenceId(account.provider, account.providerAccountId);
-              token.userId = existingAccount.data.id;
-            } catch (e) {
-              if (e instanceof AxiosError && e.response?.status === 404) {
-                const newAccount = await coreSubscriptionApi.createAccount({
-                  displayName: user.name ?? 'Unknown',
-                });
-
-                const externalAccount = await coreSubscriptionApi.createExternalAccount(getExternalAccountInfoFromProviderAccount(user, account));
-
-                await coreSubscriptionApi.linkExternalAccount(newAccount.data.id!, externalAccount.data.id!);
-
-                token.userId = newAccount.data.id;
-              } else {
-                throw e; // Rethrow unexpected errors
-              }
-            }
+            const existingAccount = await coreSubscriptionApi.findAccountByProviderAndReferenceId(account.provider, account.providerAccountId);
+            token.userId = existingAccount.data.id;
           }
 
           return token;

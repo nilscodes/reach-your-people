@@ -5,6 +5,7 @@ import CredentialsProvider from "next-auth/providers/credentials"
 import { RypSiteApi } from "./lib/api"
 import Twitter from "next-auth/providers/twitter"
 import Google from "next-auth/providers/google"
+import { getWalletDisplayName } from "./lib/cardano"
 
 const providers: any = [
   // Custom Cardano wallet provider
@@ -31,7 +32,7 @@ const providers: any = [
         if (confirmation) {
           return {
             id: credentials!.stakeAddress,
-            name: credentials!.stakeAddress.substring(0, 11) + '…' + credentials!.stakeAddress.substring(credentials!.stakeAddress.length - 3),
+            name: getWalletDisplayName(credentials!.stakeAddress),
             email: null,
             image: `${process.env.NEXTAUTH_URL!}/cardano-blue.png`,
           }

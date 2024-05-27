@@ -24,3 +24,7 @@ export async function verifySignature(signature: DataSignature, stakeAddress: st
   }
   return false;
 }
+
+export function getWalletDisplayName(stakeAddress: string): string {
+  return stakeAddress.substring(0, 11) + '…' + stakeAddress.substring(stakeAddress.length - 3);
+}
