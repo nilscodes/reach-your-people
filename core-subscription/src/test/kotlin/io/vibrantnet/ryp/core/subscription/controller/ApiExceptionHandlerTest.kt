@@ -38,4 +38,20 @@ internal class ApiExceptionHandlerTest {
         val result = apiExceptionHandler.processExternalAccountAlreadyLinkedException(exception)
         assertEquals(ApiErrorResponse("", HttpStatus.CONFLICT), result)
     }
+
+    @Test
+    fun `processIllegalArgumentException works with message`() {
+        val apiExceptionHandler = ApiExceptionHandler()
+        val exception = IllegalArgumentException("test")
+        val result = apiExceptionHandler.processIllegalArgumentException(exception)
+        assertEquals(ApiErrorResponse("test", HttpStatus.BAD_REQUEST), result)
+    }
+
+    @Test
+    fun `processIllegalArgumentException works without message`() {
+        val apiExceptionHandler = ApiExceptionHandler()
+        val exception = IllegalArgumentException(null as String?)
+        val result = apiExceptionHandler.processIllegalArgumentException(exception)
+        assertEquals(ApiErrorResponse("", HttpStatus.BAD_REQUEST), result)
+    }
 }

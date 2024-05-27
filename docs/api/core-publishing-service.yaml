@@ -97,7 +97,8 @@ components:
         id: x6zlpg24qirgm
       type: object
       examples:
-        - title: My important announcement
+        - author: 1
+          title: My important announcement
           content: "All the details that are extremely relevant\n\nAlso some other text, separately. Even emojis \U0001F49A"
           link: 'https://ryp.vibrantnet.io'
       required:

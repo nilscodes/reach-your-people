@@ -3,7 +3,9 @@
     "welcome": "Welcome to RYP",
     "searchPlaceholder": "Search in RYP",
     "signIn": "Sign in",
-    "signOut": "Sign out ({{username}})",
+    "signOut": "Sign out",
+    "switchToDarkMode": "Switch to dark mode",
+    "switchToLightMode": "Switch to light mode",
     "nav": {
         "verify": "Verify NFT Project Publisher",
         "accounts": "Accounts",

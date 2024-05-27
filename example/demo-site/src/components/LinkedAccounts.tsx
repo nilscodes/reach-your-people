@@ -11,15 +11,18 @@ import { MdPhone, MdWeb } from 'react-icons/md';
 import PhoneVerification from './phone/PhoneVerification';
 import useTranslation from 'next-translate/useTranslation';
 import PushApiVerification from './pushapi/PushApiVerification';
+import { VibrantSyncStatus } from '@/lib/types/VibrantSyncStatus';
+import { VibrantSyncStatusMessage } from './linkedaccounts/VibrantSyncStatusMessage';
 
 type LinkedAccountsProps = {
   account: Account;
   linkedAccounts: GetLinkedExternalAccounts200ResponseInner[];
+  accountSettings: Record<string, string>;
 };
 
 const isWalletExternalAccount = (type: string) => type === 'cardano';
 
-export default function LinkedAccounts({ account, linkedAccounts: linkedAccountsProp }: LinkedAccountsProps) {
+export default function LinkedAccounts({ accountSettings, linkedAccounts: linkedAccountsProp }: LinkedAccountsProps) {
   const api = useApi();
   const toast = useToast();
   const { t } = useTranslation('accounts');
@@ -47,7 +50,6 @@ export default function LinkedAccounts({ account, linkedAccounts: linkedAccounts
         callbackUrl: '/dashboard',
       });
     } catch (error) {
-      // Show chakra ui error toast
       toast({
         title: t('walletSignInCancelled'),
         status: "error",
@@ -91,6 +93,7 @@ export default function LinkedAccounts({ account, linkedAccounts: linkedAccounts
   return (<Container maxW="md" py={{ base: '12', md: '24' }}>
     <Stack spacing="8">
       <Heading size={{ base: 'xs', md: 'sm' }}>{t('linkedAccounts')}</Heading>
+      {accountSettings['VIBRANT_SYNC_STATUS'] === VibrantSyncStatus.CompletedConfirmed && (<VibrantSyncStatusMessage />)}
       <Stack spacing="3">
         {linkedAccounts.map((linkedAccount) => {
             return (<LinkedAccount

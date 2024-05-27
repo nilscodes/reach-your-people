@@ -620,6 +620,25 @@ export type ListProjects200ResponseCategoryEnum = typeof ListProjects200Response
 /**
  * 
  * @export
+ * @interface Setting
+ */
+export interface Setting {
+    /**
+     * 
+     * @type {string}
+     * @memberof Setting
+     */
+    'name': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Setting
+     */
+    'value': string;
+}
+/**
+ * 
+ * @export
  * @interface SubscribeAccountToProjectRequest
  */
 export interface SubscribeAccountToProjectRequest {
@@ -752,6 +771,44 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
             localVarRequestOptions.data = serializeDataIfNeeded(createExternalAccountRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Delete a single account setting
+         * @summary Delete account setting
+         * @param {number} accountId The numeric ID of an account
+         * @param {string} settingName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteAccountSetting: async (accountId: number, settingName: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'accountId' is not null or undefined
+            assertParamExists('deleteAccountSetting', 'accountId', accountId)
+            // verify required parameter 'settingName' is not null or undefined
+            assertParamExists('deleteAccountSetting', 'settingName', settingName)
+            const localVarPath = `/accounts/{accountId}/settings/{settingName}`
+                .replace(`{${"accountId"}}`, encodeURIComponent(String(accountId)))
+                .replace(`{${"settingName"}}`, encodeURIComponent(String(settingName)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -1069,6 +1126,40 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
             };
         },
         /**
+         * Get all settings that this account has configured.
+         * @summary Get settings for this account
+         * @param {number} accountId The numeric ID of an account
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getSettingsForAccount: async (accountId: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'accountId' is not null or undefined
+            assertParamExists('getSettingsForAccount', 'accountId', accountId)
+            const localVarPath = `/accounts/{accountId}/settings`
+                .replace(`{${"accountId"}}`, encodeURIComponent(String(accountId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
          * Links an existing external account to this account (if possible)
          * @summary Link existing external account
          * @param {number} accountId The numeric ID of an account
@@ -1296,6 +1387,50 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
                 options: localVarRequestOptions,
             };
         },
+        /**
+         * Create or update a single account setting with the provided value
+         * @summary Update account setting
+         * @param {number} accountId The numeric ID of an account
+         * @param {string} settingName 
+         * @param {Setting} setting 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateAccountSetting: async (accountId: number, settingName: string, setting: Setting, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'accountId' is not null or undefined
+            assertParamExists('updateAccountSetting', 'accountId', accountId)
+            // verify required parameter 'settingName' is not null or undefined
+            assertParamExists('updateAccountSetting', 'settingName', settingName)
+            // verify required parameter 'setting' is not null or undefined
+            assertParamExists('updateAccountSetting', 'setting', setting)
+            const localVarPath = `/accounts/{accountId}/settings/{settingName}`
+                .replace(`{${"accountId"}}`, encodeURIComponent(String(accountId)))
+                .replace(`{${"settingName"}}`, encodeURIComponent(String(settingName)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(setting, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
     }
 };
 
@@ -1344,6 +1479,20 @@ export const DefaultApiFp = function(configuration?: Configuration) {
             const localVarAxiosArgs = await localVarAxiosParamCreator.createExternalAccount(createExternalAccountRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['DefaultApi.createExternalAccount']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Delete a single account setting
+         * @summary Delete account setting
+         * @param {number} accountId The numeric ID of an account
+         * @param {string} settingName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deleteAccountSetting(accountId: number, settingName: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteAccountSetting(accountId, settingName, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DefaultApi.deleteAccountSetting']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -1465,6 +1614,19 @@ export const DefaultApiFp = function(configuration?: Configuration) {
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
+         * Get all settings that this account has configured.
+         * @summary Get settings for this account
+         * @param {number} accountId The numeric ID of an account
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getSettingsForAccount(accountId: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<{ [key: string]: string; }>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getSettingsForAccount(accountId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DefaultApi.getSettingsForAccount']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
          * Links an existing external account to this account (if possible)
          * @summary Link existing external account
          * @param {number} accountId The numeric ID of an account
@@ -1547,6 +1709,21 @@ export const DefaultApiFp = function(configuration?: Configuration) {
             const localVarOperationServerBasePath = operationServerMap['DefaultApi.updateAccountById']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
+        /**
+         * Create or update a single account setting with the provided value
+         * @summary Update account setting
+         * @param {number} accountId The numeric ID of an account
+         * @param {string} settingName 
+         * @param {Setting} setting 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async updateAccountSetting(accountId: number, settingName: string, setting: Setting, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Setting>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.updateAccountSetting(accountId, settingName, setting, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DefaultApi.updateAccountSetting']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
     }
 };
 
@@ -1587,6 +1764,17 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
          */
         createExternalAccount(createExternalAccountRequest: CreateExternalAccountRequest, options?: any): AxiosPromise<CreateExternalAccountRequest> {
             return localVarFp.createExternalAccount(createExternalAccountRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Delete a single account setting
+         * @summary Delete account setting
+         * @param {number} accountId The numeric ID of an account
+         * @param {string} settingName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteAccountSetting(accountId: number, settingName: string, options?: any): AxiosPromise<void> {
+            return localVarFp.deleteAccountSetting(accountId, settingName, options).then((request) => request(axios, basePath));
         },
         /**
          * Look up an account by provider and the corresponding reference ID, to see if the account is used somewhere, without knowing the internal ID of the linked OWNER account
@@ -1680,6 +1868,16 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
             return localVarFp.getProjectsForAccount(accountId, options).then((request) => request(axios, basePath));
         },
         /**
+         * Get all settings that this account has configured.
+         * @summary Get settings for this account
+         * @param {number} accountId The numeric ID of an account
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getSettingsForAccount(accountId: number, options?: any): AxiosPromise<{ [key: string]: string; }> {
+            return localVarFp.getSettingsForAccount(accountId, options).then((request) => request(axios, basePath));
+        },
+        /**
          * Links an existing external account to this account (if possible)
          * @summary Link existing external account
          * @param {number} accountId The numeric ID of an account
@@ -1744,6 +1942,18 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
         updateAccountById(accountId: number, accountPartial: AccountPartial, options?: any): AxiosPromise<Account> {
             return localVarFp.updateAccountById(accountId, accountPartial, options).then((request) => request(axios, basePath));
         },
+        /**
+         * Create or update a single account setting with the provided value
+         * @summary Update account setting
+         * @param {number} accountId The numeric ID of an account
+         * @param {string} settingName 
+         * @param {Setting} setting 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateAccountSetting(accountId: number, settingName: string, setting: Setting, options?: any): AxiosPromise<Setting> {
+            return localVarFp.updateAccountSetting(accountId, settingName, setting, options).then((request) => request(axios, basePath));
+        },
     };
 };
 
@@ -1789,6 +1999,19 @@ export class DefaultApi extends BaseAPI {
      */
     public createExternalAccount(createExternalAccountRequest: CreateExternalAccountRequest, options?: RawAxiosRequestConfig) {
         return DefaultApiFp(this.configuration).createExternalAccount(createExternalAccountRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Delete a single account setting
+     * @summary Delete account setting
+     * @param {number} accountId The numeric ID of an account
+     * @param {string} settingName 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DefaultApi
+     */
+    public deleteAccountSetting(accountId: number, settingName: string, options?: RawAxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).deleteAccountSetting(accountId, settingName, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -1901,6 +2124,18 @@ export class DefaultApi extends BaseAPI {
     }
 
     /**
+     * Get all settings that this account has configured.
+     * @summary Get settings for this account
+     * @param {number} accountId The numeric ID of an account
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DefaultApi
+     */
+    public getSettingsForAccount(accountId: number, options?: RawAxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).getSettingsForAccount(accountId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
      * Links an existing external account to this account (if possible)
      * @summary Link existing external account
      * @param {number} accountId The numeric ID of an account
@@ -1975,6 +2210,20 @@ export class DefaultApi extends BaseAPI {
      */
     public updateAccountById(accountId: number, accountPartial: AccountPartial, options?: RawAxiosRequestConfig) {
         return DefaultApiFp(this.configuration).updateAccountById(accountId, accountPartial, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Create or update a single account setting with the provided value
+     * @summary Update account setting
+     * @param {number} accountId The numeric ID of an account
+     * @param {string} settingName 
+     * @param {Setting} setting 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DefaultApi
+     */
+    public updateAccountSetting(accountId: number, settingName: string, setting: Setting, options?: RawAxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).updateAccountSetting(accountId, settingName, setting, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

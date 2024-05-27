@@ -34,5 +34,11 @@
 
     "countries": {
         "us": "United States"
-    }
+    },
+
+    "vibrantSyncSuccessHeader": "Welcome back! 🎉",
+    "vibrantSyncSuccessContent": "We saw you have a <0>Vibrant</0> <1>(formerly HAZELnet)</1> account and went ahead and imported your wallets from it.",
+    "vibrantSyncSuccessContentThanks": "Thank you for trying out Reach Your People, and we hope you enjoy the experience.",
+    "vibrantSyncSuccessContinueButton": "Continue",
+    "vibrantSyncSuccessImageAltText": "Vibrant Sync Success Image"
 }

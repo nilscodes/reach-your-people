@@ -61,6 +61,14 @@ components:
         type: string
         format: uuid
       description: The UUID of an announcement
+    settingName:
+      name: settingName
+      in: path
+      required: true
+      style: simple
+      example: VIBRANT_SYNC_STATUS
+      schema:
+        type: string
   schemas:
     Project:
       type: object
@@ -415,6 +423,39 @@ components:
         summary:
           type: string
           example: New Year Celebration
+    Settings:
+      title: Settings
+      x-stoplight:
+        id: cx0kzhvrs2tvi
+      type: object
+      properties: {}
+      additionalProperties:
+        type: string
+      examples:
+        - THEME: dark
+          NOTIFICATIONS: enabled
+          LANGUAGE: en
+    Setting:
+      title: Setting
+      x-stoplight:
+        id: iq9wj40ijnd3i
+      type: object
+      required:
+        - name
+        - value
+      properties:
+        name:
+          type: string
+          pattern: "^[_A-Za-z0-9]+$"
+          example: THEME
+        value:
+          type: string
+          example: dark
+          minLength: 0
+          maxLength: 4096
+      example:
+        name: THEME
+        value: "dark"
 tags:
   - name: publishing
     description: Related to publishing content for subscribers

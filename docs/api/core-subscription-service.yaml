@@ -269,6 +269,55 @@ paths:
       description: Get all projects that this account is an owner of.
       x-stoplight:
         id: 23i2524rwj2xv
+  '/accounts/{accountId}/settings':
+    parameters:
+      - $ref: ./common-schemas.yaml#/components/parameters/accountId
+    get:
+      summary: Get settings for this account
+      tags: []
+      responses:
+        '200':
+          description: All settings for this account
+          content:
+            application/json:
+              schema:
+                $ref: ./common-schemas.yaml#/components/schemas/Settings
+      operationId: getSettingsForAccount
+      description: Get all settings that this account has configured.
+      x-stoplight:
+        id: cej9i2hxmu000
+  '/accounts/{accountId}/settings/{settingName}':
+    parameters:
+      - $ref: ./common-schemas.yaml#/components/parameters/accountId
+      - $ref: ./common-schemas.yaml#/components/parameters/settingName
+    put:
+      summary: Update account setting
+      tags: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ./common-schemas.yaml#/components/schemas/Setting
+      responses:
+        '200':
+          description: AccountSetting
+          content:
+            application/json:
+              schema:
+                $ref: ./common-schemas.yaml#/components/schemas/Setting
+      operationId: updateAccountSetting
+      description: Create or update a single account setting with the provided value
+      x-stoplight:
+        id: u4zt87zv7n36g
+    delete:
+      summary: Delete account setting
+      tags: []
+      responses:
+        '204':
+          description: Successful deletion
+      operationId: deleteAccountSetting
+      description: Delete a single account setting
   /projects:
     post:
       summary: Add new project

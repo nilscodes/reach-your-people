@@ -18,6 +18,7 @@
     "@fontsource/rajdhani": "^5.0.8",
     "@meshsdk/core": "^1.5.7",
     "@meshsdk/react": "^1.1.8",
+    "@vibrantnet/core": "^0.0.10",
     "axios": "^1.6.7",
     "framer-motion": "^11.0.5",
     "next": "14.1.0",

@@ -14,12 +14,21 @@ CREATE TABLE "accounts"
     "create_time"  timestamp    NOT NULL
 );
 
+CREATE TABLE "account_settings"
+(
+    "account_id"    bigint,
+    "setting_name"  varchar(64),
+    "setting_value" varchar(4096),
+    UNIQUE ("account_id", "setting_name")
+);
+
 CREATE TABLE "linked_external_accounts"
 (
     "account_id"          BIGINT NOT NULL,
     "link_time"           timestamp NOT NULL,
     "role"                smallint NOT NULL,
-    "external_account_id" BIGINT NOT NULL
+    "external_account_id" BIGINT NOT NULL,
+    UNIQUE ("account_id", "role", "external_account_id")
 );
 
 CREATE TABLE "subscriptions"
@@ -71,6 +80,9 @@ CREATE TABLE "project_roles"
     "role"       smallint NOT NULL,
     "account_id" BIGINT   NOT NULL
 );
+
+ALTER TABLE "account_settings"
+    ADD FOREIGN KEY ("account_id") REFERENCES "accounts" ("account_id") ON DELETE CASCADE;
 
 ALTER TABLE "project_tags"
     ADD FOREIGN KEY ("project_id") REFERENCES "projects" ("project_id") ON DELETE CASCADE;
