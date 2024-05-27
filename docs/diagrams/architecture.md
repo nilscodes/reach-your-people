@@ -28,7 +28,9 @@ graph LR
     S[Subscription Service]
     P[Publishing Service]
     QU[Queue]
-    DB[(Database)]
+    DB[(SQL Database)]
+    DDB[("Document Database")]
+    R[Redis]
     IP["Chain Indexer<br><i>(publishing)</i>"]
     P1[Publishing Integration #1]
     P2[Publishing Integration #2]
@@ -42,6 +44,7 @@ graph LR
     S --> DB
     P --> V
     P --> S
+    P ----> DDB
     P ----> IP
     P ---> QU
     QU --> P1
@@ -52,8 +55,10 @@ graph LR
     direction TB
     CL[Core Service]:::k8s
     OL[Optional Service]:::optional
+    IL[Infrastructure Service]:::infra
     EL([External System]):::external
-    CL ~~~ OL
+    CL ~~~ IL
+    IL ~~~ OL
     OL ~~~ EL
   end
   IP ~~~~ legend
@@ -65,12 +70,14 @@ graph LR
   classDef plain fill:#ddd,stroke:#fff,stroke-width:4px,color:#000;
   classDef k8s fill:#326ce5,stroke:#fff,stroke-width:4px,color:#fff;
   classDef cluster fill:#fff,stroke:#bbb,stroke-width:2px,color:#326ce5;
+  classDef infra fill:#ee3,stroke:#bbb,stoke-width:2px,color:#000;
   classDef optional stroke:#326ce5,stroke-width:2px,color:#326ce5,fill:#ECECFF
   classDef external fill:#32b86c,stroke:#fff,stroke-width:4px,color:#fff;
   classDef legend fill:#fff,stroke-width:0px,color:#000
 
   class US plain
-  class I,S,V,P,IV,QU,DB k8s
+  class S,V,P k8s
+  class I,IV,QU,DB,DDB,R infra
   class IP,P1,P2,PN optional
   class cluster cluster
   class legend legend
@@ -78,6 +85,15 @@ graph LR
 ```
 
 ## 📓 Glossary
+
+### Core Service
+A crucial service built by our team to support the RYP application. Without it, the application cannot function.
+
+### Infrastructure Service
+Services built to support the infrastructure of the RYP application, that have not been created by the team. This includes databases, queueing solutions, message brokers, pre-built Cardano indexers etc.
+
+### Optional Service
+Optional services are not required for RYP to function, but can improve the user experience or increase the messaging reach of the application.
 
 ### User
 The end user/client accessing the application. This includes both publishers and subscribers. Different user interfaces will lead to different interactions with the underlying services.
@@ -100,11 +116,17 @@ A chain indexing solution for Cardano that is suitable for accessing the informa
 ### Chain Indexer (publishing)
 The standard publishing approach will be through a web interface and APIs. However, it is technically possible to also allow publishing through on-chain metadata. If this additional submission mechanism is implemented, an optional chain indexing solution for Cardano is needed. It would ingest the publishing transactions that then can be automatically verified and the associated announcement can be processed by RYP.
 
-### Database
-A database solution (relational, document-based, or other) that stores the subscription preferences and maps wallets of subscribers to their verified social media and messaging accounts. In the future, some or all of that information can be stored on-chain and make the solution more decentralized. For this however to safely happen, a privacy-preserving blockchain needs to be available or encryption-mechanisms used, which is out of scope of the initial prototype.
+### SQL Database
+A relational database solution that stores the subscription preferences and maps wallets of subscribers to their verified social media and messaging accounts. In the future, some or all of that information can be stored on-chain and make the solution more decentralized. For this however to safely happen, a privacy-preserving blockchain needs to be available or encryption-mechanisms used, which is out of scope of the initial prototype.
+
+### Document Database
+A document database that stores the published announcements, which are natively built as JSON objects following the Activity Streams 2.0 standard. This means a document database that can natively store these without having to have to predefine a schema is better suited. It is also easier to store custom analytics data alongside the announcements.
 
 ### Queue
 Any queuing solution that allows persistent storage of messages that should be processed can be used. There are no strict requirements for ordering or performance at this time.
+
+### Key-value store
+A key-value store (like Redis) is being used by various services as a temporary message store (for message content that is too big for the queuing solution for example). It is also used as a cache for performance improvements where sensible.
 
 ### Publishing Integration #n
 The publishing integrations are the different systems that will be built to bring the published messages to the end users. They read messages from the publishing queue and are solely responsible for the delivery. When messages reach the integration, all decisions with regards to eligibility and verification should have been made, and only integration-related issues should prevent the delivery (for example rejecting direct messages from the corresponding Discord bot or blocked email addresses).
@@ -113,9 +135,6 @@ The publishing integrations are the different systems that will be built to brin
 These external systems already exist and are connected to as read, read-write or write-only systems, depending on the associated service/integration.
 
 ## 📝 Notes
-
-### Performance
-The initial architecture does not include caching services and other performance optimizations beyond the standards expected for the respective systems (e.g. proper indexes for a relational database).
 
 ### Service Discovery
 We will investigate if a service-discovery based solution can make creating new integrations even more decoupled from the core services. With the initial proposal, core services have to know about all existing integrations to properly give them access to the correct data. A service discovery solution would notably change the architecture diagram and will be further evaluated during the lifecycle of the development. In this case, new integrations would register with a service registry. This solution would mean some of the app-specific verification, subscription and publishing capabilities code would live in the integration, instead of just the core modules.
