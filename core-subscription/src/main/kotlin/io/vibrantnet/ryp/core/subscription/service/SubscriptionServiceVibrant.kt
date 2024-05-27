@@ -1,14 +1,14 @@
 package io.vibrantnet.ryp.core.subscription.service
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import io.ryp.shared.model.AnnouncementRecipientDto
 import io.ryp.shared.model.AnnouncementJobDto
+import io.ryp.shared.model.AnnouncementRecipientDto
 import io.ryp.shared.model.SnapshotRequestDto
 import io.ryp.shared.model.TokenOwnershipInfoWithAssetCount
 import io.vibrantnet.ryp.core.subscription.model.SubscriptionStatus
 import io.vibrantnet.ryp.core.subscription.persistence.AccountRepository
 import io.vibrantnet.ryp.core.subscription.persistence.ExternalAccount
-import io.vibrantnet.ryp.core.subscription.persistence.ExternalAccountCustomRepository
+import io.vibrantnet.ryp.core.subscription.persistence.ExternalAccountRepository
 import jakarta.transaction.Transactional
 import mu.KotlinLogging
 import org.springframework.amqp.rabbit.annotation.RabbitListener
@@ -23,7 +23,7 @@ val logger = KotlinLogging.logger {}
 class SubscriptionServiceVibrant(
     val accountRepository: AccountRepository,
     val projectsService: ProjectsApiService,
-    val externalAccountCustomRepository: ExternalAccountCustomRepository,
+    val externalAccountRepository: ExternalAccountRepository,
     val redisTemplate: RedisTemplate<String, Any>,
     val rabbitTemplate: RabbitTemplate,
     val objectMapper: ObjectMapper,
@@ -78,7 +78,8 @@ class SubscriptionServiceVibrant(
         val snapshotData = snapshotDataRaw.map {
             objectMapper.convertValue(it, TokenOwnershipInfoWithAssetCount::class.java)
         }
-        val externalAccounts = externalAccountCustomRepository.findEligibleExternalAccounts(1, snapshotData.map { it.stakeAddress })
+        val accountIds = externalAccountRepository.findEligibleAccountsByWallet(announcementJob.projectId, snapshotData.map { it.stakeAddress }, listOf(SubscriptionStatus.BLOCKED, SubscriptionStatus.MUTED))
+        val externalAccounts = externalAccountRepository.findMessagingExternalAccountsForAccounts(accountIds, listOf("cardano"))
         val recipients = externalAccounts.map {
             announcementRecipientDtoFromExternalAccount(it)
         }.toMutableSet()
