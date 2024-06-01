@@ -23,7 +23,13 @@
     "phoneNumber": "Phone Number",
     "phoneNumberPlaceholder": "Enter your phone number",
     "sendPhoneCode": "Send verification code",
-    "phoneSubscriptionLegal": "By entering your number and submitting, you agree to our Terms of Service and Privacy Policy. Message and data rates may apply.",
+    "phoneConsent": "Consent",
+    "phoneSubscriptionLegal": "I agree to receive recurring announcements and account notifications from Reach Your People via text message to the above provided mobile number. I also agree to the <0>Terms of Service</0> and <1>Privacy Policy</1>. Message and data rates may apply. Reply STOP to cancel.",
+    "errors": {
+        "countryCodeRequired": "Please select a country from the list.",
+        "phoneNumberRequired": "Phone number is required.",
+        "consentRequired": "You must agree to the terms to continue."
+    },
 
     "pushApiVerificationInfo": "To enable browser notifications, click the button below. You will be asked to grant permission to receive notifications from this website. Depending on your browser and your settings, the request may be automatically rejected and you may have to adjust your settings before making the request.",
     "enableBrowserNotifications": "Enable Browser Notifications",

@@ -10,6 +10,7 @@ import { VibrantSyncStatus } from "@/lib/types/VibrantSyncStatus";
 import { VibrantIntegrationApi } from "@/lib/integration-vibrant-api";
 import { getWalletDisplayName } from "@/lib/cardano";
 import { BlockchainType } from "@vibrantnet/core";
+import Head from "next/head";
 
 const VIBRANT_INTEGRATION_URL = process.env.VIBRANT_INTEGRATION_URL ?? "http://localhost:8080";
 
@@ -21,7 +22,12 @@ export default function Home({
   const { data: session } = useSession()
 
   if (session?.userId && account && accountSettings) {
-    return <LinkedAccounts account={account} linkedAccounts={linkedAccounts} accountSettings={accountSettings} />;
+    return (<>
+      <Head>
+        <title>RYP: Dashboard</title>
+      </Head>
+      <LinkedAccounts account={account} linkedAccounts={linkedAccounts} accountSettings={accountSettings} />;
+    </>)
   }
 
   return <AccessDenied />;

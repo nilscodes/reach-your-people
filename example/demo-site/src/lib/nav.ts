@@ -17,9 +17,9 @@ const subscriptionLinks: NavItem[] = Object.keys(ProjectCategory).map((key) => {
 });
 
 const nav: NavItem[] = [{
-    label: 'nav.verify',
-    path: '/test',
-  }, {
+  //   label: 'nav.verify',
+  //   path: '/test',
+  // }, {
     label: 'nav.accounts',
     path: '/dashboard',
     onlyLoggedIn: true,

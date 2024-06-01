@@ -6,6 +6,7 @@ import { coreSubscriptionApi } from "@/lib/core-subscription-api";
 import { InferGetServerSidePropsType } from "next";
 import { Account, GetLinkedExternalAccounts200ResponseInner } from "../../lib/ryp-subscription-api";
 import WalletSettingsList from "@/components/wallets/WalletSettingsList";
+import Head from "next/head";
 
 export default function WalletsHome({
   account,
@@ -15,7 +16,12 @@ export default function WalletsHome({
 
   if (session?.userId && account) {
     const wallets = linkedAccounts.filter((account) => account.externalAccount.type === 'cardano');
-    return <WalletSettingsList account={account} wallets={wallets} />;
+    return (<>
+      <Head>
+        <title>RYP: Wallet Settings</title>
+      </Head>
+      <WalletSettingsList account={account} wallets={wallets} />
+    </>);
   }
 
   return <AccessDenied />;
