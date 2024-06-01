@@ -39,6 +39,7 @@ import {
             return cloneElement(card, {
               radioProps: getRadioProps({
                 value: card.props.value,
+                isDisabled: card.props.radioProps?.isDisabled,
               }),
               choices: childArray.length,
             })
@@ -85,15 +86,17 @@ import {
         <input {...inputProps} aria-labelledby={id} />
         <Box sx={styles} {...checkboxProps} {...rest}>
           <Stack direction="row">
-            {icon && iconVariant && (<IconButton icon={icon} variant={iconVariant} disabled aria-label='' />)}
+            {icon && iconVariant && (<IconButton icon={icon} variant={iconVariant} color={radioProps?.isDisabled ? 'fg.muted' : undefined} disabled aria-label='' />)}
             <Box flex="1">{children}</Box>
-            {state.isChecked ? (
-              <Circle bg="accent" size="4">
-                <Icon as={CheckIcon} boxSize="2.5" color="fg.inverted" />
-              </Circle>
-            ) : (
-              <Circle borderWidth="2px" size="4" />
-            )}
+            {!radioProps?.isDisabled && (<>
+              {state.isChecked ? (
+                <Circle bg="accent" size="4">
+                  <Icon as={CheckIcon} boxSize="2.5" color="fg.inverted" />
+                </Circle>
+              ) : (
+                <Circle borderWidth="2px" size="4" />
+              )}
+            </>)}
           </Stack>
         </Box>
       </Box>

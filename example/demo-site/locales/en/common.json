@@ -30,13 +30,13 @@
             "name": "SPO",
             "tag": "Stakepool",
             "description": "Be in the know when your Stake Pool Operators have something to say",
-            "createInfo": "Stake pool operator"
+            "createInfo": "Stake pool operator (not yet released)"
         },
         "drep": {
             "name": "dRep",
             "tag": "dRep",
             "description": "The latest on governance from your decentralized representatives",
-            "createInfo": "Delegated representative"
+            "createInfo": "Delegated representative (not yet released)"
         },
         "other": {
             "name": "Other tokens",
