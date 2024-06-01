@@ -10,26 +10,32 @@ export const projectTypeOptions = [{
     value: ProjectCategory.NFT,
     variant: 'outline',
     icon: <MdCheck />,
+    disabled: false,
 }, {
     value: ProjectCategory.DeFi,
     variant: 'outline',
     icon: <MdCurrencyExchange />,
-}, {
-    value: ProjectCategory.SPO,
-    variant: 'outline',
-    icon: <MdWaterDrop />,
-}, {
-    value: ProjectCategory.dRep,
-    variant: 'outline',
-    icon: <MdPerson />,
+    disabled: false,
 }, {
     value: ProjectCategory.DAO,
     variant: 'outline',
     icon: <MdBusiness />,
+    disabled: false,
 }, {
     value: ProjectCategory.Other,
     variant: 'outline',
     icon: <MdCelebration />,
+    disabled: false,
+}, {
+    value: ProjectCategory.SPO,
+    variant: 'link',
+    icon: <MdWaterDrop />,
+    disabled: true,
+}, {
+    value: ProjectCategory.dRep,
+    variant: 'link',
+    icon: <MdPerson />,
+    disabled: true,
 }];
 
 type ProjectTypeSelectionProps = {
@@ -43,12 +49,12 @@ export default function ProjectTypeSelection({ handleChange, type }: ProjectType
     return (<Container maxW="3xl">
         <RadioCardGroup spacing="3" onChange={handleChange} defaultValue={type ?? undefined}>
             {projectTypeOptions.filter((option) => type === null || option.value === type).map((option) => (
-                <RadioCard key={option.value} value={option.value} icon={option.icon} iconVariant={option.variant}>
+                <RadioCard key={option.value} value={option.value} icon={option.icon} iconVariant={option.variant} radioProps={{ isDisabled: option.disabled }}>
                     <Text color="fg.emphasized" fontWeight="bold" fontSize="sm">
                         {t(`categories.${ProjectCategoryNames[option.value]}.name`)}
                     </Text>
                     <Text color="fg.muted" fontSize="sm">
-                    {t(`categories.${ProjectCategoryNames[option.value]}.createInfo`)}
+                        {t(`categories.${ProjectCategoryNames[option.value]}.createInfo`)}
                     </Text>
                 </RadioCard>
             ))}

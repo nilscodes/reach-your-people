@@ -8,6 +8,8 @@ import ProjectsHeader from './ProjectsHeader';
 import { useApi } from '@/contexts/ApiProvider';
 import { useRouter } from 'next/navigation';
 import useTranslation from 'next-translate/useTranslation';
+import { TokenPolicy } from '@vibrantnet/core';
+import { nanoid } from 'nanoid';
 
 type NewProjectProps = {
     account: Account;
@@ -18,42 +20,34 @@ export interface FormData {
   logo: string
   url: string
   description: string
-  policy: string
+  policies: Record<string, TokenPolicy>
 }
+
 
 const defaultFormData: FormData = {
   name: '',
   logo: '',
   url: '',
   description: '',
-  policy: ''
+  policies: { [nanoid()]: { projectName: '', policyId: '' } },
 };
 
 export default function NewProject({ account }: NewProjectProps) {
   const [projectType, setProjectType] = useState<ProjectCategory | null>(null)
-  const [formData, setFormData] = useState(defaultFormData);
   const api = useApi();
   const router = useRouter();
   const { t } = useTranslation('projects');
 
-  const handleFormChange = (field: keyof FormData, value: string): void => {
-    setFormData((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
-  };
-
-  const addNewProject = async () => {
+  const addNewProject = async (formData: FormData) => {
     const newProject = {
       name: formData.name,
-      logo: formData.logo,
+      logo: formData.logo ?? '',
       url: formData.url,
       category: projectType as ProjectCategory,
       description: formData.description,
-      policies: [{
-        name: 'Unnamed',
-        policyId: formData.policy,
-      }],
+      policies: Object.values(formData.policies)
+        .filter((policy) => policy.policyId.length > 0 && policy.projectName.length > 0)
+        .map((policy) => ({ name: policy.projectName, policyId: policy.policyId })),
     }
     await api.addNewProject(newProject);
     router.push('/projects');
@@ -83,7 +77,7 @@ export default function NewProject({ account }: NewProjectProps) {
               <ProjectTypeSelection handleChange={(type) => pickType(type)} type={projectType} />
               {projectType && <Button aria-label={t('add.changeType')} onClick={() => setProjectType(null) } variant="text">{t('add.changeType')}</Button>}
             </Stack>
-            {projectType && (<ProjectConfiguration account={account} type={projectType} formData={formData} onFormChange={handleFormChange} onSubmit={addNewProject} />)}
+            {projectType && (<ProjectConfiguration account={account} type={projectType} formData={defaultFormData} onSubmit={addNewProject} />)}
           </Stack>
         </VStack>
       </Container>

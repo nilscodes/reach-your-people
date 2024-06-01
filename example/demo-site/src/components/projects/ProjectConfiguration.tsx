@@ -8,8 +8,7 @@ export type ProjectConfigurationProps = {
     account: Account;
     type: ProjectCategory;
     formData: FormData;
-    onFormChange: (field: keyof FormData, value: string) => void;
-    onSubmit: () => void;
+    onSubmit: (formData: FormData) => void;
 };
 
 const configurationsMap: Record<ProjectCategory, ComponentType<ProjectConfigurationProps>> = {
@@ -21,9 +20,9 @@ const configurationsMap: Record<ProjectCategory, ComponentType<ProjectConfigurat
     [ProjectCategory.Other]: NFTConfiguration,
 };
 
-export default function ProjectConfiguration({ account, type, formData, onFormChange, onSubmit }: ProjectConfigurationProps) {
+export default function ProjectConfiguration({ account, type, formData, onSubmit }: ProjectConfigurationProps) {
     const Configuration = configurationsMap[type];
     return (
-        <Configuration account={account} type={type} formData={formData} onFormChange={onFormChange} onSubmit={onSubmit} />
+        <Configuration account={account} type={type} formData={formData} onSubmit={onSubmit} />
     );
 }
