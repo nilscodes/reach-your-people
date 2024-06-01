@@ -6,14 +6,20 @@ import { coreSubscriptionApi } from "@/lib/core-subscription-api";
 import { InferGetServerSidePropsType } from "next";
 import { Account, GetLinkedExternalAccounts200ResponseInner } from "../../lib/ryp-subscription-api";
 import ProjectsHomepage from "@/components/projects/ProjectsHomepage";
+import Head from "next/head";
 
 export default function Home({
   account,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-  const { data: session } = useSession()
+  const { data: session } = useSession();
 
   if (session?.userId && account) {
-    return <ProjectsHomepage account={account} />;
+    return (<>
+      <Head>
+        <title>RYP: Projects</title>
+      </Head>
+      <ProjectsHomepage account={account} />
+    </>);
   }
 
   return <AccessDenied />;

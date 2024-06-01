@@ -7,7 +7,13 @@ import { FaLeftLong } from 'react-icons/fa6';
 import useTranslation from 'next-translate/useTranslation';
 
 type PhoneVerificationProps = {
-    onReturn: () => void;
+  onReturn: () => void;
+}
+
+export type PhoneData = {
+  countryCode: string;
+  phoneNumber: string;
+  consent: boolean;
 }
 
 export default function PhoneVerification({ onReturn }: PhoneVerificationProps) {
@@ -19,10 +25,10 @@ export default function PhoneVerification({ onReturn }: PhoneVerificationProps) 
   const api = useApi();
   const { t } = useTranslation('accounts');
 
-  const handlePhoneNumberSubmit = (countryCode: string, number: string) => {
-    setPhoneNumber(number);
+  const handlePhoneNumberSubmit = ({ phoneNumber, countryCode }: PhoneData) => {
+    setPhoneNumber(phoneNumber);
     setCountryCode(countryCode);
-    const full = `${countryCode} ${number}`;
+    const full = `${countryCode} ${phoneNumber}`;
     setFullPhoneNumber(full);
     api.startPhoneVerification(full.replace(/[^+\d]/g, ''));
     setStep('verificationCodeInput');

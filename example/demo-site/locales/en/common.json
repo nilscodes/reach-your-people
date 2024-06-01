@@ -58,5 +58,10 @@
         "changeFile": "Change Filessss",
         "uploadClickCta": "Click to upload",
         "ctaAlternative": "or drag and drop"
+    },
+    "accessDenied": {
+        "title": "Access Denied",
+        "message": "Sorry, you do not have access to this page.",
+        "cta": "Jump Home"
     }
 }

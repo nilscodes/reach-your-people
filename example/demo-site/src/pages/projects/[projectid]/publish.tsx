@@ -6,6 +6,7 @@ import { coreSubscriptionApi } from "@/lib/core-subscription-api";
 import { InferGetServerSidePropsType } from "next";
 import { Account } from "../../../lib/ryp-subscription-api";
 import PublishAnnouncement from "@/components/projects/PublishAnnouncement";
+import Head from "next/head";
 
 export default function Home({
   account,
@@ -13,7 +14,12 @@ export default function Home({
   const { data: session } = useSession()
 
   if (session?.userId && account) {
-    return <PublishAnnouncement account={account} />;
+    return (<>
+      <Head>
+        <title>RYP: Publish</title>
+      </Head>
+      <PublishAnnouncement account={account} />
+    </>);
   }
 
   return <AccessDenied />;

@@ -1,18 +1,23 @@
 import { getServerSession } from "next-auth";
 import { useSession } from "next-auth/react"
 import { getNextAuthOptions } from "../api/auth/[...nextauth]";
-import AccessDenied from "@/components/AccessDenied";
 import { coreSubscriptionApi } from "@/lib/core-subscription-api";
 import { InferGetServerSidePropsType } from "next";
 import { Account } from "../../lib/ryp-subscription-api";
 import { SubscriptionsHomepage } from "@/components/subscriptions/SubscriptionsHomepage";
+import Head from "next/head";
 
 export default function Subscriptions({
   account,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const { data: session } = useSession()
 
-  return <SubscriptionsHomepage account={account} subscriptions={[]} />;
+  return (<>
+    <Head>
+      <title>RYP: Subscriptions</title>
+    </Head>
+    <SubscriptionsHomepage account={account} subscriptions={[]} />
+  </>);
 }
 
 export async function getServerSideProps(context: any) {

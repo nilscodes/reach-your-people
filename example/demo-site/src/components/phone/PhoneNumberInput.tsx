@@ -1,17 +1,29 @@
 import React, { useState } from 'react';
-import { FormControl, FormLabel, Input, Select, Button, Stack, Text } from '@chakra-ui/react';
+import { FormControl, FormLabel, Input, Select, Button, Stack, Text, Switch, Checkbox, FormErrorMessage } from '@chakra-ui/react';
 import useTranslation from 'next-translate/useTranslation';
+import Trans from 'next-translate/Trans';
+import NextLink from '../NextLink';
+import { useForm } from 'react-hook-form';
+import { PhoneData } from './PhoneVerification';
 
 type PhoneNumberInputProps = {
   countryCode: string;
   phoneNumber: string;
-  onSubmit: (countryCode: string, phoneNumber: string) => void
+  onSubmit: (phoneData: PhoneData) => void
 };
+
+
 
 export default function PhoneNumberInput({ countryCode: initialCountryCode, phoneNumber: initialPhoneNumber, onSubmit }: PhoneNumberInputProps) {
   const [countryCode, setCountryCode] = useState(initialCountryCode); // Default to US
   const [phoneNumber, setPhoneNumber] = useState(initialPhoneNumber);
   const { t } = useTranslation('accounts');
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+} = useForm<PhoneData>();
+
 
   const handlePhoneNumberChange = (event: any) => {
     const { value } = event.target;
@@ -22,45 +34,57 @@ export default function PhoneNumberInput({ countryCode: initialCountryCode, phon
     setPhoneNumber(usNumber);
   };
 
-  const handleSubmit = (event: any) => {
-    event.preventDefault();
-    // Here, you might want to validate the phone number before submitting
-    onSubmit(countryCode, phoneNumber);
-  };
-
   // Additional countries can be added here
   const countries = [{ code: '1', label: 'us' }]
 
+  console.log(errors);
+
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit(onSubmit)} noValidate>
       <Stack spacing={4}>
-        <FormControl>
-          <FormLabel htmlFor="country">{t('country')}</FormLabel>
-          <Select id="country" placeholder="Select country" value={countryCode} onChange={(e) => setCountryCode(e.target.value)} isReadOnly>
+        <FormControl id="countryCode" isRequired isInvalid={!!errors.countryCode}>
+          <FormLabel>{t('country')}</FormLabel>
+          <Select placeholder="Select country" defaultValue={countryCode} {...register('countryCode', { required: true })}>
             {countries.map((country) => (
               <option key={country.code} value={`+${country.code}`}>{t('countrySelectOption', { country: t(`countries.${country.label}`), code: country.code })}</option>
             ))}
           </Select>
+          <FormErrorMessage>{errors.countryCode && t('errors.countryCodeRequired')}</FormErrorMessage>
         </FormControl>
 
-        <FormControl>
-          <FormLabel htmlFor="phone-number">{t('phoneNumber')}</FormLabel>
+        <FormControl id="phoneNumber" isRequired isInvalid={!!errors.phoneNumber}>
+          <FormLabel>{t('phoneNumber')}</FormLabel>
           <Input
-            id="phone-number"
             type="tel"
             placeholder={t('phoneNumberPlaceholder')}
-            value={phoneNumber}
+            {...register('phoneNumber', { required: true })}
+            defaultValue={phoneNumber}
             onChange={handlePhoneNumberChange}
           />
+          <FormErrorMessage>{errors.phoneNumber && t('errors.phoneNumberRequired')}</FormErrorMessage>
+        </FormControl>
+        <FormControl isRequired isInvalid={!!errors.consent}>
+          <FormLabel>{t('phoneConsent')}</FormLabel>
+            <Checkbox
+              size='lg'
+              spacing={4}
+              alignItems='start'
+              {...register('consent', { required: true })}
+            >
+              <Text fontSize="xs" color="fg.muted" align='justify'>
+                <Trans i18nKey='accounts:phoneSubscriptionLegal' components={[
+                  <NextLink key='link' href='https://app.termly.io/document/terms-of-use-for-saas/7a266cd3-f4f6-464e-8e0a-28f7a07ba7e0' target='_blank' />,
+                  <NextLink key='link' href='https://app.termly.io/document/privacy-policy/03f7e652-321e-4bc6-a043-a7880d90b223' target='_blank' />,
+                ]} />
+              </Text>
+          </Checkbox>
+          <FormErrorMessage>{errors.consent && t('errors.consentRequired')}</FormErrorMessage>
         </FormControl>
 
         <Button type="submit" width="full">
           {t('sendPhoneCode')}
         </Button>
         
-        <Text fontSize="xs" color="fg.muted">
-          {t('phoneSubscriptionLegal')}
-        </Text>
       </Stack>
     </form>
   );
