@@ -9,9 +9,10 @@ ENV INDEXER_TYPE="cardano-db-sync"
 ENV BLOCKFROST_URL=""
 ENV BLOCKFROST_PROJECT_ID=""
 ENV RABBITMQ_PASSWORD=""
+ENV REDIS_PASSWORD=""
 
 EXPOSE 8070
 ENTRYPOINT [ "sh", \
     "-c", \
-    "java -jar -Dspring.datasource.url=\"${DB_SYNC_POSTGRES_URL}\" -Dspring.datasource.username=${DB_SYNC_POSTGRES_USER} -Dspring.datasource.password=${DB_SYNC_POSTGRES_PASSWORD} -Dio.vibrantnet.ryp.type=${INDEXER_TYPE} -Dio.vibrantnet.ryp.blockfrost.url=${BLOCKFROST_URL} -Dio.vibrantnet.ryp.blockfrost.apiKey=${BLOCKFROST_PROJECT_ID} -Dspring.rabbitmq.password=${RABBITMQ_PASSWORD} ${JAVA_OPTS} /app/app.jar" \
+    "java -jar -Dspring.datasource.url=\"${DB_SYNC_POSTGRES_URL}\" -Dspring.datasource.username=${DB_SYNC_POSTGRES_USER} -Dspring.datasource.password=${DB_SYNC_POSTGRES_PASSWORD} -Dio.vibrantnet.ryp.type=${INDEXER_TYPE} -Dio.vibrantnet.ryp.blockfrost.url=${BLOCKFROST_URL} -Dio.vibrantnet.ryp.blockfrost.apiKey=${BLOCKFROST_PROJECT_ID} -Dspring.rabbitmq.password=${RABBITMQ_PASSWORD} -Dspring.data.redis.password=${REDIS_PASSWORD} ${JAVA_OPTS} /app/app.jar" \
 ]
