@@ -1,5 +1,3 @@
-version: "3.3"
-
 services:
     core-verification:
         image: registry.gitlab.com/vibrantnet/ryp/core-verification:latest
@@ -81,7 +79,9 @@ services:
 
     redis:
         image: redis:7.2.4-alpine
-        command: --save 60 1 --loglevel warning
+        command: [ "redis-server", "/usr/local/etc/redis/redis.conf" ]
+        volumes:
+            - ./example/docker/redis.conf:/usr/local/etc/redis/redis.conf
 
     redisdata:
         image: redislabs/redisinsight:latest
@@ -104,5 +104,7 @@ services:
 
     mongo:
         image: mongo:latest
+        environment:
+            - MONGO_INITDB_ROOT_USERNAME=ryp-root-user
         volumes:
             - ./.docker-data/mongo/db:/data/db
