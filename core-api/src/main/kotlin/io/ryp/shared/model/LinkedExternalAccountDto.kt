@@ -5,8 +5,11 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import jakarta.validation.Valid
 import jakarta.validation.constraints.NotNull
 import java.time.OffsetDateTime
+import java.util.*
 
 data class LinkedExternalAccountDto @JsonCreator constructor(
+    @JsonProperty("id", required = false)
+    val id: Long? = null,
 
     @JsonProperty("externalAccount", required = true)
     @field:Valid
@@ -17,15 +20,28 @@ data class LinkedExternalAccountDto @JsonCreator constructor(
     val role: ExternalAccountRole,
 
     @JsonProperty("linkTime")
-    val linkTime: OffsetDateTime? = null
-) {
+    val linkTime: OffsetDateTime? = null,
 
-    enum class ExternalAccountRole {
-        OWNER,
-        ADMIN,
-        PUBLISHER,
-        SUBSCRIBER,
-    }
+    @JsonProperty("settings")
+    val settings: Set<ExternalAccountSetting> = EnumSet.allOf(ExternalAccountSetting::class.java),
+)
 
+enum class ExternalAccountRole {
+    OWNER,
+    ADMIN,
+    PUBLISHER,
+    SUBSCRIBER,
 }
 
+enum class ExternalAccountSetting {
+    NON_FUNGIBLE_TOKEN_ANNOUNCEMENTS,
+    FUNGIBLE_TOKEN_ANNOUNCEMENTS,
+    RICH_FUNGIBLE_TOKEN_ANNOUNCEMENTS,
+    STAKEPOOL_ANNOUNCEMENTS,
+    DREP_ANNOUNCEMENTS
+}
+
+data class LinkedExternalAccountPartialDto @JsonCreator constructor(
+    @JsonProperty("settings")
+    val settings: EnumSet<ExternalAccountSetting>? = null,
+)

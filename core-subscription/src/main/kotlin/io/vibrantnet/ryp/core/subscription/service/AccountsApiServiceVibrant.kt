@@ -1,8 +1,11 @@
 package io.vibrantnet.ryp.core.subscription.service
 
+import io.ryp.shared.model.ExternalAccountRole
 import io.ryp.shared.model.LinkedExternalAccountDto
+import io.ryp.shared.model.LinkedExternalAccountPartialDto
 import io.vibrantnet.ryp.core.subscription.model.*
 import io.vibrantnet.ryp.core.subscription.persistence.*
+import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import reactor.core.publisher.Flux
@@ -12,6 +15,7 @@ import reactor.core.publisher.Mono
 class AccountsApiServiceVibrant(
     val accountRepository: AccountRepository,
     val externalAccountRepository: ExternalAccountRepository,
+    val linkedExternalAccountRepository: LinkedExternalAccountRepository,
     val projectRepository: ProjectRepository,
     val verifyService: VerifyService,
 ) : AccountsApiService {
@@ -50,31 +54,55 @@ class AccountsApiServiceVibrant(
     override fun linkExternalAccount(externalAccountId: Long, accountId: Long): Mono<LinkedExternalAccountDto> {
         val account = accountRepository.findById(accountId).orElseThrow()
         val externalAccount = externalAccountRepository.findById(externalAccountId).orElseThrow()
-        val newLinkedExternalAccount = LinkedExternalAccount(
-            externalAccount = externalAccount,
-            role = LinkedExternalAccountDto.ExternalAccountRole.OWNER,
-        )
-        val added = account.linkedExternalAccounts.add(newLinkedExternalAccount)
-        if (added) {
-            accountRepository.save(account)
+        try {
+            val newLinkedExternalAccount = linkedExternalAccountRepository.save(LinkedExternalAccount(
+                accountId = accountId,
+                externalAccount = externalAccount,
+                role = ExternalAccountRole.OWNER,
+            ))
             return Mono.just(newLinkedExternalAccount.toDto())
-        } else {
-            throw ExternalAccountAlreadyLinkedException("Account ${account.id} already linked to external account $externalAccountId")
+        } catch (e: DataIntegrityViolationException) {
+            throw ExternalAccountAlreadyLinkedException("Account ${account.id} already linked to external account $externalAccountId", e)
         }
+    }
+
+    @Transactional
+    override fun updateLinkedExternalAccount(
+        accountId: Long,
+        externalAccountId: Long,
+        linkedExternalAccountPartial: LinkedExternalAccountPartialDto
+    ): Mono<LinkedExternalAccountDto> {
+        val account = accountRepository.findById(accountId).orElseThrow()
+        val linkedExternalAccount = account.linkedExternalAccounts.find { it.externalAccount.id == externalAccountId }
+        if (linkedExternalAccount != null) {
+            if (linkedExternalAccount.externalAccount.type == "cardano") {
+                if (linkedExternalAccount.role == ExternalAccountRole.OWNER) {
+                    if (linkedExternalAccountPartial.settings != null) {
+                        linkedExternalAccount.settingsFromSet(linkedExternalAccountPartial.settings!!)
+                        linkedExternalAccountRepository.updateSettings(linkedExternalAccount.id!!, linkedExternalAccount.settings) // Needs to be called separately
+                    }
+                    // Technically don't need the save call here, but it's a good way to ensure the settings are updated as this method gets changed later to not introduce bugs
+                    return Mono.just(linkedExternalAccountRepository.save(linkedExternalAccount).toDto())
+                }
+                throw PermissionDeniedException("Cannot update linked external account $externalAccountId for account $accountId: User is not an owner of the external account for link ${linkedExternalAccount.id}")
+            }
+            throw IncompatibleExternalAccountChangeException("Cannot update linked external account $externalAccountId for account $accountId: Not a Cardano wallet for link ${linkedExternalAccount.id}")
+        }
+        throw NoSuchElementException("Failed to update linked external account $externalAccountId for account $accountId: Not found")
     }
 
     @Transactional
     override fun unlinkExternalAccount(accountId: Long, externalAccountId: Long) {
         val account = accountRepository.findById(accountId).orElseThrow()
-        val removed = account.linkedExternalAccounts.removeIf { it.externalAccount.id == externalAccountId }
-        if (removed) {
-            accountRepository.save(account)
+        val removed = account.linkedExternalAccounts.find { it.externalAccount.id == externalAccountId }
+        if (removed != null) {
+            linkedExternalAccountRepository.delete(removed)
             // Delete external account if its the last link
             if (accountRepository.findByLinkedExternalAccountsExternalAccountId(externalAccountId).isEmpty()) {
                 externalAccountRepository.deleteById(externalAccountId)
             }
         } else {
-            throw NoSuchElementException("Failed to unlink external account: Not found")
+            throw NoSuchElementException("Failed to unlink external account $externalAccountId from account $accountId: Not found")
         }
     }
 

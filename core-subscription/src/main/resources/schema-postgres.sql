@@ -24,10 +24,12 @@ CREATE TABLE "account_settings"
 
 CREATE TABLE "linked_external_accounts"
 (
+    "link_id"             BIGSERIAL PRIMARY KEY,
     "account_id"          BIGINT NOT NULL,
     "link_time"           timestamp NOT NULL,
     "role"                smallint NOT NULL,
     "external_account_id" BIGINT NOT NULL,
+    "settings" BIT(16) NOT NULL DEFAULT B'1111111111111111',
     UNIQUE ("account_id", "role", "external_account_id")
 );
 
@@ -107,3 +109,6 @@ ALTER TABLE "subscriptions"
 
 ALTER TABLE "subscriptions"
     ADD FOREIGN KEY ("project_id") REFERENCES "projects" ("project_id") ON DELETE CASCADE;
+
+ALTER TABLE "linked_notifications"
+    ADD FOREIGN KEY ("link_id") REFERENCES "linked_external_accounts" ("link_id") ON DELETE CASCADE;
