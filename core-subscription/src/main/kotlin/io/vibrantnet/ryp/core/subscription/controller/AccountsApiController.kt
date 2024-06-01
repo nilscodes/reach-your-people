@@ -1,5 +1,6 @@
 package io.vibrantnet.ryp.core.subscription.controller
 
+import io.ryp.shared.model.LinkedExternalAccountPartialDto
 import io.vibrantnet.ryp.core.subscription.model.AccountDto
 import io.vibrantnet.ryp.core.subscription.model.AccountPartialDto
 import io.vibrantnet.ryp.core.subscription.model.NewSubscriptionDto
@@ -78,6 +79,18 @@ class AccountsApiController(
         @PathVariable("externalAccountId") externalAccountId: Long,
         @PathVariable("accountId") accountId: Long
     ) = accountService.linkExternalAccount(externalAccountId, accountId)
+
+    @RequestMapping(
+        method = [RequestMethod.PATCH],
+        value = ["/accounts/{accountId}/externalaccounts/{externalAccountId}"],
+        produces = ["application/json"],
+        consumes = ["application/json"]
+    )
+    fun updateLinkedExternalAccount(
+        @PathVariable("accountId") accountId: Long,
+        @PathVariable("externalAccountId") externalAccountId: Long,
+        @Valid @RequestBody linkedExternalAccountPartial: LinkedExternalAccountPartialDto
+    ) = accountService.updateLinkedExternalAccount(accountId, externalAccountId, linkedExternalAccountPartial)
 
     @RequestMapping(
         method = [RequestMethod.DELETE],

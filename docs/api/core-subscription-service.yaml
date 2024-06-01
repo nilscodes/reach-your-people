@@ -238,6 +238,24 @@ paths:
       x-stoplight:
         id: mjt84x6rlvvgr
       description: Links an existing external account to this account (if possible)
+    patch:
+      summary: Update settings for a linked external account
+      tags: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ./common-schemas.yaml#/components/schemas/LinkedExternalAccountPartial
+      responses:
+        '200':
+          description: The updated linked external account
+          content:
+            application/json:
+              schema:
+                $ref: ./common-schemas.yaml#/components/schemas/LinkedExternalAccount
+      operationId: updateLinkedExternalAccount
+      description: Updates an existing linked external account and changes its settings
     delete:
       summary: Unlink external account
       tags: []

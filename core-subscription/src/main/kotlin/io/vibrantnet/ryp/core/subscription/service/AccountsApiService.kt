@@ -1,6 +1,7 @@
 package io.vibrantnet.ryp.core.subscription.service
 
 import io.ryp.shared.model.LinkedExternalAccountDto
+import io.ryp.shared.model.LinkedExternalAccountPartialDto
 import io.vibrantnet.ryp.core.subscription.model.*
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
@@ -60,6 +61,18 @@ interface AccountsApiService {
      * @see AccountsApi#linkExternalAccount
      */
     fun linkExternalAccount(externalAccountId: Long, accountId: Long): Mono<LinkedExternalAccountDto>
+
+    /**
+     * PATCH /accounts/{accountId}/externalaccounts/{externalAccountId} : Update settings for a linked external account
+     * Updates an existing linked external account and changes its settings
+     *
+     * @param accountId The numeric ID of an account (required)
+     * @param externalAccountId The numeric ID of an external account (required)
+     * @param updateLinkedExternalAccountRequest  (required)
+     * @return The updated linked external account (status code 200)
+     * @see AccountsApi#updateLinkedExternalAccount
+     */
+    fun updateLinkedExternalAccount(accountId: Long, externalAccountId: Long, linkedExternalAccountPartial: LinkedExternalAccountPartialDto): Mono<LinkedExternalAccountDto>
 
     /**
      * DELETE /accounts/{accountId}/externalaccounts/{externalAccountId} : Unlink external account

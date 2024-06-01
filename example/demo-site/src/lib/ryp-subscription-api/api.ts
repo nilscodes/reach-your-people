@@ -211,6 +211,12 @@ export type GetGlobalSubscriptions200ResponseInnerStatusEnum = typeof GetGlobalS
 export interface GetLinkedExternalAccounts200ResponseInner {
     /**
      * 
+     * @type {number}
+     * @memberof GetLinkedExternalAccounts200ResponseInner
+     */
+    'id': number;
+    /**
+     * 
      * @type {CreateExternalAccountRequest}
      * @memberof GetLinkedExternalAccounts200ResponseInner
      */
@@ -227,6 +233,12 @@ export interface GetLinkedExternalAccounts200ResponseInner {
      * @memberof GetLinkedExternalAccounts200ResponseInner
      */
     'linkTime': string;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof GetLinkedExternalAccounts200ResponseInner
+     */
+    'settings'?: Array<GetLinkedExternalAccounts200ResponseInnerSettingsEnum>;
 }
 
 export const GetLinkedExternalAccounts200ResponseInnerRoleEnum = {
@@ -237,6 +249,15 @@ export const GetLinkedExternalAccounts200ResponseInnerRoleEnum = {
 } as const;
 
 export type GetLinkedExternalAccounts200ResponseInnerRoleEnum = typeof GetLinkedExternalAccounts200ResponseInnerRoleEnum[keyof typeof GetLinkedExternalAccounts200ResponseInnerRoleEnum];
+export const GetLinkedExternalAccounts200ResponseInnerSettingsEnum = {
+    NonFungibleTokenAnnouncements: 'NON_FUNGIBLE_TOKEN_ANNOUNCEMENTS',
+    FungibleTokenAnnouncements: 'FUNGIBLE_TOKEN_ANNOUNCEMENTS',
+    RichFungibleTokenAnnouncements: 'RICH_FUNGIBLE_TOKEN_ANNOUNCEMENTS',
+    StakepoolAnnouncements: 'STAKEPOOL_ANNOUNCEMENTS',
+    DrepAnnouncements: 'DREP_ANNOUNCEMENTS'
+} as const;
+
+export type GetLinkedExternalAccounts200ResponseInnerSettingsEnum = typeof GetLinkedExternalAccounts200ResponseInnerSettingsEnum[keyof typeof GetLinkedExternalAccounts200ResponseInnerSettingsEnum];
 
 /**
  * 
@@ -481,6 +502,12 @@ export interface GetProjectsForAccount200ResponseInnerStakepoolsInner {
 export interface LinkExternalAccount200Response {
     /**
      * 
+     * @type {number}
+     * @memberof LinkExternalAccount200Response
+     */
+    'id': number;
+    /**
+     * 
      * @type {CreateExternalAccountRequest}
      * @memberof LinkExternalAccount200Response
      */
@@ -497,6 +524,12 @@ export interface LinkExternalAccount200Response {
      * @memberof LinkExternalAccount200Response
      */
     'linkTime': string;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof LinkExternalAccount200Response
+     */
+    'settings'?: Array<LinkExternalAccount200ResponseSettingsEnum>;
 }
 
 export const LinkExternalAccount200ResponseRoleEnum = {
@@ -507,6 +540,15 @@ export const LinkExternalAccount200ResponseRoleEnum = {
 } as const;
 
 export type LinkExternalAccount200ResponseRoleEnum = typeof LinkExternalAccount200ResponseRoleEnum[keyof typeof LinkExternalAccount200ResponseRoleEnum];
+export const LinkExternalAccount200ResponseSettingsEnum = {
+    NonFungibleTokenAnnouncements: 'NON_FUNGIBLE_TOKEN_ANNOUNCEMENTS',
+    FungibleTokenAnnouncements: 'FUNGIBLE_TOKEN_ANNOUNCEMENTS',
+    RichFungibleTokenAnnouncements: 'RICH_FUNGIBLE_TOKEN_ANNOUNCEMENTS',
+    StakepoolAnnouncements: 'STAKEPOOL_ANNOUNCEMENTS',
+    DrepAnnouncements: 'DREP_ANNOUNCEMENTS'
+} as const;
+
+export type LinkExternalAccount200ResponseSettingsEnum = typeof LinkExternalAccount200ResponseSettingsEnum[keyof typeof LinkExternalAccount200ResponseSettingsEnum];
 
 /**
  * 
@@ -657,6 +699,30 @@ export const SubscribeAccountToProjectRequestStatusEnum = {
 
 export type SubscribeAccountToProjectRequestStatusEnum = typeof SubscribeAccountToProjectRequestStatusEnum[keyof typeof SubscribeAccountToProjectRequestStatusEnum];
 
+/**
+ * 
+ * @export
+ * @interface UpdateLinkedExternalAccountRequest
+ */
+export interface UpdateLinkedExternalAccountRequest {
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof UpdateLinkedExternalAccountRequest
+     */
+    'settings': Array<UpdateLinkedExternalAccountRequestSettingsEnum>;
+}
+
+export const UpdateLinkedExternalAccountRequestSettingsEnum = {
+    NonFungibleTokenAnnouncements: 'NON_FUNGIBLE_TOKEN_ANNOUNCEMENTS',
+    FungibleTokenAnnouncements: 'FUNGIBLE_TOKEN_ANNOUNCEMENTS',
+    RichFungibleTokenAnnouncements: 'RICH_FUNGIBLE_TOKEN_ANNOUNCEMENTS',
+    StakepoolAnnouncements: 'STAKEPOOL_ANNOUNCEMENTS',
+    DrepAnnouncements: 'DREP_ANNOUNCEMENTS'
+} as const;
+
+export type UpdateLinkedExternalAccountRequestSettingsEnum = typeof UpdateLinkedExternalAccountRequestSettingsEnum[keyof typeof UpdateLinkedExternalAccountRequestSettingsEnum];
+
 
 /**
  * DefaultApi - axios parameter creator
@@ -781,7 +847,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
          * Delete a single account setting
          * @summary Delete account setting
          * @param {number} accountId The numeric ID of an account
-         * @param {string} settingName 
+         * @param {string} settingName The name of the setting to adjust
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -1391,7 +1457,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
          * Create or update a single account setting with the provided value
          * @summary Update account setting
          * @param {number} accountId The numeric ID of an account
-         * @param {string} settingName 
+         * @param {string} settingName The name of the setting to adjust
          * @param {Setting} setting 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -1425,6 +1491,50 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
             localVarRequestOptions.data = serializeDataIfNeeded(setting, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Updates an existing linked external account and changes its settings
+         * @summary Update settings for a linked external account
+         * @param {number} accountId The numeric ID of an account
+         * @param {number} externalAccountId The numeric ID of an external account
+         * @param {UpdateLinkedExternalAccountRequest} updateLinkedExternalAccountRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateLinkedExternalAccount: async (accountId: number, externalAccountId: number, updateLinkedExternalAccountRequest: UpdateLinkedExternalAccountRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'accountId' is not null or undefined
+            assertParamExists('updateLinkedExternalAccount', 'accountId', accountId)
+            // verify required parameter 'externalAccountId' is not null or undefined
+            assertParamExists('updateLinkedExternalAccount', 'externalAccountId', externalAccountId)
+            // verify required parameter 'updateLinkedExternalAccountRequest' is not null or undefined
+            assertParamExists('updateLinkedExternalAccount', 'updateLinkedExternalAccountRequest', updateLinkedExternalAccountRequest)
+            const localVarPath = `/accounts/{accountId}/externalaccounts/{externalAccountId}`
+                .replace(`{${"accountId"}}`, encodeURIComponent(String(accountId)))
+                .replace(`{${"externalAccountId"}}`, encodeURIComponent(String(externalAccountId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(updateLinkedExternalAccountRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -1485,7 +1595,7 @@ export const DefaultApiFp = function(configuration?: Configuration) {
          * Delete a single account setting
          * @summary Delete account setting
          * @param {number} accountId The numeric ID of an account
-         * @param {string} settingName 
+         * @param {string} settingName The name of the setting to adjust
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -1713,7 +1823,7 @@ export const DefaultApiFp = function(configuration?: Configuration) {
          * Create or update a single account setting with the provided value
          * @summary Update account setting
          * @param {number} accountId The numeric ID of an account
-         * @param {string} settingName 
+         * @param {string} settingName The name of the setting to adjust
          * @param {Setting} setting 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -1722,6 +1832,21 @@ export const DefaultApiFp = function(configuration?: Configuration) {
             const localVarAxiosArgs = await localVarAxiosParamCreator.updateAccountSetting(accountId, settingName, setting, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['DefaultApi.updateAccountSetting']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Updates an existing linked external account and changes its settings
+         * @summary Update settings for a linked external account
+         * @param {number} accountId The numeric ID of an account
+         * @param {number} externalAccountId The numeric ID of an external account
+         * @param {UpdateLinkedExternalAccountRequest} updateLinkedExternalAccountRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async updateLinkedExternalAccount(accountId: number, externalAccountId: number, updateLinkedExternalAccountRequest: UpdateLinkedExternalAccountRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<LinkExternalAccount200Response>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.updateLinkedExternalAccount(accountId, externalAccountId, updateLinkedExternalAccountRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DefaultApi.updateLinkedExternalAccount']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
     }
@@ -1769,7 +1894,7 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
          * Delete a single account setting
          * @summary Delete account setting
          * @param {number} accountId The numeric ID of an account
-         * @param {string} settingName 
+         * @param {string} settingName The name of the setting to adjust
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -1946,13 +2071,25 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
          * Create or update a single account setting with the provided value
          * @summary Update account setting
          * @param {number} accountId The numeric ID of an account
-         * @param {string} settingName 
+         * @param {string} settingName The name of the setting to adjust
          * @param {Setting} setting 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
         updateAccountSetting(accountId: number, settingName: string, setting: Setting, options?: any): AxiosPromise<Setting> {
             return localVarFp.updateAccountSetting(accountId, settingName, setting, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Updates an existing linked external account and changes its settings
+         * @summary Update settings for a linked external account
+         * @param {number} accountId The numeric ID of an account
+         * @param {number} externalAccountId The numeric ID of an external account
+         * @param {UpdateLinkedExternalAccountRequest} updateLinkedExternalAccountRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateLinkedExternalAccount(accountId: number, externalAccountId: number, updateLinkedExternalAccountRequest: UpdateLinkedExternalAccountRequest, options?: any): AxiosPromise<LinkExternalAccount200Response> {
+            return localVarFp.updateLinkedExternalAccount(accountId, externalAccountId, updateLinkedExternalAccountRequest, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -2005,7 +2142,7 @@ export class DefaultApi extends BaseAPI {
      * Delete a single account setting
      * @summary Delete account setting
      * @param {number} accountId The numeric ID of an account
-     * @param {string} settingName 
+     * @param {string} settingName The name of the setting to adjust
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DefaultApi
@@ -2216,7 +2353,7 @@ export class DefaultApi extends BaseAPI {
      * Create or update a single account setting with the provided value
      * @summary Update account setting
      * @param {number} accountId The numeric ID of an account
-     * @param {string} settingName 
+     * @param {string} settingName The name of the setting to adjust
      * @param {Setting} setting 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -2224,6 +2361,20 @@ export class DefaultApi extends BaseAPI {
      */
     public updateAccountSetting(accountId: number, settingName: string, setting: Setting, options?: RawAxiosRequestConfig) {
         return DefaultApiFp(this.configuration).updateAccountSetting(accountId, settingName, setting, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Updates an existing linked external account and changes its settings
+     * @summary Update settings for a linked external account
+     * @param {number} accountId The numeric ID of an account
+     * @param {number} externalAccountId The numeric ID of an external account
+     * @param {UpdateLinkedExternalAccountRequest} updateLinkedExternalAccountRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DefaultApi
+     */
+    public updateLinkedExternalAccount(accountId: number, externalAccountId: number, updateLinkedExternalAccountRequest: UpdateLinkedExternalAccountRequest, options?: RawAxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).updateLinkedExternalAccount(accountId, externalAccountId, updateLinkedExternalAccountRequest, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

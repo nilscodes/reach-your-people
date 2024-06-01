@@ -2,6 +2,8 @@ package io.vibrantnet.ryp.core.subscription.controller
 
 import io.hazelnet.shared.data.ApiErrorResponse
 import io.vibrantnet.ryp.core.subscription.model.ExternalAccountAlreadyLinkedException
+import io.vibrantnet.ryp.core.subscription.model.IncompatibleExternalAccountChangeException
+import io.vibrantnet.ryp.core.subscription.model.PermissionDeniedException
 import mu.KotlinLogging
 import org.springframework.core.annotation.Order
 import org.springframework.http.HttpStatus
@@ -38,5 +40,21 @@ class ApiExceptionHandler {
     fun processIllegalArgumentException(ex: IllegalArgumentException): ApiErrorResponse {
         logger.info { ex }
         return ApiErrorResponse(ex.message ?: "", HttpStatus.BAD_REQUEST)
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ResponseBody
+    fun processIncompatibleExternalAccountChangeException(ex: IncompatibleExternalAccountChangeException): ApiErrorResponse {
+        logger.info { ex }
+        return ApiErrorResponse(ex.message ?: "", HttpStatus.CONFLICT)
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ResponseBody
+    fun processPermissionDeniedException(ex: PermissionDeniedException): ApiErrorResponse {
+        logger.info { ex }
+        return ApiErrorResponse(ex.message ?: "", HttpStatus.FORBIDDEN)
     }
 }

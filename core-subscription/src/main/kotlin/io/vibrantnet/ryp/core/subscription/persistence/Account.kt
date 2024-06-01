@@ -19,8 +19,8 @@ class Account(
     @Column(name = "create_time", updatable = false)
     var createTime: OffsetDateTime = OffsetDateTime.now(),
 
-    @ElementCollection(fetch = FetchType.LAZY)
-    @CollectionTable(name = "linked_external_accounts", joinColumns = [JoinColumn(name = "account_id")])
+    @OneToMany(fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
+    @JoinColumn(name = "account_id")
     var linkedExternalAccounts: MutableSet<LinkedExternalAccount> = mutableSetOf(),
 
     @ElementCollection(fetch = FetchType.LAZY)

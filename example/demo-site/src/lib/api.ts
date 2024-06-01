@@ -3,7 +3,7 @@ import { Project, ProjectCreationRequest } from "./types/Project";
 import { Subscription } from "./types/Subscription";
 import { SubscriptionStatus } from "./types/SubscriptionStatus";
 import { AnnouncementFormData } from "@/components/projects/PublishAnnouncement";
-import { GetLinkedExternalAccounts200ResponseInner } from "./ryp-subscription-api";
+import { GetLinkedExternalAccounts200ResponseInner, GetLinkedExternalAccounts200ResponseInnerSettingsEnum } from "./ryp-subscription-api";
 
 // function getRandomDelay(): Promise<void> {
 //   const delay = Math.random() * (500 - 30) + 30;
@@ -78,6 +78,10 @@ export class RypSiteApi {
 
   async getAccountSettings(): Promise<Record<string, string>> {
     return (await axios.get(`${this.baseUrl}/account/settings`)).data;
+  }
+
+  async updateLinkedExternalAccountSettings(externalAccountId: number, settings: GetLinkedExternalAccounts200ResponseInnerSettingsEnum[]): Promise<GetLinkedExternalAccounts200ResponseInner> {
+    return (await axios.patch(`${this.baseUrl}/account/externalaccounts/${externalAccountId}/settings`, { settings })).data;
   }
 
 }
