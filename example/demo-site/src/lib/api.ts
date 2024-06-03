@@ -40,8 +40,13 @@ export class RypSiteApi {
     return (await axios.get(`${this.baseUrl}/account/projects`)).data;
   }
 
-  async addNewProject(project: ProjectCreationRequest): Promise<Project> {
-    return (await axios.post(`${this.baseUrl}/projects`, project)).data;
+  async addNewProject(project: ProjectCreationRequest, logo: File | null): Promise<Project> {
+    const formData = new FormData();
+    formData.append('project', JSON.stringify(project));
+    if (logo) {
+      formData.append('logo', logo);
+    }
+    return (await axios.post(`${this.baseUrl}/projects`, formData)).data;
   }
 
   async publishAnnouncement(projectId: string, announcement: AnnouncementFormData): Promise<void> {

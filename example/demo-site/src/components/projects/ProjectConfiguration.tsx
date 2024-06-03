@@ -2,13 +2,13 @@ import { Account } from "../../lib/ryp-subscription-api";
 import NFTConfiguration from "./NFTConfiguration";
 import ProjectCategory from "@/lib/types/ProjectCategory";
 import { ComponentType } from "react";
-import { FormData } from "./NewProject";
+import { ProjectData } from "./NewProject";
 
 export type ProjectConfigurationProps = {
     account: Account;
     type: ProjectCategory;
-    formData: FormData;
-    onSubmit: (formData: FormData) => void;
+    formData: ProjectData;
+    onSubmit: (formData: ProjectData) => void;
 };
 
 const configurationsMap: Record<ProjectCategory, ComponentType<ProjectConfigurationProps>> = {

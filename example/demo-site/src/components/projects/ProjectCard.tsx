@@ -18,63 +18,76 @@ import { Project } from '@/lib/types/Project'
 import NextLink from '../NextLink'
 import useTranslation from 'next-translate/useTranslation'
     
-  interface Props {
-    project: Project
-    rootProps?: StackProps
-  }
-  
-  export default function ProjectCard(props: Props) {
-    const { project, rootProps } = props;
-    const { t } = useTranslation('projects');
-    const { name, logo } = project;
+interface Props {
+  project: Project
+  rootProps?: StackProps
+}
 
-    return (
-      <Stack spacing={{ base: '4', md: '5' }} {...rootProps}>
-        <Box position="relative">
-          <AspectRatio ratio={4 / 3}>
-            <Image
-              src={logo}
-              alt={name}
-              draggable="false"
-              fallback={<Skeleton />}
-              borderRadius={{ base: 'md', md: 'xl' }}
-            />
-          </AspectRatio>
-          {/* <FavouriteButton
+const CDN_BASE_URL = process.env.NEXT_PUBLIC_CDN_BASE_URL?.replace(/\/$/, '');
+
+export default function ProjectCard(props: Props) {
+  const { project, rootProps } = props;
+  const { t } = useTranslation('projects');
+  const { name, logo } = project;
+
+  return (
+    <Stack spacing={{ base: '4', md: '5' }} {...rootProps}>
+      <Box position="relative">
+        <Box
+          width="100%"
+          paddingTop="75%" // This makes the box a square by maintaining aspect ratio
+          position="relative"
+          overflow="hidden"
+        >
+          <Image
+            src={`${CDN_BASE_URL}/${logo}`}
+            alt={name}
             position="absolute"
-            top="4"
-            right="4"
-            aria-label={`Add ${name} to your favourites`}
-          /> */}
+            top="0"
+            left="0"
+            draggable="false"
+            fallback={<Skeleton />}
+            borderRadius={{ base: 'md', md: 'xl' }}
+            objectFit='scale-down'
+            width='100%'
+            height='100%'
+          />
         </Box>
-        <Stack>
-          <Stack spacing="1">
-            <Text fontWeight="medium" color={useColorModeValue('gray.700', 'gray.400')}>
-              {name}
-            </Text>
-            {/* <PriceTag price={price} salePrice={salePrice} currency="USD" /> */}
-          </Stack>
-          {/* <HStack>
-            <Rating defaultValue={rating} size="sm" />
-            <Text fontSize="sm" color={useColorModeValue('gray.600', 'gray.400')}>
-              12 Reviews
-            </Text>
-          </HStack> */}
+        {/* <FavouriteButton
+          position="absolute"
+          top="4"
+          right="4"
+          aria-label={`Add ${name} to your favourites`}
+        /> */}
+      </Box>
+      <Stack>
+        <Stack spacing="1">
+          <Text fontWeight="medium" color={useColorModeValue('gray.700', 'gray.400')}>
+            {name}
+          </Text>
+          {/* <PriceTag price={price} salePrice={salePrice} currency="USD" /> */}
         </Stack>
-        <Stack align="center">
-          <NextLink href={`/projects/${project.id}/publish`} w="100%">
-            <Button variant="outline" width="full">
-              {t('publishAnnouncementButton')}
-            </Button>
-          </NextLink>
-          <NextLink href={`/projects/${project.id}/edit`}
-            textDecoration="underline"
-            fontWeight="medium"
-            color={useColorModeValue('gray.600', 'gray.400')}
-          >
-            {t('editProjectButton')}
-          </NextLink>
-        </Stack>
+        {/* <HStack>
+          <Rating defaultValue={rating} size="sm" />
+          <Text fontSize="sm" color={useColorModeValue('gray.600', 'gray.400')}>
+            12 Reviews
+          </Text>
+        </HStack> */}
       </Stack>
-    )
-  }
+      <Stack align="center">
+        <NextLink href={`/projects/${project.id}/publish`} w="100%">
+          <Button variant="outline" width="full">
+            {t('publishAnnouncementButton')}
+          </Button>
+        </NextLink>
+        <NextLink href={`/projects/${project.id}/edit`}
+          textDecoration="underline"
+          fontWeight="medium"
+          color={useColorModeValue('gray.600', 'gray.400')}
+        >
+          {t('editProjectButton')}
+        </NextLink>
+      </Stack>
+    </Stack>
+  )
+}

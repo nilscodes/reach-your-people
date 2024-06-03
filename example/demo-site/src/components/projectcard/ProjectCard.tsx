@@ -34,6 +34,8 @@ function formatISODateToCustomString(isoDateString: string) {
   return `${month}, ${year}`;
 }
 
+const CDN_BASE_URL = process.env.NEXT_PUBLIC_CDN_BASE_URL?.replace(/\/$/, '');
+
 export default function ProjectCard({ account, project, subscription }: ProjectCardProps) {
   const { t: tc } = useTranslation('common');
   const {
@@ -46,7 +48,7 @@ export default function ProjectCard({ account, project, subscription }: ProjectC
     <Stack direction={{ base: 'column', md: 'row' }} spacing={{ base: '4', md: '10' }}>
       <ProjectLogo
         name={name}
-        src={project.logo}
+        src={`${CDN_BASE_URL}/${project.logo}`}
         isVerified={verified}
         fontSize="2xl"
       />

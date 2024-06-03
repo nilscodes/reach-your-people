@@ -349,12 +349,6 @@ export interface GetProjectsForAccount200ResponseInner {
      * @memberof GetProjectsForAccount200ResponseInner
      */
     'wallets'?: Array<string>;
-    /**
-     * 
-     * @type {string}
-     * @memberof GetProjectsForAccount200ResponseInner
-     */
-    ''?: string;
 }
 
 export const GetProjectsForAccount200ResponseInnerCategoryEnum = {
@@ -640,12 +634,6 @@ export interface ListProjects200Response {
      * @memberof ListProjects200Response
      */
     'wallets'?: Array<string>;
-    /**
-     * 
-     * @type {string}
-     * @memberof ListProjects200Response
-     */
-    ''?: string;
 }
 
 export const ListProjects200ResponseCategoryEnum = {
@@ -722,6 +710,91 @@ export const UpdateLinkedExternalAccountRequestSettingsEnum = {
 } as const;
 
 export type UpdateLinkedExternalAccountRequestSettingsEnum = typeof UpdateLinkedExternalAccountRequestSettingsEnum[keyof typeof UpdateLinkedExternalAccountRequestSettingsEnum];
+
+/**
+ * 
+ * @export
+ * @interface UpdateProjectRequest
+ */
+export interface UpdateProjectRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof UpdateProjectRequest
+     */
+    'name'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UpdateProjectRequest
+     */
+    'category'?: UpdateProjectRequestCategoryEnum;
+    /**
+     * 
+     * @type {string}
+     * @memberof UpdateProjectRequest
+     */
+    'logo'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UpdateProjectRequest
+     */
+    'url'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UpdateProjectRequest
+     */
+    'description'?: string;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof UpdateProjectRequest
+     */
+    'tags'?: Array<string>;
+    /**
+     * 
+     * @type {Array<GetProjectsForAccount200ResponseInnerDrepsInner>}
+     * @memberof UpdateProjectRequest
+     */
+    'dreps'?: Array<GetProjectsForAccount200ResponseInnerDrepsInner>;
+    /**
+     * 
+     * @type {Array<GetProjectsForAccount200ResponseInnerStakepoolsInner>}
+     * @memberof UpdateProjectRequest
+     */
+    'stakepools'?: Array<GetProjectsForAccount200ResponseInnerStakepoolsInner>;
+    /**
+     * 
+     * @type {Array<GetProjectsForAccount200ResponseInnerPoliciesInner>}
+     * @memberof UpdateProjectRequest
+     */
+    'policies'?: Array<GetProjectsForAccount200ResponseInnerPoliciesInner>;
+    /**
+     * 
+     * @type {Array<GetProjectsForAccount200ResponseInnerSocialsInner>}
+     * @memberof UpdateProjectRequest
+     */
+    'socials'?: Array<GetProjectsForAccount200ResponseInnerSocialsInner>;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof UpdateProjectRequest
+     */
+    'wallets'?: Array<string>;
+}
+
+export const UpdateProjectRequestCategoryEnum = {
+    DeFi: 'DeFi',
+    Nft: 'NFT',
+    Spo: 'SPO',
+    DRep: 'dRep',
+    Dao: 'DAO',
+    Other: 'Other'
+} as const;
+
+export type UpdateProjectRequestCategoryEnum = typeof UpdateProjectRequestCategoryEnum[keyof typeof UpdateProjectRequestCategoryEnum];
 
 
 /**
@@ -1541,6 +1614,44 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
                 options: localVarRequestOptions,
             };
         },
+        /**
+         * 
+         * @summary Update a specific project by project ID
+         * @param {number} projectId The numeric ID of a Project
+         * @param {UpdateProjectRequest} [updateProjectRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateProject: async (projectId: number, updateProjectRequest?: UpdateProjectRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'projectId' is not null or undefined
+            assertParamExists('updateProject', 'projectId', projectId)
+            const localVarPath = `/projects/{projectId}`
+                .replace(`{${"projectId"}}`, encodeURIComponent(String(projectId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(updateProjectRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
     }
 };
 
@@ -1849,6 +1960,20 @@ export const DefaultApiFp = function(configuration?: Configuration) {
             const localVarOperationServerBasePath = operationServerMap['DefaultApi.updateLinkedExternalAccount']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
+        /**
+         * 
+         * @summary Update a specific project by project ID
+         * @param {number} projectId The numeric ID of a Project
+         * @param {UpdateProjectRequest} [updateProjectRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async updateProject(projectId: number, updateProjectRequest?: UpdateProjectRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ListProjects200Response>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.updateProject(projectId, updateProjectRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DefaultApi.updateProject']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
     }
 };
 
@@ -2090,6 +2215,17 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
          */
         updateLinkedExternalAccount(accountId: number, externalAccountId: number, updateLinkedExternalAccountRequest: UpdateLinkedExternalAccountRequest, options?: any): AxiosPromise<LinkExternalAccount200Response> {
             return localVarFp.updateLinkedExternalAccount(accountId, externalAccountId, updateLinkedExternalAccountRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Update a specific project by project ID
+         * @param {number} projectId The numeric ID of a Project
+         * @param {UpdateProjectRequest} [updateProjectRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateProject(projectId: number, updateProjectRequest?: UpdateProjectRequest, options?: any): AxiosPromise<ListProjects200Response> {
+            return localVarFp.updateProject(projectId, updateProjectRequest, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -2375,6 +2511,19 @@ export class DefaultApi extends BaseAPI {
      */
     public updateLinkedExternalAccount(accountId: number, externalAccountId: number, updateLinkedExternalAccountRequest: UpdateLinkedExternalAccountRequest, options?: RawAxiosRequestConfig) {
         return DefaultApiFp(this.configuration).updateLinkedExternalAccount(accountId, externalAccountId, updateLinkedExternalAccountRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Update a specific project by project ID
+     * @param {number} projectId The numeric ID of a Project
+     * @param {UpdateProjectRequest} [updateProjectRequest] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DefaultApi
+     */
+    public updateProject(projectId: number, updateProjectRequest?: UpdateProjectRequest, options?: RawAxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).updateProject(projectId, updateProjectRequest, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

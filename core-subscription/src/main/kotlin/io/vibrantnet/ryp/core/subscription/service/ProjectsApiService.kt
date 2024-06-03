@@ -1,6 +1,7 @@
 package io.vibrantnet.ryp.core.subscription.service
 
 import io.ryp.shared.model.ProjectDto
+import io.ryp.shared.model.ProjectPartialDto
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 
@@ -41,6 +42,16 @@ interface ProjectsApiService {
      * @see ProjectsApi#getProject
      */
     fun getProject(projectId: Long): Mono<ProjectDto>
+
+    /**
+     * PATCH /projects/{projectId} : Update a specific project by project ID
+     *
+     * @param projectId The numeric ID of a Project (required)
+     * @param projectPartial  (optional)
+     * @return OK (status code 200)
+     * @see ProjectsApi#updateProject
+     */
+    fun updateProject(projectId: Long, projectPartial: ProjectPartialDto): Mono<ProjectDto>
 
     /**
      * GET /projects/{projectId}/subscriptions : Get all subscription for a project

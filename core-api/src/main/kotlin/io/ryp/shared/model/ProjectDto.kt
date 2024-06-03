@@ -37,6 +37,24 @@ data class PolicyDto @JsonCreator constructor(
     @JsonProperty("policyId") val policyId: String,
 )
 
+data class ProjectPartialDto @JsonCreator constructor(
+
+    @JsonProperty("name", required = false) val name: String?,
+
+    @JsonProperty("logo", required = false) val logo: String?,
+
+    @JsonProperty("url", required = false) val url: String?,
+
+    @JsonProperty("description", required = false) val description: String?,
+
+    @JsonProperty("category", required = false) val category: ProjectCategory?,
+
+    @JsonProperty("tags", required = false) val tags: Set<String>?,
+
+    @field:Valid
+    @JsonProperty("policies", required = false) val policies: Set<PolicyDto>?,
+)
+
 enum class ProjectCategory(val value: String) {
 
     @JsonProperty("DeFi") deFi("DeFi"),

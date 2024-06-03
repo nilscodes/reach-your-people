@@ -6,8 +6,8 @@ import { useRef, useState } from 'react';
 import { FiUploadCloud } from 'react-icons/fi';
 
 interface DropzoneProps extends CenterProps {
-    guidance: string
-    onChangeFile(file: File): void
+    guidance: string;
+    onChangeFile(file: File): void;
 }
 
 export default function Dropzone({ guidance, onChangeFile, ...rest }: DropzoneProps) {

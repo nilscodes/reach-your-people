@@ -394,6 +394,22 @@ paths:
       operationId: getProject
       x-stoplight:
         id: vl4ip8rezz1cs
+    patch:
+      summary: Update a specific project by project ID
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: ./common-schemas.yaml#/components/schemas/Project
+      operationId: updateProject
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: ./common-schemas.yaml#/components/schemas/ProjectPartial
   '/projects/{projectId}/subscriptions':
     parameters:
       - $ref: ./common-schemas.yaml#/components/parameters/projectId

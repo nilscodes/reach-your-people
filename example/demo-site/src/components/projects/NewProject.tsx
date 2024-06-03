@@ -15,18 +15,18 @@ type NewProjectProps = {
     account: Account;
 };
 
-export interface FormData {
-  name: string
-  logo: string
-  url: string
-  description: string
-  policies: Record<string, TokenPolicy>
+export interface ProjectData {
+  name: string;
+  logo: File | null;
+  url: string;
+  description: string;
+  policies: Record<string, TokenPolicy>;
 }
 
 
-const defaultFormData: FormData = {
+const defaultFormData: ProjectData = {
   name: '',
-  logo: '',
+  logo: null,
   url: '',
   description: '',
   policies: { [nanoid()]: { projectName: '', policyId: '' } },
@@ -38,18 +38,18 @@ export default function NewProject({ account }: NewProjectProps) {
   const router = useRouter();
   const { t } = useTranslation('projects');
 
-  const addNewProject = async (formData: FormData) => {
+  const addNewProject = async (projectData: ProjectData) => {
+    const url = projectData.url.startsWith('https://') ? projectData.url : `https://${projectData.url.replace('http://', '')}`;
     const newProject = {
-      name: formData.name,
-      logo: formData.logo ?? '',
-      url: formData.url,
+      name: projectData.name,
+      url,
       category: projectType as ProjectCategory,
-      description: formData.description,
-      policies: Object.values(formData.policies)
+      description: projectData.description,
+      policies: Object.values(projectData.policies)
         .filter((policy) => policy.policyId.length > 0 && policy.projectName.length > 0)
         .map((policy) => ({ name: policy.projectName, policyId: policy.policyId })),
     }
-    await api.addNewProject(newProject);
+    await api.addNewProject(newProject, projectData.logo);
     router.push('/projects');
   }
 

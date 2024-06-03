@@ -1,6 +1,7 @@
 package io.vibrantnet.ryp.core.subscription.controller
 
 import io.ryp.shared.model.ProjectDto
+import io.ryp.shared.model.ProjectPartialDto
 import io.vibrantnet.ryp.core.subscription.service.ProjectsApiService
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
@@ -52,6 +53,18 @@ class ProjectsApiController(val service: ProjectsApiService) {
     )
     @ResponseStatus(HttpStatus.OK)
     fun getProject(@PathVariable("projectId") projectId: Long) = service.getProject(projectId)
+
+    @RequestMapping(
+        method = [RequestMethod.PATCH],
+        value = ["/projects/{projectId}"],
+        produces = ["application/json"],
+        consumes = ["application/json"]
+    )
+    @ResponseStatus(HttpStatus.OK)
+    fun updateProject(
+        @PathVariable("projectId") projectId: Long,
+        @Valid @RequestBody projectPartial: ProjectPartialDto,
+    ) = service.updateProject(projectId, projectPartial)
 
 //    @RequestMapping(
 //        method = [RequestMethod.GET],
