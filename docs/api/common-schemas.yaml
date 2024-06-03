@@ -126,10 +126,44 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/StakeAddressView'
-        '':
+    ProjectPartial:
+      type: object
+      properties:
+        name:
           type: string
-          x-stoplight:
-            id: m8d0e2kywaq6c
+        category:
+          $ref: '#/components/schemas/ProjectCategory'
+        logo:
+          type: string
+        url:
+          type: string
+          format: uri
+        description:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+        dreps:
+          type: array
+          items:
+            $ref: '#/components/schemas/Drep'
+        stakepools:
+          type: array
+          items:
+            $ref: '#/components/schemas/Stakepool'
+        policies:
+          type: array
+          items:
+            $ref: '#/components/schemas/Policy'
+        socials:
+          type: array
+          items:
+            $ref: '#/components/schemas/Social'
+        wallets:
+          type: array
+          items:
+            $ref: '#/components/schemas/StakeAddressView'
     ProjectCategory:
       title: ProjectCategory
       x-stoplight:

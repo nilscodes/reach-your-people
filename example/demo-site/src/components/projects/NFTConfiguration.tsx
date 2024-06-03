@@ -27,7 +27,7 @@ import { MdAdd, MdRemove } from 'react-icons/md';
 import { TokenPolicy } from '@vibrantnet/core';
 import { nanoid } from 'nanoid';
 import { FieldErrors, UseFormRegister, useForm } from 'react-hook-form';
-import { FormData } from './NewProject';
+import { ProjectData } from './NewProject';
 
 interface TokenPolicyWithId extends TokenPolicy {
     id: string;
@@ -37,8 +37,8 @@ type PolicyInputFieldsProps = {
     policy: TokenPolicyWithId;
     removePolicyWithId: (id: string) => void;
     canRemove: boolean;
-    errors: FieldErrors<FormData>;
-    register: UseFormRegister<FormData>;
+    errors: FieldErrors<ProjectData>;
+    register: UseFormRegister<ProjectData>;
 }
 
 const PolicyInputFields = ({ policy, removePolicyWithId, canRemove, errors, register }: PolicyInputFieldsProps) => {
@@ -75,30 +75,42 @@ const PolicyInputFields = ({ policy, removePolicyWithId, canRemove, errors, regi
 export default function NFTConfiguration({ type, formData, onSubmit }: ProjectConfigurationProps) {
     const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
     const [policies, setPolicies] = useState<Record<string, TokenPolicyWithId>>(formData.policies as Record<string, TokenPolicyWithId>);
+    const [logoErrors, setLogoErrors] = useState<string[]>([]);
+    const [selectedLogo, setSelectedLogo] = useState<File | null>(null);
     const nameRef = useRef<HTMLInputElement | null>(null);
     const { t } = useTranslation('projects');
     const {
         register,
         handleSubmit,
         formState: { errors },
-    } = useForm<FormData>();
+    } = useForm<ProjectData>();
     const { ref, ...nameRest } = register('name', { required: true });
 
     useEffect(() => {
         nameRef.current?.focus();
     }, [type]);
     
-    const onFileSelected = (file: Blob | MediaSource) => {
+    const onFileSelected = (file: File) => {
+        console.log(file);
+        setSelectedLogo(file);
         const fileUrl = URL.createObjectURL(file);
         setAvatarUrl(fileUrl);
-
     };
 
-    const changePolicyWithId = (id: string, policy: Partial<TokenPolicyWithId>) => {
-        const newPolicies = { ...policies };
-        newPolicies[id] = { ...newPolicies[id], ...policy };
-        setPolicies(newPolicies);
-    };
+    const finalizeSubmit = (data: ProjectData) => {
+        if (!selectedLogo) {
+            setLogoErrors(['add.form.logoRequired']);
+            return;
+        } else {
+            const allowedTypes = ['image/png', 'image/jpeg', 'image/webp', 'image/svg+xml'];
+            if (!allowedTypes.includes(selectedLogo.type)) {
+                setLogoErrors(['add.form.logoFileTypesError']);
+                return;
+            }
+        }
+        data.logo = selectedLogo;
+        onSubmit(data);
+    }
 
     const removePolicyWithId = (id: string) => {
         const newPolicies = { ...policies };
@@ -146,7 +158,7 @@ export default function NFTConfiguration({ type, formData, onSubmit }: ProjectCo
                         </Stack>
                     </Stack>
                 </FormControl>
-                <FormControl id="logo" isRequired isInvalid={!!errors.logo}>
+                <FormControl id="logo" isRequired isInvalid={logoErrors.length > 0}>
                     <Stack
                         direction={{ base: 'column', md: 'row' }}
                         spacing={{ base: '1.5', md: '8' }}
@@ -163,7 +175,7 @@ export default function NFTConfiguration({ type, formData, onSubmit }: ProjectCo
                                 {avatarUrl && <Avatar size="lg" src={avatarUrl} />}
                                 <Dropzone width="full" guidance={t('add.form.logoFileGuidance')} onChangeFile={onFileSelected} />
                             </Stack>
-                            <FormErrorMessage>{errors.logo && t('add.form.logoError')}</FormErrorMessage>
+                            <FormErrorMessage>{logoErrors.length && (logoErrors.map((logoError) => t(logoError)))}</FormErrorMessage>
                         </Stack>
                     </Stack>
                 </FormControl>
@@ -219,7 +231,7 @@ export default function NFTConfiguration({ type, formData, onSubmit }: ProjectCo
                                 </FormHelperText>
                             </FormControl>
                         </Box>
-                        <Button aria-label={t('add.form.addPolicy')} onClick={() => addEmptyPolicy()} leftIcon={<MdAdd />} variant='outline'>
+                        <Button aria-label={t('add.form.addPolicy')} onClick={() => addEmptyPolicy()} leftIcon={<MdAdd />} variant='outline' tabIndex={200}>
                             {t('add.form.addPolicy')}
                         </Button>
                     </Stack>
@@ -239,7 +251,7 @@ export default function NFTConfiguration({ type, formData, onSubmit }: ProjectCo
                 
 
                 <Flex direction="row-reverse">
-                    <Button onClick={handleSubmit(onSubmit)}>{t('add.form.createNftProject')}</Button>
+                    <Button onClick={handleSubmit(finalizeSubmit)}>{t('add.form.createNftProject')}</Button>
                 </Flex>
             </Stack>
         </Stack>

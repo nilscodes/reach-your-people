@@ -12,4 +12,4 @@ export type Project = {
 }
 
 // Request is Project without registrationTime, verified and id
-export type ProjectCreationRequest = Omit<Project, 'registrationTime' | 'verified' | 'id'>;
+export type ProjectCreationRequest = Omit<Project, 'registrationTime' | 'verified' | 'id' | 'logo'>;
