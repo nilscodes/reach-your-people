@@ -109,6 +109,3 @@ ALTER TABLE "subscriptions"
 
 ALTER TABLE "subscriptions"
     ADD FOREIGN KEY ("project_id") REFERENCES "projects" ("project_id") ON DELETE CASCADE;
-
-ALTER TABLE "linked_notifications"
-    ADD FOREIGN KEY ("link_id") REFERENCES "linked_external_accounts" ("link_id") ON DELETE CASCADE;
