@@ -96,7 +96,7 @@ class AccountsApiServiceVibrant(
         val account = accountRepository.findById(accountId).orElseThrow()
         val removed = account.linkedExternalAccounts.find { it.externalAccount.id == externalAccountId }
         if (removed != null) {
-            linkedExternalAccountRepository.delete(removed)
+            linkedExternalAccountRepository.deleteDirectly(removed.id!!)
             // Delete external account if its the last link
             if (accountRepository.findByLinkedExternalAccountsExternalAccountId(externalAccountId).isEmpty()) {
                 externalAccountRepository.deleteById(externalAccountId)

@@ -126,6 +126,7 @@ internal class AccountsApiServiceVibrantTest {
         StepVerifier.create(linkedExternalAccounts)
             .expectNext(
                 LinkedExternalAccountDto(
+                    id = account.linkedExternalAccounts.first().id!!,
                     externalAccount = account.linkedExternalAccounts.first().externalAccount.toDto(),
                     role = ExternalAccountRole.OWNER,
                     linkTime = now,
@@ -181,9 +182,9 @@ internal class AccountsApiServiceVibrantTest {
         val account = makeAccount(OffsetDateTime.now())
         every { accountRepository.findById(12) } returns java.util.Optional.of(account)
         every { accountRepository.findByLinkedExternalAccountsExternalAccountId(1) } returns listOf(makeAccount(OffsetDateTime.now(), 13))
-        every { linkedExternalAccountRepository.delete(any()) } just Runs
+        every { linkedExternalAccountRepository.deleteDirectly(any()) } just Runs
         service.unlinkExternalAccount(12, 1)
-        verify(exactly = 1) { linkedExternalAccountRepository.delete(account.linkedExternalAccounts.first()) }
+        verify(exactly = 1) { linkedExternalAccountRepository.deleteDirectly(account.linkedExternalAccounts.first().id!!) }
         verify(exactly = 0) { externalAccountRepository.deleteById(any()) }
     }
 
@@ -197,9 +198,9 @@ internal class AccountsApiServiceVibrantTest {
         every { accountRepository.findById(12) } returns java.util.Optional.of(account)
         every { accountRepository.findByLinkedExternalAccountsExternalAccountId(1) } returns emptyList()
         every { externalAccountRepository.deleteById(1) } just Runs
-        every { linkedExternalAccountRepository.delete(any()) } just Runs
+        every { linkedExternalAccountRepository.deleteDirectly(any()) } just Runs
         service.unlinkExternalAccount(12, 1)
-        verify(exactly = 1) { linkedExternalAccountRepository.delete(account.linkedExternalAccounts.first()) }
+        verify(exactly = 1) { linkedExternalAccountRepository.deleteDirectly(account.linkedExternalAccounts.first().id!!) }
         verify { externalAccountRepository.deleteById(1) }
     }
 
@@ -281,6 +282,7 @@ internal class AccountsApiServiceVibrantTest {
         createTime = now,
         linkedExternalAccounts = mutableSetOf(
             LinkedExternalAccount(
+                id = 877,
                 accountId = id,
                 externalAccount = makeExternalAccount(1, now),
                 role = ExternalAccountRole.OWNER,
