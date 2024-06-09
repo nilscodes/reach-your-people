@@ -1,0 +1,200 @@
+openapi: 3.1.0
+x-stoplight:
+  id: 150c4axc5r3ko
+info:
+  title: Core Redirect Service
+  version: '1.0'
+  description: The API for the core URL shortener and redirect service of the Cardano Blockchain announcement and notification application "Reach Your People"
+  contact:
+    name: Nils Codes
+    url: 'https://vibrantnet.io'
+    email: contact@vibrantnet.io
+  license:
+    name: Apache 2.0
+    url: 'https://www.apache.org/licenses/LICENSE-2.0'
+servers:
+  - url: 'http://localhost:8074'
+    description: Local Build
+paths:
+  /urls:
+    post:
+      summary: Create new and shortened redirect URL
+      tags: []
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShortenedUrl'
+          headers: {}
+      operationId: createShortUrl
+      x-stoplight:
+        id: l1hww17ose7pc
+      description: 'Create a new, shortened URL and expose a redirect endpoint for it.'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ShortenedUrl'
+  '/urls/{urlId}':
+    parameters:
+      - $ref: '#/components/parameters/urlId'
+    get:
+      summary: Get URL by ID
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShortenedUrl'
+      operationId: getUrlById
+      x-stoplight:
+        id: e96870un0rcd0
+      description: Get a shortened URL and its details by ID
+    patch:
+      summary: Update URL details by ID
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShortenedUrl'
+      operationId: updateUrlById
+      description: Update the details of a redirect URL by providing the new details and existing URL id
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ShortenedUrlPartial'
+  '/urls/projects/{projectId}':
+    parameters:
+      - $ref: ./common-schemas.yaml#/components/parameters/projectId
+    get:
+      summary: Get all URLs for a project
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ShortenedUrl'
+      operationId: getUrlsForProject
+      description: Retrieve all active and inactive URLs for a given project
+      x-stoplight:
+        id: tnvdc4blfdqco
+  '/redirect/{shortcode}':
+    parameters:
+      - $ref: '#/components/parameters/shortcode'
+    get:
+      summary: Redirect to URL
+      tags: []
+      responses:
+        '301':
+          description: Moved Permanently
+          headers:
+            Location:
+              schema:
+                type: string
+              description: The URL associated with the shortcode
+      operationId: redirectToUrl
+      x-stoplight:
+        id: e5nwwln1kwt5c
+      description: 'Redirects to the URL with the given shortcode if it is active, and updates any associated statistics.'
+tags:
+  - name: redirect
+    description: Related to URL shortening and redirects
+components:
+  schemas:
+    ShortenedUrl:
+      title: ShortenedUrl
+      x-stoplight:
+        id: i6hotuqt157d4
+      type: object
+      required:
+        - type
+        - status
+        - url
+      properties:
+        id:
+          type: string
+          format: uuid
+          x-stoplight:
+            id: ktov8cu6yf2yn
+          readOnly: true
+        shortcode:
+          type: string
+          x-stoplight:
+            id: t6qfvhwqmf22s
+        type:
+          x-stoplight:
+            id: 0tn8wisc0xahu
+          enum:
+            - RYP
+            - EXTERNAL
+        createTime:
+          type: string
+          format: date-time
+          example: '2020-05-02T14:00:00Z'
+          readOnly: true
+        status:
+          x-stoplight:
+            id: fat4399d99yhy
+          enum:
+            - ACTIVE
+            - INACTIVE
+        url:
+          type: string
+          x-stoplight:
+            id: fx4kf5ojw3xf7
+        views:
+          type: integer
+          x-stoplight:
+            id: xo6vqyll5p0o5
+          format: int64
+        projectId:
+          type: integer
+          x-stoplight:
+            id: rx6rbozpuxk2n
+          format: int64
+    ShortenedUrlPartial:
+      title: ShortenedUrlPartial
+      x-stoplight:
+        id: ooexgs49d1dgy
+      type: object
+      properties:
+        status:
+          enum:
+            - ACTIVE
+            - INACTIVE
+        type:
+          enum:
+            - RYP
+            - EXTERNAL
+        url:
+          type: string
+  parameters:
+    urlId:
+      name: urlId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      style: simple
+      description: The URL UUID (not the shortcode identifier used for the shortened URL itself)
+    shortcode:
+      name: shortcode
+      in: path
+      required: true
+      schema:
+        type: string
+      style: simple
+      description: The shortcode of the URL to look up

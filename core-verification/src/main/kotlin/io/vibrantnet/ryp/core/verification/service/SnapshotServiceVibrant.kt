@@ -3,7 +3,7 @@ package io.vibrantnet.ryp.core.verification.service
 import io.hazelnet.cardano.connect.data.token.PolicyId
 import io.ryp.shared.model.SnapshotRequestDto
 import io.vibrantnet.ryp.core.verification.persistence.TokenDao
-import mu.KotlinLogging
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.amqp.rabbit.annotation.RabbitListener
 import org.springframework.amqp.rabbit.core.RabbitTemplate
 import org.springframework.data.redis.core.RedisTemplate

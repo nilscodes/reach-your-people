@@ -6,7 +6,7 @@ import io.vibrantnet.ryp.core.publishing.model.*
 import io.vibrantnet.ryp.core.publishing.persistence.Announcement
 import io.vibrantnet.ryp.core.publishing.persistence.AnnouncementsRepository
 import io.vibrantnet.ryp.core.publishing.persistence.AnnouncementsUpdateService
-import mu.KotlinLogging
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.amqp.rabbit.annotation.RabbitListener
 import org.springframework.amqp.rabbit.core.RabbitTemplate
 import org.springframework.data.redis.core.RedisTemplate
@@ -16,7 +16,7 @@ import reactor.core.publisher.Mono
 import java.util.*
 
 val logger = KotlinLogging.logger {}
-const val RYP_GLOBAL_SITE = "https://ryp.vibrantnet.io"
+const val RYP_GLOBAL_SITE = "https://ryp.io"
 
 @Service
 class AnnouncementsApiServiceVibrant(

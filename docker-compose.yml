@@ -34,6 +34,15 @@ services:
                 max-size: "100m"
                 max-file: "10"
 
+    core-redirect:
+        image: registry.gitlab.com/vibrantnet/ryp/core-redirect:latest
+        restart: on-failure
+        logging:
+            driver: "json-file"
+            options:
+                max-size: "100m"
+                max-file: "10"
+
     integration-discord:
         image: registry.gitlab.com/vibrantnet/ryp/integration-discord:latest
         restart: on-failure

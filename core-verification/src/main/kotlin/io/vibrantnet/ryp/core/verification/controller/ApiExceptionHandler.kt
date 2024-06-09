@@ -2,7 +2,7 @@ package io.vibrantnet.ryp.core.verification.controller
 
 import io.hazelnet.shared.data.ApiErrorResponse
 import io.vibrantnet.ryp.core.verification.model.NoCip66DataAvailable
-import mu.KotlinLogging
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.core.annotation.Order
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.ControllerAdvice

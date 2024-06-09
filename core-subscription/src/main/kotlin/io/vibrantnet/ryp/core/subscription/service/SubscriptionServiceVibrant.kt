@@ -10,7 +10,7 @@ import io.vibrantnet.ryp.core.subscription.persistence.AccountRepository
 import io.vibrantnet.ryp.core.subscription.persistence.ExternalAccount
 import io.vibrantnet.ryp.core.subscription.persistence.ExternalAccountRepository
 import jakarta.transaction.Transactional
-import mu.KotlinLogging
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.amqp.rabbit.annotation.RabbitListener
 import org.springframework.amqp.rabbit.core.RabbitTemplate
 import org.springframework.data.redis.core.RedisTemplate
