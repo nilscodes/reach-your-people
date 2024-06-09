@@ -3,6 +3,7 @@ include:
   - local: 'core-verification/.gitlab-ci-core-verification.yml'
   - local: 'core-subscription/.gitlab-ci-core-subscription.yml'
   - local: 'core-publishing/.gitlab-ci-core-publishing.yml'
+  - local: 'core-redirect/.gitlab-ci-core-redirect.yml'
   - local: 'integrations/discord/.gitlab-ci-discord.yml'
   - local: 'integrations/twilio/.gitlab-ci-twilio.yml'
   - local: 'integrations/webpush/.gitlab-ci-webpush.yml'
@@ -33,6 +34,7 @@ gradle-build:
         - "core-verification/**/*"
         - "core-subscription/**/*"
         - "core-publishing/**/*"
+        - "core-redirect/**/*"
         - "build.gradle.kts"
         - "settings.gradle.kts"
         - ".gitlab-ci.yml"
@@ -55,6 +57,8 @@ gradle-build:
       - core-subscription/build/jacoco.xml
       - core-publishing/build/libs
       - core-publishing/build/jacoco.xml
+      - core-redirect/build/libs
+      - core-redirect/build/jacoco.xml
       - integrations/vibrant/build/libs
       - integrations/vibrant/build/jacoco.xml
   cache:

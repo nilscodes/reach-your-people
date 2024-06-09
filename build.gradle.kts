@@ -1,7 +1,8 @@
 extra["springBootVersion"] = "3.3.0" // Also change below where it cannot use a variable
-extra["loggingVersion"] = "3.0.5"
-extra["mockkVersion"] = "1.13.9"
-extra["equalsVerifierVersion"] = "3.15.1"
+extra["loggingVersion"] = "6.0.9"
+extra["mockkVersion"] = "1.13.11"
+extra["equalsVerifierVersion"] = "3.16.1"
+extra["slf4jVersion"] = "2.0.13"
 
 plugins {
     kotlin("jvm") version "1.9.23" apply false

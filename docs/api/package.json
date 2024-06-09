@@ -8,8 +8,10 @@
     "build-core-verification-api": "openapi-generator-cli generate -i ./core-verification-service.yaml -g kotlin-spring -o ./skeleton/core-verification -c core-verification-server-settings.json",
     "build-core-subscription-api": "openapi-generator-cli generate -i ./core-subscription-service.yaml -g kotlin-spring -o ./skeleton/core-subscription -c core-subscription-server-settings.json",
     "build-core-publishing-api": "openapi-generator-cli generate -i ./core-publishing-service.yaml -g kotlin-spring -o ./skeleton/core-publishing -c core-publishing-server-settings.json",
+    "build-core-redirect-api": "openapi-generator-cli generate -i ./core-redirect-service.yaml -g kotlin-spring -o ./skeleton/core-redirect -c core-redirect-server-settings.json",
     "build-core-subscription-api-client": "openapi-generator-cli generate -g typescript-axios -i ./core-subscription-service.yaml -o ../../example/demo-site/src/lib/ryp-subscription-api -c core-subscription-client-settings.json",
-    "build-core-publishing-api-client": "openapi-generator-cli generate -g typescript-axios -i ./core-publishing-service.yaml -o ../../example/demo-site/src/lib/ryp-publishing-api -c core-subscription-client-settings.json"
+    "build-core-publishing-api-client": "openapi-generator-cli generate -g typescript-axios -i ./core-publishing-service.yaml -o ../../example/demo-site/src/lib/ryp-publishing-api -c core-publishing-client-settings.json",
+    "build-core-redirect-api-client": "openapi-generator-cli generate -g typescript-axios -i ./core-redirect-service.yaml -o ../../example/demo-site/src/lib/ryp-redirect-api -c core-redirect-client-settings.json"
   },
   "keywords": [],
   "author": "",

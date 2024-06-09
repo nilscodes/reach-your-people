@@ -4,7 +4,7 @@ import io.hazelnet.shared.data.ApiErrorResponse
 import io.vibrantnet.ryp.core.subscription.model.ExternalAccountAlreadyLinkedException
 import io.vibrantnet.ryp.core.subscription.model.IncompatibleExternalAccountChangeException
 import io.vibrantnet.ryp.core.subscription.model.PermissionDeniedException
-import mu.KotlinLogging
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.core.annotation.Order
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.ControllerAdvice

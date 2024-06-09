@@ -1,0 +1,13 @@
+{
+  "basePackage": "io.vibrantnet.ryp.core.redirect",
+  "packageName": "io.vibrantnet.ryp.core.redirect",
+  "apiPackage": "io.vibrantnet.ryp.core.redirect.controller",
+  "modelPackage": "io.vibrantnet.ryp.core.redirect.model",
+  "documentationProvider": "none",
+  "artifactId": "core-redirect",
+  "groupId": "io.vibrantnet.ryp",
+  "title": "Reach your People - Core Redirect Service",
+  "useSpringBoot3": true,
+  "useSwaggerUI": false,
+  "serviceInterface": true
+}

@@ -27,6 +27,7 @@ graph LR
     IV["Chain Indexer<br><i>(verification)</i>"]
     S[Subscription Service]
     P[Publishing Service]
+    SH["URL Shortener /<br>Redirect Service"]
     QU[Queue]
     DB[(SQL Database)]
     DDB[("Document Database")]
@@ -41,12 +42,14 @@ graph LR
     I --> V
     I --> S
     I --> P
+    I ---> SH
     S --> DB
     P --> V
     P --> S
     P ----> DDB
     P ----> IP
     P ---> QU
+    P --> SH
     QU --> P1
     QU --> P2
     QU --> PN
@@ -76,7 +79,7 @@ graph LR
   classDef legend fill:#fff,stroke-width:0px,color:#000
 
   class US plain
-  class S,V,P k8s
+  class S,V,P,SH k8s
   class I,IV,QU,DB,DDB,R infra
   class IP,P1,P2,PN optional
   class cluster cluster
@@ -109,6 +112,9 @@ The verification services allows publishers and subscribers to verify their proj
 
 ### Publishing Service
 The publishing service allows verified publishers to send announcements. The service will check publishing permissions for the submitting entity. After successful validation, it will access the subscription service to determine eligible recipients and message types to distribute and provide them to a queue for further processing.
+
+### URL Shortener
+While theoretically optional, we have opted to make a shortener part of the core services, to ensure we have full control over the URLs provided. This also allows us to block traffic to URLs that are later identified as spam or scam, but also track the reach of announcements. During publishing, links in announcements and other links will be shortened. When visited, the URL shortener will expand the link accordingly.
 
 ### Chain Indexer (verification)
 A chain indexing solution for Cardano that is suitable for accessing the information required to verify wallets, DIDs etc. Multiple indexers may be required, depending on the implementation.

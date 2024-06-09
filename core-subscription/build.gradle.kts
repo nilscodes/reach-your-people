@@ -28,6 +28,7 @@ jacoco {
 val loggingVersion: String by rootProject.extra
 val mockkVersion: String by rootProject.extra
 val equalsVerifierVersion: String by rootProject.extra
+val slf4jVersion: String by rootProject.extra
 
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-actuator")
@@ -41,7 +42,8 @@ dependencies {
 	implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
-	implementation("io.github.microutils:kotlin-logging-jvm:$loggingVersion")
+	implementation("io.github.oshai:kotlin-logging-jvm:$loggingVersion")
+	implementation("org.slf4j:slf4j-api:$slf4jVersion")
 	implementation("org.postgresql:postgresql")
 	implementation(project(":core-api"))
 	testImplementation("org.springframework.boot:spring-boot-starter-test")

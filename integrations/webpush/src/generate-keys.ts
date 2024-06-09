@@ -6,7 +6,7 @@ const vapidKeyOutput = `These are your VAPID keys to use with Push API. Make sur
 
 VAPID_PUBLIC_KEY=${vapidKeys.publicKey}
 VAPID_PRIVATE_KEY=${vapidKeys.privateKey}
-VAPID_SUBJECT=https://ryp.vibrantnet.io
+VAPID_SUBJECT=https://ryp.io
 
 Both keys and a subject (either a mailto: email link or a https URL) are required as environment variables to set up the RYP webpush integration.`
 

@@ -11,7 +11,6 @@ import java.time.ZoneOffset
 import java.time.ZonedDateTime
 import java.util.*
 
-
 @Configuration
 class MongoConfig {
     @Bean

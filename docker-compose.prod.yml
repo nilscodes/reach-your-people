@@ -32,6 +32,15 @@ services:
 
 
 
+    core-redirect:
+
+        container_name: core_redirect_prod
+        environment:
+            - MONGODB_PASSWORD=
+            - REDIS_PASSWORD=
+
+
+
     integration-discord:
 
         container_name: integration_discord_prod

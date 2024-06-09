@@ -32,6 +32,15 @@ services:
         ports:
             - "8072:8072"
 
+    core-redirect:
+        image: core-redirect:latest
+        container_name: core_redirect_dev
+        environment:
+            - MONGODB_PASSWORD=
+            - REDIS_PASSWORD=
+        ports:
+            - "8074:8074"
+
     integration-discord:
         image: integration-discord:latest
         container_name: integration_discord_dev
