@@ -1,9 +1,12 @@
-# We do not want to generate the following files because we are not making this a complete npm package, and instead just use the raw outputs from the openapi-generator-cli as an internal library.
+# We do not want to generate the following files because they are unnecessary
 
 .openapi-generator
-.gitignore
 .npmignore
 git_push.sh
+
+# These files are pre-existing and should not be overwritten currently
+
+.gitignore
 package.json
 README.md
 tsconfig.json

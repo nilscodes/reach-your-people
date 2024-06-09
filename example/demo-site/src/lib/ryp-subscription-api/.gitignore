@@ -2,3 +2,4 @@
 # This file ensures no unnecessary files are committed to the repository
 
 .openapi-generator
+dist
