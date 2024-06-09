@@ -16,6 +16,7 @@ import reactor.core.publisher.Mono
 import java.util.*
 
 val logger = KotlinLogging.logger {}
+const val RYP_GLOBAL_SITE = "https://ryp.vibrantnet.io"
 
 @Service
 class AnnouncementsApiServiceVibrant(
@@ -59,10 +60,10 @@ class AnnouncementsApiServiceVibrant(
             announcement.id.toString(),
             projectId,
             ActivityStream(
-                id = "https://ryp.vibrantnet.io/announcements/${announcement.id}",
+                id = "$RYP_GLOBAL_SITE/announcements/${announcement.id}",
                 actor = Person(
                     name = announcement.author.toString(),
-                    id = "https://ryp.vibrantnet.io/users/${announcement.author}"
+                    id = "$RYP_GLOBAL_SITE/users/${announcement.author}"
                 ),
                 `object` = Note(
                     content = announcement.content,
@@ -71,7 +72,7 @@ class AnnouncementsApiServiceVibrant(
                 ),
                 attributedTo = Organization(
                     name = "RYP Project $projectId",
-                    id = "https://ryp.vibrantnet.io/projects/$projectId"
+                    id = "$RYP_GLOBAL_SITE/projects/$projectId"
                 )
             ),
             AnnouncementStatus.PENDING,
@@ -112,6 +113,7 @@ class AnnouncementsApiServiceVibrant(
 
     @RabbitListener(queues = ["completed"])
     fun sendAnnouncementToSubscribers(announcementJob: AnnouncementJobDto) {
+        val minimalProjectInfo = getBasicProjectDto(announcementJob)
         announcementUpdateService.updateAnnouncementStatus(announcementJob.announcementId.toString(), AnnouncementStatus.PUBLISHING)
             .subscribe()
         val recipientsRaw = redisTemplate.opsForList().range("announcements:${announcementJob.announcementId}", 0, -1)
@@ -126,6 +128,7 @@ class AnnouncementsApiServiceVibrant(
                         recipient.referenceId,
                         announcement,
                         recipient.metadata,
+                        minimalProjectInfo,
                     )
                 )
             }
@@ -144,6 +147,13 @@ class AnnouncementsApiServiceVibrant(
             )
                 .subscribe()
         }
+    }
+
+    private fun getBasicProjectDto(announcementJob: AnnouncementJobDto): BasicProjectDto {
+        val project = subscriptionService.getProject(announcementJob.projectId)
+            .blockOptional()
+            .orElseThrow { IllegalStateException("Cannot publish announcement ${announcementJob.announcementId} for project ${announcementJob.projectId} as the project does not exist.") }
+        return BasicProjectDto(project)
     }
 
     override fun getAnnouncementById(announcementId: UUID): Mono<AnnouncementDto> {

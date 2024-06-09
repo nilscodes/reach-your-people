@@ -14,4 +14,23 @@ data class MessageDto @JsonCreator constructor(
     @JsonProperty("metadata")
     @JsonInclude(JsonInclude.Include.NON_NULL)
     val metadata: String? = null,
+
+    @JsonProperty("project")
+    val project: BasicProjectDto,
 )
+
+data class BasicProjectDto @JsonCreator constructor(
+    @JsonProperty("id")
+    val id: Long,
+
+    @JsonProperty("name")
+    val name: String,
+
+    @JsonProperty("logo")
+    val logo: String,
+
+    @JsonProperty("url")
+    val url: String,
+) {
+    constructor(project: ProjectDto) : this(project.id!!, project.name, project.logo, project.url)
+}
