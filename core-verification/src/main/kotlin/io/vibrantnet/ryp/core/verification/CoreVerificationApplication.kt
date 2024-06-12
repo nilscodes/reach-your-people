@@ -6,8 +6,8 @@ import org.springframework.boot.runApplication
 
 @SpringBootApplication
 @EnableConfigurationProperties(CoreVerificationConfiguration::class)
-class CoreVerificationServiceForRypApplication
+class CoreVerificationApplication
 
 fun main(args: Array<String>) {
-	runApplication<CoreVerificationServiceForRypApplication>(*args)
+	runApplication<CoreVerificationApplication>(*args)
 }

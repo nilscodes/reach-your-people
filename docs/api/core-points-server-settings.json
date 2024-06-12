@@ -1,0 +1,13 @@
+{
+  "basePackage": "io.vibrantnet.ryp.core.points",
+  "packageName": "io.vibrantnet.ryp.core.points",
+  "apiPackage": "io.vibrantnet.ryp.core.points.controller",
+  "modelPackage": "io.vibrantnet.ryp.core.points.model",
+  "documentationProvider": "none",
+  "artifactId": "core-points",
+  "groupId": "io.vibrantnet.ryp",
+  "title": "Reach your People - Core Points Service",
+  "useSpringBoot3": true,
+  "useSwaggerUI": false,
+  "serviceInterface": true
+}

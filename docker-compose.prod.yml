@@ -41,6 +41,16 @@ services:
 
 
 
+    core-points:
+
+        container_name: core_points_prod
+        environment:
+            - RYP_POSTGRES_PASSWORD=
+            - RABBITMQ_PASSWORD=
+            - REDIS_PASSWORD=
+
+
+
     integration-discord:
 
         container_name: integration_discord_prod
