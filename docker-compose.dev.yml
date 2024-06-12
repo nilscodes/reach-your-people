@@ -41,6 +41,16 @@ services:
         ports:
             - "8074:8074"
 
+    core-points:
+        image: core-points:latest
+        container_name: core_points_dev
+        environment:
+            - RYP_POSTGRES_PASSWORD=
+            - RABBITMQ_PASSWORD=
+            - REDIS_PASSWORD=
+        ports:
+            - "8075:8075"
+
     integration-discord:
         image: integration-discord:latest
         container_name: integration_discord_dev

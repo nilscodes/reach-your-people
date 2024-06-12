@@ -1,7 +1,7 @@
 package io.vibrantnet.ryp.core.redirect.model
 
 import com.fasterxml.jackson.annotation.JsonProperty
-import java.time.ZonedDateTime
+import java.time.OffsetDateTime
 
 data class ShortenedUrlDto(
     @JsonProperty("id")
@@ -11,7 +11,7 @@ data class ShortenedUrlDto(
     val shortcode: String? = null,
 
     @JsonProperty("createTime")
-    val createTime: ZonedDateTime = ZonedDateTime.now(),
+    val createTime: OffsetDateTime = OffsetDateTime.now(),
 
     @JsonProperty("type", required = true)
     val type: Type,

@@ -9,8 +9,8 @@ import org.springframework.data.annotation.Id
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.mongodb.core.index.Indexed
 import org.springframework.data.mongodb.core.mapping.Document
-import java.time.ZonedDateTime
-import java.util.UUID
+import java.time.OffsetDateTime
+import java.util.*
 
 @Document
 data class ShortenedUrl(
@@ -32,11 +32,11 @@ data class ShortenedUrl(
 
     @CreatedDate
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssZ", timezone = "UTC")
-    val createTime: ZonedDateTime = ZonedDateTime.now(),
+    val createTime: OffsetDateTime = OffsetDateTime.now(),
 
     @LastModifiedDate
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssZ", timezone = "UTC")
-    val modifiedTime: ZonedDateTime = ZonedDateTime.now(),
+    val modifiedTime: OffsetDateTime = OffsetDateTime.now(),
 ) {
     fun toDto() = ShortenedUrlDto(
         id = this.id,

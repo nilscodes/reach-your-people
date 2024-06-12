@@ -70,7 +70,7 @@ class ProjectsApiController(val service: ProjectsApiService) {
 //        method = [RequestMethod.GET],
 //        value = ["/projects/{projectId}/subscriptions"]
 //    )
-//    fun getAllSubscriptionsForProject( @PathVariable("projectId") projectId: kotlin.Long): ResponseEntity<Unit> {
+//    fun getAllSubscriptionsForProject( @PathVariable("projectId") projectId: Long): ResponseEntity<Unit> {
 //        return ResponseEntity(service.getAllSubscriptionsForProject(projectId), )
 //    }
 }

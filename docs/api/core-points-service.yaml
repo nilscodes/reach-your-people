@@ -1,0 +1,365 @@
+openapi: 3.1.0
+x-stoplight:
+  id: a0jfnl9ghb17s
+info:
+  title: Core Points Service
+  version: '1.0'
+  description: The API for the core gamification points service of the Cardano Blockchain announcement and notification application "Reach Your People"
+  contact:
+    name: Nils Codes
+    url: 'https://vibrantnet.io'
+    email: contact@vibrantnet.io
+  license:
+    name: Apache 2.0
+    url: 'https://www.apache.org/licenses/LICENSE-2.0'
+servers:
+  - url: 'http://localhost:8075'
+    description: Local Build
+paths:
+  '/points/accounts/{accountId}':
+    parameters:
+      - $ref: ./common-schemas.yaml#/components/parameters/accountId
+    get:
+      summary: Get points summary for account
+      tags: []
+      operationId: getPointsSummaryForAccount
+      x-stoplight:
+        id: 6cdpc2a7esx1j
+      description: 'Get a summary of points for each token for this user, including total accrued, spent and available'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PointsSummary'
+                  x-stoplight:
+                    id: 56ue075428e2u
+  '/points/accounts/{accountId}/claims':
+    parameters:
+      - $ref: ./common-schemas.yaml#/components/parameters/accountId
+    get:
+      summary: Get point claims for user
+      tags: []
+      operationId: getPointClaimsForAccount
+      description: 'Get all point claims for this user, i.e. all individual points they are either able to claim or have claimed, regardless of the token.'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PointsClaim'
+      x-stoplight:
+        id: d8elunqyp522n
+  '/points/accounts/{accountId}/claims/{tokenId}':
+    parameters:
+      - $ref: ./common-schemas.yaml#/components/parameters/accountId
+      - $ref: '#/components/parameters/tokenId'
+    get:
+      summary: Get point claims for user
+      tags: []
+      operationId: getPointClaimsForAccountAndToken
+      description: 'Get all point claims for this user, i.e. all individual points they are either able to claim or have claimed, regardless of the token.'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PointsClaim'
+      x-stoplight:
+        id: v9xzmj5p7s83g
+  '/points/accounts/{accountId}/claims/{tokenId}/{claimId}':
+    parameters:
+      - $ref: ./common-schemas.yaml#/components/parameters/accountId
+      - $ref: '#/components/parameters/tokenId'
+      - $ref: '#/components/parameters/claimId'
+    get:
+      summary: Get specific points claim
+      tags: []
+      operationId: getSpecificPointClaimForAccountAndToken
+      description: Find out if a specific claim for a given token and claim ID exists for this account.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PointsClaim'
+        '404':
+          description: No claim with this ID found for the account and token that was requested
+      x-stoplight:
+        id: 0al8r18466zjs
+    post:
+      summary: Create points claim
+      tags: []
+      operationId: createPointClaim
+      description: Create a specific points claim for the
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PointsClaim'
+        '409':
+          description: A claim already exists for this ID
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PointsClaim'
+    patch:
+      summary: Update points claim
+      tags: []
+      operationId: updatePointClaim
+      description: Claim a specific point claim for this account and token
+      responses:
+        '200':
+          description: Points claim updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PointsClaim'
+        '404':
+          description: No claim with this ID found for the account and token that was requested
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PointsClaimPartial'
+  /tokens:
+    post:
+      summary: Create new points token
+      description: Create a new points token for use in the system
+      tags: []
+      responses:
+        '201':
+          description: Created
+          headers:
+            Location:
+              schema:
+                type: string
+              description: Resource URL for the new points token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PointsToken'
+      operationId: createPointsToken
+      x-stoplight:
+        id: ab9ayl335davr
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PointsToken'
+    get:
+      summary: List all points tokens
+      description: 'Get a list of all points tokens, without limiting it to specific projects'
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PointsToken'
+      operationId: listPointsTokens
+  '/tokens/{tokenId}':
+    parameters:
+      - $ref: '#/components/parameters/tokenId'
+    get:
+      summary: Get points token details
+      description: Get detailed information on a points token
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PointsToken'
+      operationId: getPointsToken
+      x-stoplight:
+        id: 49dtencaw9b5r
+tags:
+  - name: points
+    description: Related to points and achievements
+components:
+  schemas:
+    PointsSummary:
+      title: PointsSummary
+      x-stoplight:
+        id: 6e6kxlxngxsln
+      type: object
+      required:
+        - tokenId
+        - totalPointsClaimed
+        - totalPointsAvailable
+        - totalPointsSpent
+        - totalPointsClaimable
+      properties:
+        tokenId:
+          $ref: '#/components/schemas/PointsTokenId'
+          x-stoplight:
+            id: b47btt1ktscif
+        totalPointsClaimed:
+          $ref: '#/components/schemas/PointsValue'
+          x-stoplight:
+            id: 49xcct3sm12bq
+          description: 'The total number of claimed points over time, including spent points.'
+        totalPointsAvailable:
+          $ref: '#/components/schemas/PointsValue'
+          x-stoplight:
+            id: ours4cpn6krtu
+          description: 'The total points that are claimed, excluding any spent points.'
+        totalPointsSpent:
+          $ref: '#/components/schemas/PointsValue'
+          x-stoplight:
+            id: pss77zhb7wn2k
+          description: The total points spent.
+        totalPointsClaimable:
+          $ref: '#/components/schemas/PointsValue'
+          x-stoplight:
+            id: pzm7w1xoxtdc3
+          description: 'The total points that are available to claim, but have not yet been claimed.'
+    PointsClaim:
+      title: PointsClaim
+      x-stoplight:
+        id: fah89sgjgo0jj
+      type: object
+      required:
+        - accountId
+        - tokenId
+        - points
+        - category
+        - claimId
+      properties:
+        accountId:
+          $ref: ./common-schemas.yaml#/components/schemas/AccountId
+          x-stoplight:
+            id: mnwjz15nj73ar
+        tokenId:
+          $ref: '#/components/schemas/PointsTokenId'
+          x-stoplight:
+            id: v5eo4rvf4r0vv
+        points:
+          $ref: '#/components/schemas/PointsValue'
+          x-stoplight:
+            id: rvek1mj5z1oz5
+        category:
+          type: string
+          x-stoplight:
+            id: 8lghgqx4sj1n7
+        claimId:
+          type: string
+          x-stoplight:
+            id: 94bacok57iirr
+        claimed:
+          type: boolean
+          x-stoplight:
+            id: mebarcnlqyrfl
+          default: false
+        projectId:
+          $ref: ./common-schemas.yaml#/components/schemas/ProjectId
+          x-stoplight:
+            id: kk2zh86e2va8h
+        expirationTime:
+          type: string
+          format: date-time
+          example: '2020-05-02T14:00:00Z'
+        createTime:
+          type: string
+          format: date-time
+          example: '2020-05-02T14:00:00Z'
+          readOnly: true
+        claimTime:
+          type: string
+          format: date-time
+          example: '2020-05-02T14:00:00Z'
+          readOnly: true
+    PointsClaimPartial:
+      title: PointsClaimPartial
+      x-stoplight:
+        id: pyt0bu7kcu5qg
+      type: object
+      properties:
+        claimed:
+          type: boolean
+        expirationTime:
+          type: string
+          format: date-time
+          example: '2020-05-02T14:00:00Z'
+    PointsToken:
+      title: PointsToken
+      x-stoplight:
+        id: 773omjbkfs4h6
+      type: object
+      required:
+        - creator
+        - name
+        - displayName
+      properties:
+        id:
+          $ref: '#/components/schemas/PointsTokenId'
+          x-stoplight:
+            id: 1u02t501fcziu
+        creator:
+          $ref: ./common-schemas.yaml#/components/schemas/AccountId
+        name:
+          type: string
+          x-stoplight:
+            id: m8naf0fi5v9yg
+          pattern: '^[A-Za-z]+$'
+        displayName:
+          type: string
+          x-stoplight:
+            id: fixpmp73b8ii2
+        projectId:
+          $ref: ./common-schemas.yaml#/components/schemas/ProjectId
+          x-stoplight:
+            id: mbz6m1rtbznpx
+        createTime:
+          type: string
+          format: date-time
+          example: '2020-05-02T14:00:00Z'
+          readOnly: true
+        modifyTime:
+          type: string
+          format: date-time
+          example: '2020-05-02T14:00:00Z'
+          readOnly: true
+    PointsTokenId:
+      title: PointsTokenId
+      type: integer
+      format: int32
+    PointsValue:
+      title: PointsValue
+      x-stoplight:
+        id: vuipk5713whnh
+      type: integer
+      format: int64
+  parameters:
+    tokenId:
+      name: tokenId
+      in: path
+      required: true
+      schema:
+        type: integer
+      description: The numeric ID of the token
+    claimId:
+      name: claimId
+      in: path
+      required: true
+      schema:
+        type: string
+      description: The unique ID of the claim
