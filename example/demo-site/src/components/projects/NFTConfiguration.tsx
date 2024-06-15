@@ -91,7 +91,6 @@ export default function NFTConfiguration({ type, formData, onSubmit }: ProjectCo
     }, [type]);
     
     const onFileSelected = (file: File) => {
-        console.log(file);
         setSelectedLogo(file);
         const fileUrl = URL.createObjectURL(file);
         setAvatarUrl(fileUrl);

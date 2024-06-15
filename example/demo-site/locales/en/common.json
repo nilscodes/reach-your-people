@@ -8,7 +8,7 @@
     "switchToLightMode": "Switch to light mode",
     "nav": {
         "verify": "Verify NFT Project Publisher",
-        "accounts": "Accounts",
+        "account": "Account",
         "subscriptions": "Subscriptions",
         "projects": "Projects",
         "wallets": "Wallets"

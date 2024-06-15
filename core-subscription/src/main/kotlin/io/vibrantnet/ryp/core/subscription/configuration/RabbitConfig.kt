@@ -21,5 +21,8 @@ class RabbitConfig {
     fun snapshotCompletedQueue() = Queue("snapshotcompleted")
 
     @Bean
+    fun claimsQueue() = Queue("pointclaims")
+
+    @Bean
     fun messageConverter() = Jackson2JsonMessageConverter()
 }

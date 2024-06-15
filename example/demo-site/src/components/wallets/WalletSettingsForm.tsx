@@ -8,7 +8,7 @@ import { useApi } from '@/contexts/ApiProvider';
 export default function WalletSettingsForm({ wallet }: { wallet: LinkExternalAccount200Response }) {
   const [currentWalletSettings, setCurrentWalletSettings] = useState(wallet);
   const api = useApi();
-  const { t } = useTranslation('wallets');
+  const { t } = useTranslation('accounts');
 
   useEffect(() => {
     const updateWalletSettings = async () => {
@@ -17,7 +17,7 @@ export default function WalletSettingsForm({ wallet }: { wallet: LinkExternalAcc
     updateWalletSettings();    
   }, [currentWalletSettings, api, wallet.externalAccount.id])
 
-  return (<Container py={{ base: '4', md: '8' }}>
+  return (<Container py={{ base: '4', md: '8' }} px="0">
     <Stack spacing="5" divider={<StackDivider />}>
       <Stack
         direction={{ base: 'column', lg: 'row' }}

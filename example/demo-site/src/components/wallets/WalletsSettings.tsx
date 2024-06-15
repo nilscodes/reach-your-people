@@ -21,7 +21,7 @@ interface WalletSettingsProps extends BoxProps {
   
 export default function WalletSettings({ wallet, onChangeWalletSettings, ...props }: WalletSettingsProps) {
   const [currentWalletSettings, setCurrentWalletSettings] = useState(wallet);
-  const { t } = useTranslation('wallets');
+  const { t } = useTranslation('accounts');
 
   const updateWalletSettings = (on: boolean, settings: LinkExternalAccount200ResponseSettingsEnum[]) => {
     const newWalletSettings = { ...currentWalletSettings };
@@ -49,10 +49,10 @@ export default function WalletSettings({ wallet, onChangeWalletSettings, ...prop
             {t('settings.tokens.title')}
           </Text>
           <Text color="fg.muted">
-            <Trans i18nKey='wallets:settings.tokens.description' components={[<NextLink key="" href='/subscriptions' />]}></Trans>
+            <Trans i18nKey='accounts:settings.tokens.description' components={[<NextLink key="" href='/subscriptions' />]}></Trans>
           </Text>
         </Stack>
-        <Switch isChecked={tokensEnabled} onChange={(e) => updateWalletSettings(e.target.checked, [LinkExternalAccount200ResponseSettingsEnum.FungibleTokenAnnouncements, LinkExternalAccount200ResponseSettingsEnum.NonFungibleTokenAnnouncements, LinkExternalAccount200ResponseSettingsEnum.RichFungibleTokenAnnouncements])} />
+        <Switch colorScheme="brand" isChecked={tokensEnabled} onChange={(e) => updateWalletSettings(e.target.checked, [LinkExternalAccount200ResponseSettingsEnum.FungibleTokenAnnouncements, LinkExternalAccount200ResponseSettingsEnum.NonFungibleTokenAnnouncements, LinkExternalAccount200ResponseSettingsEnum.RichFungibleTokenAnnouncements])} />
       </Stack>
       <Stack justify="space-between" direction="row" spacing="16">
         <Stack spacing="0.5" fontSize="sm">
@@ -60,11 +60,11 @@ export default function WalletSettings({ wallet, onChangeWalletSettings, ...prop
             {t('settings.spo.title')}
           </Text>
           <Text color="fg.muted">
-            <Trans i18nKey='wallets:settings.spo.description' components={[<NextLink key="" href='/subscriptions' />]}></Trans>
+            <Trans i18nKey='accounts:settings.spo.description' components={[<NextLink key="" href='/subscriptions' />]}></Trans>
           </Text>
           <Wrap spacing="2"><Tag>HAZEL</Tag></Wrap>
         </Stack>
-        <Switch isChecked={spoEnabled} onChange={(e) => updateWalletSettings(e.target.checked, [LinkExternalAccount200ResponseSettingsEnum.StakepoolAnnouncements])}/>
+        <Switch colorScheme="brand" isChecked={spoEnabled} onChange={(e) => updateWalletSettings(e.target.checked, [LinkExternalAccount200ResponseSettingsEnum.StakepoolAnnouncements])}/>
       </Stack>
       <Stack justify="space-between" direction="row" spacing="16">
         <Stack spacing="0.5" fontSize="sm">
@@ -72,10 +72,10 @@ export default function WalletSettings({ wallet, onChangeWalletSettings, ...prop
             {t('settings.drep.title')}
           </Text>
           <Text color="fg.muted">
-            <Trans i18nKey='wallets:settings.drep.description' components={[<NextLink key="" href='/subscriptions' />]}></Trans>
+            <Trans i18nKey='accounts:settings.drep.description' components={[<NextLink key="" href='/subscriptions' />]}></Trans>
           </Text>
         </Stack>
-        <Switch isChecked={drepEnabled} onChange={(e) => updateWalletSettings(e.target.checked, [LinkExternalAccount200ResponseSettingsEnum.DrepAnnouncements])}/>
+        <Switch colorScheme="brand" isChecked={drepEnabled} onChange={(e) => updateWalletSettings(e.target.checked, [LinkExternalAccount200ResponseSettingsEnum.DrepAnnouncements])}/>
       </Stack>
     </Stack>
   </Box>);

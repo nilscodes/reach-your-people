@@ -37,8 +37,6 @@ export default function PhoneNumberInput({ countryCode: initialCountryCode, phon
   // Additional countries can be added here
   const countries = [{ code: '1', label: 'us' }]
 
-  console.log(errors);
-
   return (
     <form onSubmit={handleSubmit(onSubmit)} noValidate>
       <Stack spacing={4}>

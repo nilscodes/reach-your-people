@@ -5,12 +5,10 @@ import io.mockk.mockk
 import io.vibrantnet.ryp.core.verification.model.Cip66PayloadDto
 import io.vibrantnet.ryp.core.verification.model.NoCip66DataAvailable
 import io.vibrantnet.ryp.core.verification.service.cip66Payload
-import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.core.RowMapper
-import reactor.core.publisher.Mono
 import reactor.test.StepVerifier
 import java.sql.ResultSet
 

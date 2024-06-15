@@ -29,6 +29,7 @@ val loggingVersion: String by rootProject.extra
 val mockkVersion: String by rootProject.extra
 val equalsVerifierVersion: String by rootProject.extra
 val slf4jVersion: String by rootProject.extra
+val springMockkVersion: String by rootProject.extra
 
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-actuator")
@@ -46,9 +47,12 @@ dependencies {
 	implementation("org.slf4j:slf4j-api:$slf4jVersion")
 	implementation("org.postgresql:postgresql")
 	implementation(project(":core-api"))
-	testImplementation("org.springframework.boot:spring-boot-starter-test")
+	testImplementation("org.springframework.boot:spring-boot-starter-test") {
+		exclude(module = "mockito-core")
+	}
 	testImplementation("io.projectreactor:reactor-test")
 	testImplementation("io.mockk:mockk:$mockkVersion")
+	testImplementation("com.ninja-squad:springmockk:$springMockkVersion")
 	testImplementation("nl.jqno.equalsverifier:equalsverifier:$equalsVerifierVersion")
 	testImplementation("com.h2database:h2")
 }

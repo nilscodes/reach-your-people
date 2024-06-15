@@ -1,6 +1,6 @@
 package io.vibrantnet.ryp.core.points.persistence
 
-import io.vibrantnet.ryp.core.points.model.PointsClaimDto
+import io.ryp.shared.model.points.PointsClaimDto
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.Id

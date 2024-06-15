@@ -7,9 +7,6 @@
     "*": [
       "common"
     ],
-    "/wallets": [
-      "wallets"
-    ],
     "rgx:^/subscriptions": [
       "subscriptions"
     ],
@@ -19,10 +16,10 @@
     "rgx:^/announcements": [
       "projects"
     ],
-    "/dashboard": [
+    "rgx:^/account": [
       "accounts"
     ],
-    "/login": [
+    "rgx:^/login": [
       "accounts"
     ]
   }

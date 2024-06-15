@@ -89,4 +89,12 @@ export class RypSiteApi {
     return (await axios.patch(`${this.baseUrl}/account/externalaccounts/${externalAccountId}/settings`, { settings })).data;
   }
 
+  async generateReferralUrl(): Promise<string> {
+    return (await axios.post(`${this.baseUrl}/account/settings/referralurl`)).data.referralUrl;
+  }
+
+  async submitReferredBy(referredBy: number): Promise<void> {
+    await axios.post(`${this.baseUrl}/account/settings/referral`, { referredBy });
+  }
+
 }

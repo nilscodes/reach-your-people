@@ -2,6 +2,7 @@ package io.vibrantnet.ryp.core.points.controller
 
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.hazelnet.shared.data.ApiErrorResponse
+import io.vibrantnet.ryp.core.points.model.DuplicatePointsClaimException
 import org.springframework.core.annotation.Order
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.ControllerAdvice
@@ -21,6 +22,14 @@ class ApiExceptionHandler {
     fun processObjectNotFoundError(ex: NoSuchElementException): ApiErrorResponse {
         logger.info { ex }
         return ApiErrorResponse(ex.message ?: "", HttpStatus.NOT_FOUND)
+    }
+
+    @ExceptionHandler(DuplicatePointsClaimException::class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ResponseBody
+    fun processDuplicatePointsClaimError(ex: DuplicatePointsClaimException): ApiErrorResponse {
+        logger.info { ex }
+        return ApiErrorResponse(ex.message ?: "", HttpStatus.CONFLICT)
     }
 
 }

@@ -1,7 +1,13 @@
 {
+    "tabs": {
+        "accounts": "Accounts",
+        "wallets": "Wallets"
+    },
     "loginTitle": "Log in to your account",
     "linkedAccounts": "Your Linked Accounts",
+    "linkedAccountsDescription": "You have linked the following accounts to your Reach Your People account. We use these accounts for your notifications and to determine your notification-eligible wallets.",
     "connectAccounts": "Connect additional accounts",
+    "connectAccountsDescription": "Connect additional accounts to your Reach Your People account to add wallets or other social media connections.",
     "connectNotificationSystems": "Set up additional notifications",
     "unlink": "Unlink",
     "walletSignInCancelled": "Could not get signature from wallet. The signing flow was cancelled.",
@@ -46,5 +52,27 @@
     "vibrantSyncSuccessContent": "We saw you have a <0>Vibrant</0> <1>(formerly HAZELnet)</1> account and went ahead and imported your wallets from it.",
     "vibrantSyncSuccessContentThanks": "Thank you for trying out Reach Your People, and we hope you enjoy the experience.",
     "vibrantSyncSuccessContinueButton": "Continue",
-    "vibrantSyncSuccessImageAltText": "Vibrant Sync Success Image"
+    "vibrantSyncSuccessImageAltText": "Vibrant Sync Success Image",
+
+    "referralTitle": "Share Reach Your People with your friends",
+    "referralDescription": "Invite your friends to join Reach Your People and increase your chances at a Spacebudz NFT when they sign up.",
+    "referralLink": "Your Referral Link",
+
+    "walletsTitle": "Your Wallet Settings",
+    "walletsDescription": "Manage your wallet notification settings and determine which subscriptions are active by default for notifications based on your wallet state.",
+    "walletSettings": "Your settings for this wallet",
+    "settings": {
+        "tokens": {
+            "title": "Fungible Tokens and NFTs",
+            "description": "By default, subscribe to all communications from the tokens in this wallet. You can unsubscribe from specific tokens under <0>Subscriptions</0>."
+        },
+        "spo": {
+            "title": "Delegated Stake Pools (SPOs)",
+            "description": "By default, subscribe to all communications from the Stake Pool Operators this wallet is delegated to. You can unsubscribe from specific pools under <0>Subscriptions</0>."
+        },
+        "drep": {
+            "title": "Delegated Representatives (dReps)",
+            "description": "By default, subscribe to all communications from your delegated representatives. You can unsubscribe from specific dReps under <0>Subscriptions</0>."
+        }
+    }
 }

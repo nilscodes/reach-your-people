@@ -5,12 +5,12 @@ import AccessDenied from "@/components/AccessDenied";
 import { coreSubscriptionApi } from "@/lib/core-subscription-api";
 import { InferGetServerSidePropsType } from "next";
 import { Account, GetLinkedExternalAccounts200ResponseInner } from "../../lib/ryp-subscription-api";
-import LinkedAccounts from "@/components/LinkedAccounts";
 import { VibrantSyncStatus } from "@/lib/types/VibrantSyncStatus";
 import { VibrantIntegrationApi } from "@/lib/integration-vibrant-api";
 import { getWalletDisplayName } from "@/lib/cardano";
 import { BlockchainType } from "@vibrantnet/core";
 import Head from "next/head";
+import AccountsPage from "@/components/AccountsPage";
 
 const VIBRANT_INTEGRATION_URL = process.env.VIBRANT_INTEGRATION_URL ?? "http://localhost:8080";
 
@@ -24,9 +24,9 @@ export default function Home({
   if (session?.userId && account && accountSettings) {
     return (<>
       <Head>
-        <title>RYP: Dashboard</title>
+        <title>RYP: Accounts</title>
       </Head>
-      <LinkedAccounts account={account} linkedAccounts={linkedAccounts} accountSettings={accountSettings} />;
+      <AccountsPage account={account} linkedAccounts={linkedAccounts} accountSettings={accountSettings} currentTab="accounts" />
     </>)
   }
 
@@ -101,7 +101,7 @@ async function checkVibrantMigrationStatus(account: Account, linkedAccounts: Get
           return { accountSettings: { ...accountSettings, VIBRANT_SYNC_STATUS: VibrantSyncStatus.CompletedConfirmed }, linkedAccounts: newLinkedAccounts };
         }
       } catch (error) {
-        console.error(error);
+        // TODO Send to prometheus
         // Ignore any errors
       }
     }

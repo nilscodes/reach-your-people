@@ -1,4 +1,4 @@
-package io.vibrantnet.ryp.core.points.model
+package io.ryp.shared.model.points
 
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty
@@ -11,4 +11,3 @@ data class PointsClaimPartialDto @JsonCreator constructor(
     @JsonProperty("expirationTime")
     val expirationTime: OffsetDateTime? = null
 )
-

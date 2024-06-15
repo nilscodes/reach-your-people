@@ -35,9 +35,10 @@ class AccountsApiController(
     @ResponseStatus(HttpStatus.CREATED)
     fun createAccount(
         @Valid @RequestBody accountDto: AccountDto,
+        @RequestParam("referredBy") referredBy: Long?,
         exchange: ServerWebExchange
     ): Mono<ResponseEntity<AccountDto>> {
-        return accountService.createAccount(accountDto)
+        return accountService.createAccount(accountDto, referredBy)
             .map { savedEntity ->
                 ResponseEntity.created(exchange.request.uri.let { UriComponentsBuilder.fromUri(it).path("/{id}").buildAndExpand(savedEntity.id).toUri() })
                     .body(savedEntity)

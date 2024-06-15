@@ -3,6 +3,7 @@ import { Heading, Box, Stack } from '@chakra-ui/react';
 import WalletSettingsForm from './WalletSettingsForm';
 import { Account, GetLinkedExternalAccounts200ResponseInner } from '../../lib/ryp-subscription-api';
 import useTranslation from 'next-translate/useTranslation';
+import Card from '../Card';
 
 type WalletSettingsListProps = {
   account: Account;
@@ -10,15 +11,15 @@ type WalletSettingsListProps = {
 };
 
 export default function WalletSettingsList({ account, wallets }: WalletSettingsListProps) {
-  const { t } = useTranslation('wallets');
+  const { t } = useTranslation('accounts');
   return (<Box
-    maxW="7xl"
+    maxW="3xl"
     mx="auto"
-    px={{ base: '4', md: '8', lg: '12' }}
+    px="0"
     py={{ base: '6', md: '8', lg: '12' }}
   >
     <Stack spacing="8">
-      <Heading size={{ base: 'xs', md: 'sm' }}>{t('walletsTitle')}</Heading>
+      <Card heading={t('walletsTitle')} description={t('walletsDescription')} />
       <Stack spacing="3">
         {wallets.map((wallet) => {
           return (<WalletSettingsForm
