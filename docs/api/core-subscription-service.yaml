@@ -45,6 +45,14 @@ paths:
       description: Create a new account.
       x-stoplight:
         id: osfbv5epro02s
+      parameters:
+        - schema:
+            type: integer
+            format: int64
+            example: 62
+          in: query
+          name: referredBy
+          description: Account ID of the user that referred this new account
   '/accounts/{accountId}':
     parameters:
       - $ref: ./common-schemas.yaml#/components/parameters/accountId

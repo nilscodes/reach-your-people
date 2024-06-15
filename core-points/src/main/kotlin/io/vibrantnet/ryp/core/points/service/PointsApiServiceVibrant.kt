@@ -1,11 +1,13 @@
 package io.vibrantnet.ryp.core.points.service
 
-import io.vibrantnet.ryp.core.points.model.PointsClaimDto
-import io.vibrantnet.ryp.core.points.model.PointsClaimPartialDto
+import io.ryp.shared.model.points.PointsClaimDto
+import io.ryp.shared.model.points.PointsClaimPartialDto
+import io.vibrantnet.ryp.core.points.model.DuplicatePointsClaimException
 import io.vibrantnet.ryp.core.points.model.PointsSummaryDto
 import io.vibrantnet.ryp.core.points.persistence.PointsClaim
 import io.vibrantnet.ryp.core.points.persistence.PointsClaimRepository
 import org.springframework.stereotype.Service
+import org.springframework.transaction.support.TransactionTemplate
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import java.time.OffsetDateTime
@@ -13,25 +15,37 @@ import java.time.OffsetDateTime
 @Service
 class PointsApiServiceVibrant(
     val pointsClaimRepository: PointsClaimRepository,
+    val transactionTemplate: TransactionTemplate,
 ) : PointsApiService {
+
+    /*
+     * Currently this call is not using @Transactional because the blocking nature interferes with the queue processing service
+     */
     override fun createPointClaim(
         accountId: Long,
         tokenId: Int,
         claimId: String,
         pointsClaimDto: PointsClaimDto
     ): Mono<PointsClaimDto> {
-        val pointsClaim = PointsClaim(
-            claimId = claimId,
-            points = pointsClaimDto.points,
-            category = pointsClaimDto.category,
-            accountId = accountId,
-            tokenId = tokenId,
-            claimed = pointsClaimDto.claimed,
-            projectId = pointsClaimDto.projectId,
-            expirationTime = pointsClaimDto.expirationTime,
-            claimTime = null,
-        )
-        return Mono.just(pointsClaimRepository.save(pointsClaim).toDto())
+        return Mono.fromCallable {
+            transactionTemplate.execute {
+                if (pointsClaimRepository.existsById(claimId)) {
+                    throw DuplicatePointsClaimException("Claim with ID $claimId already exists")
+                }
+                val pointsClaim = PointsClaim(
+                    claimId = claimId,
+                    points = pointsClaimDto.points,
+                    category = pointsClaimDto.category,
+                    accountId = accountId,
+                    tokenId = tokenId,
+                    claimed = pointsClaimDto.claimed,
+                    projectId = pointsClaimDto.projectId,
+                    expirationTime = pointsClaimDto.expirationTime,
+                    claimTime = if (pointsClaimDto.claimed) OffsetDateTime.now() else null,
+                )
+                pointsClaimRepository.save(pointsClaim).toDto()
+            }
+        }
     }
 
     override fun getPointClaimsForAccount(accountId: Long): Flux<PointsClaimDto> {

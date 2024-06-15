@@ -8,9 +8,11 @@ import "@fontsource/rajdhani/500.css"
 import Header from '@/components/Header'
 import ApiProvider from "@/contexts/ApiProvider"
 import { Footer } from "@/components/footer/Footer"
+import useReferral from "@/components/hooks/useReferral"
 
 
 export default function App({ Component, pageProps: { session, ...pageProps } }: AppProps<{ session: Session }>) {
+  useReferral();
   const theme = extendTheme(proTheme, {
     config: {
       initialColorMode: 'system',
@@ -33,6 +35,14 @@ export default function App({ Component, pageProps: { session, ...pageProps } }:
         },
         "*, *::before, &::after": {
           borderColor: "chakra-border-color",
+        },
+      }
+    },
+    semanticTokens: {
+      colors: {
+        'bg.surface': {
+          default: 'gray.50',
+          _dark: 'gray.900',
         },
       }
     }

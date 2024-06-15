@@ -16,7 +16,7 @@ export default function LoginPage() {
   const { t } = useTranslation('accounts');
 
   const handleSignIn = (provider: string) => {
-    signIn(provider, { callbackUrl: '/dashboard' });
+    signIn(provider, { callbackUrl: '/account' });
   };
 
   const linkedProviders: string[] = []; // accounts.map((account) => account.provider);

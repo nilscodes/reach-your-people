@@ -28,43 +28,39 @@ export const LinkedAccount = ({
   const url = showUrl ? buildUrlForExternalAccount(linkedAccount.externalAccount) : '';
   const hasUrl = url.length > 0;
   return (<Box as="section">
-    <Container maxW="3xl">
-      <Box bg="bg.surface" boxShadow="sm" borderRadius="lg" p={{ base: '4', md: '6' }}>
-        <Stack
-          direction={{ base: 'column', md: 'row' }}
-          spacing={{ base: '5', md: '6' }}
-          justify="space-between"
-        >
-          <Stack spacing="1">
-            <HStack>
-              {icon}
-              <Text textStyle="lg" fontWeight="medium">
-                {providerName}
-              </Text>
-            </HStack>
-            <Text textStyle="sm" color="fg.muted">
-              {hasUrl && <Link href={url} isExternal>{linkedAccount.externalAccount.displayName}</Link>}
-              {!hasUrl && linkedAccount.externalAccount.displayName}
-            </Text>
-          </Stack>
-          <Box>
-            <Button onClick={() => {
-              if (canRemove) {
-                onRemove(linkedAccount.externalAccount.id!);
-              } else {
-                toast({
-                  title: 'You must have at least one linked social account and cannot remove the last wallet if you have only wallets connected.',
-                  status: "error",
-                  duration: 5000,
-                  isClosable: true,
-                  position: "top",
-                  variant: "solid",
-                });
-              }
-            }}>{t('unlink')}</Button>
-          </Box>
-        </Stack>
+    <Stack
+      direction={{ base: 'column', md: 'row' }}
+      spacing={{ base: '5', md: '6' }}
+      justify="space-between"
+    >
+      <Stack spacing="1">
+        <HStack>
+          {icon}
+          <Text textStyle="lg" fontWeight="medium">
+            {providerName}
+          </Text>
+        </HStack>
+        <Text textStyle="sm" color="fg.muted">
+          {hasUrl && <Link href={url} isExternal>{linkedAccount.externalAccount.displayName}</Link>}
+          {!hasUrl && linkedAccount.externalAccount.displayName}
+        </Text>
+      </Stack>
+      <Box>
+        <Button onClick={() => {
+          if (canRemove) {
+            onRemove(linkedAccount.externalAccount.id!);
+          } else {
+            toast({
+              title: 'You must have at least one linked social account and cannot remove the last wallet if you have only wallets connected.',
+              status: "error",
+              duration: 5000,
+              isClosable: true,
+              position: "top",
+              variant: "solid",
+            });
+          }
+        }}>{t('unlink')}</Button>
       </Box>
-    </Container>
+    </Stack>
   </Box>)
 };

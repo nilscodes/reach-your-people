@@ -1,7 +1,7 @@
 package io.vibrantnet.ryp.core.points.controller
 
-import io.vibrantnet.ryp.core.points.model.PointsClaimDto
-import io.vibrantnet.ryp.core.points.model.PointsClaimPartialDto
+import io.ryp.shared.model.points.PointsClaimDto
+import io.ryp.shared.model.points.PointsClaimPartialDto
 import io.vibrantnet.ryp.core.points.service.PointsApiService
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus

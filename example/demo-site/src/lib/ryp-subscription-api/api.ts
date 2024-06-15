@@ -30,7 +30,7 @@ import { BASE_PATH, COLLECTION_FORMATS, BaseAPI, RequiredError, operationServerM
  */
 export interface Account {
     /**
-     * 
+     * An ID identifying a single RYP account
      * @type {number}
      * @memberof Account
      */
@@ -117,7 +117,7 @@ export interface CreateExternalAccountRequest {
  */
 export interface GetAllSubscriptionsForAccount200ResponseInner {
     /**
-     * 
+     * A project ID or empty, if explicitly subscribed to everything
      * @type {number}
      * @memberof GetAllSubscriptionsForAccount200ResponseInner
      */
@@ -848,10 +848,11 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
          * Create a new account.
          * @summary Create New Account
          * @param {Account} account Post the necessary fields for the API to create a new user.
+         * @param {number} [referredBy] Account ID of the user that referred this new account
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        createAccount: async (account: Account, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        createAccount: async (account: Account, referredBy?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'account' is not null or undefined
             assertParamExists('createAccount', 'account', account)
             const localVarPath = `/accounts`;
@@ -865,6 +866,10 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
             const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
+
+            if (referredBy !== undefined) {
+                localVarQueryParameter['referredBy'] = referredBy;
+            }
 
 
     
@@ -1680,11 +1685,12 @@ export const DefaultApiFp = function(configuration?: Configuration) {
          * Create a new account.
          * @summary Create New Account
          * @param {Account} account Post the necessary fields for the API to create a new user.
+         * @param {number} [referredBy] Account ID of the user that referred this new account
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async createAccount(account: Account, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Account>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.createAccount(account, options);
+        async createAccount(account: Account, referredBy?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Account>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.createAccount(account, referredBy, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['DefaultApi.createAccount']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -1999,11 +2005,12 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
          * Create a new account.
          * @summary Create New Account
          * @param {Account} account Post the necessary fields for the API to create a new user.
+         * @param {number} [referredBy] Account ID of the user that referred this new account
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        createAccount(account: Account, options?: any): AxiosPromise<Account> {
-            return localVarFp.createAccount(account, options).then((request) => request(axios, basePath));
+        createAccount(account: Account, referredBy?: number, options?: any): AxiosPromise<Account> {
+            return localVarFp.createAccount(account, referredBy, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -2254,12 +2261,13 @@ export class DefaultApi extends BaseAPI {
      * Create a new account.
      * @summary Create New Account
      * @param {Account} account Post the necessary fields for the API to create a new user.
+     * @param {number} [referredBy] Account ID of the user that referred this new account
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DefaultApi
      */
-    public createAccount(account: Account, options?: RawAxiosRequestConfig) {
-        return DefaultApiFp(this.configuration).createAccount(account, options).then((request) => request(this.axios, this.basePath));
+    public createAccount(account: Account, referredBy?: number, options?: RawAxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).createAccount(account, referredBy, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

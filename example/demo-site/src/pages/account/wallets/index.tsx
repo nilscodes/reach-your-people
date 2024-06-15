@@ -1,26 +1,26 @@
 import { getServerSession } from "next-auth";
 import { useSession } from "next-auth/react"
-import { getNextAuthOptions } from "../api/auth/[...nextauth]";
+import { getNextAuthOptions } from "../../api/auth/[...nextauth]";
 import AccessDenied from "@/components/AccessDenied";
 import { coreSubscriptionApi } from "@/lib/core-subscription-api";
 import { InferGetServerSidePropsType } from "next";
-import { Account, GetLinkedExternalAccounts200ResponseInner } from "../../lib/ryp-subscription-api";
-import WalletSettingsList from "@/components/wallets/WalletSettingsList";
+import { Account, GetLinkedExternalAccounts200ResponseInner } from "../../../lib/ryp-subscription-api";
 import Head from "next/head";
+import AccountsPage from "@/components/AccountsPage";
 
 export default function WalletsHome({
   account,
-  linkedAccounts
+  linkedAccounts,
+  accountSettings,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const { data: session } = useSession()
 
   if (session?.userId && account) {
-    const wallets = linkedAccounts.filter((account) => account.externalAccount.type === 'cardano');
     return (<>
       <Head>
         <title>RYP: Wallet Settings</title>
       </Head>
-      <WalletSettingsList account={account} wallets={wallets} />
+      <AccountsPage account={account} linkedAccounts={linkedAccounts} accountSettings={accountSettings} currentTab="wallets" />
     </>);
   }
 
@@ -35,15 +35,18 @@ export async function getServerSideProps(context: any) {
   );
   let account: Account | null = null;
   let linkedAccounts: GetLinkedExternalAccounts200ResponseInner[] = [];
+  let accountSettings = {};
   if (session?.userId) {
     account = (await coreSubscriptionApi.getAccountById(session.userId)).data;
     linkedAccounts = (await coreSubscriptionApi.getLinkedExternalAccounts(session.userId)).data;
+    accountSettings = (await coreSubscriptionApi.getSettingsForAccount(session.userId)).data;
   }
   return {
     props: {
       session,
       account,
       linkedAccounts,
+      accountSettings,
     },
   }
 }

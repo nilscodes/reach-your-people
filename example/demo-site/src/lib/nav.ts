@@ -20,8 +20,8 @@ const nav: NavItem[] = [{
   //   label: 'nav.verify',
   //   path: '/test',
   // }, {
-    label: 'nav.accounts',
-    path: '/dashboard',
+    label: 'nav.account',
+    path: '/account',
     onlyLoggedIn: true,
   }, {
     label: 'nav.subscriptions',
@@ -30,10 +30,6 @@ const nav: NavItem[] = [{
   }, {
     label: 'nav.projects',
     path: '/projects',
-    onlyLoggedIn: true,
-  }, {
-    label: 'nav.wallets',
-    path: '/wallets',
     onlyLoggedIn: true,
   }
 ];

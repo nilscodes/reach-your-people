@@ -6,10 +6,10 @@ import jakarta.persistence.Embeddable
 
 @Embeddable
 class EmbeddableSetting(
-    @Column(name = "setting_name")
+    @Column(name = "setting_name", nullable = false)
     var name: String,
 
-    @Column(name = "setting_value")
+    @Column(name = "setting_value", nullable = false)
     var value: String
 ) {
     fun toDto() = SettingDto(name, value)

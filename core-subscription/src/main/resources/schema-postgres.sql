@@ -17,8 +17,8 @@ CREATE TABLE "accounts"
 CREATE TABLE "account_settings"
 (
     "account_id"    bigint,
-    "setting_name"  varchar(64),
-    "setting_value" varchar(4096),
+    "setting_name"  varchar(64)   NOT NULL,
+    "setting_value" varchar(4096) NOT NULL,
     UNIQUE ("account_id", "setting_name")
 );
 

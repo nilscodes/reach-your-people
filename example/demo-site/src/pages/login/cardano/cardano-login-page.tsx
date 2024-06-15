@@ -30,7 +30,7 @@ export default function CardanoLoginPage() {
       signIn("cardano", {
         stakeAddress,
         signature: JSON.stringify(signature),
-        callbackUrl: '/dashboard',
+        callbackUrl: '/account',
       });
     } catch (error) {
       // Show chakra ui error toast

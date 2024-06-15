@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Heading, Text, Button, Box, VStack, Stack, useToast } from '@chakra-ui/react';
+import { Container, Heading, Text, Button, Box, VStack, Stack, useToast, StackDivider, Tabs, TabList, Tab, TabIndicator, TabPanels, TabPanel } from '@chakra-ui/react';
 import { Account, GetLinkedExternalAccounts200ResponseInner } from '../lib/ryp-subscription-api';
 import { CardanoIcon, providerList, providersConfig } from './ProviderIcons';
 import { signIn } from 'next-auth/react';
@@ -13,6 +13,9 @@ import useTranslation from 'next-translate/useTranslation';
 import PushApiVerification from './pushapi/PushApiVerification';
 import { VibrantSyncStatus } from '@/lib/types/VibrantSyncStatus';
 import { VibrantSyncStatusMessage } from './linkedaccounts/VibrantSyncStatusMessage';
+import ReferralLink from './account/ReferralLink';
+import useReferral from './hooks/useReferral';
+import Card from './Card';
 
 type LinkedAccountsProps = {
   account: Account;
@@ -26,6 +29,7 @@ export default function LinkedAccounts({ accountSettings, linkedAccounts: linked
   const api = useApi();
   const toast = useToast();
   const { t } = useTranslation('accounts');
+  const [referral, completeReferral] = useReferral();
   const [linkedAccounts, setLinkedAccounts] = React.useState<GetLinkedExternalAccounts200ResponseInner[]>(linkedAccountsProp);
   const [showWalletConnection, setShowWalletConnection] = React.useState(false);
   const [showPhoneConnection, setShowPhoneConnection] = React.useState(false);
@@ -47,7 +51,7 @@ export default function LinkedAccounts({ accountSettings, linkedAccounts: linked
       signIn("cardano", {
         stakeAddress,
         signature: JSON.stringify(signature),
-        callbackUrl: '/dashboard',
+        callbackUrl: '/account',
       });
     } catch (error) {
       toast({
@@ -60,6 +64,16 @@ export default function LinkedAccounts({ accountSettings, linkedAccounts: linked
       });
     }
   };
+
+  useEffect(() => {
+    const submitReferral = async (referredBy: number) => {
+      await api.submitReferredBy(referredBy);
+    }
+    if (referral) {
+      submitReferral(referral);
+      completeReferral();
+    }
+  }, [api, referral, completeReferral]);
 
   useEffect(() => {
     if (showWalletConnection) {
@@ -90,12 +104,13 @@ export default function LinkedAccounts({ accountSettings, linkedAccounts: linked
   const hasPushApi = linkedAccounts.some((linkedAccount) => linkedAccount.externalAccount.type === 'pushapi');
   const showSocialConnections = !showWalletConnection && !showPhoneConnection && !showPushApiConnection;
 
-  return (<Container maxW="md" py={{ base: '12', md: '24' }}>
-    <Stack spacing="8">
-      <Heading size={{ base: 'xs', md: 'sm' }}>{t('linkedAccounts')}</Heading>
+  return (<Container maxW="3xl" py={{ base: '0', md: '12' }} px="0">
+    <Stack spacing="8" gap="0">
+      <ReferralLink accountSettings={accountSettings} />
       {accountSettings['VIBRANT_SYNC_STATUS'] === VibrantSyncStatus.CompletedConfirmed && (<VibrantSyncStatusMessage />)}
-      <Stack spacing="3">
-        {linkedAccounts.map((linkedAccount) => {
+      <Card heading={t('linkedAccounts')} description={t('linkedAccountsDescription')}>
+        <Stack spacing="5" divider={<StackDivider />} pt="5">
+          {linkedAccounts.map((linkedAccount) => {
             return (<LinkedAccount
               key={linkedAccount.externalAccount.id}
               linkedAccount={linkedAccount}
@@ -105,8 +120,9 @@ export default function LinkedAccounts({ accountSettings, linkedAccounts: linked
               onRemove={unlinkExternalAccount}
             />);
           })}
-      </Stack>
-      <Heading size={{ base: 'xs', md: 'sm' }}>{t('connectAccounts')}</Heading>
+        </Stack>
+      </Card>
+      <Card heading={t('connectAccounts')} description={t('connectAccountsDescription')}>
         {showWalletConnection && (<WalletLogin wallets={wallets} handleSignIn={handleWalletSignIn} onReturn={() => setShowWalletConnection(false)} />)}
         {showPhoneConnection && (<PhoneVerification onReturn={finalizePhoneAuth} />)}
         {showPushApiConnection && (<PushApiVerification onReturn={finalizePushApi} />)}
@@ -150,6 +166,7 @@ export default function LinkedAccounts({ accountSettings, linkedAccounts: linked
               );
             })}
         </Stack>)}
+      </Card>
     </Stack>
   </Container>);
 };

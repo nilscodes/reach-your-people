@@ -71,7 +71,7 @@ export const getNextAuthOptions = <Req extends Request, Res extends Response>(
             const externalAccount = await coreSubscriptionApi.createExternalAccount(getExternalAccountInfoFromProviderAccount(user, account));
             // TODO Prevent linking more than one non-cardano account of the same provider
             await coreSubscriptionApi.linkExternalAccount(currentUserId, externalAccount.data.id!);
-            return "/dashboard"; // Prevent the actual login flow, we just linked a new external account and don't need to log anyone in. Redirect to the dashboard instead.
+            return "/account"; // Prevent the actual login flow, we just linked a new external account and don't need to log anyone in. Redirect to the dashboard instead.
           } else if (account) {
             // If there is no user logged in, but there is an account being signed in with, let's check if we recognize it - if not, create a new account
             try {

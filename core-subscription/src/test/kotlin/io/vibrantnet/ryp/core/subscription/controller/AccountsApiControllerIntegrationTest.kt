@@ -50,8 +50,27 @@ class AccountsApiControllerIntegrationTest {
     lateinit var accountsApiService: AccountsApiService
 
     @Test
-    fun `create account works with correct payload`() {
-        every { accountsApiService.createAccount(any()) } answers {
+    fun `create account works with correct payload and no referral`() {
+        every { accountsApiService.createAccount(any(), null) } answers {
+            Mono.just(defaultAccountDto)
+        }
+
+        val requestJson = loadJsonFromResource("sample-json/test-create-account-request.json")
+        val responseJson = loadJsonFromResource("sample-json/test-default-account-response.json")
+
+        webClient.post()
+            .uri("/accounts")
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(BodyInserters.fromValue(requestJson))
+            .exchange()
+            .expectStatus().isCreated
+            .expectHeader().valueEquals("Location", "/accounts/69")
+            .expectBody().json(responseJson)
+    }
+
+    @Test
+    fun `create account works with correct payload and with referral`() {
+        every { accountsApiService.createAccount(any(), 33) } answers {
             Mono.just(defaultAccountDto)
         }
 

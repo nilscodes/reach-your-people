@@ -1,5 +1,6 @@
 package io.vibrantnet.ryp.core.subscription.service
 
+import io.ryp.shared.aspect.PointsClaim
 import io.ryp.shared.model.ExternalAccountRole
 import io.ryp.shared.model.LinkedExternalAccountDto
 import io.ryp.shared.model.LinkedExternalAccountPartialDto
@@ -8,6 +9,7 @@ import io.vibrantnet.ryp.core.subscription.persistence.*
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.transaction.support.TransactionTemplate
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 
@@ -20,7 +22,19 @@ class AccountsApiServiceVibrant(
     val verifyService: VerifyService,
 ) : AccountsApiService {
 
-    override fun createAccount(accountDto: AccountDto): Mono<AccountDto> {
+    @PointsClaim(
+        points = "#points['referral']",
+        category = "'referral'",
+        claimId = "'referral-' + #result.id",
+        accountId = "#referredBy",
+    )
+    @PointsClaim(
+        points = "#points['signup']",
+        category = "'signup'",
+        claimId = "'signup-' + #result.id",
+        accountId = "#result.id",
+    )
+    override fun createAccount(accountDto: AccountDto, referredBy: Long?): Mono<AccountDto> {
         val newAccount = Account(
             displayName = accountDto.displayName,
         )

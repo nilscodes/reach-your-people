@@ -17,7 +17,7 @@ interface AccountsApiService {
      *         or Missing Required Information (status code 400)
      * @see AccountsApi#createAccount
      */
-    fun createAccount(accountDto: AccountDto): Mono<AccountDto>
+    fun createAccount(accountDto: AccountDto, referredBy: Long?): Mono<AccountDto>
 
     /**
      * GET /accounts/{accountId} : Get Account Info by numeric ID
