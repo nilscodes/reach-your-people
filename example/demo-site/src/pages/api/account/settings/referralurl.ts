@@ -27,6 +27,7 @@ export default async function handler(
         referralUrl = `${process.env.RYP_SHORT_URL}/${shortUrl.data.shortcode}`;
       }
       catch (error) {
+        console.log(error);
         // TODO: log to Prometheus, since we want to know if this is failing, but we can just use the full URL in the meantime
       }
       await coreSubscriptionApi.updateAccountSetting(accountId, 'REFERRAL_URL', { name: 'REFERRAL_URL', value: referralUrl });
