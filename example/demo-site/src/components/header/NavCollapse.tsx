@@ -18,7 +18,7 @@ export default function NavCollapse({ label, subnav, closeDrawer }: NavCollapseP
   const { t } = useTranslation('common');
   return (
     <>
-      <Button justifyContent="space-between" variant="tertiary" size="lg" onClick={onToggle}>
+      <Button justifyContent="space-between" variant="tertiary" size="md" onClick={onToggle}>
         <Text as="span">{label}</Text>
         <PopoverIcon isOpen={isOpen} />
       </Button>
@@ -29,7 +29,7 @@ export default function NavCollapse({ label, subnav, closeDrawer }: NavCollapseP
               {t(item.label)}
             </Button>}
             {!item.external && <NextLink href={item.path} key={item.path}>
-              <Button variant="tertiary" size="lg" justifyContent="start" onClick={closeDrawer}>
+              <Button variant="tertiary" size="md" justifyContent="start" onClick={closeDrawer}>
                 {t(item.label)}
               </Button>
             </NextLink>}

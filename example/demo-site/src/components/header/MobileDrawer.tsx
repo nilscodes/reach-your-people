@@ -6,6 +6,7 @@ import nav from '@/lib/nav';
 import NavCollapse from './NavCollapse';
 import NextLink from '../NextLink';
 import useTranslation from 'next-translate/useTranslation';
+import { useSession } from 'next-auth/react';
 
 const mobileNav = nav.concat([{
   label: 'nav.apps',
@@ -18,6 +19,7 @@ const mobileNav = nav.concat([{
 }])
 
 export default function MobileDrawer() {
+  const { data: session } = useSession();
   const { isOpen, onToggle, onClose } = useDisclosure();
   const { t } = useTranslation('common');
   return (
@@ -32,7 +34,7 @@ export default function MobileDrawer() {
         <DrawerContent>
           <DrawerBody mt="72px" p="4">
             <Stack spacing="1">
-              {mobileNav.map((item) => {
+              {mobileNav.filter((item) => !item.onlyLoggedIn || session?.userId).map((item) => {
                 if (item.children?.length) {
                   return (
                     <NavCollapse
