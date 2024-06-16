@@ -38,7 +38,7 @@ export default function ProjectsHomepage(props: ProjectsHomepageProps) {
             title={t('projectsTitle')}
             description={t('projectsDescription')}
         >
-            <NextLink href="/projects/new">
+            <NextLink href="/publish/new">
                 <Button variant={isFirstProject && !isProjectsLoading ? 'solid' : 'outline'}>{t('addNewProjectButton')}</Button>
             </NextLink>
         </ProjectsHeader>

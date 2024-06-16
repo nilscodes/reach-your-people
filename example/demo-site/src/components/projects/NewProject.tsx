@@ -50,7 +50,7 @@ export default function NewProject({ account }: NewProjectProps) {
         .map((policy) => ({ name: policy.projectName, policyId: policy.policyId })),
     }
     await api.addNewProject(newProject, projectData.logo);
-    router.push('/projects');
+    router.push('/publish');
   }
 
   const pickType = (type: ProjectCategory) => {
@@ -65,7 +65,7 @@ export default function NewProject({ account }: NewProjectProps) {
         py={{ base: '6', md: '8', lg: '12' }}
     >
       <ProjectsHeader
-            backButtonLink='/projects'
+            backButtonLink='/publish'
             backButtonText={t('backToProjectList')}
             title={t('createNewProjectTitle')}
             description={t('createNewProjectDescription')}

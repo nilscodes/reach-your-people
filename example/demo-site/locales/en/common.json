@@ -70,6 +70,7 @@
     "accessDenied": {
         "title": "Access Denied",
         "message": "Sorry, you do not have access to this page.",
+        "messageBeta": "This page is currently in beta and only available to a select group of users.",
         "cta": "Jump Home"
     },
     "logoAlt": "Logo of the Reach Your People Project, a V-shaped shield icon with the letters RYP on it.",
