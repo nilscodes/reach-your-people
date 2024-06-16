@@ -36,7 +36,7 @@ export default function AppSwitcher() {
           onClick={onToggle}
         />
       </PopoverTrigger>
-      <PopoverContent p="2" w="600px">
+      <PopoverContent p="2" w={{ base: '0px', lg: '600px'}}>
         <Stack spacing="1">
           {apps.map((item) => (
             <NextLink href={item.url} key={item.url}>
