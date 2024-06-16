@@ -11,6 +11,8 @@ import SubscriptionActions from './SubscriptionActions';
 import FavoriteButton from './FavoriteButton';
 import useTranslation from 'next-translate/useTranslation';
 
+const CDN_BASE_URL = process.env.NEXT_PUBLIC_CDN_BASE_URL?.replace(/\/$/, '');
+
 export default function SubscriptionsListView(props: SubscriptionsViewProps) {
   const {
     account,
@@ -20,7 +22,7 @@ export default function SubscriptionsListView(props: SubscriptionsViewProps) {
     ...rest
   } = props;
   const colSpan = useBreakpointValue({ base: 1, md: 3, lg: 4 });
-  const { t } = useTranslation('subscriptions');
+  const { t } = useTranslation('projects');
   return (<Table variant="simple" whiteSpace={{ base: 'initial', lg: 'nowrap' }} {...rest}>
     <Thead>
       <Tr>
@@ -37,6 +39,9 @@ export default function SubscriptionsListView(props: SubscriptionsViewProps) {
         <Tr><Td colSpan={colSpan}><Skeleton h="40px" /></Td></Tr>
         <Tr><Td colSpan={colSpan}><Skeleton h="40px" /></Td></Tr>
       </>)}
+      {!isProjectsLoading && projects.length === 0 && (
+        <Tr><Td colSpan={colSpan}><Text color="fg.muted">{t('noProjectsFound')}</Text></Td></Tr>
+      )}
       {!isProjectsLoading && projects.map((project) => {
         const subscription = subscriptions.find((subscription) => subscription.projectId === project.id);
         return(<Tr key={project.id}>
@@ -47,7 +52,7 @@ export default function SubscriptionsListView(props: SubscriptionsViewProps) {
                 <ProjectLogo
                   size="sm"
                   name={project.name}
-                  src={project.logo}
+                  src={`${CDN_BASE_URL}/${project.logo}`}
                   hideVerified
                 />
                 <VerifiedIcon isVerified={project.verified} fontSize="lg" />
@@ -61,7 +66,7 @@ export default function SubscriptionsListView(props: SubscriptionsViewProps) {
           <Td display={{ base: 'none', lg: 'table-cell' }}><Link href={`${project.url}`} isExternal={true} fontWeight="medium">{project.url!.replace('https://', '')}</Link></Td>
           <Td display={{ base: 'none', md: 'table-cell' }}><ProjectTag category={project.category} /></Td>
           <Td display={{ base: 'none', md: 'table-cell' }}>
-            <HStack>
+            <HStack whiteSpace='initial'>
               <SubscriptionActions account={account} project={project} subscription={subscription} />
             </HStack>
           </Td>

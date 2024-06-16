@@ -5,6 +5,7 @@ import {
 import PopoverIcon from './PopoverIcon';
 import { NavItem } from '@/lib/nav';
 import NextLink from '../NextLink';
+import useTranslation from 'next-translate/useTranslation';
 
 type NavCollapseProps = {
     label: string;
@@ -14,6 +15,7 @@ type NavCollapseProps = {
 
 export default function NavCollapse({ label, subnav, closeDrawer }: NavCollapseProps) {
   const { isOpen, onToggle } = useDisclosure();
+  const { t } = useTranslation('common');
   return (
     <>
       <Button justifyContent="space-between" variant="tertiary" size="lg" onClick={onToggle}>
@@ -24,11 +26,11 @@ export default function NavCollapse({ label, subnav, closeDrawer }: NavCollapseP
         <Stack spacing="1" alignItems="stretch" ps="4">
           {subnav.map((item) => (<React.Fragment key={item.path}>
             {item.external && <Button as='a' href={item.path} key={item.path} variant="tertiary" justifyContent="start">
-              {item.label}
+              {t(item.label)}
             </Button>}
             {!item.external && <NextLink href={item.path} key={item.path}>
               <Button variant="tertiary" size="lg" justifyContent="start" onClick={closeDrawer}>
-                {item.label}
+                {t(item.label)}
               </Button>
             </NextLink>}
           </React.Fragment>))}

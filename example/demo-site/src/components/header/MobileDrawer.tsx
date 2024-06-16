@@ -7,6 +7,16 @@ import NavCollapse from './NavCollapse';
 import NextLink from '../NextLink';
 import useTranslation from 'next-translate/useTranslation';
 
+const mobileNav = nav.concat([{
+  label: 'nav.apps',
+  path: '',
+  children: [{
+    label: 'apps.vibrantNet',
+    external: true,
+    path: 'https://vibrantnet.io',
+  }],
+}])
+
 export default function MobileDrawer() {
   const { isOpen, onToggle, onClose } = useDisclosure();
   const { t } = useTranslation('common');
@@ -22,7 +32,7 @@ export default function MobileDrawer() {
         <DrawerContent>
           <DrawerBody mt="72px" p="4">
             <Stack spacing="1">
-              {nav.map((item) => {
+              {mobileNav.map((item) => {
                 if (item.children?.length) {
                   return (
                     <NavCollapse

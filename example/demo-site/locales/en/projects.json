@@ -1,53 +1,46 @@
 {
-    "projectsTitle": "Your Projects",
-    "projectsDescription": "See the projects you have a role in, publish announcements and set up your project details.",
-    "addNewProjectButton": "Add new",
-    "noProjects": "You don't have any projects yet.",
-    "noProjectsCta": "Create a new project to get started.",
-    "backToProjectList": "Back to list",
-    "createNewProjectTitle": "Create new project",
-    "createNewProjectDescription": "Provide your project details to enable publishing announcements.",
-    "publishError": "Error publishing announcement",
-    "publishAnnouncementSuccess": "Announcement published. Wait for it to be received.",
-    "publishAnnouncementTitle": "Publish announcement",
-    "publishAnnouncementDescription": "Give us your announcement details to publish it.",
-    "publishAnnouncementButton": "Publish Announcement",
-    "editProjectButton": "Edit",
-    "sourceUrl": "Source",
-    "publish": {
-        "form": {
-            "title": "Title",
-            "contentWithMarkdown": "Content (Markdown allowed)",
-            "preview": "Preview",
-            "link": "Link (Optional)"
+    "subscriptionsTitle": "Projects",
+    "subscriptionsSeeAll": "View all",
+    "manageSubscriptions": "View",
+    "allProjects": "All projects",
+    "backToCategories": "Categories",
+    "searchProjectsPlaceholder": "Search Projects",
+    "typeFilterLabel": "Type",
+    "noProjectsFound": "No projects found with the current filter settings.",
+    "listView": {
+        "name": "List view",
+        "headers": {
+            "name": "Name",
+            "url": "URL",
+            "type": "Type",
+            "actions": "Actions"
         }
     },
-    "add": {
-        "changeType": "Change Type",
-        "form": {
-            "title": "Your Project",
-            "cta": "Let us know your project details",
-            "name": "Project Name",
-            "nameError": "Project name is required",
-            "logo": "Logo",
-            "logoRequired": "Logo is required",
-            "logoFileTypesError": "Invalid file type for your logo. Please upload a PNG, JPG, WEBP or SVG file",
-            "logoFileGuidance": "PNG, JPG, WEBP or SVG up to 1MB",
-            "description": "Description",
-            "descriptionHelper": "Write a short introduction for your project",
-            "descriptionError": "Description is required",
-            "website": "Website",
-            "urlError": "Website URL is required",
-            "submit": "Create Project",
-            "policyIds": "Policy IDs",
-            "policyId": "Policy ID",
-            "policyReadableName": "Policy Readable Name",
-            "policyNameError": "A readable name is required for this policy",
-            "policyIdError": "The policy ID must be a 56-character hexadecimal string",
-            "policyIdHelper": "The primary Cardano policy ID for your project, as well as any additional policies and their readable names. You can add more policies later.",
-            "addPolicy": "Add additional policy",
-            "removePolicy": "Remove policy",
-            "createNftProject": "Create NFT project"
+    "tileView": {
+        "name": "Tile view"
+    },
+    "subscriptionStatus": {
+        "label": "Subscription Status",
+        "subscribedDefault": {
+            "label": "Subscribed (Default)",
+            "description": "Subscribed by default due to wallet settings"
+        },
+        "subscribedExplicitly": {
+            "label": "Subscribed",
+            "description": "Excplicitly subscribed to this project regardless of wallet settings"
+        },
+        "unsubscribedDefault": {
+            "label": "Unsubscribed (Default)",
+            "description": "Unsubscribed by default due to wallet settings"
+        },
+        "unsubscribedExplicitly": {
+            "label": "Unsubscribed",
+            "description": "Excplcitly unsubscribed from this project regardless of wallet settings"
+        },
+        "muted": {
+            "label": "Muted"
         }
-    }
+    },
+    "addToFavorites": "Add to favorites",
+    "removeFromFavorites": "Remove from favorites"
 }

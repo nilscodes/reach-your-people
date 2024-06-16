@@ -17,7 +17,7 @@ export default function ProjectsHomepage(props: ProjectsHomepageProps) {
     const api = useApi();
     const [projects, setProjects] = useState<Project[]>([]);
     const [isProjectsLoading, setIsProjectsLoading] = useState(true);
-    const { t } = useTranslation('projects');
+    const { t } = useTranslation('publish');
 
     useEffect(() => {
         api.getProjectsForAccount().then((projects) => {

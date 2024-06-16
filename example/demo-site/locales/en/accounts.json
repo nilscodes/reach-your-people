@@ -74,5 +74,6 @@
             "title": "Delegated Representatives (dReps)",
             "description": "By default, subscribe to all communications from your delegated representatives. You can unsubscribe from specific dReps under <0>Subscriptions</0>."
         }
-    }
+    },
+    "soonTag": "Soon"
 }

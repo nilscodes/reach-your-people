@@ -20,15 +20,15 @@ export default function WalletSettingsList({ account, wallets }: WalletSettingsL
   >
     <Stack spacing="8">
       <Card heading={t('walletsTitle')} description={t('walletsDescription')} />
-      <Stack spacing="3">
+      {wallets.length === 0 && <Heading size="md">{t('noWallets')}</Heading>}
+      {wallets.length && (<Stack spacing="3">
         {wallets.map((wallet) => {
           return (<WalletSettingsForm
             key={wallet.externalAccount.id}
             wallet={wallet}
           />);
         })}
-
-      </Stack>
+      </Stack>)}
     </Stack>
   </Box>);
 }

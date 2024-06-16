@@ -1,5 +1,6 @@
 {
     "title": "RYP",
+    "appName": "Reach Your People",
     "welcome": "Welcome to RYP",
     "searchPlaceholder": "Search in RYP",
     "signIn": "Sign in",
@@ -9,9 +10,16 @@
     "nav": {
         "verify": "Verify NFT Project Publisher",
         "account": "Account",
-        "subscriptions": "Subscriptions",
+        "publish": "Publish",
         "projects": "Projects",
-        "wallets": "Wallets"
+        "wallets": "Wallets",
+        "apps": "Apps"
+    },
+    "apps": {
+        "vibrantNet": "VibrantNet",
+        "vibrantNetDescription": "Community integration system for Discord on Cardano.",
+        "ryp": "Reach Your People",
+        "rypDescription": "Social media and wallet connectivity for notifications."
     },
     "categories": {
         "defi": {
@@ -41,7 +49,7 @@
         "other": {
             "name": "Other tokens",
             "tag": "Other",
-            "description": "Memecoins, raffles tickets and whatnot",
+            "description": "Meme tokens, utility tokens, raffle tickets and whatnot",
             "createInfo": "Other type of project"
         },
         "dao": {
@@ -63,5 +71,40 @@
         "title": "Access Denied",
         "message": "Sorry, you do not have access to this page.",
         "cta": "Jump Home"
+    },
+    "logoAlt": "Logo of the Reach Your People Project, a V-shaped shield icon with the letters RYP on it.",
+    "hero": {
+        "winASpacebudz": "Win a SpaceBud for signing up!",
+        "headline": "Always informed",
+        "subtitle": "Connect your social profiles and wallets to effortlessly stay updated about the topics that matter to you, right where you want to.",
+        "cta": "Sign up",
+        "ctaAlt": "View projects",
+        "imageAlt": "A diverse group of people holding speech bubbles in front of their faces",
+        "betaLaunch": "Our beta version just launched!"
+    },
+    "features": {
+        "headline": "How it works",
+        "subtitle": "We keep you in the loop with the latest news from your favorite projects, right where you want them. Subscriptions are managed automatically, so you can focus on what matters most.",
+        "subscriptionManagement": "Automatic and manual subscriptions",
+        "subscriptionManagementDescription": "We keep track of your subscriptions based on what is in your wallet, and make sure you're always up-to-date. Alternatively, you can always manually subscribe to projects you're interested in, even if you don't own any of their tokens.",
+        "socialConnectors": "Messaging connectivity",
+        "socialConnectorsDescription": "Connect your social profiles to receive notifications where you want them. With Discord, Twitter, Telegram and even fully anonymous email and in-browser notifications, you will never miss an important message again.",
+        "mute": "Mute and pause",
+        "muteDescription": "Pause or entirely mute notifications from projects you just hold, but do not need regular updates on.",
+        "customization": "Customization",
+        "customizationDescription": "Choose per wallet and even per project, how you want to receive notifications. Turn entire categories of subscriptions on or off with a simple click.",
+        "publishing": "Publishing",
+        "publishingDescription": "Verify your project quickly and reach your audience with easy to use publishing tools. We make sure the news reach everyone, and in the right format.",
+        "security": "Security",
+        "securityDescription": "Privacy and security are our prime directive. Enterprise level infrastructure best practices keep your data safe, as publisher and subscriber. On-chain verification is used whenever possible, to ensure you only receive news from sources you trust."
+    },
+    "team": {
+        "headline": "Meet our team",
+        "subtitle": "The team that brought you VibrantNet is now also working hard on Reach Your People.",
+        "cta": "Contact us",
+        "nilsBio": "Always a smile on his face and a new feature at his fingertips.",
+        "nicoleBio": "One solution ahead of whatever problem you may need help with.",
+        "projectManager": "Project Manager",
+        "founder": "Founder"
     }
 }

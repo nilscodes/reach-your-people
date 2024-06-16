@@ -12,7 +12,7 @@ const subscriptionLinks: NavItem[] = Object.keys(ProjectCategory).map((key) => {
     const category = ProjectCategory[key as keyof typeof ProjectCategory];
     return {
         label: category,
-        path: `/subscriptions/${category.toLowerCase()}`,
+        path: `/projects/${category.toLowerCase()}`,
     };
 });
 
@@ -24,12 +24,12 @@ const nav: NavItem[] = [{
     path: '/account',
     onlyLoggedIn: true,
   }, {
-    label: 'nav.subscriptions',
-    path: '/subscriptions',
-//    children: subscriptionLinks,
-  }, {
     label: 'nav.projects',
     path: '/projects',
+//    children: subscriptionLinks,
+  }, {
+    label: 'nav.publish',
+    path: '/publish',
     onlyLoggedIn: true,
   }
 ];

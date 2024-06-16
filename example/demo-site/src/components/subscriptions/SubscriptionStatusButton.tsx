@@ -100,7 +100,7 @@ const ButtonPopoverTrigger = forwardRef(function TriggerRef(props: ButtonPopover
 
 export default function SubscriptionStatusButton({ subscription, onStatusChange, ...props }: SubscriptionStatusButtonProps) {
     const [, setRadioValue] = useState(subscription?.currentStatus || SubscriptionStatus.Default);
-    const { t } = useTranslation('subscriptions');
+    const { t } = useTranslation('projects');
 
     const handleChange = (nextValue: SubscriptionStatus) => {
         setRadioValue(nextValue);

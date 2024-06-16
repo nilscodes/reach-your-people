@@ -26,7 +26,7 @@ export default function PublishAnnouncementForm({ formData, onFormChange, onSubm
   const [content, setContent] = useState(formData.content);
   const [title, setTitle] = useState(formData.title);
   const [markdown, setMarkdown] = useState(formData.content);
-  const { t } = useTranslation('projects');
+  const { t } = useTranslation('publish');
 
   useEffect(() => {
     setMarkdown(`# ${title}\n\n${content}`);

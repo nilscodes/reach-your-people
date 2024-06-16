@@ -7,14 +7,14 @@
     "*": [
       "common"
     ],
-    "rgx:^/subscriptions": [
-      "subscriptions"
-    ],
     "rgx:^/projects": [
       "projects"
     ],
+    "rgx:^/publish": [
+      "publish"
+    ],
     "rgx:^/announcements": [
-      "projects"
+      "publish"
     ],
     "rgx:^/account": [
       "accounts"

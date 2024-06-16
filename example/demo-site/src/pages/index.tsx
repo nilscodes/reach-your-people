@@ -1,4 +1,9 @@
-import { Container, Heading } from "@chakra-ui/react";
+import { Features } from '@/components/landing/Features';
+import Hero from '@/components/landing/Hero';
+import { Team } from '@/components/landing/Team';
+import { SpacebudzTimer } from '@/components/timer/SpacebudzTimer';
+import { Img } from '@chakra-ui/react'
+
 import useTranslation from "next-translate/useTranslation";
 import Head from "next/head";
 
@@ -8,8 +13,9 @@ export default function Home() {
     <Head>
       <title>RYP</title>
     </Head>
-    <Container py={{ base: '4', md: '8' }}>
-      <Heading>{t('welcome')}</Heading>
-    </Container>
+    <SpacebudzTimer />
+    <Hero />
+    <Features />
+    <Team />
   </>);
 }
