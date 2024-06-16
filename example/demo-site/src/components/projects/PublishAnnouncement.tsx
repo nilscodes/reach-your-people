@@ -70,7 +70,7 @@ export default function PublishAnnouncement({ account }: PublishAnnouncementProp
             py={{ base: '6', md: '8', lg: '12' }}
         >
             <ProjectsHeader
-                backButtonLink='/projects'
+                backButtonLink='/publish'
                 backButtonText={t('backToProjectList')}
                 title={t('publishAnnouncementTitle')}
                 description={t('publishAnnouncementDescription')}

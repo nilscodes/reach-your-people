@@ -75,18 +75,18 @@ export default function ProjectCard(props: Props) {
         </HStack> */}
       </Stack>
       <Stack align="center">
-        <NextLink href={`/projects/${project.id}/publish`} w="100%">
+        <NextLink href={`/publish/${project.id}/publish`} w="100%">
           <Button variant="outline" width="full">
             {t('publishAnnouncementButton')}
           </Button>
         </NextLink>
-        <NextLink href={`/projects/${project.id}/edit`}
+        {/* <NextLink href={`/publish/${project.id}/edit`}
           textDecoration="underline"
           fontWeight="medium"
           color={useColorModeValue('gray.600', 'gray.400')}
         >
           {t('editProjectButton')}
-        </NextLink>
+        </NextLink> */}
       </Stack>
     </Stack>
   )

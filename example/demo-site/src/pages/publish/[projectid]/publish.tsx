@@ -7,19 +7,30 @@ import { InferGetServerSidePropsType } from "next";
 import { Account } from "../../../lib/ryp-subscription-api";
 import PublishAnnouncement from "@/components/projects/PublishAnnouncement";
 import Head from "next/head";
+import PublishingBeta from "@/components/PublishingBeta";
 
 export default function Home({
   account,
+  accountSettings,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const { data: session } = useSession()
 
   if (session?.userId && account) {
-    return (<>
-      <Head>
-        <title>RYP: Publish</title>
-      </Head>
-      <PublishAnnouncement account={account} />
-    </>);
+    if (accountSettings?.PUBLISHING_ENABLED === 'true') {
+      return (<>
+        <Head>
+          <title>RYP: Publish</title>
+        </Head>
+        <PublishAnnouncement account={account} />
+      </>);
+    } else {
+      return (<>
+        <Head>
+          <title>RYP: Publish</title>
+        </Head>
+        <PublishingBeta />
+      </>);
+    }
   }
 
   return <AccessDenied />;
@@ -32,13 +43,16 @@ export async function getServerSideProps(context: any) {
     getNextAuthOptions(context.req, context.res)
   );
   let account: Account | null = null;
+  let accountSettings: Record<string, string> = {};
   if (session?.userId) {
     account = (await coreSubscriptionApi.getAccountById(session.userId)).data;
+    accountSettings = (await coreSubscriptionApi.getSettingsForAccount(session.userId)).data;
   }
   return {
     props: {
       session,
       account,
+      accountSettings,
     },
   }
 }

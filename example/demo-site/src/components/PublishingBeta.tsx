@@ -6,7 +6,7 @@ import Image from './Image';
 import Head from 'next/head';
 import useTranslation from 'next-translate/useTranslation';
 
-export default function AccessDenied() {
+export default function PublishingBeta() {
   const router = useRouter();
   const { t } = useTranslation('common');
 
@@ -24,7 +24,7 @@ export default function AccessDenied() {
             mb={4}
           />
           <Text color={'gray.500'}>
-            {t('accessDenied.message')}
+            {t('accessDenied.messageBeta')}
           </Text>
           <Button
             variant="solid"
