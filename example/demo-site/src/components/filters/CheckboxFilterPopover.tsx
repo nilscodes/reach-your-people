@@ -14,7 +14,7 @@ export default function CheckboxFilterPopover({ filterData, onSubmit }: { filter
     defaultValue: filterData.defaultValue,
     onSubmit,
   });
-  const { t } = useTranslation('subscriptions');
+  const { t } = useTranslation('projects');
   return (
     <Popover placement="bottom-start">
       <FilterPopoverButton label={t('typeFilterLabel')} />

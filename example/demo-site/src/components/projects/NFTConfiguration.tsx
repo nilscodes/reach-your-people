@@ -42,7 +42,7 @@ type PolicyInputFieldsProps = {
 }
 
 const PolicyInputFields = ({ policy, removePolicyWithId, canRemove, errors, register }: PolicyInputFieldsProps) => {
-    const { t } = useTranslation('projects');
+    const { t } = useTranslation('publish');
     const hasNameError = !!errors.policies?.[policy.id as any]?.projectName;
     const hasIdError = !!errors.policies?.[policy.id as any]?.policyId;
     return (
@@ -78,7 +78,7 @@ export default function NFTConfiguration({ type, formData, onSubmit }: ProjectCo
     const [logoErrors, setLogoErrors] = useState<string[]>([]);
     const [selectedLogo, setSelectedLogo] = useState<File | null>(null);
     const nameRef = useRef<HTMLInputElement | null>(null);
-    const { t } = useTranslation('projects');
+    const { t } = useTranslation('publish');
     const {
         register,
         handleSubmit,

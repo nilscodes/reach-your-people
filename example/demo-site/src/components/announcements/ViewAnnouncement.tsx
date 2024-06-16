@@ -43,7 +43,7 @@ function formatDate(isoDateString: string) {
 
 export default function ViewAnnouncement({ announcement, project, author }: ViewAnnouncementProps) {
   const api = useApi();
-  const { t } = useTranslation('projects');
+  const { t } = useTranslation('publish');
 
   const content = (announcement.announcement as any).object.content;
   const summary = (announcement.announcement as any).object.summary;

@@ -11,6 +11,7 @@ import {
   StackProps,
   useColorModeValue as mode,
 } from '@chakra-ui/react';
+import useTranslation from 'next-translate/useTranslation';
 import { FiSearch } from 'react-icons/fi';
 
 export type FilterOption = {
@@ -32,6 +33,7 @@ export default function CheckboxFilter(props: CheckboxFilterProps) {
   const {
     options, label, hideLabel, spacing = '2', showSearch, ...rest
   } = props;
+  const { t } = useTranslation('common');
 
   return (
     <Stack as="fieldset" spacing={spacing}>
@@ -43,9 +45,9 @@ export default function CheckboxFilter(props: CheckboxFilterProps) {
       {showSearch && (
         <InputGroup size="md" pb="1">
           <Input
-            placeholder="Search..."
+            placeholder={t('filterSearchPlaceholder')}
             rounded="md"
-            focusBorderColor={mode('blue.500', 'blue.200')}
+            focusBorderColor={mode('brand.500', 'brand.200')}
           />
           <InputRightElement pointerEvents="none" color="gray.400" fontSize="lg">
             <FiSearch />
@@ -54,7 +56,7 @@ export default function CheckboxFilter(props: CheckboxFilterProps) {
       )}
       <CheckboxGroup {...rest}>
         {options.map((option) => (
-          <Checkbox key={option.value} value={option.value} colorScheme="blue">
+          <Checkbox key={option.value} value={option.value} colorScheme="brand">
             <span>{option.label}</span>
             {option.count != null && (
               <Box as="span" color="gray.500" fontSize="sm">

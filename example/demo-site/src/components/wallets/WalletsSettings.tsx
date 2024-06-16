@@ -6,6 +6,7 @@ import {
     Switch,
     Tag,
     Text,
+    VStack,
     Wrap,
   } from '@chakra-ui/react'
 import NextLink from '../NextLink';
@@ -38,8 +39,8 @@ export default function WalletSettings({ wallet, onChangeWalletSettings, ...prop
   const tokensEnabled = currentWalletSettings.settings?.includes(LinkExternalAccount200ResponseSettingsEnum.FungibleTokenAnnouncements)
     || currentWalletSettings.settings?.includes(LinkExternalAccount200ResponseSettingsEnum.NonFungibleTokenAnnouncements)
     || currentWalletSettings.settings?.includes(LinkExternalAccount200ResponseSettingsEnum.RichFungibleTokenAnnouncements);
-  const spoEnabled = currentWalletSettings.settings?.includes(LinkExternalAccount200ResponseSettingsEnum.StakepoolAnnouncements);
-  const drepEnabled = currentWalletSettings.settings?.includes(LinkExternalAccount200ResponseSettingsEnum.DrepAnnouncements);
+  // const spoEnabled = currentWalletSettings.settings?.includes(LinkExternalAccount200ResponseSettingsEnum.StakepoolAnnouncements);
+  // const drepEnabled = currentWalletSettings.settings?.includes(LinkExternalAccount200ResponseSettingsEnum.DrepAnnouncements);
 
   return (<Box as="form" bg="bg.surface" boxShadow="sm" borderRadius="lg" {...props}>
     <Stack spacing="5" px={{ base: '4', md: '6' }} py={{ base: '5', md: '6' }} divider={<StackDivider />}>
@@ -64,7 +65,10 @@ export default function WalletSettings({ wallet, onChangeWalletSettings, ...prop
           </Text>
           <Wrap spacing="2"><Tag>HAZEL</Tag></Wrap>
         </Stack>
-        <Switch colorScheme="brand" isChecked={spoEnabled} onChange={(e) => updateWalletSettings(e.target.checked, [LinkExternalAccount200ResponseSettingsEnum.StakepoolAnnouncements])}/>
+        <VStack alignItems="flex-end">
+          <Switch colorScheme="brand" isChecked={false} disabled onChange={(e) => updateWalletSettings(e.target.checked, [LinkExternalAccount200ResponseSettingsEnum.StakepoolAnnouncements])}/>
+          <Tag colorScheme="brand">{t('soonTag')}</Tag>
+        </VStack>
       </Stack>
       <Stack justify="space-between" direction="row" spacing="16">
         <Stack spacing="0.5" fontSize="sm">
@@ -75,7 +79,10 @@ export default function WalletSettings({ wallet, onChangeWalletSettings, ...prop
             <Trans i18nKey='accounts:settings.drep.description' components={[<NextLink key="" href='/subscriptions' />]}></Trans>
           </Text>
         </Stack>
-        <Switch colorScheme="brand" isChecked={drepEnabled} onChange={(e) => updateWalletSettings(e.target.checked, [LinkExternalAccount200ResponseSettingsEnum.DrepAnnouncements])}/>
+        <VStack alignItems="flex-end">
+          <Switch colorScheme="brand" isChecked={false} disabled onChange={(e) => updateWalletSettings(e.target.checked, [LinkExternalAccount200ResponseSettingsEnum.DrepAnnouncements])}/>
+          <Tag colorScheme="brand">{t('soonTag')}</Tag>
+        </VStack>
       </Stack>
     </Stack>
   </Box>);

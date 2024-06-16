@@ -27,7 +27,7 @@ const CDN_BASE_URL = process.env.NEXT_PUBLIC_CDN_BASE_URL?.replace(/\/$/, '');
 
 export default function ProjectCard(props: Props) {
   const { project, rootProps } = props;
-  const { t } = useTranslation('projects');
+  const { t } = useTranslation('publish');
   const { name, logo } = project;
 
   return (

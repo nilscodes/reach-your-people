@@ -6,7 +6,6 @@ import {
     HStack,
     Icon,
     Image,
-    Link,
     Skeleton,
     Stack,
     Text,
@@ -25,7 +24,7 @@ import useTranslation from 'next-translate/useTranslation'
   export const CategoryCard = (props: Props) => {
     const { category, rootProps } = props;
     const router = useRouter();
-    const { t } = useTranslation('subscriptions');
+    const { t } = useTranslation('projects');
     const { t: tc } = useTranslation('common');
     return (
       <Box
@@ -46,7 +45,7 @@ import useTranslation from 'next-translate/useTranslation'
         <Box
             position="absolute"
             inset="0"
-            bg="linear-gradient(180deg, rgba(0, 0, 0, 0) 47.92%, #000000 100%)"
+            bg="linear-gradient(180deg, rgba(0, 0, 0, 0) 27.92%, #000000 100%)"
             boxSize="full"
         />
         <Flex
@@ -58,7 +57,7 @@ import useTranslation from 'next-translate/useTranslation'
             px={{ base: '4', md: '8' }}
             py={{ base: '6', md: '8', lg: '10' }}
             cursor="pointer"
-            onClick={() => router.push('/subscriptions/nfts')}
+            onClick={() => router.push(`/projects/${category.type}`)}
         >
             <Stack spacing="5">
                 <Stack spacing="1">
@@ -70,7 +69,7 @@ import useTranslation from 'next-translate/useTranslation'
                 </Text>
                 </Stack>
                 <HStack>
-                <NextLink href="." fontSize="lg" fontWeight="bold" textDecoration="underline">
+                <NextLink href={`/projects/${category.type}`} fontSize="lg" fontWeight="bold" textDecoration="underline">
                     {t('manageSubscriptions')}
                 </NextLink>
                 <Icon as={FaChevronRight} />

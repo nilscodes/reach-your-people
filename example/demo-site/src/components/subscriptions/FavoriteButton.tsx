@@ -4,7 +4,7 @@ import useTranslation from "next-translate/useTranslation";
 import { MdStar, MdStarOutline } from "react-icons/md";
 
 export default function FavoriteButton({ subscription }: { subscription?: Subscription }) {
-    const { t } = useTranslation('subscriptions');
+    const { t } = useTranslation('projects');
     const favoriteLabel = subscription?.favorite ? t('removeFromFavorites') : t('addToFavorites');
     const favoriteIcon = subscription?.favorite ? <MdStar /> : <MdStarOutline />;
     const favoriteColor = subscription?.favorite ? 'yellow.400' : 'gray.400';

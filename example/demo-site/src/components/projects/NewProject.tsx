@@ -36,7 +36,7 @@ export default function NewProject({ account }: NewProjectProps) {
   const [projectType, setProjectType] = useState<ProjectCategory | null>(null)
   const api = useApi();
   const router = useRouter();
-  const { t } = useTranslation('projects');
+  const { t } = useTranslation('publish');
 
   const addNewProject = async (projectData: ProjectData) => {
     const url = projectData.url.startsWith('https://') ? projectData.url : `https://${projectData.url.replace('http://', '')}`;
