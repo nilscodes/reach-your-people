@@ -18,6 +18,7 @@
     "publish": {
         "form": {
             "policies": "Policies to announce for",
+            "policiesError": "At least one policy is required",
             "title": "Title",
             "titleError": "Title is required",
             "contentWithMarkdown": "Content (Markdown allowed)",
