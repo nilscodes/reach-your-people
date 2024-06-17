@@ -44,6 +44,7 @@ export default function PublishAnnouncementForm({ project, onSubmit }: Announcem
     setValue,
   } = useForm<AnnouncementFormData>();
   const { ref } = register('title', { required: true });
+  register('policies', { required: true });
 
   useEffect(() => {
     const fetchPublishingPermissions = async () => {
@@ -77,27 +78,34 @@ export default function PublishAnnouncementForm({ project, onSubmit }: Announcem
     <Container py={{ base: '4', md: '8' }}>
       <Stack spacing="5">
         <Stack spacing="5" divider={<StackDivider />}>
-          <FormControl id="policies" isRequired>
+          <FormControl id="policies" isRequired isInvalid={!!errors.policies}>
             <FormLabel>{t('publish.form.policies')}</FormLabel>
-            <PolicySelection project={project} onChange={changePolicy} publishingPermissions={publishingPermissions} />
+            <Stack w="100%">
+              <PolicySelection
+                project={project}
+                onChange={changePolicy}
+                publishingPermissions={publishingPermissions}
+              />
+              <FormErrorMessage>{errors.policies && t('publish.form.policiesError')}</FormErrorMessage>
+            </Stack>
           </FormControl>
           <FormControl id="title" isRequired isInvalid={!!errors.title}>
             <FormLabel>{t('publish.form.title')}</FormLabel>
             <Stack w="100%">
-            <Controller
-              name="title"
-              control={control}
-              defaultValue={title}
-              render={({ field }) => (
-                <Input
-                  maxW={{ md: '50%' }}
-                  {...field}
-                  onChange={(event) => handleOnChange(event, field.onChange)}
-                  ref={(e) => {
-                    ref(e);
-                    titleRef.current = e;
-                  }}
-                />)}
+              <Controller
+                name="title"
+                control={control}
+                defaultValue={title}
+                render={({ field }) => (
+                  <Input
+                    maxW={{ md: '50%' }}
+                    {...field}
+                    onChange={(event) => handleOnChange(event, field.onChange)}
+                    ref={(e) => {
+                      ref(e);
+                      titleRef.current = e;
+                    }}
+                  />)}
               />
               <FormErrorMessage>{errors.title && t('publish.form.titleError')}</FormErrorMessage>
             </Stack>
