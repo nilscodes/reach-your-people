@@ -10,7 +10,6 @@ internal class PolicyTest {
     @Test
     fun testEqualsAndHashCode() {
         EqualsVerifier.forClass(Policy::class.java)
-            .withIgnoredFields("name")
             .verify()
     }
 

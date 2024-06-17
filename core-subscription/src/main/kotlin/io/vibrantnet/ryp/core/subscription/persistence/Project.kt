@@ -45,6 +45,10 @@ class Project(
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "project_roles", joinColumns = [JoinColumn(name = "project_id")])
     var roles: MutableSet<ProjectRoleAssignment> = mutableSetOf(),
+
+    @Column(name = "manually_verified")
+    @Temporal(TemporalType.TIMESTAMP)
+    var manuallyVerified: OffsetDateTime? = null,
 ) {
     fun toDto() = ProjectDto(
         id = id,
@@ -56,6 +60,7 @@ class Project(
         category = category,
         tags = tags,
         policies = policies.map { it.toDto() }.toSet(),
+        manuallyVerified = manuallyVerified,
     )
 
     override fun equals(other: Any?): Boolean {
@@ -71,6 +76,7 @@ class Project(
         if (tags != other.tags) return false
         if (policies != other.policies) return false
         if (roles != other.roles) return false
+        if (manuallyVerified != other.manuallyVerified) return false
 
         return true
     }
@@ -85,11 +91,12 @@ class Project(
         result = 31 * result + tags.hashCode()
         result = 31 * result + policies.hashCode()
         result = 31 * result + roles.hashCode()
+        result = 31 * result + (manuallyVerified?.hashCode() ?: 0)
         return result
     }
 
     override fun toString(): String {
-        return "Project(id=$id, name=$name, logo=$logo, url=$url, description=$description, registrationTime=$registrationTime, category='$category', tags=$tags, policies=$policies, roles=$roles)"
+        return "Project(id=$id, name=$name, logo=$logo, url=$url, description=$description, registrationTime=$registrationTime, category='$category', tags=$tags, policies=$policies, roles=$roles, manuallyVerified=$manuallyVerified)"
     }
 
 

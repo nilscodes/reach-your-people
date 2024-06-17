@@ -30,6 +30,7 @@ CREATE TABLE "linked_external_accounts"
     "role"                smallint NOT NULL,
     "external_account_id" BIGINT NOT NULL,
     "settings" BIT(16) NOT NULL DEFAULT B'1111111111111111',
+    "last_confirmed"      timestamp,
     UNIQUE ("account_id", "role", "external_account_id")
 );
 
@@ -59,7 +60,8 @@ CREATE TABLE "projects"
     "url"               varchar(255),
     "description"       text,
     "registration_time" timestamp NOT NULL,
-    "category"          INTEGER   NOT NULL
+    "category"          INTEGER   NOT NULL,
+    "manually_verified" timestamp NULL
 );
 
 
@@ -71,9 +73,10 @@ CREATE TABLE "project_tags"
 
 CREATE TABLE "project_policies"
 (
-    "project_id" INT          NOT NULL,
-    "name"       varchar(200) NOT NULL,
-    "policy_id"  varchar(56)  NOT NULL
+    "project_id"        INT          NOT NULL,
+    "name"              varchar(200) NOT NULL,
+    "policy_id"         varchar(56)  NOT NULL,
+    "manually_verified" timestamp    NULL
 );
 
 CREATE TABLE "project_roles"

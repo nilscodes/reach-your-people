@@ -151,7 +151,40 @@ export interface BasicAnnouncement {
      * @memberof BasicAnnouncement
      */
     'link'?: string;
+    /**
+     * If for a token-based project, the list of policy IDs to publish to.
+     * @type {Array<string>}
+     * @memberof BasicAnnouncement
+     */
+    'policies'?: Array<string>;
 }
+/**
+ * 
+ * @export
+ * @interface PolicyPublishingPermission
+ */
+export interface PolicyPublishingPermission {
+    /**
+     * The Policy ID
+     * @type {string}
+     * @memberof PolicyPublishingPermission
+     */
+    'policyId': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PolicyPublishingPermission
+     */
+    'permission': PolicyPublishingPermissionPermissionEnum;
+}
+
+export const PolicyPublishingPermissionPermissionEnum = {
+    Manual: 'PUBLISHING_MANUAL',
+    Cip66: 'PUBLISHING_CIP66'
+} as const;
+
+export type PolicyPublishingPermissionPermissionEnum = typeof PolicyPublishingPermissionPermissionEnum[keyof typeof PolicyPublishingPermissionPermissionEnum];
+
 /**
  * 
  * @export
@@ -238,6 +271,25 @@ export const PublishAnnouncementForProjectRequestActorTypeEnum = {
 
 export type PublishAnnouncementForProjectRequestActorTypeEnum = typeof PublishAnnouncementForProjectRequestActorTypeEnum[keyof typeof PublishAnnouncementForProjectRequestActorTypeEnum];
 
+/**
+ * 
+ * @export
+ * @interface PublishingPermissions
+ */
+export interface PublishingPermissions {
+    /**
+     * 
+     * @type {Array<PolicyPublishingPermission>}
+     * @memberof PublishingPermissions
+     */
+    'policies': Array<PolicyPublishingPermission>;
+    /**
+     * 
+     * @type {number}
+     * @memberof PublishingPermissions
+     */
+    'accountId': number;
+}
 
 /**
  * DefaultApi - axios parameter creator
@@ -257,6 +309,44 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
             assertParamExists('getAnnouncementById', 'announcementId', announcementId)
             const localVarPath = `/announcements/{announcementId}`
                 .replace(`{${"announcementId"}}`, encodeURIComponent(String(announcementId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Get the roles and permissions to publishing rights for a project and the related policies and assets.
+         * @summary Get the publishing role status
+         * @param {number} projectId The numeric ID of a Project
+         * @param {number} accountId The numeric ID of an account
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getPublishingPermissionsForAccount: async (projectId: number, accountId: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'projectId' is not null or undefined
+            assertParamExists('getPublishingPermissionsForAccount', 'projectId', projectId)
+            // verify required parameter 'accountId' is not null or undefined
+            assertParamExists('getPublishingPermissionsForAccount', 'accountId', accountId)
+            const localVarPath = `/projects/{projectId}/roles/{accountId}`
+                .replace(`{${"projectId"}}`, encodeURIComponent(String(projectId)))
+                .replace(`{${"accountId"}}`, encodeURIComponent(String(accountId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -343,6 +433,20 @@ export const DefaultApiFp = function(configuration?: Configuration) {
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
+         * Get the roles and permissions to publishing rights for a project and the related policies and assets.
+         * @summary Get the publishing role status
+         * @param {number} projectId The numeric ID of a Project
+         * @param {number} accountId The numeric ID of an account
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getPublishingPermissionsForAccount(projectId: number, accountId: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PublishingPermissions>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getPublishingPermissionsForAccount(projectId, accountId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DefaultApi.getPublishingPermissionsForAccount']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
          * Publish an announcement for a project, token policy, SPO, dRep or social media account to all verified holders that have subscribed to updates, without exposing any social media or messaging identifiers to the publisher.
          * @summary Publish new announcement for a specific project
          * @param {number} projectId The numeric ID of a Project
@@ -377,6 +481,17 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
             return localVarFp.getAnnouncementById(announcementId, options).then((request) => request(axios, basePath));
         },
         /**
+         * Get the roles and permissions to publishing rights for a project and the related policies and assets.
+         * @summary Get the publishing role status
+         * @param {number} projectId The numeric ID of a Project
+         * @param {number} accountId The numeric ID of an account
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getPublishingPermissionsForAccount(projectId: number, accountId: number, options?: any): AxiosPromise<PublishingPermissions> {
+            return localVarFp.getPublishingPermissionsForAccount(projectId, accountId, options).then((request) => request(axios, basePath));
+        },
+        /**
          * Publish an announcement for a project, token policy, SPO, dRep or social media account to all verified holders that have subscribed to updates, without exposing any social media or messaging identifiers to the publisher.
          * @summary Publish new announcement for a specific project
          * @param {number} projectId The numeric ID of a Project
@@ -407,6 +522,19 @@ export class DefaultApi extends BaseAPI {
      */
     public getAnnouncementById(announcementId: string, options?: RawAxiosRequestConfig) {
         return DefaultApiFp(this.configuration).getAnnouncementById(announcementId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Get the roles and permissions to publishing rights for a project and the related policies and assets.
+     * @summary Get the publishing role status
+     * @param {number} projectId The numeric ID of a Project
+     * @param {number} accountId The numeric ID of an account
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DefaultApi
+     */
+    public getPublishingPermissionsForAccount(projectId: number, accountId: number, options?: RawAxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).getPublishingPermissionsForAccount(projectId, accountId, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

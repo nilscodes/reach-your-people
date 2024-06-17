@@ -69,6 +69,24 @@ paths:
             schema:
               $ref: '#/components/schemas/BasicAnnouncement'
       description: 'Publish an announcement for a project, token policy, SPO, dRep or social media account to all verified holders that have subscribed to updates, without exposing any social media or messaging identifiers to the publisher.'
+  '/projects/{projectId}/roles/{accountId}':
+    parameters:
+      - $ref: ./common-schemas.yaml#/components/parameters/projectId
+      - $ref: ./common-schemas.yaml#/components/parameters/accountId
+    get:
+      summary: Get the publishing role status
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublishingPermissions'
+      operationId: getPublishingPermissionsForAccount
+      description: Get the roles and permissions to publishing rights for a project and the related policies and assets.
+      x-stoplight:
+        id: 4v9i9vsh3w029
   '/announcements/{announcementId}':
     parameters:
       - $ref: ./common-schemas.yaml#/components/parameters/announcementId
@@ -122,6 +140,13 @@ components:
           type: string
           x-stoplight:
             id: zwxkh3my3ukke
+        policies:
+          type: array
+          description: 'If for a token-based project, the list of policy IDs to publish to.'
+          items:
+            $ref: ./common-schemas.yaml#/components/schemas/TokenPolicyId
+            x-stoplight:
+              id: p55cb7tf2uzhm
     Announcement:
       title: Announcement
       x-stoplight:
@@ -153,3 +178,45 @@ components:
             - PUBLISHING
             - PUBLISHED
             - CANCELLED
+    PublishingPermissions:
+      title: PublishingPermissions
+      x-stoplight:
+        id: r37n11y922zxw
+      type: object
+      required:
+        - accountId
+        - policies
+      properties:
+        policies:
+          x-stoplight:
+            id: eh7mlah1i8mvu
+          type: array
+          items:
+            $ref: '#/components/schemas/PolicyPublishingPermission'
+            x-stoplight:
+              id: gr4ykz2xqf2vd
+        accountId:
+          type: integer
+          x-stoplight:
+            id: 808hetlu258fu
+          format: int64
+          readOnly: true
+    PolicyPublishingPermission:
+      title: PolicyPublishingPermission
+      x-stoplight:
+        id: bj6n4zs9red9r
+      type: object
+      required:
+        - policyId
+        - permission
+      properties:
+        policyId:
+          $ref: ./common-schemas.yaml#/components/schemas/TokenPolicyId
+          x-stoplight:
+            id: s5oe4ggco0ift
+        permission:
+          x-stoplight:
+            id: 5epy3yroxy5mc
+          enum:
+            - PUBLISHING_MANUAL
+            - PUBLISHING_CIP66

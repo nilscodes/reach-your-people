@@ -7,7 +7,7 @@ import { InferGetServerSidePropsType } from "next";
 import { Account, GetLinkedExternalAccounts200ResponseInner } from "../../lib/ryp-subscription-api";
 import { VibrantSyncStatus } from "@/lib/types/VibrantSyncStatus";
 import { VibrantIntegrationApi } from "@/lib/integration-vibrant-api";
-import { getWalletDisplayName } from "@/lib/cardano";
+import { getWalletDisplayName } from "@/lib/cardanoutil";
 import { BlockchainType } from "@vibrantnet/core";
 import Head from "next/head";
 import AccountsPage from "@/components/AccountsPage";

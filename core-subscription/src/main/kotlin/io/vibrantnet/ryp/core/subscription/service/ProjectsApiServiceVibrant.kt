@@ -56,6 +56,7 @@ class ProjectsApiServiceVibrant(
                 projectPartial.category?.let { category = it }
                 projectPartial.tags?.let { tags = it.toMutableSet() }
                 projectPartial.policies?.let { policies = it.map { Policy(it.name, PolicyId(it.policyId)) }.toMutableSet() }
+                projectPartial.manuallyVerified?.let { manuallyVerified = it }
             }
             return Mono.just(projectRepository.save(updatedProject).toDto())
         }

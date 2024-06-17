@@ -8,26 +8,39 @@ import java.time.OffsetDateTime
 
 data class ProjectDto @JsonCreator constructor(
 
-    @JsonProperty("id", required = true) val id: Long? = null,
+    @JsonProperty("id", required = true)
+    val id: Long? = null,
 
-    @JsonProperty("name", required = true) val name: String,
+    @JsonProperty("name", required = true)
+    val name: String,
 
-    @JsonProperty("logo", required = true) val logo: String,
+    @JsonProperty("logo", required = true)
+    val logo: String,
 
-    @JsonProperty("url", required = true) val url: String,
+    @JsonProperty("url", required = true)
+    val url: String,
 
-    @JsonProperty("description", required = true) val description: String,
+    @JsonProperty("description", required = true)
+    val description: String,
 
-    @JsonProperty("category") val category: ProjectCategory,
+    @JsonProperty("category")
+    val category: ProjectCategory,
 
-    @JsonProperty("tags") val tags: Set<String> = emptySet(),
+    @JsonProperty("tags")
+    val tags: Set<String> = emptySet(),
 
-    @JsonProperty("registrationTime") val registrationTime: OffsetDateTime = OffsetDateTime.now(),
+    @JsonProperty("registrationTime")
+    val registrationTime: OffsetDateTime = OffsetDateTime.now(),
 
-    @JsonProperty("verified") val verified: Boolean = false,
+    @JsonProperty("verified")
+    val verified: Boolean = false,
 
     @field:Valid
-    @JsonProperty("policies") val policies: Set<PolicyDto> = emptySet(),
+    @JsonProperty("policies")
+    val policies: Set<PolicyDto> = emptySet(),
+
+    @JsonProperty("manuallyVerified")
+    val manuallyVerified: OffsetDateTime? = null,
 )
 
 data class PolicyDto @JsonCreator constructor(
@@ -35,24 +48,37 @@ data class PolicyDto @JsonCreator constructor(
 
     @field:Pattern(regexp="^[A-Za-z0-9]{56}$")
     @JsonProperty("policyId") val policyId: String,
+
+    @JsonProperty("manuallyVerified")
+    val manuallyVerified: OffsetDateTime? = null,
 )
 
 data class ProjectPartialDto @JsonCreator constructor(
 
-    @JsonProperty("name", required = false) val name: String?,
+    @JsonProperty("name", required = false)
+    val name: String?,
 
-    @JsonProperty("logo", required = false) val logo: String?,
+    @JsonProperty("logo", required = false)
+    val logo: String?,
 
-    @JsonProperty("url", required = false) val url: String?,
+    @JsonProperty("url", required = false)
+    val url: String?,
 
-    @JsonProperty("description", required = false) val description: String?,
+    @JsonProperty("description", required = false)
+    val description: String?,
 
-    @JsonProperty("category", required = false) val category: ProjectCategory?,
+    @JsonProperty("category", required = false)
+    val category: ProjectCategory?,
 
-    @JsonProperty("tags", required = false) val tags: Set<String>?,
+    @JsonProperty("tags", required = false)
+    val tags: Set<String>?,
 
     @field:Valid
-    @JsonProperty("policies", required = false) val policies: Set<PolicyDto>?,
+    @JsonProperty("policies", required = false)
+    val policies: Set<PolicyDto>?,
+
+    @JsonProperty("manuallyVerified")
+    val manuallyVerified: OffsetDateTime? = null,
 )
 
 enum class ProjectCategory(val value: String) {

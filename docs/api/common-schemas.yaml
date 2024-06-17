@@ -125,6 +125,11 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/StakeAddressView'
+        manuallyVerified:
+          type: string
+          format: date-time
+          example: '2021-11-10T13:20:57Z'
+          readOnly: true
     ProjectPartial:
       type: object
       properties:
@@ -163,6 +168,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/StakeAddressView'
+        manuallyVerified:
+          type: string
+          format: date-time
+          example: '2021-11-10T13:20:57Z'
     ProjectCategory:
       title: ProjectCategory
       x-stoplight:
@@ -211,6 +220,10 @@ components:
           type: string
         policyId:
           $ref: '#/components/schemas/TokenPolicyId'
+        manuallyVerified:
+          type: string
+          format: date-time
+          example: '2021-11-10T13:20:57Z'
     Token:
       type: object
       properties:
@@ -408,6 +421,11 @@ components:
           type: string
           format: date-time
           example: '2021-11-10T13:20:57Z'
+        lastConfirmed:
+          readOnly: true
+          type: string
+          format: date-time
+          example: '2021-11-10T13:20:57Z'
         settings:
           type: array
           items:
@@ -421,6 +439,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ExternalAccountSetting'
+        lastConfirmed:
+          type: string
+          format: date-time
+          example: '2021-11-10T13:20:57Z'
       examples:
         - settings:
             - NON_FUNGIBLE_TOKEN_ANNOUNCEMENTS

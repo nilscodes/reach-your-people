@@ -2,6 +2,7 @@ package io.vibrantnet.ryp.core.publishing.service
 
 import io.ryp.shared.model.BasicAnnouncementDto
 import io.vibrantnet.ryp.core.publishing.model.AnnouncementDto
+import io.vibrantnet.ryp.core.publishing.model.PublishingPermissions
 import reactor.core.publisher.Mono
 import java.util.*
 
@@ -17,6 +18,17 @@ interface AnnouncementsApiService {
      * @see AnnouncementsApi#publishAnnouncementForProject
      */
     fun publishAnnouncementForProject(projectId: Long, announcement: BasicAnnouncementDto): Mono<AnnouncementDto>
+
+    /**
+     * GET /projects/{projectId}/roles/{accountId} : Get the publishing role status
+     * Get the roles and permissions to publishing rights for a project and the related policies and assets.
+     *
+     * @param projectId The numeric ID of a Project (required)
+     * @param accountId The numeric ID of an account (required)
+     * @return OK (status code 200)
+     * @see ProjectsApi#getPublishingPermissionsForAccount
+     */
+    fun getPublishingPermissionsForAccount(projectId: Long, accountId: Long): Mono<PublishingPermissions>
 
     /**
      * GET /announcements/{announcementId} : Get announcement by ID

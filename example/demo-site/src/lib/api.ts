@@ -4,6 +4,7 @@ import { Subscription } from "./types/Subscription";
 import { SubscriptionStatus } from "./types/SubscriptionStatus";
 import { AnnouncementFormData } from "@/components/projects/PublishAnnouncement";
 import { GetLinkedExternalAccounts200ResponseInner, GetLinkedExternalAccounts200ResponseInnerSettingsEnum } from "./ryp-subscription-api";
+import { PublishingPermissions } from "./ryp-publishing-api";
 
 // function getRandomDelay(): Promise<void> {
 //   const delay = Math.random() * (500 - 30) + 30;
@@ -49,8 +50,12 @@ export class RypSiteApi {
     return (await axios.post(`${this.baseUrl}/projects`, formData)).data;
   }
 
-  async publishAnnouncement(projectId: string, announcement: AnnouncementFormData): Promise<void> {
+  async publishAnnouncement(projectId: number, announcement: AnnouncementFormData): Promise<void> {
     await axios.post(`${this.baseUrl}/projects/${projectId}/announcements`, announcement);
+  }
+
+  async getPublishingPermissionsForAccount(projectId: number): Promise<PublishingPermissions> {
+    return (await axios.get(`${this.baseUrl}/projects/${projectId}/publishingstatus`)).data;
   }
 
   async changeSubscriptionPreference(projectId: number, status: SubscriptionStatus): Promise<void> {

@@ -5,7 +5,7 @@ import CredentialsProvider from "next-auth/providers/credentials"
 import { RypSiteApi } from "./lib/api"
 import Twitter from "next-auth/providers/twitter"
 import Google from "next-auth/providers/google"
-import { getWalletDisplayName } from "./lib/cardano"
+import { getWalletDisplayName } from "./lib/cardanoutil"
 
 const providers: any = [
   // Custom Cardano wallet provider

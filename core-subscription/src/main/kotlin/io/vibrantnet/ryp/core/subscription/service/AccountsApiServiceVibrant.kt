@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional
 import org.springframework.transaction.support.TransactionTemplate
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
+import java.time.OffsetDateTime
 
 @Service
 class AccountsApiServiceVibrant(
@@ -73,6 +74,7 @@ class AccountsApiServiceVibrant(
                 accountId = accountId,
                 externalAccount = externalAccount,
                 role = ExternalAccountRole.OWNER,
+                lastConfirmed = OffsetDateTime.now(),
             ))
             return Mono.just(newLinkedExternalAccount.toDto())
         } catch (e: DataIntegrityViolationException) {
@@ -95,7 +97,10 @@ class AccountsApiServiceVibrant(
                         linkedExternalAccount.settingsFromSet(linkedExternalAccountPartial.settings!!)
                         linkedExternalAccountRepository.updateSettings(linkedExternalAccount.id!!, linkedExternalAccount.settings) // Needs to be called separately
                     }
-                    // Technically don't need the save call here, but it's a good way to ensure the settings are updated as this method gets changed later to not introduce bugs
+                    if (linkedExternalAccountPartial.lastConfirmed != null) {
+                        linkedExternalAccount.lastConfirmed = linkedExternalAccountPartial.lastConfirmed
+                    }
+                    // Technically don't need the save call here if only the settings change, but it's a good way to ensure to not introduce bugs when the method is changed later
                     return Mono.just(linkedExternalAccountRepository.save(linkedExternalAccount).toDto())
                 }
                 throw PermissionDeniedException("Cannot update linked external account $externalAccountId for account $accountId: User is not an owner of the external account for link ${linkedExternalAccount.id}")

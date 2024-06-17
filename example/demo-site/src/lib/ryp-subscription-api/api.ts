@@ -235,6 +235,12 @@ export interface GetLinkedExternalAccounts200ResponseInner {
     'linkTime': string;
     /**
      * 
+     * @type {string}
+     * @memberof GetLinkedExternalAccounts200ResponseInner
+     */
+    'lastConfirmed'?: string;
+    /**
+     * 
      * @type {Array<string>}
      * @memberof GetLinkedExternalAccounts200ResponseInner
      */
@@ -349,6 +355,12 @@ export interface GetProjectsForAccount200ResponseInner {
      * @memberof GetProjectsForAccount200ResponseInner
      */
     'wallets'?: Array<string>;
+    /**
+     * 
+     * @type {string}
+     * @memberof GetProjectsForAccount200ResponseInner
+     */
+    'manuallyVerified'?: string;
 }
 
 export const GetProjectsForAccount200ResponseInnerCategoryEnum = {
@@ -411,6 +423,12 @@ export interface GetProjectsForAccount200ResponseInnerPoliciesInner {
      * @memberof GetProjectsForAccount200ResponseInnerPoliciesInner
      */
     'policyId'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof GetProjectsForAccount200ResponseInnerPoliciesInner
+     */
+    'manuallyVerified'?: string;
 }
 /**
  * 
@@ -518,6 +536,12 @@ export interface LinkExternalAccount200Response {
      * @memberof LinkExternalAccount200Response
      */
     'linkTime': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof LinkExternalAccount200Response
+     */
+    'lastConfirmed'?: string;
     /**
      * 
      * @type {Array<string>}
@@ -634,6 +658,12 @@ export interface ListProjects200Response {
      * @memberof ListProjects200Response
      */
     'wallets'?: Array<string>;
+    /**
+     * 
+     * @type {string}
+     * @memberof ListProjects200Response
+     */
+    'manuallyVerified'?: string;
 }
 
 export const ListProjects200ResponseCategoryEnum = {
@@ -699,6 +729,12 @@ export interface UpdateLinkedExternalAccountRequest {
      * @memberof UpdateLinkedExternalAccountRequest
      */
     'settings': Array<UpdateLinkedExternalAccountRequestSettingsEnum>;
+    /**
+     * 
+     * @type {string}
+     * @memberof UpdateLinkedExternalAccountRequest
+     */
+    'lastConfirmed'?: string;
 }
 
 export const UpdateLinkedExternalAccountRequestSettingsEnum = {
@@ -783,6 +819,12 @@ export interface UpdateProjectRequest {
      * @memberof UpdateProjectRequest
      */
     'wallets'?: Array<string>;
+    /**
+     * 
+     * @type {string}
+     * @memberof UpdateProjectRequest
+     */
+    'manuallyVerified'?: string;
 }
 
 export const UpdateProjectRequestCategoryEnum = {

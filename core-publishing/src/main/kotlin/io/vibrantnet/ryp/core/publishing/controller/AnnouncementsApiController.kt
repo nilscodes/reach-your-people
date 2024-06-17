@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ServerWebExchange
 import org.springframework.web.util.UriComponentsBuilder
 import reactor.core.publisher.Mono
-import java.util.UUID
+import java.util.*
 
 @RestController
 @Validated
@@ -42,6 +42,18 @@ class AnnouncementsApiController(@Autowired val service: AnnouncementsApiService
                     .body(savedEntity)
             }
     }
+
+    @RequestMapping(
+        method = [RequestMethod.GET],
+        value = ["/projects/{projectId}/roles/{accountId}"],
+        produces = ["application/json"]
+    )
+    @ResponseStatus(HttpStatus.OK)
+    fun getPublishingPermissionsForAccount(
+        @PathVariable("projectId") projectId: Long,
+        @PathVariable("accountId") accountId: Long
+    )
+        = service.getPublishingPermissionsForAccount(projectId, accountId)
 
     @RequestMapping(
         method = [RequestMethod.GET],

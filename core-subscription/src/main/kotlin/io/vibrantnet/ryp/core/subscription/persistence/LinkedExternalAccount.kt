@@ -33,9 +33,13 @@ class LinkedExternalAccount(
     // Updatable and insertable false because we don't want to update settings via JPA due to the bit string type not being supported
     @Column(name = "settings", columnDefinition = "bit(16)", updatable = false, insertable = false)
     var settings: String = "1111111111111111",
+
+    @Column(name = "last_confirmed")
+    @Temporal(TemporalType.TIMESTAMP)
+    var lastConfirmed: OffsetDateTime? = null,
 ) {
     override fun toString(): String {
-        return "LinkedExternalAccount(externalAccountId=${externalAccount.id}, accountId=$accountId, linkTime=$linkTime, role=$role, externalAccountSettings=$settings)"
+        return "LinkedExternalAccount(externalAccountId=${externalAccount.id}, accountId=$accountId, linkTime=$linkTime, role=$role, externalAccountSettings=$settings, lastConfirmed=$lastConfirmed)"
     }
 
     fun toDto() = LinkedExternalAccountDto(
@@ -44,6 +48,7 @@ class LinkedExternalAccount(
         linkTime = linkTime,
         role = role,
         settings = settingsAsSet(),
+        lastConfirmed = lastConfirmed,
     )
 
     fun settingsAsSet(): Set<ExternalAccountSetting> {
@@ -72,6 +77,7 @@ class LinkedExternalAccount(
         if (externalAccount.id != other.externalAccount.id) return false
         if (role != other.role) return false
         if (settings != other.settings) return false
+        if (lastConfirmed != other.lastConfirmed) return false
 
         return true
     }
@@ -81,6 +87,7 @@ class LinkedExternalAccount(
         result = 31 * result + accountId.hashCode()
         result = 31 * result + role.hashCode()
         result = 31 * result + settings.hashCode()
+        result = 31 * result + (lastConfirmed?.hashCode() ?: 0)
         return result
     }
 
