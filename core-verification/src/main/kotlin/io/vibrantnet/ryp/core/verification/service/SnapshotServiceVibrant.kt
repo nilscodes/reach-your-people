@@ -24,8 +24,13 @@ class SnapshotServiceVibrant(
         logger.info { "Processing snapshot request for ${snapshotRequest.announcementRequest.announcementId} with policy ids ${snapshotRequest.policyIds}" }
         val snapshot = tokenDao.getMultiAssetCountSnapshotForPolicyId(snapshotRequest.policyIds.map { PolicyId(it) })
         val snapshotUuid = UUID.randomUUID()
-        redisTemplate.opsForList().rightPushAll("snapshot:$snapshotUuid", snapshot)
-        redisTemplate.expire("snapshot:$snapshotUuid", 48, java.util.concurrent.TimeUnit.HOURS)
+        if (snapshot.isNotEmpty()) {
+            logger.info { "Snapshot for ${snapshotRequest.announcementRequest.announcementId} completed with ${snapshot.size} assets" }
+            redisTemplate.opsForList().rightPushAll("snapshot:$snapshotUuid", snapshot)
+            redisTemplate.expire("snapshot:$snapshotUuid", 48, java.util.concurrent.TimeUnit.HOURS)
+        } else {
+            logger.warn { "Snapshot for ${snapshotRequest.announcementRequest.announcementId} completed with no assets" }
+        }
         rabbitTemplate.convertAndSend("snapshotcompleted", snapshotRequest.announcementRequest.copy(snapshotId = snapshotUuid))
     }
 }

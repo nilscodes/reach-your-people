@@ -24,6 +24,9 @@ data class LinkedExternalAccountDto @JsonCreator constructor(
 
     @JsonProperty("settings")
     val settings: Set<ExternalAccountSetting> = EnumSet.allOf(ExternalAccountSetting::class.java),
+
+    @JsonProperty("lastConfirmed")
+    val lastConfirmed: OffsetDateTime? = null,
 )
 
 enum class ExternalAccountRole {
@@ -44,4 +47,7 @@ enum class ExternalAccountSetting {
 data class LinkedExternalAccountPartialDto @JsonCreator constructor(
     @JsonProperty("settings")
     val settings: EnumSet<ExternalAccountSetting>? = null,
+
+    @JsonProperty("lastConfirmed")
+    val lastConfirmed: OffsetDateTime? = null,
 )

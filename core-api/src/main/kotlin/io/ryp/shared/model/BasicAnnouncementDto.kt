@@ -16,10 +16,14 @@ data class BasicAnnouncementDto @JsonCreator constructor(
     val content: String,
 
     @JsonProperty("link")
-    val link: String? = null
+    val link: String? = null,
+
+    @JsonProperty("policies")
+    @field:ValidPolicyList
+    val policies: List<String>? = null,
 ) {
     fun toBasicAnnouncementWithIdDto(id: UUID): BasicAnnouncementWithIdDto {
-        return BasicAnnouncementWithIdDto(id, author, title, content, link)
+        return BasicAnnouncementWithIdDto(id, author, title, content, link, policies)
     }
 }
 
@@ -38,7 +42,11 @@ data class BasicAnnouncementWithIdDto @JsonCreator constructor(
     val content: String,
 
     @JsonProperty("link")
-    val link: String? = null
+    val link: String? = null,
+
+    @JsonProperty("policies")
+    @field:ValidPolicyList
+    val policies: List<String>? = null,
 )
 
 

@@ -1,5 +1,11 @@
 import ProjectCategory from "./ProjectCategory";
 
+export type Policy = {
+    name: string;
+    policyId: string;
+    manuallyVerified?: string;
+}
+
 export type Project = {
     id: number;
     name: string;
@@ -8,7 +14,8 @@ export type Project = {
     url: string;
     tags?: string[];
     registrationTime: string;
-    verified: boolean;
+    manuallyVerified?: string;
+    policies: Policy[];
 }
 
 // Request is Project without registrationTime, verified and id

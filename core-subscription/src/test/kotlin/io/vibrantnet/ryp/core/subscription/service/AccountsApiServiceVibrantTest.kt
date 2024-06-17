@@ -2,10 +2,10 @@ package io.vibrantnet.ryp.core.subscription.service
 
 import io.mockk.*
 import io.ryp.shared.model.ExternalAccountRole
+import io.ryp.shared.model.LinkedExternalAccountDto
 import io.vibrantnet.ryp.core.subscription.model.AccountDto
 import io.vibrantnet.ryp.core.subscription.model.AccountPartialDto
 import io.vibrantnet.ryp.core.subscription.model.ExternalAccountAlreadyLinkedException
-import io.ryp.shared.model.LinkedExternalAccountDto
 import io.vibrantnet.ryp.core.subscription.persistence.*
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
@@ -148,14 +148,13 @@ internal class AccountsApiServiceVibrantTest {
         every { linkedExternalAccountRepository.save(capture(slot)) } answers { slot.captured }
         val linkedExternalAccount = service.linkExternalAccount(2, 12)
         StepVerifier.create(linkedExternalAccount)
-            .expectNext(
-                LinkedExternalAccountDto(
-                    id = slot.captured.id,
-                    externalAccount = externalAccount.toDto(),
-                    role = ExternalAccountRole.OWNER,
-                    linkTime = slot.captured.linkTime,
-                )
-            ).verifyComplete()
+            .assertNext {
+                assertEquals(it.id, slot.captured.id)
+                assertEquals(it.externalAccount, slot.captured.externalAccount.toDto())
+                assertEquals(it.role, slot.captured.role)
+                assertEquals(it.linkTime, slot.captured.linkTime)
+                assertNotNull(slot.captured.lastConfirmed)
+            }.verifyComplete()
     }
 
     @Test

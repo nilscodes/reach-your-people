@@ -20,6 +20,7 @@ import { Subscription } from '@/lib/types/Subscription';
 import { Account } from '../../lib/ryp-subscription-api';
 import SubscriptionActions from '../subscriptions/SubscriptionActions';
 import useTranslation from 'next-translate/useTranslation';
+import { makeCdnUrl } from '@/lib/cdn';
 
 type ProjectCardProps = {
   account: Account | null;
@@ -34,27 +35,22 @@ function formatISODateToCustomString(isoDateString: string) {
   return `${month}, ${year}`;
 }
 
-const CDN_BASE_URL = process.env.NEXT_PUBLIC_CDN_BASE_URL?.replace(/\/$/, '');
-
 export default function ProjectCard({ account, project, subscription }: ProjectCardProps) {
   const { t: tc } = useTranslation('common');
   const {
     name, tags, registrationTime,
   } = project;
-  const url = 'url' in project ? project.url! : '';
-  const verified = 'verified' in project ? project.verified : false;
-  const category = 'category' in project ? project.category : undefined;
   return (<Card>
     <Stack direction={{ base: 'column', md: 'row' }} spacing={{ base: '4', md: '10' }}>
       <ProjectLogo
         name={name}
-        src={`${CDN_BASE_URL}/${project.logo}`}
-        isVerified={verified}
+        src={makeCdnUrl(project.logo)}
+        isVerified={project.manuallyVerified !== null}
         fontSize="2xl"
       />
       <CardContent>
         <CardHeader title={name} subscription={subscription} favoriteButton={account !== null} />
-        <Link href={`${url}`} isExternal={true} fontWeight="medium">{url.replace('https://', '')}</Link>
+        <Link href={project.url} isExternal={true} fontWeight="medium">{project.url.replace('https://', '')}</Link>
         <Stack spacing="1" mt="2">
           {registrationTime && (<HStack fontSize="sm">
               <Icon as={GoCalendar} color="gray.500" />
@@ -65,7 +61,7 @@ export default function ProjectCard({ account, project, subscription }: ProjectC
         <Text fontWeight="semibold" mt="8" mb="2">{tc('project.tags')}</Text>
 
         <Wrap shouldWrapChildren>
-          {category !== undefined && <ProjectTag category={category} />}
+          <ProjectTag category={project.category} />
           {tags?.map((tag: string) => (<Tag key={tag}>{tag}</Tag>))}
         </Wrap>
       </CardContent>

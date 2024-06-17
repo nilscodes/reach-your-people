@@ -14,10 +14,14 @@
     "publishAnnouncementButton": "Publish Announcement",
     "editProjectButton": "Edit",
     "sourceUrl": "Source",
+    "loadingPermissions": "Loading publishing permissions…",
     "publish": {
         "form": {
+            "policies": "Policies to announce for",
             "title": "Title",
+            "titleError": "Title is required",
             "contentWithMarkdown": "Content (Markdown allowed)",
+            "contentError": "Content is required",
             "preview": "Preview",
             "link": "Link (Optional)"
         }

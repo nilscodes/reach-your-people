@@ -10,8 +10,7 @@ import VerifiedIcon from '../projectcard/VerifiedIcon';
 import SubscriptionActions from './SubscriptionActions';
 import FavoriteButton from './FavoriteButton';
 import useTranslation from 'next-translate/useTranslation';
-
-const CDN_BASE_URL = process.env.NEXT_PUBLIC_CDN_BASE_URL?.replace(/\/$/, '');
+import { makeCdnUrl } from '@/lib/cdn';
 
 export default function SubscriptionsListView(props: SubscriptionsViewProps) {
   const {
@@ -52,10 +51,10 @@ export default function SubscriptionsListView(props: SubscriptionsViewProps) {
                 <ProjectLogo
                   size="sm"
                   name={project.name}
-                  src={`${CDN_BASE_URL}/${project.logo}`}
+                  src={makeCdnUrl(project.logo)}
                   hideVerified
                 />
-                <VerifiedIcon isVerified={project.verified} fontSize="lg" />
+                <VerifiedIcon isVerified={project.manuallyVerified !== null} fontSize="lg" />
                 <Text>{project.name}</Text>
               </HStack>
               <Container display={{ base: 'block', md: 'none' }} px="0">

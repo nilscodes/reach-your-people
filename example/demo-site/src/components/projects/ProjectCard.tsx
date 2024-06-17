@@ -17,13 +17,12 @@ import PriceTag from './PriceTag'
 import { Project } from '@/lib/types/Project'
 import NextLink from '../NextLink'
 import useTranslation from 'next-translate/useTranslation'
+import { makeCdnUrl } from '@/lib/cdn'
     
 interface Props {
   project: Project
   rootProps?: StackProps
 }
-
-const CDN_BASE_URL = process.env.NEXT_PUBLIC_CDN_BASE_URL?.replace(/\/$/, '');
 
 export default function ProjectCard(props: Props) {
   const { project, rootProps } = props;
@@ -40,7 +39,7 @@ export default function ProjectCard(props: Props) {
           overflow="hidden"
         >
           <Image
-            src={`${CDN_BASE_URL}/${logo}`}
+            src={makeCdnUrl(logo)}
             alt={name}
             position="absolute"
             top="0"
