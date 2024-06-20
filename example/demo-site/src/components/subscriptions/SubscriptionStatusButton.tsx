@@ -118,8 +118,8 @@ export default function SubscriptionStatusButton({ subscription, onStatusChange,
                         <ButtonPopoverTrigger icon={icon} label={label} variant={variant} {...props} />
                     </PopoverTrigger>
                     <PopoverContent>
-                        <PopoverHeader fontWeight="semibold">{t('subscriptionStatus.label')}</PopoverHeader>
-                        <PopoverCloseButton />
+                        <PopoverHeader fontWeight="semibold" fontSize="lg" mt="1">{t('subscriptionStatus.label')}</PopoverHeader>
+                        <PopoverCloseButton size="xs" />
                         <PopoverBody>
                             <RadioCardGroup
                                 defaultValue={subscription?.currentStatus ?? SubscriptionStatus.Default}

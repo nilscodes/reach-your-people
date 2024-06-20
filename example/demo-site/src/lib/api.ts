@@ -3,7 +3,7 @@ import { Project, ProjectCreationRequest } from "./types/Project";
 import { Subscription } from "./types/Subscription";
 import { SubscriptionStatus } from "./types/SubscriptionStatus";
 import { AnnouncementFormData } from "@/components/projects/PublishAnnouncement";
-import { GetLinkedExternalAccounts200ResponseInner, GetLinkedExternalAccounts200ResponseInnerSettingsEnum } from "./ryp-subscription-api";
+import { GetLinkedExternalAccounts200ResponseInner, GetLinkedExternalAccounts200ResponseInnerSettingsEnum, ProjectNotificationSetting } from "./ryp-subscription-api";
 import { PublishingPermissions } from "./ryp-publishing-api";
 
 // function getRandomDelay(): Promise<void> {
@@ -66,8 +66,8 @@ export class RypSiteApi {
     return (await axios.post(`${this.baseUrl}/account/phone/start`, { phoneNumber })).data;
   }
 
-  async verifyPhoneCode(phoneNumber: string, code: string): Promise<string> {
-    return (await axios.post(`${this.baseUrl}/account/phone/verify`, { phoneNumber, code })).data;
+  async verifyPhoneCode(countryCode: string, phoneNumber: string, code: string): Promise<string> {
+    return (await axios.post(`${this.baseUrl}/account/phone/verify`, { countryCode, phoneNumber, code })).data;
   }
 
   async linkPushApiSubscription(subscription: any, displayName: string): Promise<void> {
@@ -76,6 +76,18 @@ export class RypSiteApi {
 
   async getLinkedExternalAccounts(): Promise<GetLinkedExternalAccounts200ResponseInner[]> {
     return (await axios.get(`${this.baseUrl}/account/externalaccounts`)).data;
+  }
+
+  async makeDefaultForNotifications(externalAccountId: number): Promise<GetLinkedExternalAccounts200ResponseInner[]> {
+    return (await axios.put(`${this.baseUrl}/account/externalaccounts/${externalAccountId}/default`)).data;
+  }
+
+  async getNotificationsSettingsForAccountAndProject(projectId: number): Promise<ProjectNotificationSetting[]> {
+    return (await axios.get(`${this.baseUrl}/account/projects/${projectId}/notifications`)).data;
+  }
+
+  async updateNotificationsSettingsForAccountAndProject(projectId: number, settings: ProjectNotificationSetting[]): Promise<ProjectNotificationSetting[]> {
+    return (await axios.put(`${this.baseUrl}/account/projects/${projectId}/notifications`, settings)).data;
   }
 
   async getProjects(): Promise<Project[]> {

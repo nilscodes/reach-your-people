@@ -15,6 +15,11 @@
     "mobilePhoneSms": "Mobile Phone (SMS)",
     "pushApi": "Browser Notification",
     "backToSocial": "Back to social logins",
+    "defaultForNotifications": "Default for Notifications",
+    "noNotifications": "No Notifications",
+    "lastUnlinkError": "You must have at least one linked social account and cannot remove the last wallet if you have only wallets connected.",
+    "defaultForNotificationsError": "Select a new default notification account before removing this account.",
+    "makeDefaultForNotifications": "Make default",
 
     "phoneCodeIncorrect": "The code was not correct.",
     "phoneVerified": "Phone number verified successfully!",

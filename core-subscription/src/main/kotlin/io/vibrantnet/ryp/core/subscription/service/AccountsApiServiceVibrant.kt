@@ -2,6 +2,7 @@ package io.vibrantnet.ryp.core.subscription.service
 
 import io.ryp.shared.aspect.PointsClaim
 import io.ryp.shared.model.ExternalAccountRole
+import io.ryp.shared.model.ExternalAccountSetting
 import io.ryp.shared.model.LinkedExternalAccountDto
 import io.ryp.shared.model.LinkedExternalAccountPartialDto
 import io.vibrantnet.ryp.core.subscription.model.*
@@ -9,10 +10,10 @@ import io.vibrantnet.ryp.core.subscription.persistence.*
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import org.springframework.transaction.support.TransactionTemplate
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import java.time.OffsetDateTime
+import java.util.*
 
 @Service
 class AccountsApiServiceVibrant(
@@ -21,6 +22,7 @@ class AccountsApiServiceVibrant(
     val linkedExternalAccountRepository: LinkedExternalAccountRepository,
     val projectRepository: ProjectRepository,
     val verifyService: VerifyService,
+    val projectNotificationSettingRepository: ProjectNotificationSettingRepository,
 ) : AccountsApiService {
 
     @PointsClaim(
@@ -76,9 +78,25 @@ class AccountsApiServiceVibrant(
                 role = ExternalAccountRole.OWNER,
                 lastConfirmed = OffsetDateTime.now(),
             ))
+            val defaultSettings = getDefaultSettingsForExternalAccount(externalAccount)
+            newLinkedExternalAccount.settingsFromSet(defaultSettings)
+            linkedExternalAccountRepository.updateSettings(newLinkedExternalAccount.id!!, newLinkedExternalAccount.settings)
             return Mono.just(newLinkedExternalAccount.toDto())
         } catch (e: DataIntegrityViolationException) {
             throw ExternalAccountAlreadyLinkedException("Account ${account.id} already linked to external account $externalAccountId", e)
+        }
+    }
+
+    fun getDefaultSettingsForExternalAccount(externalAccount: ExternalAccount): Set<ExternalAccountSetting> {
+        return when (externalAccount.type.lowercase()) {
+            "cardano" -> EnumSet.of(
+                ExternalAccountSetting.NON_FUNGIBLE_TOKEN_ANNOUNCEMENTS,
+                ExternalAccountSetting.FUNGIBLE_TOKEN_ANNOUNCEMENTS,
+                ExternalAccountSetting.RICH_FUNGIBLE_TOKEN_ANNOUNCEMENTS,
+                ExternalAccountSetting.STAKEPOOL_ANNOUNCEMENTS,
+                ExternalAccountSetting.DREP_ANNOUNCEMENTS,
+            )
+            else -> EnumSet.noneOf(ExternalAccountSetting::class.java)
         }
     }
 
@@ -91,21 +109,18 @@ class AccountsApiServiceVibrant(
         val account = accountRepository.findById(accountId).orElseThrow()
         val linkedExternalAccount = account.linkedExternalAccounts.find { it.externalAccount.id == externalAccountId }
         if (linkedExternalAccount != null) {
-            if (linkedExternalAccount.externalAccount.type == "cardano") {
-                if (linkedExternalAccount.role == ExternalAccountRole.OWNER) {
-                    if (linkedExternalAccountPartial.settings != null) {
-                        linkedExternalAccount.settingsFromSet(linkedExternalAccountPartial.settings!!)
-                        linkedExternalAccountRepository.updateSettings(linkedExternalAccount.id!!, linkedExternalAccount.settings) // Needs to be called separately
-                    }
-                    if (linkedExternalAccountPartial.lastConfirmed != null) {
-                        linkedExternalAccount.lastConfirmed = linkedExternalAccountPartial.lastConfirmed
-                    }
-                    // Technically don't need the save call here if only the settings change, but it's a good way to ensure to not introduce bugs when the method is changed later
-                    return Mono.just(linkedExternalAccountRepository.save(linkedExternalAccount).toDto())
+            if (linkedExternalAccount.role == ExternalAccountRole.OWNER) {
+                if (linkedExternalAccountPartial.settings != null) {
+                    linkedExternalAccount.settingsFromSet(linkedExternalAccountPartial.settings!!)
+                    linkedExternalAccountRepository.updateSettings(linkedExternalAccount.id!!, linkedExternalAccount.settings) // Needs to be called separately
                 }
-                throw PermissionDeniedException("Cannot update linked external account $externalAccountId for account $accountId: User is not an owner of the external account for link ${linkedExternalAccount.id}")
+                if (linkedExternalAccountPartial.lastConfirmed != null) {
+                    linkedExternalAccount.lastConfirmed = linkedExternalAccountPartial.lastConfirmed
+                }
+                // Technically don't need the save call here if only the settings change, but it's a good way to ensure to not introduce bugs when the method is changed later
+                return Mono.just(linkedExternalAccountRepository.save(linkedExternalAccount).toDto())
             }
-            throw IncompatibleExternalAccountChangeException("Cannot update linked external account $externalAccountId for account $accountId: Not a Cardano wallet for link ${linkedExternalAccount.id}")
+            throw PermissionDeniedException("Cannot update linked external account $externalAccountId for account $accountId: User is not an owner of the external account for link ${linkedExternalAccount.id}")
         }
         throw NoSuchElementException("Failed to update linked external account $externalAccountId for account $accountId: Not found")
     }
@@ -206,6 +221,67 @@ class AccountsApiServiceVibrant(
         account.settings.removeIf { it.name == settingName }
         accountRepository.save(account)
         return Mono.empty()
+    }
+
+    override fun getNotificationsSettingsForAccountAndProject(
+        accountId: Long,
+        projectId: Long,
+    ) = Flux.fromIterable(projectNotificationSettingRepository.findByAccountIdAndProjectId(accountId, projectId).map { it.toDto() })
+
+    @Transactional
+    override fun updateNotificationsSettingsForAccountAndProject(
+        accountId: Long,
+        projectId: Long,
+        projectNotificationSettings: List<ProjectNotificationSettingDto>,
+    ): Flux<ProjectNotificationSettingDto> {
+        accountRepository.findById(accountId).orElseThrow()
+        projectRepository.findById(projectId).orElseThrow()
+        val newNotifications = removeUnusedNotifications(accountId, projectId, projectNotificationSettings)
+        newNotifications.addAll(addNewNotifications(projectNotificationSettings, accountId, projectId, newNotifications))
+        return Flux.fromIterable(newNotifications)
+    }
+
+    private fun addNewNotifications(
+        projectNotificationSetting: List<ProjectNotificationSettingDto>,
+        accountId: Long,
+        projectId: Long,
+        existingNotifications: List<ProjectNotificationSettingDto>
+    ): List<ProjectNotificationSettingDto> {
+        val newNotifications = mutableListOf<ProjectNotificationSettingDto>()
+        for (projectNotification in projectNotificationSetting) {
+            if (existingNotifications.any { it.externalAccountLinkId == projectNotification.externalAccountLinkId }) {
+                continue
+            }
+            val linkedExternalAccount =
+                linkedExternalAccountRepository.findById(projectNotification.externalAccountLinkId).orElseThrow()
+            if (linkedExternalAccount.accountId == accountId && linkedExternalAccount.role == ExternalAccountRole.OWNER) {
+                val newNotification = ProjectNotificationSetting(
+                    linkedExternalAccount = linkedExternalAccount,
+                    projectId = projectId,
+                    createTime = OffsetDateTime.now(),
+                )
+                newNotifications.add(projectNotificationSettingRepository.save(newNotification).toDto())
+            }
+        }
+        return newNotifications
+    }
+
+    private fun removeUnusedNotifications(
+        accountId: Long,
+        projectId: Long,
+        projectNotificationSetting: List<ProjectNotificationSettingDto>
+    ): MutableList<ProjectNotificationSettingDto> {
+        val newNotifications = mutableListOf<ProjectNotificationSettingDto>()
+        val currentNotifications =
+            projectNotificationSettingRepository.findByAccountIdAndProjectId(accountId, projectId)
+        for (currentNotification in currentNotifications) {
+            if (projectNotificationSetting.none { it.externalAccountLinkId == currentNotification.linkedExternalAccount.id }) {
+                projectNotificationSettingRepository.delete(currentNotification)
+            } else {
+                newNotifications.add(currentNotification.toDto())
+            }
+        }
+        return newNotifications
     }
 
     /**

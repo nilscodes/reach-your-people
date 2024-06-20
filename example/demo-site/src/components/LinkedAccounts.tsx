@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Heading, Text, Button, Box, VStack, Stack, useToast, StackDivider, Tabs, TabList, Tab, TabIndicator, TabPanels, TabPanel } from '@chakra-ui/react';
+import { Container, Button, Stack, useToast, StackDivider } from '@chakra-ui/react';
 import { Account, GetLinkedExternalAccounts200ResponseInner } from '../lib/ryp-subscription-api';
 import { CardanoIcon, providerList, providersConfig } from './ProviderIcons';
 import { signIn } from 'next-auth/react';
@@ -25,12 +25,16 @@ type LinkedAccountsProps = {
 
 const isWalletExternalAccount = (type: string) => type === 'cardano';
 
+export function sortLinkedExternalAccounts(linkedAccounts: GetLinkedExternalAccounts200ResponseInner[]) {
+  return [...linkedAccounts].sort((a, b) => a.externalAccount.id! - b.externalAccount.id!);
+}
+
 export default function LinkedAccounts({ accountSettings, linkedAccounts: linkedAccountsProp }: LinkedAccountsProps) {
   const api = useApi();
   const toast = useToast();
   const { t } = useTranslation('accounts');
   const [referral, completeReferral] = useReferral();
-  const [linkedAccounts, setLinkedAccounts] = React.useState<GetLinkedExternalAccounts200ResponseInner[]>(linkedAccountsProp);
+  const [linkedAccounts, setLinkedAccounts] = React.useState<GetLinkedExternalAccounts200ResponseInner[]>(sortLinkedExternalAccounts(linkedAccountsProp));
   const [showWalletConnection, setShowWalletConnection] = React.useState(false);
   const [showPhoneConnection, setShowPhoneConnection] = React.useState(false);
   const [showPushApiConnection, setShowPushApiConnection] = React.useState(false);
@@ -83,17 +87,21 @@ export default function LinkedAccounts({ accountSettings, linkedAccounts: linked
 
   const unlinkExternalAccount = async (externalAccountId: number) => {
     await api.unlinkExternalAccount(externalAccountId);
-    setLinkedAccounts(linkedAccounts.filter((linkedAccount) => linkedAccount.externalAccount.id !== externalAccountId));
+    setLinkedAccounts(sortLinkedExternalAccounts(linkedAccounts.filter((linkedAccount) => linkedAccount.externalAccount.id !== externalAccountId)));
   };
+
+  const makeDefaultForNotifications = async (externalAccountId: number) => {
+    setLinkedAccounts(sortLinkedExternalAccounts(await api.makeDefaultForNotifications(externalAccountId)));
+  }
 
   const finalizePhoneAuth = async () => {
     setShowPhoneConnection(false);
-    setLinkedAccounts(await api.getLinkedExternalAccounts());
+    setLinkedAccounts(sortLinkedExternalAccounts(await api.getLinkedExternalAccounts()));
   };
 
   const finalizePushApi = async () => {
     setShowPushApiConnection(false);
-    setLinkedAccounts(await api.getLinkedExternalAccounts());
+    setLinkedAccounts(sortLinkedExternalAccounts(await api.getLinkedExternalAccounts()));
   }
 
   const isNonSocialAccount = (type: string) => ['sms', 'pushapi'].includes(type);
@@ -118,6 +126,7 @@ export default function LinkedAccounts({ accountSettings, linkedAccounts: linked
               showUrl
               canRemove={canRemove || (isWalletExternalAccount(linkedAccount.externalAccount.type) && linkedAccounts.length > 1) || isNonSocialAccount(linkedAccount.externalAccount.type)}
               onRemove={unlinkExternalAccount}
+              makeDefaultForNotifications={makeDefaultForNotifications}
             />);
           })}
         </Stack>

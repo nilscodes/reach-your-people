@@ -5,6 +5,8 @@ import VerificationCodeInput from './VerificationCodeInput';
 import { useApi } from '@/contexts/ApiProvider';
 import { FaLeftLong } from 'react-icons/fa6';
 import useTranslation from 'next-translate/useTranslation';
+import { format } from 'path';
+import { formatPhoneNumber } from '@/lib/phoneutil';
 
 type PhoneVerificationProps = {
   onReturn: () => void;
@@ -28,8 +30,8 @@ export default function PhoneVerification({ onReturn }: PhoneVerificationProps) 
   const handlePhoneNumberSubmit = ({ phoneNumber, countryCode }: PhoneData) => {
     setPhoneNumber(phoneNumber);
     setCountryCode(countryCode);
+    setFullPhoneNumber(formatPhoneNumber(countryCode, phoneNumber));
     const full = `${countryCode} ${phoneNumber}`;
-    setFullPhoneNumber(full);
     api.startPhoneVerification(full.replace(/[^+\d]/g, ''));
     setStep('verificationCodeInput');
   };
@@ -41,7 +43,7 @@ export default function PhoneVerification({ onReturn }: PhoneVerificationProps) 
   const handleVerificationSubmit = async (code: string) => {
     return new Promise<void>(async (resolve, reject) => {
       try {
-        const verification = await api.verifyPhoneCode(fullPhoneNumber.replace(/[^+\d]/g, ''), code);
+        const verification = await api.verifyPhoneCode(countryCode, phoneNumber, code);
         if (verification === 'approved') {
           toast({
             title: t('phoneVerified'),

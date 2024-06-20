@@ -454,6 +454,7 @@ components:
         - RICH_FUNGIBLE_TOKEN_ANNOUNCEMENTS
         - STAKEPOOL_ANNOUNCEMENTS
         - DREP_ANNOUNCEMENTS
+        - DEFAULT_FOR_NOTIFICATIONS
       examples:
         - NON_FUNGIBLE_TOKEN_ANNOUNCEMENTS
     ExternalAccountRole:
@@ -548,6 +549,30 @@ components:
       example:
         name: THEME
         value: dark
+    ProjectNotificationSetting:
+      title: ProjectNotificationSetting
+      x-stoplight:
+        id: bkxhfmrmnm0p8
+      type: object
+      required:
+        - projectId
+        - externalAccountLinkId
+      properties:
+        id:
+          type: integer
+          x-stoplight:
+            id: 5cxn9qha3bri4
+          format: int64
+        projectId:
+          $ref: '#/components/schemas/ProjectId'
+        externalAccountLinkId:
+          type: integer
+          format: int64
+        createTime:
+          type: string
+          format: date-time
+          example: '2021-11-10T13:20:57Z'
+          readOnly: true
 tags:
   - name: publishing
     description: Related to publishing content for subscribers

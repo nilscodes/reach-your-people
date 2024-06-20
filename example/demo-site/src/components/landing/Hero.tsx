@@ -1,4 +1,4 @@
-import { Badge, Box, Button, Container, Heading, IconButton, Img, Stack, Text } from '@chakra-ui/react'
+import { Badge, Box, Button, Container, Heading, IconButton, Img, Stack, Text, useColorModeValue as mode } from '@chakra-ui/react'
 import useTranslation from "next-translate/useTranslation";
 import { useRouter } from 'next/router';
 

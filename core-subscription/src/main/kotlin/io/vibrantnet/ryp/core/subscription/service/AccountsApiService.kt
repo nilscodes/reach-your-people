@@ -160,4 +160,27 @@ interface AccountsApiService {
      * @see AccountsApi#deleteAccountSetting
      */
     fun deleteAccountSetting(accountId: Long, settingName: String): Mono<Unit>
+
+    /**
+     * GET /accounts/{accountId}/projects/{projectId}/notifications : Get project notification settings
+     * Get the current notification settings for this account on this project.
+     *
+     * @param accountId The numeric ID of an account (required)
+     * @param projectId The numeric ID of a Project (required)
+     * @return The current notification settings (status code 200)
+     * @see AccountsApi#getNotificationsSettingsForAccountAndProject
+     */
+    fun getNotificationsSettingsForAccountAndProject(accountId: Long, projectId: Long): Flux<ProjectNotificationSettingDto>
+
+    /**
+     * PUT /accounts/{accountId}/projects/{projectId}/notifications : Update the notification settings
+     * Update the notification settings for this account on this project. Will remove any invalid settings, like notification settings for non-linked external accounts or external accounts that cannot receive notifications.
+     *
+     * @param accountId The numeric ID of an account (required)
+     * @param projectId The numeric ID of a Project (required)
+     * @param projectNotificationSettings  (required)
+     * @return The confirmed notification settings (status code 200)
+     * @see AccountsApi#updateNotificationsSettingsForAccountAndProject
+     */
+    fun updateNotificationsSettingsForAccountAndProject(accountId: Long, projectId: Long, projectNotificationSettings: List<ProjectNotificationSettingDto>): Flux<ProjectNotificationSettingDto>
 }

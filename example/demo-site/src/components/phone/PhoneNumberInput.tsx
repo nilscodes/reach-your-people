@@ -5,14 +5,13 @@ import Trans from 'next-translate/Trans';
 import NextLink from '../NextLink';
 import { useForm } from 'react-hook-form';
 import { PhoneData } from './PhoneVerification';
+import { formatPhoneNumber } from '@/lib/phoneutil';
 
 type PhoneNumberInputProps = {
   countryCode: string;
   phoneNumber: string;
   onSubmit: (phoneData: PhoneData) => void
 };
-
-
 
 export default function PhoneNumberInput({ countryCode: initialCountryCode, phoneNumber: initialPhoneNumber, onSubmit }: PhoneNumberInputProps) {
   const [countryCode, setCountryCode] = useState(initialCountryCode); // Default to US
@@ -27,11 +26,7 @@ export default function PhoneNumberInput({ countryCode: initialCountryCode, phon
 
   const handlePhoneNumberChange = (event: any) => {
     const { value } = event.target;
-    // Simplified formatting, replace with a more robust solution as needed
-    const formattedNumber = value.replace(/\D/g, '').substring(0, 10); // Remove non-digits and limit length
-    // Style with the US format
-    const usNumber = `(${formattedNumber.substring(0, 3)}) ${formattedNumber.substring(3, 6)} ${formattedNumber.substring(6)}`
-    setPhoneNumber(usNumber);
+    setPhoneNumber(formatPhoneNumber(countryCode, value));
   };
 
   // Additional countries can be added here

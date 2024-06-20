@@ -25,7 +25,8 @@ internal class LinkedExternalAccountTest {
         Assertions.assertEquals(
             setOf(
                 ExternalAccountSetting.NON_FUNGIBLE_TOKEN_ANNOUNCEMENTS,
-                ExternalAccountSetting.STAKEPOOL_ANNOUNCEMENTS
+                ExternalAccountSetting.STAKEPOOL_ANNOUNCEMENTS,
+                ExternalAccountSetting.DEFAULT_FOR_NOTIFICATIONS,
             ),
             linkedExternalAccount.settingsAsSet()
         )
@@ -42,7 +43,8 @@ internal class LinkedExternalAccountTest {
         linkedExternalAccount.settingsFromSet(
             setOf(
                 ExternalAccountSetting.NON_FUNGIBLE_TOKEN_ANNOUNCEMENTS,
-                ExternalAccountSetting.STAKEPOOL_ANNOUNCEMENTS
+                ExternalAccountSetting.STAKEPOOL_ANNOUNCEMENTS,
+                ExternalAccountSetting.DEFAULT_FOR_NOTIFICATIONS,
             )
         )
         Assertions.assertEquals("1111111111101001", linkedExternalAccount.settings)

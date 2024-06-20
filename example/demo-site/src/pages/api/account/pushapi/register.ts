@@ -1,7 +1,7 @@
 import { getServerSession } from "next-auth";
 import { getNextAuthOptions } from "../../auth/[...nextauth]";
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { coreSubscriptionApi } from "@/lib/core-subscription-api";
+import { coreSubscriptionApi, makeNewLinkedExternalAccountDefaultForNotificationsIfRequired } from "@/lib/core-subscription-api";
  
 export default async function handler(
   req: NextApiRequest,
@@ -24,11 +24,13 @@ export default async function handler(
         displayName,
         metadata: base64EncodedSubscription,
       });
-      const response = await coreSubscriptionApi.linkExternalAccount(accountId, externalAccount.data.id!);
+      await coreSubscriptionApi.linkExternalAccount(accountId, externalAccount.data.id!);
+      const response = await makeNewLinkedExternalAccountDefaultForNotificationsIfRequired(accountId, externalAccount.data.id!);
       res.status(response.status).json(response.data);
     }
   } else {
     res.status(401).json({ message: 'Unauthorized' });
   }
 }
+
 

@@ -64,6 +64,14 @@ CREATE TABLE "projects"
     "manually_verified" timestamp NULL
 );
 
+CREATE TABLE "project_notification_settings"
+(
+    "notification_settings_id" BIGSERIAL PRIMARY KEY,
+    "project_id"               INT       NOT NULL,
+    "external_account_link_id" BIGINT    NOT NULL,
+    "create_time"              timestamp NOT NULL,
+    UNIQUE ("project_id", "external_account_link_id")
+);
 
 CREATE TABLE "project_tags"
 (
@@ -100,6 +108,12 @@ ALTER TABLE "project_roles"
 
 ALTER TABLE "project_roles"
     ADD FOREIGN KEY ("account_id") REFERENCES "accounts" ("account_id") ON DELETE CASCADE;
+
+ALTER TABLE "project_notification_settings"
+    ADD FOREIGN KEY ("project_id") REFERENCES "projects" ("project_id") ON DELETE CASCADE;
+
+ALTER TABLE "project_notification_settings"
+    ADD FOREIGN KEY ("external_account_link_id") REFERENCES "linked_external_accounts" ("link_id") ON DELETE CASCADE;
 
 ALTER TABLE "linked_external_accounts"
     ADD FOREIGN KEY ("account_id") REFERENCES "accounts" ("account_id") ON DELETE CASCADE;

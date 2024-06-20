@@ -49,7 +49,7 @@ class SubscriptionServiceVibrant(
     }
 
     private fun getExplicitlySubscribedAccounts(projectId: Long): List<AnnouncementRecipientDto> {
-        val recipients = accountRepository.findExternalAccountsByProjectIdAndSubscriptionStatus(
+        val recipients = externalAccountRepository.findExternalAccountsByProjectIdAndSubscriptionStatus(
             projectId = projectId,
             status = SubscriptionStatus.SUBSCRIBED
         ).map {
@@ -79,7 +79,7 @@ class SubscriptionServiceVibrant(
             objectMapper.convertValue(it, TokenOwnershipInfoWithAssetCount::class.java)
         }
         val accountIds = externalAccountRepository.findEligibleAccountsByWallet(announcementJob.projectId, snapshotData.map { it.stakeAddress }, listOf(SubscriptionStatus.BLOCKED, SubscriptionStatus.MUTED))
-        val externalAccounts = externalAccountRepository.findMessagingExternalAccountsForAccounts(accountIds, listOf("cardano"))
+        val externalAccounts = externalAccountRepository.findMessagingExternalAccountsForProjectAndAccounts(announcementJob.projectId, accountIds, listOf("cardano"))
         val recipients = externalAccounts.map {
             announcementRecipientDtoFromExternalAccount(it)
         }.toMutableSet()
