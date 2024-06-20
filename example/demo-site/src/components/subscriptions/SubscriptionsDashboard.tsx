@@ -13,6 +13,7 @@ import { SubscriptionsContext } from '@/contexts/SubscriptionsProvider';
 import useTranslation from 'next-translate/useTranslation';
 import { useRouter } from 'next/router';
 import { categories } from './_data'
+import { set } from 'react-hook-form';
 
 type SubscriptionsDashboardProps = {
   account: Account | null;
@@ -74,6 +75,9 @@ export const SubscriptionsDashboard = (props: SubscriptionsDashboardProps) => {
     || item.tags?.some((tag) => tag.toLowerCase().includes(searchTerm)))
     && (typeFilterValue.length === 0 || typeFilterValue.includes(item.category))));
     setFilteredProjects(filtered);
+    if (projects.length > 0) { // Only mark loading finished once we have projects and have filtered them once
+      setIsProjectsLoading(false);
+    }
   }, [typeFilterValue, searchTerm, projects]);
 
   const filterData = {
@@ -96,7 +100,6 @@ export const SubscriptionsDashboard = (props: SubscriptionsDashboardProps) => {
       const [projectsData, subscriptionsData] = await Promise.all([projectsPromise, subscriptionsPromise]);
       setProjects(projectsData);
       setSubscriptions(subscriptionsData);
-      setIsProjectsLoading(false);
     };
 
     fetchData();

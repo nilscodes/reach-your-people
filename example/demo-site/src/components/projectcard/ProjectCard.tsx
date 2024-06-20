@@ -21,6 +21,7 @@ import { Account } from '../../lib/ryp-subscription-api';
 import SubscriptionActions from '../subscriptions/SubscriptionActions';
 import useTranslation from 'next-translate/useTranslation';
 import { makeCdnUrl } from '@/lib/cdn';
+import VerifiedTag from './VerifiedTag';
 
 type ProjectCardProps = {
   account: Account | null;
@@ -40,12 +41,15 @@ export default function ProjectCard({ account, project, subscription }: ProjectC
   const {
     name, tags, registrationTime,
   } = project;
+
+  const projectIsVerified = project.manuallyVerified !== null;
+
   return (<Card>
     <Stack direction={{ base: 'column', md: 'row' }} spacing={{ base: '4', md: '10' }}>
       <ProjectLogo
         name={name}
         src={makeCdnUrl(project.logo)}
-        isVerified={project.manuallyVerified !== null}
+        isVerified={projectIsVerified}
         fontSize="2xl"
       />
       <CardContent>
@@ -62,6 +66,7 @@ export default function ProjectCard({ account, project, subscription }: ProjectC
 
         <Wrap shouldWrapChildren>
           <ProjectTag category={project.category} />
+          <VerifiedTag isVerified={projectIsVerified} />
           {tags?.map((tag: string) => (<Tag key={tag}>{tag}</Tag>))}
         </Wrap>
       </CardContent>

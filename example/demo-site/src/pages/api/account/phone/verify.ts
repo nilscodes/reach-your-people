@@ -2,7 +2,8 @@ import { getServerSession } from "next-auth";
 import { getNextAuthOptions } from "../../auth/[...nextauth]";
 import { phoneVerifyApi } from '@/lib/phone-verify-api';
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { coreSubscriptionApi } from "@/lib/core-subscription-api";
+import { coreSubscriptionApi, makeNewLinkedExternalAccountDefaultForNotificationsIfRequired } from "@/lib/core-subscription-api";
+import { formatPhoneNumber } from "@/lib/phoneutil";
  
 const env = process.env.NODE_ENV
 
@@ -15,19 +16,21 @@ export default async function handler(
     res,
     getNextAuthOptions(req, res)
   );
-  const { phoneNumber, code } = req.body;
+  const { phoneNumber, countryCode, code } = req.body;
   
   if (session?.userId) {
     const accountId = session.userId;
     if (req.method === 'POST') {
-      const response = await checkVerification(phoneNumber, code);
+      const fullPhoneNumber = `${countryCode.replace(/[^+\d]/g, '')}${phoneNumber.replace(/[^+\d]/g, '')}`;
+      const response = await checkVerification(fullPhoneNumber, code);
       if (response.data === 'approved') {
         const externalAccount = await coreSubscriptionApi.createExternalAccount({
           type: 'sms',
-          referenceId: phoneNumber,
-          displayName: phoneNumber,
+          referenceId: fullPhoneNumber,
+          displayName: formatPhoneNumber(countryCode, phoneNumber),
         });
         await coreSubscriptionApi.linkExternalAccount(accountId, externalAccount.data.id!);
+        await makeNewLinkedExternalAccountDefaultForNotificationsIfRequired(accountId, externalAccount.data.id!);
       }
       res.status(response.status).json(response.data);
     }

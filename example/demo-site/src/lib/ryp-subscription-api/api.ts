@@ -260,7 +260,8 @@ export const GetLinkedExternalAccounts200ResponseInnerSettingsEnum = {
     FungibleTokenAnnouncements: 'FUNGIBLE_TOKEN_ANNOUNCEMENTS',
     RichFungibleTokenAnnouncements: 'RICH_FUNGIBLE_TOKEN_ANNOUNCEMENTS',
     StakepoolAnnouncements: 'STAKEPOOL_ANNOUNCEMENTS',
-    DrepAnnouncements: 'DREP_ANNOUNCEMENTS'
+    DrepAnnouncements: 'DREP_ANNOUNCEMENTS',
+    DefaultForNotifications: 'DEFAULT_FOR_NOTIFICATIONS'
 } as const;
 
 export type GetLinkedExternalAccounts200ResponseInnerSettingsEnum = typeof GetLinkedExternalAccounts200ResponseInnerSettingsEnum[keyof typeof GetLinkedExternalAccounts200ResponseInnerSettingsEnum];
@@ -563,7 +564,8 @@ export const LinkExternalAccount200ResponseSettingsEnum = {
     FungibleTokenAnnouncements: 'FUNGIBLE_TOKEN_ANNOUNCEMENTS',
     RichFungibleTokenAnnouncements: 'RICH_FUNGIBLE_TOKEN_ANNOUNCEMENTS',
     StakepoolAnnouncements: 'STAKEPOOL_ANNOUNCEMENTS',
-    DrepAnnouncements: 'DREP_ANNOUNCEMENTS'
+    DrepAnnouncements: 'DREP_ANNOUNCEMENTS',
+    DefaultForNotifications: 'DEFAULT_FOR_NOTIFICATIONS'
 } as const;
 
 export type LinkExternalAccount200ResponseSettingsEnum = typeof LinkExternalAccount200ResponseSettingsEnum[keyof typeof LinkExternalAccount200ResponseSettingsEnum];
@@ -680,6 +682,37 @@ export type ListProjects200ResponseCategoryEnum = typeof ListProjects200Response
 /**
  * 
  * @export
+ * @interface ProjectNotificationSetting
+ */
+export interface ProjectNotificationSetting {
+    /**
+     * 
+     * @type {number}
+     * @memberof ProjectNotificationSetting
+     */
+    'id'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof ProjectNotificationSetting
+     */
+    'projectId': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof ProjectNotificationSetting
+     */
+    'externalAccountLinkId': number;
+    /**
+     * 
+     * @type {string}
+     * @memberof ProjectNotificationSetting
+     */
+    'createTime'?: string;
+}
+/**
+ * 
+ * @export
  * @interface Setting
  */
 export interface Setting {
@@ -742,7 +775,8 @@ export const UpdateLinkedExternalAccountRequestSettingsEnum = {
     FungibleTokenAnnouncements: 'FUNGIBLE_TOKEN_ANNOUNCEMENTS',
     RichFungibleTokenAnnouncements: 'RICH_FUNGIBLE_TOKEN_ANNOUNCEMENTS',
     StakepoolAnnouncements: 'STAKEPOOL_ANNOUNCEMENTS',
-    DrepAnnouncements: 'DREP_ANNOUNCEMENTS'
+    DrepAnnouncements: 'DREP_ANNOUNCEMENTS',
+    DefaultForNotifications: 'DEFAULT_FOR_NOTIFICATIONS'
 } as const;
 
 export type UpdateLinkedExternalAccountRequestSettingsEnum = typeof UpdateLinkedExternalAccountRequestSettingsEnum[keyof typeof UpdateLinkedExternalAccountRequestSettingsEnum];
@@ -1244,6 +1278,44 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
             };
         },
         /**
+         * Get the current notification settings for this account on this project.
+         * @summary Get project notification settings
+         * @param {number} accountId The numeric ID of an account
+         * @param {number} projectId The numeric ID of a Project
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getNotificationsSettingsForAccountAndProject: async (accountId: number, projectId: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'accountId' is not null or undefined
+            assertParamExists('getNotificationsSettingsForAccountAndProject', 'accountId', accountId)
+            // verify required parameter 'projectId' is not null or undefined
+            assertParamExists('getNotificationsSettingsForAccountAndProject', 'projectId', projectId)
+            const localVarPath = `/accounts/{accountId}/projects/{projectId}/notifications`
+                .replace(`{${"accountId"}}`, encodeURIComponent(String(accountId)))
+                .replace(`{${"projectId"}}`, encodeURIComponent(String(projectId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
          * 
          * @summary Get a specific project by project ID
          * @param {number} projectId The numeric ID of a Project
@@ -1662,6 +1734,50 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
             };
         },
         /**
+         * Update the notification settings for this account on this project. Will remove any invalid settings, like notification settings for non-linked external accounts or external accounts that cannot receive notifications.
+         * @summary Update the notification settings
+         * @param {number} accountId The numeric ID of an account
+         * @param {number} projectId The numeric ID of a Project
+         * @param {Array<ProjectNotificationSetting>} projectNotificationSetting 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateNotificationsSettingsForAccountAndProject: async (accountId: number, projectId: number, projectNotificationSetting: Array<ProjectNotificationSetting>, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'accountId' is not null or undefined
+            assertParamExists('updateNotificationsSettingsForAccountAndProject', 'accountId', accountId)
+            // verify required parameter 'projectId' is not null or undefined
+            assertParamExists('updateNotificationsSettingsForAccountAndProject', 'projectId', projectId)
+            // verify required parameter 'projectNotificationSetting' is not null or undefined
+            assertParamExists('updateNotificationsSettingsForAccountAndProject', 'projectNotificationSetting', projectNotificationSetting)
+            const localVarPath = `/accounts/{accountId}/projects/{projectId}/notifications`
+                .replace(`{${"accountId"}}`, encodeURIComponent(String(accountId)))
+                .replace(`{${"projectId"}}`, encodeURIComponent(String(projectId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(projectNotificationSetting, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
          * 
          * @summary Update a specific project by project ID
          * @param {number} projectId The numeric ID of a Project
@@ -1857,6 +1973,20 @@ export const DefaultApiFp = function(configuration?: Configuration) {
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
+         * Get the current notification settings for this account on this project.
+         * @summary Get project notification settings
+         * @param {number} accountId The numeric ID of an account
+         * @param {number} projectId The numeric ID of a Project
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getNotificationsSettingsForAccountAndProject(accountId: number, projectId: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ProjectNotificationSetting>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getNotificationsSettingsForAccountAndProject(accountId, projectId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DefaultApi.getNotificationsSettingsForAccountAndProject']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
          * 
          * @summary Get a specific project by project ID
          * @param {number} projectId The numeric ID of a Project
@@ -2009,6 +2139,21 @@ export const DefaultApiFp = function(configuration?: Configuration) {
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
+         * Update the notification settings for this account on this project. Will remove any invalid settings, like notification settings for non-linked external accounts or external accounts that cannot receive notifications.
+         * @summary Update the notification settings
+         * @param {number} accountId The numeric ID of an account
+         * @param {number} projectId The numeric ID of a Project
+         * @param {Array<ProjectNotificationSetting>} projectNotificationSetting 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async updateNotificationsSettingsForAccountAndProject(accountId: number, projectId: number, projectNotificationSetting: Array<ProjectNotificationSetting>, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ProjectNotificationSetting>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.updateNotificationsSettingsForAccountAndProject(accountId, projectId, projectNotificationSetting, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DefaultApi.updateNotificationsSettingsForAccountAndProject']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
          * 
          * @summary Update a specific project by project ID
          * @param {number} projectId The numeric ID of a Project
@@ -2147,6 +2292,17 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
             return localVarFp.getLinkedExternalAccounts(accountId, options).then((request) => request(axios, basePath));
         },
         /**
+         * Get the current notification settings for this account on this project.
+         * @summary Get project notification settings
+         * @param {number} accountId The numeric ID of an account
+         * @param {number} projectId The numeric ID of a Project
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getNotificationsSettingsForAccountAndProject(accountId: number, projectId: number, options?: any): AxiosPromise<Array<ProjectNotificationSetting>> {
+            return localVarFp.getNotificationsSettingsForAccountAndProject(accountId, projectId, options).then((request) => request(axios, basePath));
+        },
+        /**
          * 
          * @summary Get a specific project by project ID
          * @param {number} projectId The numeric ID of a Project
@@ -2264,6 +2420,18 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
          */
         updateLinkedExternalAccount(accountId: number, externalAccountId: number, updateLinkedExternalAccountRequest: UpdateLinkedExternalAccountRequest, options?: any): AxiosPromise<LinkExternalAccount200Response> {
             return localVarFp.updateLinkedExternalAccount(accountId, externalAccountId, updateLinkedExternalAccountRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Update the notification settings for this account on this project. Will remove any invalid settings, like notification settings for non-linked external accounts or external accounts that cannot receive notifications.
+         * @summary Update the notification settings
+         * @param {number} accountId The numeric ID of an account
+         * @param {number} projectId The numeric ID of a Project
+         * @param {Array<ProjectNotificationSetting>} projectNotificationSetting 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateNotificationsSettingsForAccountAndProject(accountId: number, projectId: number, projectNotificationSetting: Array<ProjectNotificationSetting>, options?: any): AxiosPromise<Array<ProjectNotificationSetting>> {
+            return localVarFp.updateNotificationsSettingsForAccountAndProject(accountId, projectId, projectNotificationSetting, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -2423,6 +2591,19 @@ export class DefaultApi extends BaseAPI {
     }
 
     /**
+     * Get the current notification settings for this account on this project.
+     * @summary Get project notification settings
+     * @param {number} accountId The numeric ID of an account
+     * @param {number} projectId The numeric ID of a Project
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DefaultApi
+     */
+    public getNotificationsSettingsForAccountAndProject(accountId: number, projectId: number, options?: RawAxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).getNotificationsSettingsForAccountAndProject(accountId, projectId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
      * 
      * @summary Get a specific project by project ID
      * @param {number} projectId The numeric ID of a Project
@@ -2561,6 +2742,20 @@ export class DefaultApi extends BaseAPI {
      */
     public updateLinkedExternalAccount(accountId: number, externalAccountId: number, updateLinkedExternalAccountRequest: UpdateLinkedExternalAccountRequest, options?: RawAxiosRequestConfig) {
         return DefaultApiFp(this.configuration).updateLinkedExternalAccount(accountId, externalAccountId, updateLinkedExternalAccountRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Update the notification settings for this account on this project. Will remove any invalid settings, like notification settings for non-linked external accounts or external accounts that cannot receive notifications.
+     * @summary Update the notification settings
+     * @param {number} accountId The numeric ID of an account
+     * @param {number} projectId The numeric ID of a Project
+     * @param {Array<ProjectNotificationSetting>} projectNotificationSetting 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DefaultApi
+     */
+    public updateNotificationsSettingsForAccountAndProject(accountId: number, projectId: number, projectNotificationSetting: Array<ProjectNotificationSetting>, options?: RawAxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).updateNotificationsSettingsForAccountAndProject(accountId, projectId, projectNotificationSetting, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

@@ -107,5 +107,14 @@
         "nicoleBio": "One solution ahead of whatever problem you may need help with.",
         "projectManager": "Project Manager",
         "founder": "Founder"
+    },
+    "types": {
+        "discord": "Discord",
+        "twitter": "Twitter",
+        "telegram": "Telegram",
+        "sms": "Text message",
+        "pushapi": "Browser Notifications",
+        "cardano": "Cardano",
+        "none": "None"
     }
 }

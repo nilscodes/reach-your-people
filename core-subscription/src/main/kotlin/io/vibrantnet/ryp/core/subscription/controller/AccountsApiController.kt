@@ -1,10 +1,7 @@
 package io.vibrantnet.ryp.core.subscription.controller
 
 import io.ryp.shared.model.LinkedExternalAccountPartialDto
-import io.vibrantnet.ryp.core.subscription.model.AccountDto
-import io.vibrantnet.ryp.core.subscription.model.AccountPartialDto
-import io.vibrantnet.ryp.core.subscription.model.NewSubscriptionDto
-import io.vibrantnet.ryp.core.subscription.model.SettingDto
+import io.vibrantnet.ryp.core.subscription.model.*
 import io.vibrantnet.ryp.core.subscription.service.AccountsApiService
 import io.vibrantnet.ryp.core.subscription.service.ProjectsApiService
 import jakarta.validation.Valid
@@ -187,5 +184,30 @@ class AccountsApiController(
         @PathVariable("accountId") accountId: Long,
         @PathVariable("settingName") settingName: String,
     ) = accountService.deleteAccountSetting(accountId, settingName)
+
+    @RequestMapping(
+        method = [RequestMethod.GET],
+        value = ["/accounts/{accountId}/projects/{projectId}/notifications"],
+        produces = ["application/json"]
+    )
+    @ResponseStatus(HttpStatus.OK)
+    fun getNotificationsSettingsForAccountAndProject(
+        @PathVariable("accountId") accountId: Long,
+        @PathVariable("projectId") projectId: Long,
+    ) = accountService.getNotificationsSettingsForAccountAndProject(accountId, projectId)
+
+    @RequestMapping(
+        method = [RequestMethod.PUT],
+        value = ["/accounts/{accountId}/projects/{projectId}/notifications"],
+        produces = ["application/json"],
+        consumes = ["application/json"]
+    )
+    @ResponseStatus(HttpStatus.OK)
+    fun updateNotificationsSettingsForAccountAndProject(
+        @PathVariable("accountId") accountId: Long,
+        @PathVariable("projectId") projectId: Long,
+        @Valid @RequestBody projectNotificationSettings: List<ProjectNotificationSettingDto>
+    ) = accountService.updateNotificationsSettingsForAccountAndProject(accountId, projectId, projectNotificationSettings)
+
 
 }

@@ -41,6 +41,13 @@
             "label": "Muted"
         }
     },
+    "projectNotificationSettings": {
+        "buttonText": "Notification Settings",
+        "label": "Project Notification Settings",
+        "default": "Default ({{defaultNotificationAccount}})"
+    },
     "addToFavorites": "Add to favorites",
-    "removeFromFavorites": "Remove from favorites"
+    "removeFromFavorites": "Remove from favorites",
+    "verified": "Verified",
+    "notVerified": "Not verified"
 }

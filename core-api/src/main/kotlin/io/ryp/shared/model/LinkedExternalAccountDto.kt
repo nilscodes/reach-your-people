@@ -41,7 +41,8 @@ enum class ExternalAccountSetting {
     FUNGIBLE_TOKEN_ANNOUNCEMENTS,
     RICH_FUNGIBLE_TOKEN_ANNOUNCEMENTS,
     STAKEPOOL_ANNOUNCEMENTS,
-    DREP_ANNOUNCEMENTS
+    DREP_ANNOUNCEMENTS,
+    DEFAULT_FOR_NOTIFICATIONS,
 }
 
 data class LinkedExternalAccountPartialDto @JsonCreator constructor(
