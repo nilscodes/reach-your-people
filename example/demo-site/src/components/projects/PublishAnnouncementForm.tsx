@@ -59,7 +59,7 @@ export default function PublishAnnouncementForm({ project, onSubmit }: Announcem
     setValue('policies', policies);
   }, [policies, setValue]);
 
-  const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>, onChange: (...event: any[]) => void) => {
+  const handleOnChange = (event: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>, onChange: (...event: any[]) => void) => {
     if (event.target.name === 'title') {
       setTitle(event.target.value);
       setMarkdown(`# ${event.target.value}\n\n${content}`);
@@ -115,11 +115,19 @@ export default function PublishAnnouncementForm({ project, onSubmit }: Announcem
             <FormControl id="content" isRequired isInvalid={!!errors.content} w={{ base: '100%', md: '50%' }}>
               <FormLabel>{t('publish.form.contentWithMarkdown')}</FormLabel>
               <Stack w="100%">
-                <Textarea
-                  maxW={{ md: '100%' }}
-                  rows={15}
-                  resize="vertical"
-                  {...register('content', { required: true })}
+                <Controller
+                  name="content"
+                  control={control}
+                  defaultValue={content}
+                  rules={{ required: true }}
+                  render={({ field }) => (
+                    <Textarea
+                      maxW={{ md: '100%' }}
+                      rows={15}
+                      resize="vertical"
+                      {...field}
+                      onChange={(event) => handleOnChange(event, field.onChange)}
+                    />)}
                 />
                 <FormErrorMessage>{errors.content && t('publish.form.contentError')}</FormErrorMessage>
               </Stack>
