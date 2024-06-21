@@ -13,13 +13,14 @@ import { SubscriptionsContext } from '@/contexts/SubscriptionsProvider';
 import useTranslation from 'next-translate/useTranslation';
 import { useRouter } from 'next/router';
 import { categories } from './_data'
-import { set } from 'react-hook-form';
 
 type SubscriptionsDashboardProps = {
   account: Account | null;
   title: string;
   all: boolean;
 };
+
+export type VerifiedFilterValue = 'verified' | 'notVerified' | 'verifiedBoth';
 
 const categoryFromPath = (path: string) => {
   const category = path.split('/').pop();
@@ -28,6 +29,16 @@ const categoryFromPath = (path: string) => {
   }
   const selected = categories.find((cat) => cat.type === category)?.category || ProjectCategory.DeFi;
   return [selected];
+}
+
+const matchesVerifiedStatus = (project: Project, verifiedFilterValue: VerifiedFilterValue) => {
+  if (verifiedFilterValue === 'verifiedBoth') {
+    return true;
+  }
+  if (verifiedFilterValue === 'verified') {
+    return project.manuallyVerified !== null;
+  }
+  return project.manuallyVerified === null;
 }
 
 export const SubscriptionsDashboard = (props: SubscriptionsDashboardProps) => {
@@ -40,6 +51,7 @@ export const SubscriptionsDashboard = (props: SubscriptionsDashboardProps) => {
   const [searchTerm, setSearchTerm] = useState('');
   const router = useRouter();
   const [typeFilterValue, setTypeFilterValue] = useState<ProjectCategory[]>(categoryFromPath(router.query.category as string));
+  const [verifiedFilterValue, setVerifiedFilterValue] = useState<VerifiedFilterValue>('verifiedBoth');
   const [filteredProjects, setFilteredProjects] = useState<Project[]>([]);
   const { t } = useTranslation('projects');
   const { t: tc } = useTranslation('common');
@@ -73,12 +85,13 @@ export const SubscriptionsDashboard = (props: SubscriptionsDashboardProps) => {
     || item.url?.toLowerCase().includes(searchTerm)
     || item.category.toLowerCase().includes(searchTerm)
     || item.tags?.some((tag) => tag.toLowerCase().includes(searchTerm)))
-    && (typeFilterValue.length === 0 || typeFilterValue.includes(item.category))));
+    && (typeFilterValue.length === 0 || typeFilterValue.includes(item.category)))
+    && matchesVerifiedStatus(item, verifiedFilterValue));
     setFilteredProjects(filtered);
     if (projects.length > 0) { // Only mark loading finished once we have projects and have filtered them once
       setIsProjectsLoading(false);
     }
-  }, [typeFilterValue, searchTerm, projects]);
+  }, [typeFilterValue, searchTerm, projects, verifiedFilterValue]);
 
   const filterData = {
     defaultValue: typeFilterValue,
@@ -106,7 +119,17 @@ export const SubscriptionsDashboard = (props: SubscriptionsDashboardProps) => {
   }, [api, account]);
 
   return (<StandardContentWithHeader
-    header={<SubscriptionsHeader title={t('allProjects')} currentType={isListView ? ProjectViewType.list : ProjectViewType.card} onChangeType={onChangeType} searchTerm={searchTerm} onSearch={onSearch} filterData={filterData} onChangeFilter={onChangeFilter} />}
+    header={<SubscriptionsHeader
+      title={t('allProjects')}
+      currentType={isListView ? ProjectViewType.list : ProjectViewType.card}
+      onChangeType={onChangeType}
+      searchTerm={searchTerm}
+      onSearch={onSearch}
+      filterData={filterData}
+      onChangeFilter={onChangeFilter}
+      verifiedFilterValue={verifiedFilterValue}
+      onChangeVerifiedFilter={(value) => setVerifiedFilterValue(value)}
+    />}
     px="0">
       <SubscriptionsContext.Provider value={{ subscriptions, setSubscriptions }}>
         {isListView && <SubscriptionsListView account={account} projects={filteredProjects} subscriptions={subscriptions} isProjectsLoading={isProjectsLoading} />}

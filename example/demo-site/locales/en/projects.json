@@ -48,6 +48,8 @@
     },
     "addToFavorites": "Add to favorites",
     "removeFromFavorites": "Remove from favorites",
+    "verificationStatus": "Status",
     "verified": "Verified",
-    "notVerified": "Not verified"
+    "notVerified": "Not verified",
+    "verifiedBoth": "Both"
 }

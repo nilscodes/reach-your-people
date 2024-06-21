@@ -31,7 +31,7 @@ export const FilterPopoverButton = (props: FilterPopoverButtonProps) => {
         as="button"
         fontSize="sm"
         borderWidth="1px"
-        zIndex="11"
+        zIndex="2"
         rounded="lg"
         paddingStart="3"
         paddingEnd="2"
