@@ -9,6 +9,7 @@ export type Policy = {
 export type Project = {
     id: number;
     name: string;
+    description: string;
     category: ProjectCategory;
     logo: string;
     url: string;

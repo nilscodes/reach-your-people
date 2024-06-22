@@ -48,8 +48,16 @@
     },
     "addToFavorites": "Add to favorites",
     "removeFromFavorites": "Remove from favorites",
+    "favorite": "Favorite",
     "verificationStatus": "Status",
     "verified": "Verified",
     "notVerified": "Not verified",
-    "verifiedBoth": "Both"
+    "verifiedBoth": "Both",
+    "projectLogoAlt": "Project logo for {{projectName}}",
+    "projectDetailsLink": "Details",
+    "projectDetails": "Project information",
+    "back": "Go back",
+    "projectPolicies": "Cardano token policies",
+    "copyPolicyId": "Copy policy ID",
+    "policyCopied": "Policy ID for \"{{policyName}}\" copied to clipboard"
 }

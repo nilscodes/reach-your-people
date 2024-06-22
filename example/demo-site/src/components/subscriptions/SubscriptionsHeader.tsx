@@ -1,11 +1,8 @@
 import {
-  Box, Button, Container, HStack, Icon, IconButton, Input, InputGroup, InputLeftElement, InputRightAddon, InputRightElement, Stack, Text, useColorModeValue as mode,
+  Box, Button, Container, HStack, Icon, IconButton, Input, InputGroup, InputLeftElement, InputRightElement, Stack, Text, useColorModeValue as mode,
 } from '@chakra-ui/react';
 import { FaArrowLeft, FaListUl, FaThLarge } from 'react-icons/fa';
-import {
-  FiDelete,
-  FiSearch,
-} from 'react-icons/fi';
+import { FiSearch } from 'react-icons/fi';
 import { RadioIconButton, RadioIconButtonGroup } from '../RadioIconButtonGroup';
 import ProjectViewType from '../../lib/types/ProjectViewType';
 import CheckboxFilterPopover, { FilterData } from '../filters/CheckboxFilterPopover';
@@ -13,19 +10,7 @@ import NextLink from '../NextLink';
 import useTranslation from 'next-translate/useTranslation';
 import { MdClear } from 'react-icons/md';
 import { VerifiedFilterPopover } from '../filters/VerifiedFilterPopover';
-import { VerifiedFilterValue } from './SubscriptionsDashboard';
-
-export type SubscriptionsHeaderProps = {
-  title: string;
-  currentType: ProjectViewType;
-  onChangeType(val: ProjectViewType): void;
-  onSearch(val: string): void;
-  searchTerm?: string;
-  filterData: FilterData;
-  verifiedFilterValue: VerifiedFilterValue;
-  onChangeFilter(value: string[]): void;
-  onChangeVerifiedFilter(value: VerifiedFilterValue): void;
-};
+import { SubscriptionsHeaderProps } from './types';
 
 export default function SubscriptionsHeader(props: SubscriptionsHeaderProps) {
   const {

@@ -1,4 +1,4 @@
-import { Box, Button, Container, Stack, VStack } from '@chakra-ui/react'
+import { Button, Container, Stack, VStack } from '@chakra-ui/react'
 import { Account } from '../../lib/ryp-subscription-api';
 import ProjectTypeSelection from './ProjectTypeSelection';
 import { useState } from 'react';
@@ -10,6 +10,7 @@ import { useRouter } from 'next/navigation';
 import useTranslation from 'next-translate/useTranslation';
 import { TokenPolicy } from '@vibrantnet/core';
 import { nanoid } from 'nanoid';
+import StandardContentWithHeader from '../StandardContentWithHeader';
 
 type NewProjectProps = {
     account: Account;
@@ -57,19 +58,15 @@ export default function NewProject({ account }: NewProjectProps) {
     setProjectType(type);
   }
 
-  return (
-    <Box
-        maxW="7xl"
-        mx="auto"
-        px={{ base: '4', md: '8', lg: '12' }}
-        py={{ base: '6', md: '8', lg: '12' }}
-    >
-      <ProjectsHeader
+  return (<StandardContentWithHeader
+    header={<ProjectsHeader
             backButtonLink='/publish'
             backButtonText={t('backToProjectList')}
             title={t('createNewProjectTitle')}
             description={t('createNewProjectDescription')}
-        />
+        />}
+        px="0"
+      >
       <Container py={{ base: '4', md: '8' }}>
         <VStack spacing="0">
           <Stack spacing="4" direction={{ base: 'row', md: 'column' }} minW="3xl">
@@ -81,6 +78,6 @@ export default function NewProject({ account }: NewProjectProps) {
           </Stack>
         </VStack>
       </Container>
-    </Box>
+    </StandardContentWithHeader>
   )
 }

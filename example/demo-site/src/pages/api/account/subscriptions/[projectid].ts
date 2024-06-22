@@ -16,9 +16,13 @@ export default async function handler(
   
   if (session?.userId) {
     const accountId = session.userId;
-    if (req.method === 'POST') {
+    const projectId = Number(req.query.projectid);
+    if (req.method === 'GET') {
+      const response = await coreSubscriptionApi.getAllSubscriptionsForAccount(accountId);
+      const subscriptionForProject = response.data.find(subscription => subscription.projectId === projectId);
+      res.status(200).json(subscriptionForProject);
+    } else if (req.method === 'POST') {
       const subscriptionStatus = req.body.status as SubscriptionStatus;
-      const projectId = Number(req.query.projectid);
       if (subscriptionStatus === SubscriptionStatus.Default) {
         const response = await coreSubscriptionApi.unsubscribeAccountFromProject(accountId, projectId);
         res.status(response.status).end();
