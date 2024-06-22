@@ -8,19 +8,11 @@ import ProjectViewType from '../../lib/types/ProjectViewType';
 import ProjectCategory, { ProjectCategoryNames } from '../../lib/types/ProjectCategory';
 import { Project } from '@/lib/types/Project';
 import { Subscription } from '@/lib/types/Subscription';
-import { Account } from '../../lib/ryp-subscription-api';
 import { SubscriptionsContext } from '@/contexts/SubscriptionsProvider';
 import useTranslation from 'next-translate/useTranslation';
 import { useRouter } from 'next/router';
 import { categories } from './_data'
-
-type SubscriptionsDashboardProps = {
-  account: Account | null;
-  title: string;
-  all: boolean;
-};
-
-export type VerifiedFilterValue = 'verified' | 'notVerified' | 'verifiedBoth';
+import { SubscriptionsDashboardProps, VerifiedFilterValue } from './types';
 
 const categoryFromPath = (path: string) => {
   const category = path.split('/').pop();
@@ -50,6 +42,7 @@ export const SubscriptionsDashboard = (props: SubscriptionsDashboardProps) => {
   const [isListView, setIsListView] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const router = useRouter();
+  const currentCategory = router.query.category as string;
   const [typeFilterValue, setTypeFilterValue] = useState<ProjectCategory[]>(categoryFromPath(router.query.category as string));
   const [verifiedFilterValue, setVerifiedFilterValue] = useState<VerifiedFilterValue>('verifiedBoth');
   const [filteredProjects, setFilteredProjects] = useState<Project[]>([]);
@@ -132,8 +125,8 @@ export const SubscriptionsDashboard = (props: SubscriptionsDashboardProps) => {
     />}
     px="0">
       <SubscriptionsContext.Provider value={{ subscriptions, setSubscriptions }}>
-        {isListView && <SubscriptionsListView account={account} projects={filteredProjects} subscriptions={subscriptions} isProjectsLoading={isProjectsLoading} />}
-        {!isListView && <SubscriptionsGridView account={account} projects={filteredProjects} subscriptions={subscriptions} isProjectsLoading={isProjectsLoading} />}
+        {isListView && <SubscriptionsListView account={account} projects={filteredProjects} subscriptions={subscriptions} isProjectsLoading={isProjectsLoading} currentCategory={currentCategory} />}
+        {!isListView && <SubscriptionsGridView account={account} projects={filteredProjects} subscriptions={subscriptions} isProjectsLoading={isProjectsLoading} currentCategory={currentCategory} />}
       </SubscriptionsContext.Provider>
     </StandardContentWithHeader>);
 };

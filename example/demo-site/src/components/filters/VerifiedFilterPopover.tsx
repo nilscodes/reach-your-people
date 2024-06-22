@@ -3,9 +3,9 @@ import useFilterState from "./useFilterState";
 import { FilterPopoverButton, FilterPopoverContent } from "./FilterPopover";
 import { VerifiedPicker } from "./VerifiedPicker";
 import useTranslation from "next-translate/useTranslation";
-import { VerifiedFilterValue } from "../subscriptions/SubscriptionsDashboard";
+import { VerifiedFilterValue } from "../subscriptions/types";
 
-export const verifiedFilter = {
+const verifiedFilter = {
   defaultValue: 'verified',
   options: [
     { label: 'verified', value: 'verified' },

@@ -3,7 +3,6 @@ import {
   HStack,
   Link, Skeleton, Table, Tbody, Td, Text, Th, Thead, Tr, VStack, useBreakpointValue,
 } from '@chakra-ui/react';
-import { SubscriptionsViewProps } from './SubscriptionsGridView';
 import ProjectLogo from '../projectcard/ProjectLogo';
 import ProjectTag from '../projectcard/ProjectTag';
 import VerifiedIcon from '../projectcard/VerifiedIcon';
@@ -11,6 +10,8 @@ import SubscriptionActions from './SubscriptionActions';
 import FavoriteButton from './FavoriteButton';
 import useTranslation from 'next-translate/useTranslation';
 import { makeCdnUrl } from '@/lib/cdn';
+import NextLink from '../NextLink';
+import { SubscriptionsViewProps } from './types';
 
 export default function SubscriptionsListView(props: SubscriptionsViewProps) {
   const {
@@ -18,6 +19,7 @@ export default function SubscriptionsListView(props: SubscriptionsViewProps) {
     projects,
     subscriptions,
     isProjectsLoading,
+    currentCategory,
     ...rest
   } = props;
   const colSpan = useBreakpointValue({ base: 1, md: 3, lg: 4 });
@@ -55,7 +57,7 @@ export default function SubscriptionsListView(props: SubscriptionsViewProps) {
                   hideVerified
                 />
                 <VerifiedIcon isVerified={project.manuallyVerified !== null} fontSize="lg" />
-                <Text>{project.name}</Text>
+                <NextLink href={`/projects/${project.id}?from=${currentCategory}`}>{project.name}</NextLink>
               </HStack>
               <Container display={{ base: 'block', md: 'none' }} px="0">
                 <SubscriptionActions account={account} project={project} subscription={subscription} />

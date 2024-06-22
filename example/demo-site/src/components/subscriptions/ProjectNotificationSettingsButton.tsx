@@ -6,7 +6,8 @@ import {
   Box,
   Checkbox,
   HStack,
-  Text
+  Text,
+  Button
 } from '@chakra-ui/react';
 import { ChangeEvent, forwardRef, useState } from 'react';
 import useTranslation from 'next-translate/useTranslation';
@@ -18,11 +19,13 @@ import { sortLinkedExternalAccounts } from '../LinkedAccounts';
 
 interface ProjectNotificationSettingsButtonProps extends ButtonProps {
   projectId: number;
+  fullButton?: boolean;
 }
 
 type ButtonPopoverTriggerProps = ButtonProps & {
   icon: JSX.Element;
   label: string;
+  fullButton?: boolean
 };
 
 type NotificationAccount = {
@@ -32,10 +35,16 @@ type NotificationAccount = {
 };
 
 const ButtonPopoverTrigger = forwardRef(function TriggerRef(props: ButtonPopoverTriggerProps, ref) {
-  const { icon, label, variant, ...rest } = props;
-  return (<Tooltip label={label} aria-label={label} hasArrow >
-    <IconButton icon={icon} {...rest} aria-label={label} variant={variant} ref={ref} />
-  </Tooltip>)
+  const { icon, label, fullButton, ...rest } = props;
+  if (!fullButton) {
+    return (<Tooltip label={label} aria-label={label} hasArrow >
+      <IconButton icon={icon} {...rest} aria-label={label} variant='ghost' ref={ref} />
+    </Tooltip>)
+  } else {
+    return (<Button leftIcon={icon} {...rest} aria-label={label} variant='outline' ref={ref}>
+      {label}
+    </Button>)
+  }
 });
 
 function findProviderByType(type: string) {
@@ -64,7 +73,7 @@ const NO_DEFAULT_PROVIDER = {
   icon: <MdWarning />
 };
 
-export default function ProjectNotificationSettingsButton({ projectId }: ProjectNotificationSettingsButtonProps) {
+export default function ProjectNotificationSettingsButton({ projectId, fullButton }: ProjectNotificationSettingsButtonProps) {
   const [notificationAccounts, setNotificationAccounts] = useState<NotificationAccount[]>([]);
   const [defaultNotificationAccount, setDefaultNotificationAccount] = useState<NotificationAccount>(NO_DEFAULT_PROVIDER);
   const [currentCheckboxValues, setCurrentCheckboxValues] = useState<string[]>([]);
@@ -125,7 +134,7 @@ export default function ProjectNotificationSettingsButton({ projectId }: Project
   return (
     <Popover onOpen={fetchNotificationSettings}>
       <PopoverTrigger>
-        <ButtonPopoverTrigger icon={<MdOutlineEditNotifications />} label={t('projectNotificationSettings.buttonText')} variant='ghost' />
+        <ButtonPopoverTrigger icon={<MdOutlineEditNotifications />} label={t('projectNotificationSettings.buttonText')} fullButton={fullButton} />
       </PopoverTrigger>
       <PopoverContent>
         <PopoverHeader fontWeight="semibold" fontSize="lg" mt="1">{t('projectNotificationSettings.label')}</PopoverHeader>

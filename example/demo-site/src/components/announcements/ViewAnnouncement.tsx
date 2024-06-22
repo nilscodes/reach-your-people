@@ -18,6 +18,7 @@ import { Account, ListProjects200Response } from '@/lib/ryp-subscription-api';
 import { Announcement } from '@/lib/ryp-publishing-api';
 import { components } from '../chakraMarkdownComponents';
 import NextLink from '../NextLink';
+import { makeCdnUrl } from '@/lib/cdn';
 
 type ViewAnnouncementProps = {
   announcement: Announcement;
@@ -55,10 +56,10 @@ export default function ViewAnnouncement({ announcement, project, author }: View
       <Box maxW="3xl" mx="auto">
         <Stack spacing="6">
           {/* <AspectRatio ratio={16 / 9}> */}
-            <NextLink href={`/projects/${project.id}`} display='flex'>
+            <NextLink href={`/projects/${project.id}?from=${announcement.id}`} display='flex'>
               <Image
                 flexGrow={1}
-                src={project.logo}
+                src={makeCdnUrl(project.logo)}
                 objectPosition="center"
                 objectFit="contain"
                 height="10rem"
