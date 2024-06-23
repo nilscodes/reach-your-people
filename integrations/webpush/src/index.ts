@@ -6,17 +6,12 @@ import { pino } from 'pino'
 import amqplib from 'amqplib'
 import { marked } from 'marked';
 import type { Token, Tokens, TokensList } from 'marked';
-import axios from 'axios';
 
 const vapidDetails = {
   subject: process.env.VAPID_SUBJECT!,
   publicKey: process.env.VAPID_PUBLIC_KEY!,
   privateKey: process.env.VAPID_PRIVATE_KEY!
 };
-
-const RYP_SHORT_URL = process.env.RYP_SHORT_URL?.replace(/\/$/, '') || 'https://go.ryp.io';
-const RYP_BASE_URL = process.env.RYP_BASE_URL?.replace(/\/$/, '') || 'https://ryp.io';
-const REDIRECT_SERVICE_URL = process.env.REDIRECT_SERVICE_URL?.replace(/\/$/, '') || 'http://core-redirect:8074';
 
 webpush.setVapidDetails(
   vapidDetails.subject,
@@ -31,7 +26,8 @@ type BasicAnnouncementDto = {
   author: number;
   title: string;
   content: string;
-  link?: string;
+  link: string;
+  externalLink?: string;
 }
 
 type BasicProjectDto = {
@@ -102,11 +98,6 @@ const stripMarkdown = (markdown: string): string => {
   return processTokens(tokens).trim();
 };
 
-const redirectAxios = axios.create({
-  baseURL: REDIRECT_SERVICE_URL,
-  timeout: 1000,
-});
-
 const connectToAmqp = async () => {
   const rabbitPw = process.env.RABBITMQ_PASSWORD as string;
   try {
@@ -117,12 +108,11 @@ const connectToAmqp = async () => {
         const subscription = JSON.parse(Buffer.from(msg.metadata, 'base64').toString());
         try {
           const body = stripMarkdown(msg.announcement.content);
-          const announcementLink = await createShortUrl(true, msg, `announcements/${msg.announcement.id}`)
           const payload = JSON.stringify({
             title: msg.announcement.title,
             body,
             icon: '/logo192.png',
-            url: announcementLink,
+            url: msg.announcement.link,
           });
           const response = await webpush.sendNotification(subscription, payload);
           logger.debug({ msg: 'Notification sent successfully:', response });
@@ -160,26 +150,6 @@ const connectToAmqp = async () => {
   }
 };
 connectToAmqp();
-
-async function createShortUrl(internal: boolean, msg: MessageDto, url: string): Promise<string>{
-  try {
-    const shortenedUrl = (await redirectAxios.post('/urls', {
-      url,
-      type: (internal ? 'RYP' : 'EXTERNAL'),
-      status: 'ACTIVE',
-      projectId: msg.project.id,
-    })).data;
-    return `${RYP_SHORT_URL}/${shortenedUrl.shortcode}`;
-  } catch (e: any) {
-    logger.error({ msg: `Error creating short URL for announcement ${msg.announcement.id}`, error: e });
-    if (internal) {
-      return `${RYP_BASE_URL}/${url}`; // Return the long URL if the short URL could not be created
-    } else {
-      return url; // Return the original URL if short URL could not be created
-    }
-  }
-}
-
 
 // console.log(stripMarkdown(`## Big
 

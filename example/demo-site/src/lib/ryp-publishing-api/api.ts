@@ -150,7 +150,7 @@ export interface BasicAnnouncement {
      * @type {string}
      * @memberof BasicAnnouncement
      */
-    'link'?: string;
+    'externalLink'?: string;
     /**
      * If for a token-based project, the list of policy IDs to publish to.
      * @type {Array<string>}

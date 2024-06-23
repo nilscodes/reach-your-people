@@ -16,6 +16,7 @@ data class Announcement(
     val projectId: Long,
     val announcement: ActivityStream,
     val status: AnnouncementStatus,
+    val shortLink: String,
 
     @CreatedDate
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssZ", timezone = "UTC")

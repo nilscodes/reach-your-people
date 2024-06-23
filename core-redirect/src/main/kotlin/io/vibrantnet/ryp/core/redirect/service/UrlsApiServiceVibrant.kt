@@ -1,7 +1,7 @@
 package io.vibrantnet.ryp.core.redirect.service
 
-import io.vibrantnet.ryp.core.redirect.model.ShortenedUrlDto
-import io.vibrantnet.ryp.core.redirect.model.ShortenedUrlPartialDto
+import io.ryp.shared.model.ShortenedUrlDto
+import io.ryp.shared.model.ShortenedUrlPartialDto
 import io.vibrantnet.ryp.core.redirect.persistence.ShortenedUrlRepository
 import io.vibrantnet.ryp.core.redirect.persistence.newEntity
 import org.springframework.stereotype.Service

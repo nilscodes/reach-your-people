@@ -3,6 +3,7 @@ package io.vibrantnet.ryp.core.publishing.service
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ryp.shared.model.*
+import io.vibrantnet.ryp.core.publishing.CorePublishingConfiguration
 import io.vibrantnet.ryp.core.publishing.model.*
 import io.vibrantnet.ryp.core.publishing.persistence.Announcement
 import io.vibrantnet.ryp.core.publishing.persistence.AnnouncementsRepository
@@ -16,7 +17,6 @@ import reactor.core.publisher.Mono
 import java.util.*
 
 val logger = KotlinLogging.logger {}
-const val RYP_GLOBAL_SITE = "https://ryp.io"
 
 @Service
 class AnnouncementsApiServiceVibrant(
@@ -27,6 +27,8 @@ class AnnouncementsApiServiceVibrant(
     val objectMapper: ObjectMapper,
     val announcementsRepository: AnnouncementsRepository,
     val announcementUpdateService: AnnouncementsUpdateService,
+    val redirectService: RedirectService,
+    val config: CorePublishingConfiguration,
 ) : AnnouncementsApiService {
 
     override fun publishAnnouncementForProject(
@@ -34,29 +36,33 @@ class AnnouncementsApiServiceVibrant(
         announcement: BasicAnnouncementDto
     ): Mono<AnnouncementDto> {
         val linkedAccountsForAuthor = subscriptionService.getLinkedExternalAccounts(announcement.author)
-        val announcementWithId = announcement.toBasicAnnouncementWithIdDto(UUID.randomUUID())
-        val persistedAnnouncement = createAnnouncement(announcementWithId, projectId)
-        return persistedAnnouncement.flatMap { persistedAnn ->
-            subscriptionService.getProject(projectId)
-                .flatMap { project ->
-                    val policiesToPublishTo = project.policies.filter {
-                        announcement.policies?.contains(it.policyId) ?: false
-                    }
-                    // For each policy to publish to, check if any of them are manually verified or CIP-66 and verify the user's right to publish announcements
-                    Flux.fromIterable(policiesToPublishTo)
-                        .concatMap { policy ->
-                            getAllVerificationStatusForAllLinkedAccounts(linkedAccountsForAuthor, policy)
-                        }
-                        .collectList()
-                        .flatMap { verified ->
-                            if (verified.all { it.isPublishingAllowed() }) {
-                                checkVerificationStatusAndPublish(announcementWithId, projectId)
-                            } else {
-                                Mono.error(UserNotAuthorizedToPublishException("User with account ID ${announcement.author} is not authorized to publish announcements for project $projectId"))
+        val announcementId = UUID.randomUUID()
+        return redirectService.createShortUrlWithFallback("announcements/${announcementId}")
+            .flatMap { shortLink ->
+                val announcementWithId = announcement.toBasicAnnouncementWithIdDto(announcementId, shortLink)
+                val persistedAnnouncement = createAnnouncement(announcementWithId, projectId)
+                persistedAnnouncement.flatMap { persistedAnn ->
+                    subscriptionService.getProject(projectId)
+                        .flatMap { project ->
+                            val policiesToPublishTo = project.policies.filter {
+                                announcement.policies?.contains(it.policyId) ?: false
                             }
-                        }
-                }.thenReturn(persistedAnn)
-        }.map { AnnouncementDto(announcementWithId.id, it.projectId, it.announcement, it.status) }
+                            // For each policy to publish to, check if any of them are manually verified or CIP-66 and verify the user's right to publish announcements
+                            Flux.fromIterable(policiesToPublishTo)
+                                .concatMap { policy ->
+                                    getAllVerificationStatusForAllLinkedAccounts(linkedAccountsForAuthor, policy)
+                                }
+                                .collectList()
+                                .flatMap { verified ->
+                                    if (verified.all { it.isPublishingAllowed() }) {
+                                        checkVerificationStatusAndPublish(announcementWithId, projectId)
+                                    } else {
+                                        Mono.error(UserNotAuthorizedToPublishException("User with account ID ${announcement.author} is not authorized to publish announcements for project $projectId"))
+                                    }
+                                }
+                        }.thenReturn(persistedAnn)
+                }.map { AnnouncementDto(announcementWithId.id, it.projectId, it.announcement, it.status) }
+            }
     }
 
     override fun getPublishingPermissionsForAccount(projectId: Long, accountId: Long): Mono<PublishingPermissions> {
@@ -87,22 +93,23 @@ class AnnouncementsApiServiceVibrant(
             announcement.id.toString(),
             projectId,
             ActivityStream(
-                id = "$RYP_GLOBAL_SITE/announcements/${announcement.id}",
+                id = "${config.baseUrl}/announcements/${announcement.id}",
                 actor = Person(
                     name = announcement.author.toString(),
-                    id = "$RYP_GLOBAL_SITE/users/${announcement.author}"
+                    id = "${config.baseUrl}/users/${announcement.author}"
                 ),
                 `object` = Note(
                     content = announcement.content,
                     summary = announcement.title,
-                    url = announcement.link
+                    url = announcement.externalLink
                 ),
                 attributedTo = Organization(
                     name = "RYP Project $projectId",
-                    id = "$RYP_GLOBAL_SITE/projects/$projectId"
+                    id = "${config.baseUrl}/projects/$projectId"
                 )
             ),
             AnnouncementStatus.PENDING,
+            announcement.link,
         )
 
         return announcementsRepository.save(announcementToStore)

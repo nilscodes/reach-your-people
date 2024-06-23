@@ -7,5 +7,7 @@ import org.springframework.boot.context.properties.bind.ConstructorBinding
 data class CorePublishingConfiguration @ConstructorBinding constructor(
     val verifyServiceUrl: String,
     val subscriptionServiceUrl: String,
+    val redirectServiceUrl: String,
+    val baseUrl: String,
 )
 

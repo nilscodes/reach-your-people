@@ -6,5 +6,6 @@ import org.springframework.boot.context.properties.bind.ConstructorBinding
 @ConfigurationProperties(prefix = "io.vibrantnet.ryp")
 data class CoreRedirectConfiguration @ConstructorBinding constructor(
     val baseUrl: String,
+    val shortUrl: String,
 )
 
