@@ -1,9 +1,9 @@
 package io.vibrantnet.ryp.core.redirect.persistence
 
 import com.fasterxml.jackson.annotation.JsonFormat
-import io.vibrantnet.ryp.core.redirect.model.ShortenedUrlDto
-import io.vibrantnet.ryp.core.redirect.model.Status
-import io.vibrantnet.ryp.core.redirect.model.Type
+import io.ryp.shared.model.ShortenedUrlDto
+import io.ryp.shared.model.Status
+import io.ryp.shared.model.Type
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.Id
 import org.springframework.data.annotation.LastModifiedDate

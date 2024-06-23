@@ -1,7 +1,7 @@
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config();
 }
-import { Client, Collection, GatewayIntentBits, Partials } from 'discord.js';
+import { Client, EmbedBuilder, GatewayIntentBits } from 'discord.js';
 import pino from 'pino'
 import amqplib from 'amqplib'
 
@@ -10,6 +10,8 @@ const client = new Client({
 });
 
 const logger = pino({ level: process.env.LOG_LEVEL || 'info' });
+
+const RYP_BASE_URL = process.env.RYP_BASE_URL?.replace(/\/$/, '') || 'https://ryp.io';
 
 client.on('ready', () => {
     logger.info(`RYP bot is running. Logged in as ${client.user?.tag} (${client.user?.id})`);
@@ -22,12 +24,36 @@ type BasicAnnouncementDto = {
   author: number;
   title: string;
   content: string;
-  link?: string;
+  link: string;
+  externalLink?: string;
+}
+
+type BasicProjectDto = {
+  id: number;
+  name: string;
+  url: string;
+  logo: string;
 }
 
 type MessageDto = {
   referenceId: string; // Discord snowflake for the user ID we want to DM
   announcement: BasicAnnouncementDto;
+  project: BasicProjectDto;
+}
+
+type AnnouncementTextMessages = {
+  [key: string]: {
+    [lang: string]: string;
+  };
+};
+
+const announcementTextMessages: AnnouncementTextMessages = {
+  'author': {
+    'en': '{0} via RYP.io'
+  },
+  'link': {
+    'en': 'Link to announcement'
+  }
 }
 
 const connectToAmqp = async () => {
@@ -40,7 +66,22 @@ const connectToAmqp = async () => {
         const user = await client.users.fetch(msg.referenceId);
         if (user) {
           try {
-            await user.send(`**${msg.announcement.title}**\n\n${msg.announcement.content}${msg.announcement.link ? `\n\n<${msg.announcement.link}>` : ''}`);
+            // Make a nice Discord embed
+            const baseEmbed = new EmbedBuilder()
+              .setColor('#FF145F')
+              .setTitle(msg.announcement.title)
+              .setAuthor({
+                name: announcementTextMessages['author']['en'].replace('{0}', msg.project.name),
+                iconURL: `${RYP_BASE_URL}/logo192.png`,
+                url: `${RYP_BASE_URL}/projects/${msg.project.id}`,
+              })
+              .setDescription(msg.announcement.content)
+              .setTimestamp()
+              .setFields([{
+                name: announcementTextMessages['link']['en'],
+                value: msg.announcement.link,
+              }])
+              await user.send({ embeds: [baseEmbed] });
           } catch (e: any) {
             logger.error({ msg: `Error sending message to user with ID ${msg.referenceId}`, error: e });
           }

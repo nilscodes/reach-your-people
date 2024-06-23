@@ -5,14 +5,10 @@ import express from 'express';
 import twilio, { Twilio } from 'twilio';
 import pino from 'pino';
 import amqplib from 'amqplib'
-import axios from 'axios';
 
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
 const verificationServiceId = process.env.TWILIO_VERIFY_SERVICE_SID || '';
-const RYP_SHORT_URL = process.env.RYP_SHORT_URL?.replace(/\/$/, '') || 'https://go.ryp.io';
-const RYP_BASE_URL = process.env.RYP_BASE_URL?.replace(/\/$/, '') || 'https://ryp.io';
-const REDIRECT_SERVICE_URL = process.env.REDIRECT_SERVICE_URL?.replace(/\/$/, '') || 'http://core-redirect:8074';
 const client = twilio(accountSid, authToken);
 const logger = pino({ level: process.env.LOG_LEVEL || 'info' });
 
@@ -68,7 +64,8 @@ type BasicAnnouncementDto = {
   author: number;
   title: string;
   content: string;
-  link?: string;
+  link: string;
+  externalLink?: string;
 }
 
 type BasicProjectDto = {
@@ -104,11 +101,6 @@ const getTextForEvent = (lang: LangKey, event: EventKey) => {
   return announcementTextMessages[event][lang];
 }
 
-const redirectAxios = axios.create({
-  baseURL: REDIRECT_SERVICE_URL,
-  timeout: 1000,
-});
-
 const connectToAmqp = async () => {
   const rabbitPw = process.env.RABBITMQ_PASSWORD as string;
   const rabbitMqPort = +(process.env.RABBITMQ_PORT || 5672);
@@ -119,9 +111,8 @@ const connectToAmqp = async () => {
       consume: async (client: Twilio, msg: MessageDto) => {
         logger.debug({ msg: `Received message with ID ${msg.announcement} for user with phone number ${msg.referenceId}` });
         const shortenedProjectName = msg.project.name.length > 20 ? msg.project.name.substring(0, 20) + '…' : msg.project.name;
-        const rypShortLink = await createShortUrl(msg);
         const announcementTextMessage = getTextForEvent('en', 'newAnnouncement');
-        const announcementText = announcementTextMessage.replace('{0}', shortenedProjectName).replace('{1}', rypShortLink);
+        const announcementText = announcementTextMessage.replace('{0}', shortenedProjectName).replace('{1}', msg.announcement.link);
         try {
             const message = client.messages
                 .create({
@@ -164,18 +155,3 @@ const connectToAmqp = async () => {
 };
 connectToAmqp();
 
-async function createShortUrl(msg: MessageDto) {
-  const rypLink = `announcements/${msg.announcement.id}`;
-  try {
-    const shortenedUrl = (await redirectAxios.post('/urls', {
-      url: rypLink,
-      type: 'RYP',
-      status: 'ACTIVE',
-      projectId: msg.project.id,
-    })).data;
-    return `${RYP_SHORT_URL}/${shortenedUrl.shortcode}`;
-  } catch (e: any) {
-    logger.error({ msg: `Error creating short URL for announcement ${msg.announcement.id}`, error: e });
-    return `${RYP_BASE_URL}/${rypLink}`; // Return the long URL if the short URL could not be created
-  }
-}

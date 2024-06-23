@@ -143,7 +143,7 @@ export default function PublishAnnouncementForm({ project, onSubmit }: Announcem
             <Input
               maxW={{ md: '50%' }}
               defaultValue=''
-              {...register('link')}
+              {...register('externalLink')}
             />
           </FormControl>
 

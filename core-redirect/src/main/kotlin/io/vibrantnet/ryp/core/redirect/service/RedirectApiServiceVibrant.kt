@@ -1,7 +1,7 @@
 package io.vibrantnet.ryp.core.redirect.service
 
+import io.ryp.shared.model.Type
 import io.vibrantnet.ryp.core.redirect.CoreRedirectConfiguration
-import io.vibrantnet.ryp.core.redirect.model.Type
 import io.vibrantnet.ryp.core.redirect.persistence.ShortenedUrl
 import io.vibrantnet.ryp.core.redirect.persistence.ShortenedUrlRepository
 import org.springframework.stereotype.Service
@@ -21,5 +21,9 @@ class RedirectApiServiceVibrant(
     }
 
     fun buildUrl(shortenedUrl: ShortenedUrl) =
-        if (shortenedUrl.type == Type.RYP) "${configuration.baseUrl}/${shortenedUrl.url}" else shortenedUrl.url
+        if (shortenedUrl.type == Type.RYP) {
+            "${configuration.baseUrl}/${shortenedUrl.url}"
+        } else {
+            shortenedUrl.url
+        }
 }

@@ -19,6 +19,8 @@ import { Announcement } from '@/lib/ryp-publishing-api';
 import { components } from '../chakraMarkdownComponents';
 import NextLink from '../NextLink';
 import { makeCdnUrl } from '@/lib/cdn';
+import StandardContentWithHeader from '../StandardContentWithHeader';
+import ProjectsHeader from '../projects/ProjectsHeader';
 
 type ViewAnnouncementProps = {
   announcement: Announcement;
@@ -51,8 +53,14 @@ export default function ViewAnnouncement({ announcement, project, author }: View
   const url = (announcement.announcement as any).object.url;
   const date = (announcement.announcement as any).published;
 
-  return (
-    <Container py={{ base: '16', md: '24' }}>
+  return (<StandardContentWithHeader
+       header={<ProjectsHeader
+          backButtonLink={`/projects/${project.id}?from=${announcement.id}`}
+          backButtonText={t('goToProject')}
+          title={t('viewAnnouncement')}
+       />}
+       px="0">
+    <Container>
       <Box maxW="3xl" mx="auto">
         <Stack spacing="6">
           {/* <AspectRatio ratio={16 / 9}> */}
@@ -99,5 +107,6 @@ export default function ViewAnnouncement({ announcement, project, author }: View
           </HStack>
         </Stack>
       </Box>
-    </Container>);
+    </Container>
+  </StandardContentWithHeader>);
 }

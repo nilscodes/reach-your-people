@@ -1,4 +1,4 @@
-package io.vibrantnet.ryp.core.redirect.model
+package io.ryp.shared.model
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import java.time.OffsetDateTime
@@ -50,4 +50,3 @@ enum class Type {
     RYP,
     EXTERNAL
 }
-

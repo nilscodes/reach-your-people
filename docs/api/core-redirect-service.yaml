@@ -27,7 +27,15 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ShortenedUrl'
-          headers: {}
+          headers:
+            Location:
+              schema:
+                type: string
+              description: The URL under which the shortened URL resource is stored
+            X-Redirect-Location:
+              schema:
+                type: string
+              description: The redirect URL for the shortened URL. This is the actual URL that users can go to to follow the redirect.
       operationId: createShortUrl
       x-stoplight:
         id: l1hww17ose7pc

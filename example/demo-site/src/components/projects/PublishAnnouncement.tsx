@@ -19,7 +19,7 @@ export interface AnnouncementFormData {
   policies: string[];
   title: string;
   content: string;
-  link?: string;
+  externalLink?: string;
 }
 
 export default function PublishAnnouncement({ project }: PublishAnnouncementProps) {
