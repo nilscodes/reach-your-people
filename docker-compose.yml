@@ -46,6 +46,9 @@ services:
     core-points:
         image: registry.gitlab.com/vibrantnet/ryp/core-points:latest
         restart: on-failure
+        environment:
+            - RYP_POSTGRES_URL=jdbc:postgresql://postgres:5432/ryp
+            - RYP_POSTGRES_USER=postgres
         logging:
             driver: "json-file"
             options:
