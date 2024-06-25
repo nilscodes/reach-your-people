@@ -79,6 +79,21 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/ShortenedUrlPartial'
+  '/urls/shortcode/{shortcode}':
+    parameters:
+      - $ref: '#/components/parameters/shortcode'
+    get:
+      summary: Get URL by shortcode
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShortenedUrl'
+      operationId: getUrlByShortcode
+      description: Get a shortened URL and its details by shortcode
   '/urls/projects/{projectId}':
     parameters:
       - $ref: ./common-schemas.yaml#/components/parameters/projectId

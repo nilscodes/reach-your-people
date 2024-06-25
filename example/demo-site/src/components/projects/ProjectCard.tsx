@@ -18,6 +18,7 @@ import { Project } from '@/lib/types/Project'
 import NextLink from '../NextLink'
 import useTranslation from 'next-translate/useTranslation'
 import { makeCdnUrl } from '@/lib/cdn'
+import { MdAnnouncement, MdList } from 'react-icons/md'
     
 interface Props {
   project: Project
@@ -75,8 +76,13 @@ export default function ProjectCard(props: Props) {
       </Stack>
       <Stack align="center">
         <NextLink href={`/publish/${project.id}/publish`} w="100%">
-          <Button variant="outline" width="full">
+          <Button leftIcon={<MdAnnouncement />} variant="outline" width="full">
             {t('publishAnnouncementButton')}
+          </Button>
+        </NextLink>
+        <NextLink href={`/publish/${project.id}/announcements`} w="100%">
+          <Button leftIcon={<MdList />} variant="outline" width="full">
+            {t('viewAnnouncementsButton')}
           </Button>
         </NextLink>
         {/* <NextLink href={`/publish/${project.id}/edit`}

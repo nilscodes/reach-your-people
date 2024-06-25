@@ -44,6 +44,17 @@ type MessageDto = {
   project: BasicProjectDto;
 }
 
+type StatisticsDto = {
+  delivered?: number;
+  failures?: number;
+  views?: number;
+}
+
+type StatisticsUpdateDto = {
+  announcementId: string;
+  statistics: StatisticsDto;
+}
+
 const stripMarkdown = (markdown: string): string => {
   const tokens = marked.lexer(markdown);
 
@@ -98,13 +109,18 @@ const stripMarkdown = (markdown: string): string => {
   return processTokens(tokens).trim();
 };
 
+const sendStatistics = async (channel: amqplib.Channel, queueName: string, statisticsUpdate: StatisticsUpdateDto) => {
+  await channel.assertQueue(queueName);
+  channel.sendToQueue(queueName, Buffer.from(JSON.stringify(statisticsUpdate)));
+};
+
 const connectToAmqp = async () => {
   const rabbitPw = process.env.RABBITMQ_PASSWORD as string;
   try {
     const conn = await amqplib.connect(`amqp://${process.env.RABBITMQ_USER}:${encodeURIComponent(rabbitPw)}@${process.env.RABBITMQ_HOST}`);
     const queue = {
       name: 'pushapi',
-      consume: async (msg: MessageDto) => {
+      consume: async (queueChannel: amqplib.Channel, msg: MessageDto) => {
         const subscription = JSON.parse(Buffer.from(msg.metadata, 'base64').toString());
         try {
           const body = stripMarkdown(msg.announcement.content);
@@ -116,10 +132,23 @@ const connectToAmqp = async () => {
           });
           const response = await webpush.sendNotification(subscription, payload);
           logger.debug({ msg: 'Notification sent successfully:', response });
+          sendStatistics(queueChannel, 'statistics-pushapi', {
+            announcementId: msg.announcement.id,
+            statistics: {
+              delivered: 1,
+            },
+          });
+          return;
         } catch (e: any) {
           // TODO handle 410 error from Google API as subscription is no longer valid
           logger.error({ msg: `Error sending push API message to subscription for user with ID ${msg.referenceId}`, error: e });
         }
+        sendStatistics(queueChannel, 'statistics-pushapi', {
+          announcementId: msg.announcement.id,
+          statistics: {
+            failures: 1,
+          },
+        });
       },
     };
     if (queue.name && queue.consume) {
@@ -130,7 +159,7 @@ const connectToAmqp = async () => {
       queueChannel.prefetch(5);
       queueChannel.consume(queue.name, (msg) => {
         if (msg !== null) {
-          queue.consume(JSON.parse(msg.content.toString()));
+          queue.consume(queueChannel, JSON.parse(msg.content.toString()));
           queueChannel.ack(msg);
         } else {
           logger.error({ msg: `Consumer for queue ${queue.name} cancelled by server` });

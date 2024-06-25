@@ -27,6 +27,16 @@ interface UrlsApiService {
     fun getUrlById(urlId: String): Mono<ShortenedUrlDto>
 
     /**
+     * GET /urls/shortcode/{shortcode} : Get URL by shortcode
+     * Get a shortened URL and its details by shortcode
+     *
+     * @param shortcode The shortcode of the URL to look up (required)
+     * @return OK (status code 200)
+     * @see UrlsApi#getUrlByShortcode
+     */
+    fun getUrlByShortcode(shortcode: String): Mono<ShortenedUrlDto>
+
+    /**
      * GET /urls/projects/{projectId} : Get all URLs for a project
      * Retrieve all active and inactive URLs for a given project
      *

@@ -1,11 +1,11 @@
 package io.vibrantnet.ryp.core.subscription.persistence
 
-import io.vibrantnet.ryp.core.subscription.model.SubscriptionStatus
+import io.ryp.shared.model.SubscriptionStatus
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.CrudRepository
 import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
-import java.util.Optional
+import java.util.*
 
 @Repository
 interface ExternalAccountRepository: CrudRepository<ExternalAccount, Long> {
@@ -33,7 +33,15 @@ interface ExternalAccountRepository: CrudRepository<ExternalAccount, Long> {
 
     @Query(
         """
-SELECT DISTINCT ea.*
+SELECT DISTINCT
+    ea.external_account_id as id,
+    ea.external_reference_id as reference_id,
+    ea.external_reference_name as reference_name,
+    ea.display_name as display_name,
+    ea.registration_time as registration_time,
+    ea.account_type as type,
+    ea.metadata as metadata,
+    lea.account_id as account_id
 FROM "accounts" a
          JOIN "linked_external_accounts" lea
               ON a.account_id = lea.account_id
@@ -58,36 +66,44 @@ WHERE a.account_id IN :accountIds
     )    
         """, nativeQuery = true
     )
-    fun findMessagingExternalAccountsForProjectAndAccounts(projectId: Long, accountIds: List<Int>, nonMessagingTypes: List<String>): List<ExternalAccount>
+    fun findMessagingExternalAccountsForProjectAndAccounts(projectId: Long, accountIds: List<Int>, nonMessagingTypes: List<String>): List<ExternalAccountWithAccountProjection>
 
     @Query(
         """
-SELECT DISTINCT ea.*
+SELECT DISTINCT 
+    ea.external_account_id as id,
+    ea.external_reference_id as reference_id,
+    ea.external_reference_name as reference_name,
+    ea.display_name as display_name,
+    ea.registration_time as registration_time,
+    ea.account_type as type,
+    ea.metadata as metadata,
+    lea.account_id as account_id
 FROM "external_accounts" ea
-WHERE ea.external_account_id IN (SELECT lea.external_account_id
-                                 FROM "linked_external_accounts" lea
-                                 WHERE lea.account_id IN (SELECT s.account_id
-                                                          FROM "subscriptions" s
-                                                          WHERE s.project_id = :projectId
-                                                            AND s.status = :status)
-                                   AND (
-                                     EXISTS (SELECT 1
-                                             FROM "project_notification_settings" pns
-                                             WHERE pns.external_account_link_id = lea.link_id
-                                               AND pns.project_id = :projectId)
-                                         OR (
-                                         NOT EXISTS (SELECT 1
-                                                     FROM "project_notification_settings" pns
-                                                              JOIN linked_external_accounts lea2
-                                                                   on pns.external_account_link_id = lea2.link_id
-                                                     WHERE pns.project_id = :projectId
-                                                       AND lea2.account_id = lea.account_id)
-                                             AND lea.settings & B'0000000000100000' = B'0000000000100000'
-                                         )
-                                     ))
+JOIN "linked_external_accounts" lea
+ON ea.external_account_id = lea.external_account_id
+WHERE lea.account_id IN (SELECT s.account_id
+                         FROM "subscriptions" s
+                         WHERE s.project_id = :projectId
+                           AND s.status = :status)
+  AND (
+    EXISTS (SELECT 1
+            FROM "project_notification_settings" pns
+            WHERE pns.external_account_link_id = lea.link_id
+              AND pns.project_id = :projectId)
+        OR (
+        NOT EXISTS (SELECT 1
+                    FROM "project_notification_settings" pns
+                             JOIN linked_external_accounts lea2
+                                  on pns.external_account_link_id = lea2.link_id
+                    WHERE pns.project_id = :projectId
+                      AND lea2.account_id = lea.account_id)
+            AND lea.settings & B'0000000000100000' = B'0000000000100000'
+        )
+    )
             """, nativeQuery = true)
     fun findExternalAccountsByProjectIdAndSubscriptionStatus(
         @Param("projectId") projectId: Long,
         @Param("status") status: SubscriptionStatus,
-    ): List<ExternalAccount>
+    ): List<ExternalAccountWithAccountProjection>
 }

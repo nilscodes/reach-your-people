@@ -1,7 +1,7 @@
 package io.vibrantnet.ryp.core.subscription.persistence
 
+import io.ryp.shared.model.SubscriptionStatus
 import io.vibrantnet.ryp.core.subscription.model.ProjectSubscriptionDto
-import io.vibrantnet.ryp.core.subscription.model.SubscriptionStatus
 import jakarta.persistence.Column
 import jakarta.persistence.Embeddable
 import jakarta.persistence.EnumType

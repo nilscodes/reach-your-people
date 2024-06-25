@@ -61,7 +61,19 @@ class AnnouncementsApiServiceVibrant(
                                     }
                                 }
                         }.thenReturn(persistedAnn)
-                }.map { AnnouncementDto(announcementWithId.id, it.projectId, it.announcement, it.status) }
+                }.map {
+                    AnnouncementDto(
+                        announcementWithId.id,
+                        it.projectId,
+                        it.announcement,
+                        it.status,
+                        it.shortLink,
+                        it.audience,
+                        it.statistics,
+                        it.createdDate,
+                        it.modifiedDate,
+                    )
+                }
             }
     }
 
@@ -110,6 +122,9 @@ class AnnouncementsApiServiceVibrant(
             ),
             AnnouncementStatus.PENDING,
             announcement.link,
+            Audience(
+                policies = announcement.policies ?: emptyList()
+            )
         )
 
         return announcementsRepository.save(announcementToStore)
@@ -184,9 +199,11 @@ class AnnouncementsApiServiceVibrant(
             }
             redisTemplate.delete("announcements:${announcementJob.announcementId}")
             redisTemplate.delete("announcementsdata:${announcementJob.announcementId}")
-            announcementUpdateService.updateAnnouncementStatus(
+
+            announcementUpdateService.updateAnnouncementStatistics(
                 announcementJob.announcementId.toString(),
-                AnnouncementStatus.PUBLISHED
+                calculateInitialStatistics(recipients),
+                AnnouncementStatus.PUBLISHED,
             )
                 .subscribe()
         } catch (e: Exception) {
@@ -199,6 +216,17 @@ class AnnouncementsApiServiceVibrant(
         }
     }
 
+    private fun calculateInitialStatistics(recipients: List<AnnouncementRecipientDto>) = Statistics(
+        sent = recipients
+            .groupBy { it.type }
+            .mapValues { it.value.size.toLong() },
+        uniqueAccounts = recipients
+            .distinctBy { it.accountId }.size.toLong(),
+        explicitSubscribers = recipients
+            .filter { it.subscriptionStatus == SubscriptionStatus.SUBSCRIBED }
+            .distinctBy { it.accountId }.size.toLong(),
+    )
+
     private fun getBasicProjectDto(announcementJob: AnnouncementJobDto): BasicProjectDto {
         val project = subscriptionService.getProject(announcementJob.projectId)
             .blockOptional()
@@ -206,8 +234,13 @@ class AnnouncementsApiServiceVibrant(
         return BasicProjectDto(project)
     }
 
+    override fun listAnnouncementsForProject(projectId: Long): Flux<AnnouncementDto> {
+        return announcementsRepository.findByProjectId(projectId)
+            .map { it.toDto() }
+    }
+
     override fun getAnnouncementById(announcementId: UUID): Mono<AnnouncementDto> {
         return announcementsRepository.findById(announcementId.toString())
-            .map { AnnouncementDto(UUID.fromString(it.id), it.projectId, it.announcement, it.status) }
+            .map { it.toDto() }
     }
 }

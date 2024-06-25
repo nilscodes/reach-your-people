@@ -41,6 +41,17 @@ type MessageDto = {
   project: BasicProjectDto;
 }
 
+type StatisticsDto = {
+  delivered?: number;
+  failures?: number;
+  views?: number;
+}
+
+type StatisticsUpdateDto = {
+  announcementId: string;
+  statistics: StatisticsDto;
+}
+
 type AnnouncementTextMessages = {
   [key: string]: {
     [lang: string]: string;
@@ -56,38 +67,58 @@ const announcementTextMessages: AnnouncementTextMessages = {
   }
 }
 
+const sendStatistics = async (channel: amqplib.Channel, queueName: string, statisticsUpdate: StatisticsUpdateDto) => {
+  await channel.assertQueue(queueName);
+  channel.sendToQueue(queueName, Buffer.from(JSON.stringify(statisticsUpdate)));
+};
+
 const connectToAmqp = async () => {
   const rabbitPw = process.env.RABBITMQ_PASSWORD as string;
   try {
     const conn = await amqplib.connect(`amqp://${process.env.RABBITMQ_USER}:${encodeURIComponent(rabbitPw)}@${process.env.RABBITMQ_HOST}`);
     const queue = {
       name: 'discord',
-      consume: async (client: Client, msg: MessageDto) => {
-        const user = await client.users.fetch(msg.referenceId);
-        if (user) {
-          try {
-            // Make a nice Discord embed
-            const baseEmbed = new EmbedBuilder()
-              .setColor('#FF145F')
-              .setTitle(msg.announcement.title)
-              .setAuthor({
-                name: announcementTextMessages['author']['en'].replace('{0}', msg.project.name),
-                iconURL: `${RYP_BASE_URL}/logo192.png`,
-                url: `${RYP_BASE_URL}/projects/${msg.project.id}`,
-              })
-              .setDescription(msg.announcement.content)
-              .setTimestamp()
-              .setFields([{
-                name: announcementTextMessages['link']['en'],
-                value: msg.announcement.link,
-              }])
-              await user.send({ embeds: [baseEmbed] });
-          } catch (e: any) {
-            logger.error({ msg: `Error sending message to user with ID ${msg.referenceId}`, error: e });
+      consume: async (queueChannel: amqplib.Channel, client: Client, msg: MessageDto) => {
+        try {
+          const user = await client.users.fetch(msg.referenceId);
+          if (user) {
+            try {
+              // Make a nice Discord embed
+              const baseEmbed = new EmbedBuilder()
+                .setColor('#FF145F')
+                .setTitle(msg.announcement.title)
+                .setAuthor({
+                  name: announcementTextMessages['author']['en'].replace('{0}', msg.project.name),
+                  iconURL: `${RYP_BASE_URL}/logo192.png`,
+                  url: `${RYP_BASE_URL}/projects/${msg.project.id}`,
+                })
+                .setDescription(msg.announcement.content)
+                .setTimestamp()
+                .setFields([{
+                  name: announcementTextMessages['link']['en'],
+                  value: msg.announcement.link,
+                }])
+                await user.send({ embeds: [baseEmbed] });
+                sendStatistics(queueChannel, 'statistics-discord', {
+                  announcementId: msg.announcement.id,
+                  statistics: {
+                    delivered: 1,
+                  },
+                });
+                return
+            } catch (e: any) {
+              logger.error({ msg: `Error sending message to user with ID ${msg.referenceId}`, error: e });
+            }
           }
-        } else {
-          logger.error({ msg: `User with ID ${msg.referenceId} not found` });
+        } catch(e: any) {
+          logger.error({ msg: `User with ID ${msg.referenceId} not found` , error: e });
         }
+        sendStatistics(queueChannel, 'statistics-discord', {
+          announcementId: msg.announcement.id,
+          statistics: {
+            failures: 1,
+          },
+        });
       },
     };
     if (queue.name && queue.consume) {
@@ -96,10 +127,12 @@ const connectToAmqp = async () => {
       await queueChannel.assertQueue(queue.name);
       // Set prefetch to 5 to avoid overloading the bot
       queueChannel.prefetch(5);
-      queueChannel.consume(queue.name, (msg) => {
+      queueChannel.consume(queue.name, async (msg) => {
         if (msg !== null) {
-          queue.consume(client, JSON.parse(msg.content.toString()));
-          queueChannel.ack(msg);
+          queue.consume(queueChannel, client, JSON.parse(msg.content.toString()))
+            .finally(() => {;
+              queueChannel.ack(msg);
+            });
         } else {
           logger.error({ msg: `Consumer for queue ${queue.name} cancelled by server` });
         }

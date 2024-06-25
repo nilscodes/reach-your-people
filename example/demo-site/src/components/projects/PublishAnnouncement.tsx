@@ -1,4 +1,4 @@
-import { Alert, AlertIcon, Box, Container, HStack, Img, Stack, Text, VStack, useToast } from '@chakra-ui/react'
+import { Alert, AlertIcon, Box, Button, Container, HStack, Img, Stack, Text, VStack, useToast } from '@chakra-ui/react'
 import { Account } from '../../lib/ryp-subscription-api';
 import ProjectsHeader from './ProjectsHeader';
 import { useRouter } from 'next/router';
@@ -9,6 +9,8 @@ import useTranslation from 'next-translate/useTranslation';
 import { Project } from '@/lib/types/Project';
 import { makeCdnUrl } from '@/lib/cdn';
 import StandardContentWithHeader from '../StandardContentWithHeader';
+import NextLink from '../NextLink';
+import { MdArrowRight, MdAssessment } from 'react-icons/md';
 
 type PublishAnnouncementProps = {
   account: Account;
@@ -67,8 +69,17 @@ export default function PublishAnnouncement({ project }: PublishAnnouncementProp
           <Stack spacing="4" direction={{ base: 'row', md: 'column' }} w="full">
             {!publishSuccess && <PublishAnnouncementForm project={project} onSubmit={publishAnnouncement} />}
             {publishSuccess && (<Alert status="success">
-              <AlertIcon />
-              {t('publishAnnouncementSuccess')}
+              <Stack spacing="6">
+                <HStack>
+                  <AlertIcon />
+                  <Text>{t('publishAnnouncementSuccess')}</Text>
+                </HStack>
+                <NextLink href={`/publish/${projectId}/announcements`}>
+                  <Button leftIcon={<MdAssessment />} variant="primary">
+                    {t('viewAnnouncementsButton')}
+                  </Button>
+                </NextLink>
+              </Stack>
             </Alert>)}
           </Stack>
         </VStack>

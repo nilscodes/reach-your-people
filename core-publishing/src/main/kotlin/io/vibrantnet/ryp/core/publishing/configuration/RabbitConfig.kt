@@ -24,5 +24,14 @@ class RabbitConfig {
     fun pushApiQueue() = Queue("pushapi")
 
     @Bean
+    fun discordStatisticsQueue() = Queue("statistics-discord")
+
+    @Bean
+    fun smsStatisticsQueue() = Queue("statistics-sms")
+
+    @Bean
+    fun pushApiStatisticsQueue() = Queue("statistics-pushapi")
+
+    @Bean
     fun messageConverter() = Jackson2JsonMessageConverter()
 }

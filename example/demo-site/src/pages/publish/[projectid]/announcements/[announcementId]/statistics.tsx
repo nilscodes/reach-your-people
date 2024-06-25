@@ -1,38 +1,31 @@
 import { getServerSession } from "next-auth";
-import { getNextAuthOptions } from "../api/auth/[...nextauth]";
 import { coreSubscriptionApi } from "@/lib/core-subscription-api";
 import { InferGetServerSidePropsType } from "next";
-import { Account } from "../../lib/ryp-subscription-api";
-import ViewAnnouncement from "@/components/announcements/ViewAnnouncement";
 import { corePublishingApi } from "@/lib/core-publishing-api";
-import { Announcement } from "@/lib/ryp-publishing-api";
+import { getNextAuthOptions } from "@/pages/api/auth/[...nextauth]";
+import { Account } from "@/lib/ryp-subscription-api";
+import ViewAnnouncementStatistics from "@/components/projects/ViewAnnouncementStatistics";
+import { coreRedirectApi } from "@/lib/core-redirect-api";
 import Head from "next/head";
+import { verifyProjectOwnership } from "@/lib/permissions";
+import { Project } from "@/lib/types/Project";
 
 const fallbackAuthor: Account = {
   id: 0,
   displayName: "Deleted",
 };
 
-/*
- * Clean up attributes that are not shown to public users before passing the announcement to the component
- */
-function getPublicAnnouncement(announcement: Announcement) {
-  const publicAnnouncement = { ...announcement };
-  delete publicAnnouncement.statistics;
-  delete publicAnnouncement.audience;
-  return publicAnnouncement;
-}
-
 export default function Home({
   announcement,
   project,
   author,
+  views,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   return (<>
     <Head>
-      <title>{`RYP: Announcement details for ${project.name}`}</title>
+      <title>{`RYP: Announcement Statistics for ${project.name}`}</title>
     </Head>
-    <ViewAnnouncement announcement={announcement} project={project} author={author} />
+    <ViewAnnouncementStatistics announcement={announcement} project={project} author={author} views={views} />
   </>)
 }
 
@@ -42,15 +35,23 @@ export async function getServerSideProps(context: any) {
     context.res,
     getNextAuthOptions(context.req, context.res)
   );
-  let account: Account | null = null;
-  if (session?.userId) {
-    account = (await coreSubscriptionApi.getAccountById(session.userId)).data;
-  }
+  const account = (await coreSubscriptionApi.getAccountById(session?.userId ?? 0)).data;
   const announcementId = context.params.announcementId;
-  const fullAnnouncement = (await corePublishingApi.getAnnouncementById(announcementId)).data;
-  const announcement = getPublicAnnouncement(fullAnnouncement);
+  const announcement = (await corePublishingApi.getAnnouncementById(announcementId)).data;
   const authorId = Number(announcement.announcement.actor.id.split('/').pop());
   const project = (await coreSubscriptionApi.getProject(announcement.projectId as number)).data;
+  await verifyProjectOwnership(account, project as Project);
+  let views = 0;
+  try {
+    const shortcode = announcement.shortLink?.split('/').pop();
+    if (shortcode) {
+      const shortenedUrl = (await coreRedirectApi.getUrlByShortcode(shortcode)).data;
+      views = shortenedUrl.views ?? 0;      
+    }
+  } catch (error) {
+    // Shortened URL not found
+    console.error(error);
+  }
   let author = fallbackAuthor;
   try {
     author = (await coreSubscriptionApi.getAccountById(authorId)).data;
@@ -64,6 +65,7 @@ export async function getServerSideProps(context: any) {
       announcement,
       project,
       author,
+      views,
     },
   }
 }

@@ -207,6 +207,40 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
             };
         },
         /**
+         * Get a shortened URL and its details by shortcode
+         * @summary Get URL by shortcode
+         * @param {string} shortcode The shortcode of the URL to look up
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getUrlByShortcode: async (shortcode: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'shortcode' is not null or undefined
+            assertParamExists('getUrlByShortcode', 'shortcode', shortcode)
+            const localVarPath = `/urls/shortcode/{shortcode}`
+                .replace(`{${"shortcode"}}`, encodeURIComponent(String(shortcode)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
          * Retrieve all active and inactive URLs for a given project
          * @summary Get all URLs for a project
          * @param {number} projectId The numeric ID of a Project
@@ -349,6 +383,19 @@ export const DefaultApiFp = function(configuration?: Configuration) {
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
+         * Get a shortened URL and its details by shortcode
+         * @summary Get URL by shortcode
+         * @param {string} shortcode The shortcode of the URL to look up
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getUrlByShortcode(shortcode: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ShortenedUrl>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getUrlByShortcode(shortcode, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DefaultApi.getUrlByShortcode']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
          * Retrieve all active and inactive URLs for a given project
          * @summary Get all URLs for a project
          * @param {number} projectId The numeric ID of a Project
@@ -419,6 +466,16 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
             return localVarFp.getUrlById(urlId, options).then((request) => request(axios, basePath));
         },
         /**
+         * Get a shortened URL and its details by shortcode
+         * @summary Get URL by shortcode
+         * @param {string} shortcode The shortcode of the URL to look up
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getUrlByShortcode(shortcode: string, options?: any): AxiosPromise<ShortenedUrl> {
+            return localVarFp.getUrlByShortcode(shortcode, options).then((request) => request(axios, basePath));
+        },
+        /**
          * Retrieve all active and inactive URLs for a given project
          * @summary Get all URLs for a project
          * @param {number} projectId The numeric ID of a Project
@@ -481,6 +538,18 @@ export class DefaultApi extends BaseAPI {
      */
     public getUrlById(urlId: string, options?: RawAxiosRequestConfig) {
         return DefaultApiFp(this.configuration).getUrlById(urlId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Get a shortened URL and its details by shortcode
+     * @summary Get URL by shortcode
+     * @param {string} shortcode The shortcode of the URL to look up
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DefaultApi
+     */
+    public getUrlByShortcode(shortcode: string, options?: RawAxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).getUrlByShortcode(shortcode, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

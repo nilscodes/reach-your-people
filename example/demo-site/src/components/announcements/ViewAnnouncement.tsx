@@ -11,7 +11,6 @@ import {
   Stack,
   Text,
 } from '@chakra-ui/react'
-import { useApi } from '@/contexts/ApiProvider';
 import useTranslation from 'next-translate/useTranslation';
 import Markdown from 'react-markdown';
 import { Account, ListProjects200Response } from '@/lib/ryp-subscription-api';
@@ -45,7 +44,6 @@ function formatDate(isoDateString: string) {
 }
 
 export default function ViewAnnouncement({ announcement, project, author }: ViewAnnouncementProps) {
-  const api = useApi();
   const { t } = useTranslation('publish');
 
   const content = (announcement.announcement as any).object.content;

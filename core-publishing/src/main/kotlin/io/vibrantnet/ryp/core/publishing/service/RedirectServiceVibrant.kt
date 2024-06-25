@@ -46,9 +46,13 @@ class RedirectServiceVibrant(
                         Mono.error(IllegalStateException("Missing X-Redirect-Location header"))
                     }
                 } else {
+                    logger.error { "Failed to create short URL for $relativeUrl: HTTP error code ${response.statusCode()}" }
                     response.createException().flatMap { Mono.error(it) }
                 }
             }
-            .onErrorReturn("${config.baseUrl}/$relativeUrl")
+            .onErrorResume { error ->
+                logger.error(error) { "Failed to create short URL for $relativeUrl" }
+                Mono.just("${config.baseUrl}/$relativeUrl")
+            }
     }
 }

@@ -5,8 +5,14 @@ import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
 
 data class AnnouncementRecipientDto @JsonCreator constructor(
+    @JsonProperty("externalAccountId")
+    val externalAccountId: Long,
+
     @JsonProperty("type")
     val type: String,
+
+    @JsonProperty("accountId")
+    val accountId: Long,
 
     @JsonProperty("referenceId")
     val referenceId: String,
@@ -14,4 +20,7 @@ data class AnnouncementRecipientDto @JsonCreator constructor(
     @JsonProperty("metadata")
     @JsonInclude(JsonInclude.Include.NON_NULL)
     val metadata: String? = null,
+
+    @JsonProperty("subscriptionStatus")
+    val subscriptionStatus: SubscriptionStatus,
 )
