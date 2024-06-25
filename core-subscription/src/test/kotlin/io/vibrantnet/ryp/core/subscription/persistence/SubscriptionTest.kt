@@ -1,8 +1,8 @@
 package io.vibrantnet.ryp.core.subscription.persistence
 
-import io.vibrantnet.ryp.core.subscription.model.DefaultSubscriptionStatus
+import io.ryp.shared.model.DefaultSubscriptionStatus
+import io.ryp.shared.model.SubscriptionStatus
 import io.vibrantnet.ryp.core.subscription.model.ProjectSubscriptionDto
-import io.vibrantnet.ryp.core.subscription.model.SubscriptionStatus
 import nl.jqno.equalsverifier.EqualsVerifier
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test

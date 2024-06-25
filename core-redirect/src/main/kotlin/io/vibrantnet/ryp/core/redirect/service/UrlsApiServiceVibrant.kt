@@ -28,6 +28,11 @@ class UrlsApiServiceVibrant(
             .map { it.toDto() }
     }
 
+    override fun getUrlByShortcode(shortcode: String): Mono<ShortenedUrlDto> {
+        return shortenedUrlRepository.findByShortcode(shortcode)
+            .map { it.toDto() }
+    }
+
     override fun getUrlsForProject(projectId: Long): Flux<ShortenedUrlDto> {
         return shortenedUrlRepository.findByProjectId(projectId)
             .map { it.toDto() }

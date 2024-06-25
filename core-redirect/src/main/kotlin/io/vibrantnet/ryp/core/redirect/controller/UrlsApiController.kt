@@ -54,6 +54,14 @@ class UrlsApiController(
 
     @RequestMapping(
         method = [RequestMethod.GET],
+        value = ["/urls/shortcode/{shortcode}"],
+        produces = ["application/json"]
+    )
+    @ResponseStatus(HttpStatus.OK)
+    fun getUrlByShortcode(@PathVariable("shortcode") shortcode: String)= service.getUrlByShortcode(shortcode)
+
+    @RequestMapping(
+        method = [RequestMethod.GET],
         value = ["/urls/projects/{projectId}"],
         produces = ["application/json"]
     )

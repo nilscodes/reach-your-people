@@ -53,6 +53,36 @@ export interface Announcement {
      * @memberof Announcement
      */
     'status'?: AnnouncementStatusEnum;
+    /**
+     * 
+     * @type {string}
+     * @memberof Announcement
+     */
+    'shortLink'?: string;
+    /**
+     * 
+     * @type {Audience}
+     * @memberof Announcement
+     */
+    'audience'?: Audience;
+    /**
+     * 
+     * @type {Statistics}
+     * @memberof Announcement
+     */
+    'statistics'?: Statistics;
+    /**
+     * 
+     * @type {string}
+     * @memberof Announcement
+     */
+    'createdDate'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Announcement
+     */
+    'modifiedDate'?: string;
 }
 
 export const AnnouncementStatusEnum = {
@@ -121,6 +151,19 @@ export const AnnouncementAnnouncementTypeEnum = {
 
 export type AnnouncementAnnouncementTypeEnum = typeof AnnouncementAnnouncementTypeEnum[keyof typeof AnnouncementAnnouncementTypeEnum];
 
+/**
+ * 
+ * @export
+ * @interface Audience
+ */
+export interface Audience {
+    /**
+     * If for a token-based project, the list of policy IDs this announcement was published to.
+     * @type {Array<string>}
+     * @memberof Audience
+     */
+    'policies'?: Array<string>;
+}
 /**
  * 
  * @export
@@ -290,6 +333,49 @@ export interface PublishingPermissions {
      */
     'accountId': number;
 }
+/**
+ * 
+ * @export
+ * @interface Statistics
+ */
+export interface Statistics {
+    /**
+     * 
+     * @type {{ [key: string]: number; }}
+     * @memberof Statistics
+     */
+    'sent'?: { [key: string]: number; };
+    /**
+     * 
+     * @type {number}
+     * @memberof Statistics
+     */
+    'uniqueAccounts'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof Statistics
+     */
+    'explicitSubscribers'?: number;
+    /**
+     * 
+     * @type {{ [key: string]: number; }}
+     * @memberof Statistics
+     */
+    'delivered'?: { [key: string]: number; };
+    /**
+     * 
+     * @type {{ [key: string]: number; }}
+     * @memberof Statistics
+     */
+    'failures'?: { [key: string]: number; };
+    /**
+     * 
+     * @type {{ [key: string]: number; }}
+     * @memberof Statistics
+     */
+    'views'?: { [key: string]: number; };
+}
 
 /**
  * DefaultApi - axios parameter creator
@@ -347,6 +433,40 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
             const localVarPath = `/projects/{projectId}/roles/{accountId}`
                 .replace(`{${"projectId"}}`, encodeURIComponent(String(projectId)))
                 .replace(`{${"accountId"}}`, encodeURIComponent(String(accountId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * List all announcements that a specific project has published, regardless of target.
+         * @summary List announcements for a specific project
+         * @param {number} projectId The numeric ID of a Project
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        listAnnouncementsForProject: async (projectId: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'projectId' is not null or undefined
+            assertParamExists('listAnnouncementsForProject', 'projectId', projectId)
+            const localVarPath = `/projects/{projectId}/announcements`
+                .replace(`{${"projectId"}}`, encodeURIComponent(String(projectId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -447,6 +567,19 @@ export const DefaultApiFp = function(configuration?: Configuration) {
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
+         * List all announcements that a specific project has published, regardless of target.
+         * @summary List announcements for a specific project
+         * @param {number} projectId The numeric ID of a Project
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async listAnnouncementsForProject(projectId: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Announcement>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.listAnnouncementsForProject(projectId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DefaultApi.listAnnouncementsForProject']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
          * Publish an announcement for a project, token policy, SPO, dRep or social media account to all verified holders that have subscribed to updates, without exposing any social media or messaging identifiers to the publisher.
          * @summary Publish new announcement for a specific project
          * @param {number} projectId The numeric ID of a Project
@@ -492,6 +625,16 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
             return localVarFp.getPublishingPermissionsForAccount(projectId, accountId, options).then((request) => request(axios, basePath));
         },
         /**
+         * List all announcements that a specific project has published, regardless of target.
+         * @summary List announcements for a specific project
+         * @param {number} projectId The numeric ID of a Project
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        listAnnouncementsForProject(projectId: number, options?: any): AxiosPromise<Array<Announcement>> {
+            return localVarFp.listAnnouncementsForProject(projectId, options).then((request) => request(axios, basePath));
+        },
+        /**
          * Publish an announcement for a project, token policy, SPO, dRep or social media account to all verified holders that have subscribed to updates, without exposing any social media or messaging identifiers to the publisher.
          * @summary Publish new announcement for a specific project
          * @param {number} projectId The numeric ID of a Project
@@ -535,6 +678,18 @@ export class DefaultApi extends BaseAPI {
      */
     public getPublishingPermissionsForAccount(projectId: number, accountId: number, options?: RawAxiosRequestConfig) {
         return DefaultApiFp(this.configuration).getPublishingPermissionsForAccount(projectId, accountId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * List all announcements that a specific project has published, regardless of target.
+     * @summary List announcements for a specific project
+     * @param {number} projectId The numeric ID of a Project
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DefaultApi
+     */
+    public listAnnouncementsForProject(projectId: number, options?: RawAxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).listAnnouncementsForProject(projectId, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

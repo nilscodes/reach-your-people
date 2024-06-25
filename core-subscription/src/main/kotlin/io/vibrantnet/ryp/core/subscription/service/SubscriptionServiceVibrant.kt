@@ -1,16 +1,12 @@
 package io.vibrantnet.ryp.core.subscription.service
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import io.ryp.shared.model.AnnouncementJobDto
-import io.ryp.shared.model.AnnouncementRecipientDto
-import io.ryp.shared.model.SnapshotRequestDto
-import io.ryp.shared.model.TokenOwnershipInfoWithAssetCount
-import io.vibrantnet.ryp.core.subscription.model.SubscriptionStatus
-import io.vibrantnet.ryp.core.subscription.persistence.AccountRepository
-import io.vibrantnet.ryp.core.subscription.persistence.ExternalAccount
-import io.vibrantnet.ryp.core.subscription.persistence.ExternalAccountRepository
-import jakarta.transaction.Transactional
 import io.github.oshai.kotlinlogging.KotlinLogging
+import io.ryp.shared.model.*
+import io.vibrantnet.ryp.core.subscription.persistence.AccountRepository
+import io.vibrantnet.ryp.core.subscription.persistence.ExternalAccountRepository
+import io.vibrantnet.ryp.core.subscription.persistence.ExternalAccountWithAccountProjection
+import jakarta.transaction.Transactional
 import org.springframework.amqp.rabbit.annotation.RabbitListener
 import org.springframework.amqp.rabbit.core.RabbitTemplate
 import org.springframework.data.redis.core.RedisTemplate
@@ -53,14 +49,16 @@ class SubscriptionServiceVibrant(
             projectId = projectId,
             status = SubscriptionStatus.SUBSCRIBED
         ).map {
-            announcementRecipientDtoFromExternalAccount(it)
+            announcementRecipientDtoFromExternalAccount(it, SubscriptionStatus.SUBSCRIBED)
         }
         return recipients
     }
 
-    private fun announcementRecipientDtoFromExternalAccount(it: ExternalAccount) =
+    private fun announcementRecipientDtoFromExternalAccount(it: ExternalAccountWithAccountProjection, subscriptionStatus: SubscriptionStatus) =
         AnnouncementRecipientDto(
+            externalAccountId = it.id,
             type = it.type,
+            accountId = it.accountId,
             referenceId = it.referenceId,
             metadata = it.metadata.let { metadata ->
                 if (metadata != null) {
@@ -69,6 +67,7 @@ class SubscriptionServiceVibrant(
                     null
                 }
             },
+            subscriptionStatus = subscriptionStatus,
         )
 
     @RabbitListener(queues = ["snapshotcompleted"])
@@ -81,9 +80,13 @@ class SubscriptionServiceVibrant(
         val accountIds = externalAccountRepository.findEligibleAccountsByWallet(announcementJob.projectId, snapshotData.map { it.stakeAddress }, listOf(SubscriptionStatus.BLOCKED, SubscriptionStatus.MUTED))
         val externalAccounts = externalAccountRepository.findMessagingExternalAccountsForProjectAndAccounts(announcementJob.projectId, accountIds, listOf("cardano"))
         val recipients = externalAccounts.map {
-            announcementRecipientDtoFromExternalAccount(it)
+            announcementRecipientDtoFromExternalAccount(it, SubscriptionStatus.DEFAULT)
         }.toMutableSet()
-        recipients.addAll(getExplicitlySubscribedAccounts(announcementJob.projectId))
+        val explicitlySubscribed = getExplicitlySubscribedAccounts(announcementJob.projectId)
+        val onlyExplicitlySubscribed = explicitlySubscribed.filter { recipient ->
+            recipients.none { it.externalAccountId == recipient.externalAccountId }
+        }
+        recipients.addAll(onlyExplicitlySubscribed)
         if (recipients.isEmpty()) {
             logger.info { "No recipients found for announcement ${announcementJob.announcementId}, skipping sending." }
             // TODO ensure the job is cancelled or marked done and recipient count is tracked

@@ -9,6 +9,7 @@ import amqplib from 'amqplib'
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
 const verificationServiceId = process.env.TWILIO_VERIFY_SERVICE_SID || '';
+const fromNumber = process.env.TWILIO_FROM_NUMBER || '';
 const client = twilio(accountSid, authToken);
 const logger = pino({ level: process.env.LOG_LEVEL || 'info' });
 
@@ -88,6 +89,17 @@ type AnnouncementTextMessages = {
   };
 };
 
+type StatisticsDto = {
+  delivered?: number;
+  failures?: number;
+  views?: number;
+}
+
+type StatisticsUpdateDto = {
+  announcementId: string;
+  statistics: StatisticsDto;
+}
+
 const announcementTextMessages: AnnouncementTextMessages = {
   'newAnnouncement': {
     'en': 'A new announcement has been posted by "{0}", a project you are following. Read more at {1}'
@@ -101,6 +113,11 @@ const getTextForEvent = (lang: LangKey, event: EventKey) => {
   return announcementTextMessages[event][lang];
 }
 
+const sendStatistics = async (channel: amqplib.Channel, queueName: string, statisticsUpdate: StatisticsUpdateDto) => {
+  await channel.assertQueue(queueName);
+  channel.sendToQueue(queueName, Buffer.from(JSON.stringify(statisticsUpdate)));
+};
+
 const connectToAmqp = async () => {
   const rabbitPw = process.env.RABBITMQ_PASSWORD as string;
   const rabbitMqPort = +(process.env.RABBITMQ_PORT || 5672);
@@ -108,22 +125,35 @@ const connectToAmqp = async () => {
     const conn = await amqplib.connect(`amqp://${process.env.RABBITMQ_USER}:${encodeURIComponent(rabbitPw)}@${process.env.RABBITMQ_HOST}:${rabbitMqPort}`);
     const queue = {
       name: 'sms',
-      consume: async (client: Twilio, msg: MessageDto) => {
+      consume: async (queueChannel: amqplib.Channel, client: Twilio, msg: MessageDto) => {
         logger.debug({ msg: `Received message with ID ${msg.announcement} for user with phone number ${msg.referenceId}` });
         const shortenedProjectName = msg.project.name.length > 20 ? msg.project.name.substring(0, 20) + '…' : msg.project.name;
         const announcementTextMessage = getTextForEvent('en', 'newAnnouncement');
         const announcementText = announcementTextMessage.replace('{0}', shortenedProjectName).replace('{1}', msg.announcement.link);
         try {
-            const message = client.messages
+            const message = await client.messages
                 .create({
                     body: announcementText,
-                    from: '+18775222797',
+                    from: fromNumber,
                     to: msg.referenceId,
                 });
             logger.debug({ msg: `Message sent to user`, message: message });
+            sendStatistics(queueChannel, 'statistics-sms', {
+              announcementId: msg.announcement.id,
+              statistics: {
+                delivered: 1,
+              },
+            });
+            return
         } catch (e: any) {
             logger.error({ msg: `Error sending message to user with phone number ${msg.referenceId}`, error: e });
         }
+        sendStatistics(queueChannel, 'statistics-sms', {
+          announcementId: msg.announcement.id,
+          statistics: {
+            failures: 1,
+          },
+        });
       },
     };
     if (queue.name && queue.consume) {
@@ -134,7 +164,7 @@ const connectToAmqp = async () => {
       queueChannel.prefetch(5);
       queueChannel.consume(queue.name, (msg) => {
         if (msg !== null) {
-          queue.consume(client, JSON.parse(msg.content.toString()));
+          queue.consume(queueChannel, client, JSON.parse(msg.content.toString()));
           queueChannel.ack(msg);
         } else {
           logger.error({ msg: `Consumer for queue ${queue.name} cancelled by server` });

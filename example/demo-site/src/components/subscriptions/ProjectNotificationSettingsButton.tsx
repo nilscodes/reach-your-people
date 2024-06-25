@@ -14,8 +14,8 @@ import useTranslation from 'next-translate/useTranslation';
 import { useApi } from '@/contexts/ApiProvider';
 import { GetLinkedExternalAccounts200ResponseInner, GetLinkedExternalAccounts200ResponseInnerSettingsEnum } from '@/lib/ryp-subscription-api';
 import { MdOutlineEditNotifications, MdWarning } from 'react-icons/md';
-import { providerList } from '../ProviderIcons';
 import { sortLinkedExternalAccounts } from '../LinkedAccounts';
+import { findProviderByType } from '@/lib/providerutil';
 
 interface ProjectNotificationSettingsButtonProps extends ButtonProps {
   projectId: number;
@@ -46,10 +46,6 @@ const ButtonPopoverTrigger = forwardRef(function TriggerRef(props: ButtonPopover
     </Button>)
   }
 });
-
-function findProviderByType(type: string) {
-  return providerList.find((provider) => provider.id === type);
-}
 
 function prepareNotificationAccounts(linkedAccounts: GetLinkedExternalAccounts200ResponseInner[]) {
   return sortLinkedExternalAccounts(linkedAccounts)

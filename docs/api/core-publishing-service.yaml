@@ -19,6 +19,23 @@ paths:
   '/projects/{projectId}/announcements':
     parameters:
       - $ref: ./common-schemas.yaml#/components/parameters/projectId
+    get:
+      summary: List announcements for a specific project
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Announcement'
+                  x-stoplight:
+                    id: nt5apw86n356b
+                readOnly: true
+      operationId: listAnnouncementsForProject
+      description: 'List all announcements that a specific project has published, regardless of target.'
     post:
       summary: Publish new announcement for a specific project
       tags: []
@@ -160,6 +177,7 @@ components:
         id:
           type: string
           format: uuid
+          readOnly: true
           x-stoplight:
             id: 59y15mti42gy0
         projectId:
@@ -178,6 +196,29 @@ components:
             - PUBLISHING
             - PUBLISHED
             - CANCELLED
+          readOnly: true
+        shortLink:
+          type: string
+          readOnly: true
+        audience:
+          $ref: '#/components/schemas/Audience'
+        statistics:
+          $ref: '#/components/schemas/Statistics'
+          readOnly: true
+        createdDate:
+          type: string
+          format: date-time
+          example: '2020-05-02T14:00:00Z'
+          readOnly: true
+          x-stoplight:
+            id: 69yadbjcy1gme
+        modifiedDate:
+          type: string
+          format: date-time
+          example: '2020-05-02T14:00:00Z'
+          readOnly: true
+          x-stoplight:
+            id: lk2x27snn91yc
     PublishingPermissions:
       title: PublishingPermissions
       x-stoplight:
@@ -220,3 +261,48 @@ components:
           enum:
             - PUBLISHING_MANUAL
             - PUBLISHING_CIP66
+    Statistics:
+      title: Statistics
+      type: object
+      properties:
+        sent:
+          type: object
+          additionalProperties:
+            type: integer
+            format: int64
+        uniqueAccounts:
+          type: integer
+          format: int64
+          nullable: true
+        explicitSubscribers:
+          type: integer
+          format: int64
+          nullable: true
+        delivered:
+          type: object
+          additionalProperties:
+            type: integer
+            format: int64
+        failures:
+          type: object
+          additionalProperties:
+            type: integer
+            format: int64
+        views:
+          type: object
+          additionalProperties:
+            type: integer
+            format: int64
+    Audience:
+      title: Audience
+      x-stoplight:
+        id: 614pi5dhms0ng
+      type: object
+      properties:
+        policies:
+          type: array
+          description: 'If for a token-based project, the list of policy IDs this announcement was published to.'
+          items:
+            $ref: ./common-schemas.yaml#/components/schemas/TokenPolicyId
+            x-stoplight:
+              id: p55cb7tf2uzhm

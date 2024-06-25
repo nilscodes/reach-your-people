@@ -21,6 +21,7 @@ import java.util.*
 class AnnouncementsApiController(@Autowired val service: AnnouncementsApiService) {
 
 
+
     @RequestMapping(
         method = [RequestMethod.POST],
         value = ["projects/{projectId}/announcements"],
@@ -42,6 +43,14 @@ class AnnouncementsApiController(@Autowired val service: AnnouncementsApiService
                     .body(savedEntity)
             }
     }
+
+    @RequestMapping(
+        method = [RequestMethod.GET],
+        value = ["/projects/{projectId}/announcements"],
+        produces = ["application/json"]
+    )
+    @ResponseStatus(HttpStatus.OK)
+    fun listAnnouncementsForProject(@PathVariable("projectId") projectId: Long) = service.listAnnouncementsForProject(projectId)
 
     @RequestMapping(
         method = [RequestMethod.GET],

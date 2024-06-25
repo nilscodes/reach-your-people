@@ -3,11 +3,15 @@ package io.vibrantnet.ryp.core.redirect.configuration
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.convert.converter.Converter
+import org.springframework.data.auditing.DateTimeProvider
 import org.springframework.data.mongodb.core.convert.MongoCustomConversions
+import java.time.LocalDateTime
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
+import java.time.temporal.TemporalAccessor
 import java.util.*
+
 
 @Configuration
 class MongoConfig {
@@ -18,7 +22,18 @@ class MongoConfig {
             ZonedDateTimeWriteConverter(),
             OffsetDateTimeReadConverter(),
             OffsetDateTimeWriteConverter(),
+            OffsetDateTimeToLocalDateTimeConverter(),
+            LocalDateTimeToOffsetDateTimeConverter(),
         ))
+    }
+
+    @Bean
+    fun offsetDateTimeProvider() = CustomDateTimeProvider()
+}
+
+class CustomDateTimeProvider: DateTimeProvider {
+    override fun getNow(): Optional<TemporalAccessor> {
+        return Optional.of(OffsetDateTime.now())
     }
 }
 
@@ -43,5 +58,17 @@ class OffsetDateTimeReadConverter : Converter<Date, OffsetDateTime> {
 class OffsetDateTimeWriteConverter : Converter<OffsetDateTime, Date> {
     override fun convert(offsetDateTime: OffsetDateTime): Date {
         return Date.from(offsetDateTime.toInstant())
+    }
+}
+
+class OffsetDateTimeToLocalDateTimeConverter : Converter<OffsetDateTime, LocalDateTime> {
+    override fun convert(source: OffsetDateTime): LocalDateTime {
+        return source.toLocalDateTime()
+    }
+}
+
+class LocalDateTimeToOffsetDateTimeConverter : Converter<LocalDateTime, OffsetDateTime> {
+    override fun convert(source: LocalDateTime): OffsetDateTime {
+        return source.atOffset(ZoneOffset.UTC)
     }
 }
