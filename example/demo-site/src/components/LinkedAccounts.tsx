@@ -16,6 +16,8 @@ import { VibrantSyncStatusMessage } from './linkedaccounts/VibrantSyncStatusMess
 import ReferralLink from './account/ReferralLink';
 import useReferral from './hooks/useReferral';
 import Card from './Card';
+import FirstSteps from './account/FirstSteps';
+import { FirstStepsItems, bitmaskToEnum } from '@/lib/types/FirstSteps';
 
 type LinkedAccountsProps = {
   account: Account;
@@ -29,7 +31,7 @@ export function sortLinkedExternalAccounts(linkedAccounts: GetLinkedExternalAcco
   return [...linkedAccounts].sort((a, b) => a.externalAccount.id! - b.externalAccount.id!);
 }
 
-export default function LinkedAccounts({ accountSettings, linkedAccounts: linkedAccountsProp }: LinkedAccountsProps) {
+export default function LinkedAccounts({ account, accountSettings, linkedAccounts: linkedAccountsProp }: LinkedAccountsProps) {
   const api = useApi();
   const toast = useToast();
   const { t } = useTranslation('accounts');
@@ -38,6 +40,7 @@ export default function LinkedAccounts({ accountSettings, linkedAccounts: linked
   const [showWalletConnection, setShowWalletConnection] = React.useState(false);
   const [showPhoneConnection, setShowPhoneConnection] = React.useState(false);
   const [showPushApiConnection, setShowPushApiConnection] = React.useState(false);
+  const [firstSteps, setFirstSteps] = useState(bitmaskToEnum(+accountSettings['FIRST_STEPS'] ?? 0));
   const [wallets, setWallets] = useState<Wallet[]>([]);
 
   const handleSignIn = (provider: string) => {
@@ -97,11 +100,19 @@ export default function LinkedAccounts({ accountSettings, linkedAccounts: linked
   const finalizePhoneAuth = async () => {
     setShowPhoneConnection(false);
     setLinkedAccounts(sortLinkedExternalAccounts(await api.getLinkedExternalAccounts()));
+    const firstStepsSetting = await api.updateFirstSteps();
+    setFirstSteps(bitmaskToEnum(+firstStepsSetting.value));
   };
 
   const finalizePushApi = async () => {
     setShowPushApiConnection(false);
     setLinkedAccounts(sortLinkedExternalAccounts(await api.getLinkedExternalAccounts()));
+    const firstStepsSetting = await api.updateFirstSteps();
+    setFirstSteps(bitmaskToEnum(+firstStepsSetting.value));
+  }
+
+  const onFinishSteps = async (firstSteps: FirstStepsItems[]) => {
+    setFirstSteps(firstSteps);
   }
 
   const isNonSocialAccount = (type: string) => ['sms', 'pushapi'].includes(type);
@@ -111,9 +122,11 @@ export default function LinkedAccounts({ accountSettings, linkedAccounts: linked
   const hasSms = linkedAccounts.some((linkedAccount) => linkedAccount.externalAccount.type === 'sms');
   const hasPushApi = linkedAccounts.some((linkedAccount) => linkedAccount.externalAccount.type === 'pushapi');
   const showSocialConnections = !showWalletConnection && !showPhoneConnection && !showPushApiConnection;
+  const showFirstSteps = !firstSteps.includes(FirstStepsItems.Completed) && !firstSteps.includes(FirstStepsItems.Cancelled);
 
   return (<Container maxW="3xl" py={{ base: '0', md: '12' }} px="0">
     <Stack spacing="8" gap="0">
+      {showFirstSteps === true && (<FirstSteps account={account} accountSettings={accountSettings} linkedAccounts={linkedAccounts} onFinishSteps={onFinishSteps} />)}
       <ReferralLink accountSettings={accountSettings} />
       {accountSettings['VIBRANT_SYNC_STATUS'] === VibrantSyncStatus.CompletedConfirmed && (<VibrantSyncStatusMessage />)}
       <Card heading={t('linkedAccounts')} description={t('linkedAccountsDescription')}>

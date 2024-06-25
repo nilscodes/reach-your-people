@@ -80,5 +80,27 @@
             "description": "By default, subscribe to all communications from your delegated representatives. You can unsubscribe from specific dReps under <0>Subscriptions</0>."
         }
     },
-    "soonTag": "Soon"
+    "soonTag": "Soon",
+    "firstSteps": {
+        "title": "First Steps",
+        "description": "Welcome to Reach Your People (RYP)! We are happy you are here, and encourage you to complete the following steps to get the best experience. We will walk you through the initial process and help you set up your account.",
+        "step1": {
+            "title": "Set up notifications",
+            "description": "Connect at least one social media or notification-enabled account to be able to receive messages from pojects. Scroll down to connect."
+        },
+        "step2": {
+            "title": "Connect your wallet",
+            "description": "Connect your wallet so we can determine which of your tokens, NFTs, and stake pool delegations are able to send you notifications. Scroll down to connect."
+        },
+        "step3": {
+            "title": "Subscribe to a project",
+            "description": "You are automatically subscribed to any projects you have tokens for. Subscribe to a project you do not own but want to be informed about, or mute a project you own that you are not interested in to complete this."
+        },
+        "step4": {
+            "title": "Invite your friends",
+            "description": "Share Reach Your People with your friends and increase your chances at a Spacebudz NFT when they sign up. Use the referral link below and as soon as someone signs up with it, you will unlock this achievement."
+        },
+        "doNotShowAgain": "Do not show again",
+        "complete": "Mark complete"
+    }
 }
