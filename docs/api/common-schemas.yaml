@@ -288,19 +288,28 @@ components:
       description: An explicit subscription to a single project and an associated status
       required:
         - projectId
-        - status
+        - currentStatus
       properties:
         projectId:
           $ref: '#/components/schemas/ProjectId'
           x-stoplight:
             id: xe4cqr92nrvu4
-        status:
+        defaultStatus:
+          $ref: '#/components/schemas/DefaultSubscriptionStatus'
+        currentStatus:
           $ref: '#/components/schemas/SubscriptionStatus'
     SubscriptionStatus:
       type: string
       enum:
-        - SUBSCRIBED
-        - BLOCKED
+        - Default
+        - Subscribed
+        - Unsubscribed
+        - Muted
+    DefaultSubscriptionStatus:
+      type: string
+      enum:
+        - Subscribed
+        - Unsubscribed
     TokenPolicyId:
       type: string
       description: The Policy ID

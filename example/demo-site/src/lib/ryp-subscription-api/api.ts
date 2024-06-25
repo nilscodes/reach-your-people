@@ -127,15 +127,29 @@ export interface GetAllSubscriptionsForAccount200ResponseInner {
      * @type {string}
      * @memberof GetAllSubscriptionsForAccount200ResponseInner
      */
-    'status': GetAllSubscriptionsForAccount200ResponseInnerStatusEnum;
+    'defaultStatus'?: GetAllSubscriptionsForAccount200ResponseInnerDefaultStatusEnum;
+    /**
+     * 
+     * @type {string}
+     * @memberof GetAllSubscriptionsForAccount200ResponseInner
+     */
+    'currentStatus': GetAllSubscriptionsForAccount200ResponseInnerCurrentStatusEnum;
 }
 
-export const GetAllSubscriptionsForAccount200ResponseInnerStatusEnum = {
-    Subscribed: 'SUBSCRIBED',
-    Blocked: 'BLOCKED'
+export const GetAllSubscriptionsForAccount200ResponseInnerDefaultStatusEnum = {
+    Subscribed: 'Subscribed',
+    Unsubscribed: 'Unsubscribed'
 } as const;
 
-export type GetAllSubscriptionsForAccount200ResponseInnerStatusEnum = typeof GetAllSubscriptionsForAccount200ResponseInnerStatusEnum[keyof typeof GetAllSubscriptionsForAccount200ResponseInnerStatusEnum];
+export type GetAllSubscriptionsForAccount200ResponseInnerDefaultStatusEnum = typeof GetAllSubscriptionsForAccount200ResponseInnerDefaultStatusEnum[keyof typeof GetAllSubscriptionsForAccount200ResponseInnerDefaultStatusEnum];
+export const GetAllSubscriptionsForAccount200ResponseInnerCurrentStatusEnum = {
+    Default: 'Default',
+    Subscribed: 'Subscribed',
+    Unsubscribed: 'Unsubscribed',
+    Muted: 'Muted'
+} as const;
+
+export type GetAllSubscriptionsForAccount200ResponseInnerCurrentStatusEnum = typeof GetAllSubscriptionsForAccount200ResponseInnerCurrentStatusEnum[keyof typeof GetAllSubscriptionsForAccount200ResponseInnerCurrentStatusEnum];
 
 /**
  * An explicit subscription to a single project and an associated status
@@ -154,15 +168,29 @@ export interface GetAllSubscriptionsForProject200ResponseInner {
      * @type {string}
      * @memberof GetAllSubscriptionsForProject200ResponseInner
      */
-    'status': GetAllSubscriptionsForProject200ResponseInnerStatusEnum;
+    'defaultStatus'?: GetAllSubscriptionsForProject200ResponseInnerDefaultStatusEnum;
+    /**
+     * 
+     * @type {string}
+     * @memberof GetAllSubscriptionsForProject200ResponseInner
+     */
+    'currentStatus': GetAllSubscriptionsForProject200ResponseInnerCurrentStatusEnum;
 }
 
-export const GetAllSubscriptionsForProject200ResponseInnerStatusEnum = {
-    Subscribed: 'SUBSCRIBED',
-    Blocked: 'BLOCKED'
+export const GetAllSubscriptionsForProject200ResponseInnerDefaultStatusEnum = {
+    Subscribed: 'Subscribed',
+    Unsubscribed: 'Unsubscribed'
 } as const;
 
-export type GetAllSubscriptionsForProject200ResponseInnerStatusEnum = typeof GetAllSubscriptionsForProject200ResponseInnerStatusEnum[keyof typeof GetAllSubscriptionsForProject200ResponseInnerStatusEnum];
+export type GetAllSubscriptionsForProject200ResponseInnerDefaultStatusEnum = typeof GetAllSubscriptionsForProject200ResponseInnerDefaultStatusEnum[keyof typeof GetAllSubscriptionsForProject200ResponseInnerDefaultStatusEnum];
+export const GetAllSubscriptionsForProject200ResponseInnerCurrentStatusEnum = {
+    Default: 'Default',
+    Subscribed: 'Subscribed',
+    Unsubscribed: 'Unsubscribed',
+    Muted: 'Muted'
+} as const;
+
+export type GetAllSubscriptionsForProject200ResponseInnerCurrentStatusEnum = typeof GetAllSubscriptionsForProject200ResponseInnerCurrentStatusEnum[keyof typeof GetAllSubscriptionsForProject200ResponseInnerCurrentStatusEnum];
 
 /**
  * 
@@ -197,8 +225,10 @@ export interface GetGlobalSubscriptions200ResponseInner {
 }
 
 export const GetGlobalSubscriptions200ResponseInnerStatusEnum = {
-    Subscribed: 'SUBSCRIBED',
-    Blocked: 'BLOCKED'
+    Default: 'Default',
+    Subscribed: 'Subscribed',
+    Unsubscribed: 'Unsubscribed',
+    Muted: 'Muted'
 } as const;
 
 export type GetGlobalSubscriptions200ResponseInnerStatusEnum = typeof GetGlobalSubscriptions200ResponseInnerStatusEnum[keyof typeof GetGlobalSubscriptions200ResponseInnerStatusEnum];
@@ -744,8 +774,10 @@ export interface SubscribeAccountToProjectRequest {
 }
 
 export const SubscribeAccountToProjectRequestStatusEnum = {
-    Subscribed: 'SUBSCRIBED',
-    Blocked: 'BLOCKED'
+    Default: 'Default',
+    Subscribed: 'Subscribed',
+    Unsubscribed: 'Unsubscribed',
+    Muted: 'Muted'
 } as const;
 
 export type SubscribeAccountToProjectRequestStatusEnum = typeof SubscribeAccountToProjectRequestStatusEnum[keyof typeof SubscribeAccountToProjectRequestStatusEnum];

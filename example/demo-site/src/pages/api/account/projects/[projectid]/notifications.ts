@@ -30,7 +30,7 @@ export default async function handler(
         res.status(response.status).json(response.data);
       } catch (error: any) {
         console.log(error);
-        //res.status(error.response.status).json(error.response);
+        res.status(error.response.status).json(error.response);
       }
     }
   }
