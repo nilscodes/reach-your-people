@@ -37,9 +37,14 @@ export default async function handler(
           firstStepsCompleted.push(FirstStepsItems.ConnectNotification);
         }
         if (!firstStepsCompleted.includes(FirstStepsItems.ReferFriend)) {
-          const pointClaims = (await corePointsApi.getPointClaimsForAccountAndToken(accountId, rypTokenId)).data;
-          if (pointClaims.some((pointClaim) => pointClaim.category === 'referral')) {
-            firstStepsCompleted.push(FirstStepsItems.ReferFriend)
+          try {
+            const pointClaims = (await corePointsApi.getPointClaimsForAccountAndToken(accountId, rypTokenId)).data;
+            if (pointClaims.some((pointClaim) => pointClaim.category === 'referral')) {
+              firstStepsCompleted.push(FirstStepsItems.ReferFriend)
+            }
+          } catch (error) {
+            // TODO Ignoring this as it should not hold of using the first steps area, but should be pushed to Prometheus since it means there's an issue
+            console.error(error);
           }
         }
         if (!firstStepsCompleted.includes(FirstStepsItems.SubscribeExplicitly)) {
