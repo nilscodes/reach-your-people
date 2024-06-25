@@ -10,10 +10,10 @@ import { nanoid } from "nanoid";
 // Configure AWS S3
 const s3Client = new S3Client({
   credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
+    accessKeyId: process.env.CDN_AWS_ACCESS_KEY_ID!,
+    secretAccessKey: process.env.CDN_AWS_SECRET_ACCESS_KEY!,
   },
-  region: process.env.AWS_REGION!,
+  region: process.env.CDN_AWS_REGION!,
 });
  
 export const config = {
@@ -68,7 +68,7 @@ export default async function handler(
 
         const s3Name = `projects/${newProject.data.id}/${nanoid()}.${originalExtension}`;
         const uploadParams = {
-          Bucket: process.env.AWS_S3_BUCKET_NAME!,
+          Bucket: process.env.CDN_AWS_S3_BUCKET_NAME!,
           Key: s3Name,
           Body: fileStream,
           ContentType: file.mimetype!,

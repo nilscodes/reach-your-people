@@ -4,7 +4,6 @@ import { coreSubscriptionApi } from '@/lib/core-subscription-api';
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { FirstStepsItems, bitmaskToEnum, enumToBitmask } from "@/lib/types/FirstSteps";
 import { corePointsApi } from "@/lib/core-points-api";
-import { SubscriptionStatus } from "@/lib/types/SubscriptionStatus";
 import { GetAllSubscriptionsForAccount200ResponseInner, GetAllSubscriptionsForAccount200ResponseInnerCurrentStatusEnum } from "@/lib/ryp-subscription-api";
 
 const rypTokenId = +(process.env.RYP_TOKEN_ID || 0);
