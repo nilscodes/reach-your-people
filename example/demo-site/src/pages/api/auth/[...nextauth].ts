@@ -6,7 +6,7 @@ import {
 import NextAuth, { Account, NextAuthOptions, User, getServerSession } from "next-auth";
 import { config } from "auth"
 import { AxiosError } from "axios";
-import { coreSubscriptionApi } from "@/lib/core-subscription-api";
+import { coreSubscriptionApi, makeDefaultNotificationsAccountIfNecessary } from "@/lib/core-subscription-api";
 import { AdapterUser } from "next-auth/adapters";
 
 const getExternalAccountInfoFromProviderAccount = (user: User | AdapterUser, account: Account) => {
@@ -68,9 +68,11 @@ export const getNextAuthOptions = <Req extends Request, Res extends Response>(
                 throw e; // Rethrow unexpected errors
               }
             }
-            const externalAccount = await coreSubscriptionApi.createExternalAccount(getExternalAccountInfoFromProviderAccount(user, account));
+            const externalAccount = (await coreSubscriptionApi.createExternalAccount(getExternalAccountInfoFromProviderAccount(user, account))).data;
             // TODO Prevent linking more than one non-cardano account of the same provider
-            await coreSubscriptionApi.linkExternalAccount(currentUserId, externalAccount.data.id!);
+            const existingLinkedAccounts = (await coreSubscriptionApi.getLinkedExternalAccounts(currentUserId)).data;
+            const linkedExternalAccount = (await coreSubscriptionApi.linkExternalAccount(currentUserId, externalAccount.id!)).data;
+            await makeDefaultNotificationsAccountIfNecessary(existingLinkedAccounts, externalAccount, linkedExternalAccount, currentUserId);
             return "/account"; // Prevent the actual login flow, we just linked a new external account and don't need to log anyone in. Redirect to the dashboard instead.
           } else if (account) {
             // If there is no user logged in, but there is an account being signed in with, let's check if we recognize it - if not, create a new account
@@ -82,9 +84,11 @@ export const getNextAuthOptions = <Req extends Request, Res extends Response>(
                   displayName: user.name ?? 'Unknown',
                 });
 
-                const externalAccount = await coreSubscriptionApi.createExternalAccount(getExternalAccountInfoFromProviderAccount(user, account));
+                const externalAccount = (await coreSubscriptionApi.createExternalAccount(getExternalAccountInfoFromProviderAccount(user, account))).data;
 
-                await coreSubscriptionApi.linkExternalAccount(newAccount.data.id!, externalAccount.data.id!);
+                const linkedExternalAccount = (await coreSubscriptionApi.linkExternalAccount(newAccount.data.id!, externalAccount.id!)).data;
+
+                await makeDefaultNotificationsAccountIfNecessary([], externalAccount, linkedExternalAccount, newAccount.data.id!);
               } else {
                 throw e; // Rethrow unexpected errors
               }
