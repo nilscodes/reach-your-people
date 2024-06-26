@@ -8,6 +8,8 @@ import { config } from "auth"
 import { AxiosError } from "axios";
 import { coreSubscriptionApi, makeDefaultNotificationsAccountIfNecessary } from "@/lib/core-subscription-api";
 import { AdapterUser } from "next-auth/adapters";
+import { CreateExternalAccountRequest, GetLinkedExternalAccounts200ResponseInner } from "@/lib/ryp-subscription-api";
+import { ExternalAccount } from "@vibrantnet/core";
 
 const getExternalAccountInfoFromProviderAccount = (user: User | AdapterUser, account: Account) => {
   let referenceName = user.name ?? '';
@@ -39,7 +41,8 @@ export const getNextAuthOptions = <Req extends Request, Res extends Response>(
   req: NextApiRequest | GetServerSidePropsContext["req"],
   res: NextApiResponse | GetServerSidePropsContext["res"],
 ) => {
-  const extendedOptions: NextAuthOptions = { ...config, ...{
+  const extendedOptions: NextAuthOptions = {
+    ...config, ...{
       pages: {
         signIn: "/",
         error: "/",
@@ -68,11 +71,14 @@ export const getNextAuthOptions = <Req extends Request, Res extends Response>(
                 throw e; // Rethrow unexpected errors
               }
             }
-            const externalAccount = (await coreSubscriptionApi.createExternalAccount(getExternalAccountInfoFromProviderAccount(user, account))).data;
-            // TODO Prevent linking more than one non-cardano account of the same provider
             const existingLinkedAccounts = (await coreSubscriptionApi.getLinkedExternalAccounts(currentUserId)).data;
-            const linkedExternalAccount = (await coreSubscriptionApi.linkExternalAccount(currentUserId, externalAccount.id!)).data;
-            await makeDefaultNotificationsAccountIfNecessary(existingLinkedAccounts, externalAccount, linkedExternalAccount, currentUserId);
+            const newExternalAccountInfo = getExternalAccountInfoFromProviderAccount(user, account);
+            if (canAddExternalAccountOfType(existingLinkedAccounts, newExternalAccountInfo)) {
+              const externalAccount = (await coreSubscriptionApi.createExternalAccount(newExternalAccountInfo)).data;
+              // TODO Prevent linking more than one non-cardano account of the same provider
+              const linkedExternalAccount = (await coreSubscriptionApi.linkExternalAccount(currentUserId, externalAccount.id!)).data;
+              await makeDefaultNotificationsAccountIfNecessary(existingLinkedAccounts, externalAccount, linkedExternalAccount, currentUserId);
+            }
             return "/account"; // Prevent the actual login flow, we just linked a new external account and don't need to log anyone in. Redirect to the dashboard instead.
           } else if (account) {
             // If there is no user logged in, but there is an account being signed in with, let's check if we recognize it - if not, create a new account
@@ -127,6 +133,11 @@ export const getNextAuthOptions = <Req extends Request, Res extends Response>(
 
   return extendedOptions;
 };
+
+function canAddExternalAccountOfType(existingLinkedAccounts: GetLinkedExternalAccounts200ResponseInner[], newExternalAccountInfo: CreateExternalAccountRequest) {
+  return !existingLinkedAccounts.some((linkedAccount) => newExternalAccountInfo.type === linkedAccount.externalAccount.type)
+    || (newExternalAccountInfo.type === 'cardano' && !existingLinkedAccounts.some((linkedAccount) => linkedAccount.externalAccount.type === 'cardano' && linkedAccount.externalAccount.referenceId === newExternalAccountInfo.referenceId));
+}
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
   return NextAuth(req, res, getNextAuthOptions(req, res));
