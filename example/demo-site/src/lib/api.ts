@@ -5,6 +5,7 @@ import { SubscriptionStatus } from "./types/SubscriptionStatus";
 import { AnnouncementFormData } from "@/components/projects/PublishAnnouncement";
 import { GetLinkedExternalAccounts200ResponseInner, GetLinkedExternalAccounts200ResponseInnerSettingsEnum, ProjectNotificationSetting, Setting } from "./ryp-subscription-api";
 import { PublishingPermissions } from "./ryp-publishing-api";
+import { Achievement } from "./types/Achievement";
 
 // function getRandomDelay(): Promise<void> {
 //   const delay = Math.random() * (500 - 30) + 30;
@@ -84,6 +85,10 @@ export class RypSiteApi {
 
   async getNotificationsSettingsForAccountAndProject(projectId: number): Promise<ProjectNotificationSetting[]> {
     return (await axios.get(`${this.baseUrl}/account/projects/${projectId}/notifications`)).data;
+  }
+
+  async getAchievements(): Promise<Achievement[]> {
+    return (await axios.get(`${this.baseUrl}/account/achievements`)).data;
   }
 
   async updateNotificationsSettingsForAccountAndProject(projectId: number, settings: ProjectNotificationSetting[]): Promise<ProjectNotificationSetting[]> {
