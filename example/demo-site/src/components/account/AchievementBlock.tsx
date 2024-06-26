@@ -23,7 +23,7 @@ const AchievementProgress = ({ achievement, value, limit, ...boxProps }: Achieve
   const achieved = value >= limit;
   const iconColor = useColorModeValue(achieved ? 'green.500' : 'fg.muted', achieved ? 'green.300' : 'fg.muted')
   return (
-    <Box bg="bg.surface" boxShadow="sm" {...boxProps} borderRadius="lg" w="md" mx="auto">
+    <Box bg="bg.surface" boxShadow="sm" {...boxProps} borderRadius="lg" w={{ base: '100%', md: 'md' }} mx="auto">
       <Box px={{ base: '4', md: '6' }} py={{ base: '5', md: '6' }}>
         <HStack justifyContent='space-between'>
           <Stack>
@@ -56,7 +56,7 @@ const AchievementYesNo = ({ achievement, achieved, ...boxProps }: AchievementYes
   const iconColor = useColorModeValue(achieved ? 'green.500' : 'fg.muted', achieved ? 'green.300' : 'fg.muted')
   const { t } = useTranslation('accounts')
   return (
-    <Box bg='bg.surface' boxShadow="sm" {...boxProps} borderRadius="lg" w="md" mx="auto">
+    <Box bg='bg.surface' boxShadow="sm" {...boxProps} borderRadius="lg" w={{ base: '100%', md: 'md' }} mx="auto">
       <Box px={{ base: '4', md: '6' }} py={{ base: '5', md: '6' }}>
         <HStack justifyContent='space-between'>
           <Stack>
