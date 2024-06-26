@@ -1,7 +1,8 @@
 {
     "tabs": {
         "accounts": "Accounts",
-        "wallets": "Wallets"
+        "wallets": "Wallets",
+        "achievements": "Achievements"
     },
     "loginTitle": "Log in to your account",
     "linkedAccounts": "Your Linked Accounts",
@@ -60,7 +61,7 @@
     "vibrantSyncSuccessImageAltText": "Vibrant Sync Success Image",
 
     "referralTitle": "Share Reach Your People with your friends",
-    "referralDescription": "Invite your friends to join Reach Your People and increase your chances at a Spacebudz NFT when they sign up.",
+    "referralDescription": "Invite your friends to join Reach Your People and increase your chances at a Spacebudz NFT when they sign up. Check your Achievements tab for more information.",
     "referralLink": "Your Referral Link",
 
     "walletsTitle": "Your Wallet Settings",
@@ -98,9 +99,21 @@
         },
         "step4": {
             "title": "Invite your friends",
-            "description": "Share Reach Your People with your friends and increase your chances at a Spacebudz NFT when they sign up. Use the referral link below and as soon as someone signs up with it, you will unlock this achievement."
+            "description": "Share Reach Your People with your friends! Each one will increase your chance at a Spacebudz NFT. Use the referral link below and as soon as someone signs up with it, you will unlock this. You have up to 50 entries to gain and can check your progress in the Achievements tab."
         },
         "doNotShowAgain": "Do not show again",
         "complete": "Mark complete"
+    },
+    "achievements": {
+        "title": "Achievements for {{displayName}}",
+        "description": "Complete achievements to earn rewards and show off your engagement. Some achievements are hidden and will be revealed when you complete them, others are simply there for you to turn into action.",
+        "signup": {
+            "title": "Join the club, we have cookies",
+            "description": "Sign up for Reach Your People and start your journey. Joining our app gives you one entry into the Spacebudz NFT giveaway."
+        },
+        "referral": {
+            "title": "\"No, of course you are not my exit liquidity!\"",
+            "description": "For each person that signs up with for RYP with a social media account or wallet via your referral link on the Accounts tab, you gain one entry into the Spacebudz NFT giveaway. The more people you invite, the more chances you have to win."
+        }
     }
 }

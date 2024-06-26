@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { Container, Box, Stack, Tabs, TabList, Tab, TabIndicator, TabPanels, TabPanel, useBreakpointValue } from '@chakra-ui/react';
 import { Account, GetLinkedExternalAccounts200ResponseInner } from '../lib/ryp-subscription-api';
-
 import useTranslation from 'next-translate/useTranslation';
 import LinkedAccounts from './LinkedAccounts';
 import WalletSettingsList from './wallets/WalletSettingsList';
-import { useRouter } from 'next/router';
+import Achievements from './account/Achievements';
+import { Achievement } from '@/lib/types/Achievement';
 
 
 type AccountsPageProps = {
@@ -13,12 +13,13 @@ type AccountsPageProps = {
   linkedAccounts: GetLinkedExternalAccounts200ResponseInner[];
   accountSettings: Record<string, string>;
   currentTab: string;
+  achievements?: Achievement[];
 };
 
-const tabs = ['accounts', 'wallets'];
-const tabUrls = ['/account', '/account/wallets'];
+const tabs = ['accounts', 'wallets', 'achievements'];
+const tabUrls = ['/account', '/account/wallets', '/account/achievements'];
 
-export default function AccountsPage({ account, accountSettings, linkedAccounts, currentTab }: AccountsPageProps) {
+export default function AccountsPage({ account, accountSettings, linkedAccounts, achievements, currentTab }: AccountsPageProps) {
   const [tabIndex, setTabIndex] = useState(tabs.indexOf(currentTab));
   const tabOrientation = useBreakpointValue({ base: 'horizontal', md: 'vertical' }) as "vertical" | "horizontal";
   const { t } = useTranslation('accounts');
@@ -48,6 +49,9 @@ export default function AccountsPage({ account, accountSettings, linkedAccounts,
           </TabPanel>
           <TabPanel>
             <WalletSettingsList account={account} wallets={linkedAccounts.filter((account) => account.externalAccount.type === 'cardano')} />
+          </TabPanel>
+          <TabPanel>
+            <Achievements account={account} achievements={achievements ?? []} />
           </TabPanel>
         </TabPanels>
       </Stack>
