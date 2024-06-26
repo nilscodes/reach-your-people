@@ -31,7 +31,7 @@ export const VerifiedPickerButton = (props: VerifiedPickerButtonProps) => {
         borderColor={mode('gray.200', 'gray.600')}
         _checked={{
           color: mode('brand.500', 'brand.200'),
-          bg: mode('brand.50', transparentize('brand.200', 0.12)(theme)),
+          bg: mode('gray.200', transparentize('brand.200', 0.12)(theme)),
           borderColor: mode('brand.500', 'brand.200'),
           borderWidth: '2px',
         }}

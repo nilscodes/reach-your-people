@@ -1,10 +1,10 @@
 import { getServerSession } from "next-auth";
-import { useSession } from "next-auth/react"
-import LoginPage from "./login-page";
+import LoginPage from "../../components/login/LoginPage";
 import { getNextAuthOptions } from "../api/auth/[...nextauth]";
+import Head from "next/head";
 
 export default function Home() {
-  const { data: session } = useSession()
+  // const { data: session } = useSession()
 
   // if (session?.userId) {
   //   const user = await findUserById(session.userId);
@@ -12,8 +12,12 @@ export default function Home() {
 
   //   return <LoginPage accounts={accounts} user={user} />;
   // }
-
-  return <LoginPage />;
+  return (<>
+    <Head>
+      <title>RYP: Login</title>
+    </Head>
+    <LoginPage />
+  </>);
 }
 
 export async function getServerSideProps(context: any) {

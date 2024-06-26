@@ -1,5 +1,11 @@
-import CardanoLoginPage from "./cardano-login-page";
+import Head from "next/head";
+import CardanoLoginPage from "../../../components/login/CardanoLoginPage";
 
 export default function Home() {
-  return <CardanoLoginPage />;
+  return (<>
+    <Head>
+      <title>RYP: Login</title>
+    </Head>
+    <CardanoLoginPage />
+  </>);
 }
