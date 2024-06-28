@@ -121,6 +121,26 @@ paths:
       x-stoplight:
         id: 2bracyiadlely
       description: Get an announcement and its details and status by announcement UUID
+  '/accounts/{accountId}/externalaccounts/{externalAccountId}/test':
+    parameters:
+      - $ref: ./common-schemas.yaml#/components/parameters/accountId
+      - $ref: ./common-schemas.yaml#/components/parameters/externalAccountId
+    post:
+      summary: Send test announcement to account
+      tags: []
+      responses:
+        '201':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicAnnouncement'
+          headers:
+            Location:
+              schema:
+                type: string
+              description: URL to retrieve the status of the test announcement
+      operationId: sendTestAnnouncement
 tags:
   - name: publishing
     description: Related to publishing content for subscribers
@@ -141,6 +161,12 @@ components:
         - title
         - content
       properties:
+        id:
+          type: string
+          x-stoplight:
+            id: d7kmpv0pcy8uh
+          format: uuid
+          readOnly: true
         author:
           type: integer
           format: int64
@@ -164,6 +190,13 @@ components:
             $ref: ./common-schemas.yaml#/components/schemas/TokenPolicyId
             x-stoplight:
               id: p55cb7tf2uzhm
+        type:
+          x-stoplight:
+            id: pqmcs1vtsuj7m
+          enum:
+            - STANDARD
+            - TEST
+          default: 'STANDARD'
     Announcement:
       title: Announcement
       x-stoplight:

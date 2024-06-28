@@ -1,13 +1,16 @@
 package io.vibrantnet.ryp.core.publishing.service
 
 import io.ryp.shared.model.BasicAnnouncementDto
+import io.ryp.shared.model.BasicAnnouncementWithIdDto
 import io.vibrantnet.ryp.core.publishing.model.AnnouncementDto
 import io.vibrantnet.ryp.core.publishing.model.PublishingPermissions
+import io.vibrantnet.ryp.core.publishing.persistence.Announcement
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import java.util.*
 
 interface AnnouncementsApiService {
+    fun createAnnouncement(announcement: BasicAnnouncementWithIdDto, projectId: Long): Mono<Announcement>
 
     /**
      * POST /announcements/{projectId} : Publish new announcement for a specific project

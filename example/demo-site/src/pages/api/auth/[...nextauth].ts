@@ -78,6 +78,14 @@ export const getNextAuthOptions = <Req extends Request, Res extends Response>(
               // TODO Prevent linking more than one non-cardano account of the same provider
               const linkedExternalAccount = (await coreSubscriptionApi.linkExternalAccount(currentUserId, externalAccount.id!)).data;
               await makeDefaultNotificationsAccountIfNecessary(existingLinkedAccounts, externalAccount, linkedExternalAccount, currentUserId);
+            } else {
+              // Update lastConfirmed time of the corresponding linked account if it already exists, as we require revalidation for certain actions
+              const linkedAccount = existingLinkedAccounts.find((linkedAccount) => linkedAccount.externalAccount.type === newExternalAccountInfo.type && linkedAccount.externalAccount.referenceId === newExternalAccountInfo.referenceId);
+              if (linkedAccount) {
+                await coreSubscriptionApi.updateLinkedExternalAccount(currentUserId, linkedAccount.externalAccount.id!, {
+                  lastConfirmed: new Date().toISOString(),
+                });
+              }
             }
             return "/account"; // Prevent the actual login flow, we just linked a new external account and don't need to log anyone in. Redirect to the dashboard instead.
           } else if (account) {

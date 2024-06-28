@@ -9,6 +9,9 @@ data class BasicAnnouncementDto @JsonCreator constructor(
     @JsonProperty("author", required = true)
     val author: Long,
 
+    @JsonProperty("type", required = false)
+    val type: AnnouncementType = AnnouncementType.STANDARD,
+
     @JsonProperty("title", required = true)
     val title: String,
 
@@ -23,7 +26,7 @@ data class BasicAnnouncementDto @JsonCreator constructor(
     val policies: List<String>? = null,
 ) {
     fun toBasicAnnouncementWithIdDto(id: UUID, link: String): BasicAnnouncementWithIdDto {
-        return BasicAnnouncementWithIdDto(id, author, title, content, link, externalLink, policies)
+        return BasicAnnouncementWithIdDto(id, type, author, title, content, link, externalLink, policies)
     }
 }
 
@@ -31,6 +34,9 @@ data class BasicAnnouncementWithIdDto @JsonCreator constructor(
     @JsonProperty("id", required = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     val id: UUID,
+
+    @JsonProperty("type", required = false)
+    val type: AnnouncementType = AnnouncementType.STANDARD,
 
     @JsonProperty("author", required = true)
     val author: Long,
@@ -51,6 +57,11 @@ data class BasicAnnouncementWithIdDto @JsonCreator constructor(
     @field:ValidPolicyList
     val policies: List<String>? = null,
 )
+
+enum class AnnouncementType {
+    STANDARD,
+    TEST,
+}
 
 
 

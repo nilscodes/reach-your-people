@@ -97,7 +97,7 @@ class AnnouncementsApiServiceVibrant(
             }
     }
 
-    private fun createAnnouncement(
+    override fun createAnnouncement(
         announcement: BasicAnnouncementWithIdDto,
         projectId: Long
     ): Mono<Announcement> {

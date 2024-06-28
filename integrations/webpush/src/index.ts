@@ -40,7 +40,7 @@ type BasicProjectDto = {
 type MessageDto = {
   referenceId: string; // Unused
   announcement: BasicAnnouncementDto;
-  metadata: string; // Base64 encoded subscription for Push API
+  metadata?: string; // Base64 encoded subscription for Push API
   project: BasicProjectDto;
 }
 
@@ -121,27 +121,31 @@ const connectToAmqp = async () => {
     const queue = {
       name: 'pushapi',
       consume: async (queueChannel: amqplib.Channel, msg: MessageDto) => {
-        const subscription = JSON.parse(Buffer.from(msg.metadata, 'base64').toString());
-        try {
-          const body = stripMarkdown(msg.announcement.content);
-          const payload = JSON.stringify({
-            title: msg.announcement.title,
-            body,
-            icon: '/logo192.png',
-            url: msg.announcement.link,
-          });
-          const response = await webpush.sendNotification(subscription, payload);
-          logger.debug({ msg: 'Notification sent successfully:', response });
-          sendStatistics(queueChannel, 'statistics-pushapi', {
-            announcementId: msg.announcement.id,
-            statistics: {
-              delivered: 1,
-            },
-          });
-          return;
-        } catch (e: any) {
-          // TODO handle 410 error from Google API as subscription is no longer valid
-          logger.error({ msg: `Error sending push API message to subscription for user with ID ${msg.referenceId}`, error: e });
+        if (msg.metadata !== undefined) {
+          const subscription = JSON.parse(Buffer.from(msg.metadata, 'base64').toString());
+          try {
+            const body = stripMarkdown(msg.announcement.content);
+            const payload = JSON.stringify({
+              title: msg.announcement.title,
+              body,
+              icon: '/logo192.png',
+              url: msg.announcement.link,
+            });
+            const response = await webpush.sendNotification(subscription, payload);
+            logger.debug({ msg: 'Notification sent successfully:', response });
+            sendStatistics(queueChannel, 'statistics-pushapi', {
+              announcementId: msg.announcement.id,
+              statistics: {
+                delivered: 1,
+              },
+            });
+            return;
+          } catch (e: any) {
+            // TODO handle 410 error from Google API as subscription is no longer valid
+            logger.error({ msg: `Error sending push API message to subscription for user with ID ${msg.referenceId}`, error: e });
+          }
+        } else {
+          logger.error({ msg: `No metadata provided for message with announcement ID ${msg.announcement.id} for user with ID ${msg.referenceId}` })
         }
         sendStatistics(queueChannel, 'statistics-pushapi', {
           announcementId: msg.announcement.id,

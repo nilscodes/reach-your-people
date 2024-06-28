@@ -271,6 +271,12 @@ export interface GetLinkedExternalAccounts200ResponseInner {
     'lastConfirmed'?: string;
     /**
      * 
+     * @type {string}
+     * @memberof GetLinkedExternalAccounts200ResponseInner
+     */
+    'lastTested'?: string;
+    /**
+     * 
      * @type {Array<string>}
      * @memberof GetLinkedExternalAccounts200ResponseInner
      */
@@ -575,6 +581,12 @@ export interface LinkExternalAccount200Response {
     'lastConfirmed'?: string;
     /**
      * 
+     * @type {string}
+     * @memberof LinkExternalAccount200Response
+     */
+    'lastTested'?: string;
+    /**
+     * 
      * @type {Array<string>}
      * @memberof LinkExternalAccount200Response
      */
@@ -793,13 +805,19 @@ export interface UpdateLinkedExternalAccountRequest {
      * @type {Array<string>}
      * @memberof UpdateLinkedExternalAccountRequest
      */
-    'settings': Array<UpdateLinkedExternalAccountRequestSettingsEnum>;
+    'settings'?: Array<UpdateLinkedExternalAccountRequestSettingsEnum>;
     /**
      * 
      * @type {string}
      * @memberof UpdateLinkedExternalAccountRequest
      */
     'lastConfirmed'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UpdateLinkedExternalAccountRequest
+     */
+    'lastTested'?: string;
 }
 
 export const UpdateLinkedExternalAccountRequestSettingsEnum = {

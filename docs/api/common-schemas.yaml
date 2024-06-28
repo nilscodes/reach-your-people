@@ -435,20 +435,27 @@ components:
           type: string
           format: date-time
           example: '2021-11-10T13:20:57Z'
+        lastTested:
+          readOnly: true
+          type: string
+          format: date-time
+          example: '2021-11-10T13:20:57Z'
         settings:
           type: array
           items:
             $ref: '#/components/schemas/ExternalAccountSetting'
     LinkedExternalAccountPartial:
       type: object
-      required:
-        - settings
       properties:
         settings:
           type: array
           items:
             $ref: '#/components/schemas/ExternalAccountSetting'
         lastConfirmed:
+          type: string
+          format: date-time
+          example: '2021-11-10T13:20:57Z'
+        lastTested:
           type: string
           format: date-time
           example: '2021-11-10T13:20:57Z'

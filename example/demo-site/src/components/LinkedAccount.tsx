@@ -1,10 +1,13 @@
 import { CreateExternalAccountRequest, GetLinkedExternalAccounts200ResponseInner, GetLinkedExternalAccounts200ResponseInnerSettingsEnum } from '../lib/ryp-subscription-api';
-import { Box, HStack, IconButton, Menu, MenuButton, MenuItem, MenuList, Stack, Tag, Text, useToast } from '@chakra-ui/react'
+import { Box, Button, HStack, IconButton, Menu, MenuButton, MenuItem, MenuList, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Stack, Tag, Text, useDisclosure, useToast } from '@chakra-ui/react'
 import { Link } from '@chakra-ui/next-js'
 import useTranslation from 'next-translate/useTranslation';
 import { FiMoreVertical } from 'react-icons/fi';
 import { MdLinkOff, MdNotificationsActive } from 'react-icons/md';
+import { GiCorkedTube } from 'react-icons/gi';
 import { providerList } from './ProviderIcons';
+import { useState } from 'react';
+import { TestNotificationModal } from './linkedaccounts/TestNotificationModal';
 
 type LinkedAccountsProps = {
   linkedAccount: GetLinkedExternalAccounts200ResponseInner;
@@ -25,14 +28,17 @@ const buildUrlForExternalAccount = (externalAccount: CreateExternalAccountReques
 export const LinkedAccount = ({
   linkedAccount, icon, canRemove, onRemove, makeDefaultForNotifications, showUrl,
 }: LinkedAccountsProps) => {
+  const [testType, setTestType] = useState('discord');
   const { t } = useTranslation('accounts');
   const { t: tc } = useTranslation('common');
   const toast = useToast();
+  const { isOpen: isTestOpen, onOpen: onOpenTest, onClose: onCloseTest } = useDisclosure();
   const providerName = providerList.find((provider) => provider.id === linkedAccount.externalAccount.type)?.id ?? linkedAccount.externalAccount.type;
   const url = showUrl ? buildUrlForExternalAccount(linkedAccount.externalAccount) : '';
   const hasUrl = url.length > 0;
   const tags: string[] = [];
   const canReceiveNotifications = linkedAccount.externalAccount.type !== 'cardano';
+  const canBeTested = canReceiveNotifications && linkedAccount.externalAccount.type !== 'sms';
 
   let isNotDefault = false;
   if (canReceiveNotifications && linkedAccount.settings?.includes(GetLinkedExternalAccounts200ResponseInnerSettingsEnum.DefaultForNotifications)) {
@@ -72,28 +78,36 @@ export const LinkedAccount = ({
 
   return (<Box as="section">
     <Stack
-      direction={{ base: 'column', md: 'row' }}
+      direction='row'
       spacing={{ base: '5', md: '6' }}
       justify="space-between"
+      alignItems={{ base: "flex-start", md: 'center' }}
     >
-      <Stack spacing="1" flexGrow={1}>
-        <HStack>
-          {icon}
-          <Text textStyle="lg" fontWeight="medium">
-            {tc(`types.${providerName}`)}
+      <Stack
+        direction={{ base: 'column', md: 'row' }}
+        spacing={{ base: '5', md: '6' }}
+        justify="space-between"
+        flexGrow={1}
+      >
+        <Stack spacing="1">
+          <HStack>
+            {icon}
+            <Text textStyle="lg" fontWeight="medium">
+              {tc(`types.${providerName}`)}
+            </Text>
+          </HStack>
+          <Text textStyle="sm" color="fg.muted">
+            {hasUrl && <Link href={url} isExternal>{linkedAccount.externalAccount.displayName}</Link>}
+            {!hasUrl && linkedAccount.externalAccount.displayName}
           </Text>
-        </HStack>
-        <Text textStyle="sm" color="fg.muted">
-          {hasUrl && <Link href={url} isExternal>{linkedAccount.externalAccount.displayName}</Link>}
-          {!hasUrl && linkedAccount.externalAccount.displayName}
-        </Text>
-      </Stack>
-      <Stack spacing="1" alignItems="center" flexDirection="row">
-        {tags.map((tag) => (
-          <Tag as="div" key={tag} textStyle="sm" color="fg.muted">
-            {tag}
-          </Tag>
-        ))}
+        </Stack>
+        <Stack spacing="1" alignItems="center" flexDirection="row">
+          {tags.map((tag) => (
+            <Tag as="div" key={tag} textStyle="sm" color="fg.muted">
+              {tag}
+            </Tag>
+          ))}
+        </Stack>
       </Stack>
       <Box display="flex" alignItems="center" flexDirection="row">
         <Menu>
@@ -113,6 +127,17 @@ export const LinkedAccount = ({
                   {t('makeDefaultForNotifications')}
                 </MenuItem>
               )}
+              {canBeTested && (
+                <MenuItem
+                  onClick={() => {
+                    setTestType(linkedAccount.externalAccount.type);
+                    onOpenTest();
+                  }}
+                  icon={<GiCorkedTube size="1.5em" />}
+                >
+                  {t('testNotifications')}
+                </MenuItem>
+              )}
               <MenuItem
                 onClick={() => checkAndRemove(linkedAccount.externalAccount.id!)}
                 icon={<MdLinkOff size="1.5em" />}
@@ -124,5 +149,23 @@ export const LinkedAccount = ({
           </Menu>
       </Box>
     </Stack>
+    {canBeTested && (
+      <Modal isOpen={isTestOpen} onClose={onCloseTest} isCentered size='2xl'>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>{t('notificationTest.modalTitle')}</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <TestNotificationModal testType={testType} externalAccountId={linkedAccount.externalAccount.id!} />
+          </ModalBody>
+
+          <ModalFooter mb="2">
+            <Button variant='outline' onClick={onCloseTest}>
+              {t('notificationTest.close')}
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+    )}
   </Box>)
 };
