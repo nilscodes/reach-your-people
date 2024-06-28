@@ -171,6 +171,12 @@ export interface Audience {
  */
 export interface BasicAnnouncement {
     /**
+     * 
+     * @type {string}
+     * @memberof BasicAnnouncement
+     */
+    'id'?: string;
+    /**
      * The subscription service account ID of the user account submitting the announcement
      * @type {number}
      * @memberof BasicAnnouncement
@@ -200,7 +206,21 @@ export interface BasicAnnouncement {
      * @memberof BasicAnnouncement
      */
     'policies'?: Array<string>;
+    /**
+     * 
+     * @type {string}
+     * @memberof BasicAnnouncement
+     */
+    'type'?: BasicAnnouncementTypeEnum;
 }
+
+export const BasicAnnouncementTypeEnum = {
+    Standard: 'STANDARD',
+    Test: 'TEST'
+} as const;
+
+export type BasicAnnouncementTypeEnum = typeof BasicAnnouncementTypeEnum[keyof typeof BasicAnnouncementTypeEnum];
+
 /**
  * 
  * @export
@@ -529,6 +549,44 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
                 options: localVarRequestOptions,
             };
         },
+        /**
+         * 
+         * @summary Send test announcement to account
+         * @param {number} accountId The numeric ID of an account
+         * @param {number} externalAccountId The numeric ID of an external account
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        sendTestAnnouncement: async (accountId: number, externalAccountId: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'accountId' is not null or undefined
+            assertParamExists('sendTestAnnouncement', 'accountId', accountId)
+            // verify required parameter 'externalAccountId' is not null or undefined
+            assertParamExists('sendTestAnnouncement', 'externalAccountId', externalAccountId)
+            const localVarPath = `/accounts/{accountId}/externalaccounts/{externalAccountId}/test`
+                .replace(`{${"accountId"}}`, encodeURIComponent(String(accountId)))
+                .replace(`{${"externalAccountId"}}`, encodeURIComponent(String(externalAccountId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
     }
 };
 
@@ -593,6 +651,20 @@ export const DefaultApiFp = function(configuration?: Configuration) {
             const localVarOperationServerBasePath = operationServerMap['DefaultApi.publishAnnouncementForProject']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
+        /**
+         * 
+         * @summary Send test announcement to account
+         * @param {number} accountId The numeric ID of an account
+         * @param {number} externalAccountId The numeric ID of an external account
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async sendTestAnnouncement(accountId: number, externalAccountId: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<BasicAnnouncement>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.sendTestAnnouncement(accountId, externalAccountId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DefaultApi.sendTestAnnouncement']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
     }
 };
 
@@ -644,6 +716,17 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
          */
         publishAnnouncementForProject(projectId: number, publishAnnouncementForProjectRequest: PublishAnnouncementForProjectRequest, options?: any): AxiosPromise<void> {
             return localVarFp.publishAnnouncementForProject(projectId, publishAnnouncementForProjectRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Send test announcement to account
+         * @param {number} accountId The numeric ID of an account
+         * @param {number} externalAccountId The numeric ID of an external account
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        sendTestAnnouncement(accountId: number, externalAccountId: number, options?: any): AxiosPromise<BasicAnnouncement> {
+            return localVarFp.sendTestAnnouncement(accountId, externalAccountId, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -703,6 +786,19 @@ export class DefaultApi extends BaseAPI {
      */
     public publishAnnouncementForProject(projectId: number, publishAnnouncementForProjectRequest: PublishAnnouncementForProjectRequest, options?: RawAxiosRequestConfig) {
         return DefaultApiFp(this.configuration).publishAnnouncementForProject(projectId, publishAnnouncementForProjectRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Send test announcement to account
+     * @param {number} accountId The numeric ID of an account
+     * @param {number} externalAccountId The numeric ID of an external account
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DefaultApi
+     */
+    public sendTestAnnouncement(accountId: number, externalAccountId: number, options?: RawAxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).sendTestAnnouncement(accountId, externalAccountId, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

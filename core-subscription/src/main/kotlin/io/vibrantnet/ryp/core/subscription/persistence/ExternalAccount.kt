@@ -3,6 +3,7 @@ package io.vibrantnet.ryp.core.subscription.persistence
 import io.ryp.shared.model.ExternalAccountDto
 import jakarta.persistence.*
 import java.time.OffsetDateTime
+import java.util.*
 
 @Entity
 @Table(name = "external_accounts")
@@ -28,7 +29,7 @@ class ExternalAccount(
         @Column(name = "account_type")
         var type: String,
 
-        @Basic(fetch = FetchType.LAZY)
+        @Basic(fetch = FetchType.EAGER)
         @Column(name = "metadata", columnDefinition = "bytea")
         var metadata: ByteArray? = null,
 ) {
@@ -41,6 +42,14 @@ class ExternalAccount(
         displayName = displayName,
         registrationTime = registrationTime,
         type = type,
+        // Not ideal that we do this for all metadata-containing external accounts, might be worth revisiting
+        metadata = metadata.let { metadata ->
+            if (metadata != null) {
+                Base64.getEncoder().encodeToString(metadata)
+            } else {
+                null
+            }
+        },
     )
 
     override fun equals(other: Any?): Boolean {

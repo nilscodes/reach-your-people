@@ -2,15 +2,23 @@ import { getServerSession } from "next-auth";
 import { getNextAuthOptions } from "../api/auth/[...nextauth]";
 import { coreSubscriptionApi } from "@/lib/core-subscription-api";
 import { InferGetServerSidePropsType } from "next";
-import { Account } from "../../lib/ryp-subscription-api";
+import { Account, ListProjects200Response } from "../../lib/ryp-subscription-api";
 import ViewAnnouncement from "@/components/announcements/ViewAnnouncement";
 import { corePublishingApi } from "@/lib/core-publishing-api";
 import { Announcement } from "@/lib/ryp-publishing-api";
 import Head from "next/head";
+import { Project } from "@/lib/types/Project";
 
 const fallbackAuthor: Account = {
   id: 0,
   displayName: "Deleted",
+};
+
+const fallbackProject: ListProjects200Response = {
+  id: 0,
+  name: "Deleted",
+  logo: '',
+  url: '',
 };
 
 /*
@@ -50,7 +58,15 @@ export async function getServerSideProps(context: any) {
   const fullAnnouncement = (await corePublishingApi.getAnnouncementById(announcementId)).data;
   const announcement = getPublicAnnouncement(fullAnnouncement);
   const authorId = Number(announcement.announcement.actor.id.split('/').pop());
-  const project = (await coreSubscriptionApi.getProject(announcement.projectId as number)).data;
+  let project = fallbackProject;
+  if (announcement.projectId > 0) {
+    try {
+      project = (await coreSubscriptionApi.getProject(announcement.projectId as number)).data;
+    } catch (error) {
+      // Ignore deleted projects, but log the error
+      console.error(error);
+    }
+  }
   let author = fallbackAuthor;
   try {
     author = (await coreSubscriptionApi.getAccountById(authorId)).data;

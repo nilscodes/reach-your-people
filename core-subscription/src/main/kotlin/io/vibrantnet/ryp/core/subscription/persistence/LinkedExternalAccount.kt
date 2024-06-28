@@ -37,9 +37,13 @@ class LinkedExternalAccount(
     @Column(name = "last_confirmed")
     @Temporal(TemporalType.TIMESTAMP)
     var lastConfirmed: OffsetDateTime? = null,
+
+    @Column(name = "last_tested")
+    @Temporal(TemporalType.TIMESTAMP)
+    var lastTested: OffsetDateTime? = null,
 ) {
     override fun toString(): String {
-        return "LinkedExternalAccount(externalAccountId=${externalAccount.id}, accountId=$accountId, linkTime=$linkTime, role=$role, externalAccountSettings=$settings, lastConfirmed=$lastConfirmed)"
+        return "LinkedExternalAccount(externalAccountId=${externalAccount.id}, accountId=$accountId, linkTime=$linkTime, role=$role, externalAccountSettings=$settings, lastConfirmed=$lastConfirmed, lastTested=$lastTested)"
     }
 
     fun toDto() = LinkedExternalAccountDto(
@@ -49,6 +53,7 @@ class LinkedExternalAccount(
         role = role,
         settings = settingsAsSet(),
         lastConfirmed = lastConfirmed,
+        lastTested = lastTested,
     )
 
     fun settingsAsSet(): Set<ExternalAccountSetting> {
@@ -78,6 +83,7 @@ class LinkedExternalAccount(
         if (role != other.role) return false
         if (settings != other.settings) return false
         if (lastConfirmed != other.lastConfirmed) return false
+        if (lastTested != other.lastTested) return false
 
         return true
     }
@@ -88,8 +94,8 @@ class LinkedExternalAccount(
         result = 31 * result + role.hashCode()
         result = 31 * result + settings.hashCode()
         result = 31 * result + (lastConfirmed?.hashCode() ?: 0)
+        result = 31 * result + (lastTested?.hashCode() ?: 0)
         return result
     }
-
 
 }

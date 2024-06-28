@@ -4,8 +4,9 @@ import { Subscription } from "./types/Subscription";
 import { SubscriptionStatus } from "./types/SubscriptionStatus";
 import { AnnouncementFormData } from "@/components/projects/PublishAnnouncement";
 import { GetLinkedExternalAccounts200ResponseInner, GetLinkedExternalAccounts200ResponseInnerSettingsEnum, ProjectNotificationSetting, Setting } from "./ryp-subscription-api";
-import { PublishingPermissions } from "./ryp-publishing-api";
+import { BasicAnnouncement, PublishingPermissions } from "./ryp-publishing-api";
 import { Achievement } from "./types/Achievement";
+import { TestStatusObject } from "./types/TestStatus";
 
 // function getRandomDelay(): Promise<void> {
 //   const delay = Math.random() * (500 - 30) + 30;
@@ -117,6 +118,14 @@ export class RypSiteApi {
 
   async updateFirstSteps(): Promise<Setting> {
     return (await axios.post(`${this.baseUrl}/account/settings/firststeps?update=true`)).data;
+  }
+
+  async sendTestNotification(externalAccountId: number, type: string): Promise<BasicAnnouncement> {
+    return (await axios.post(`${this.baseUrl}/account/externalaccounts/${externalAccountId}/test`, { type })).data
+  }
+
+  async getTestNotificationStatus(externalAccountId: number, announcementId: string): Promise<TestStatusObject> {
+    return (await axios.get(`${this.baseUrl}/account/externalaccounts/${externalAccountId}/test?announcementId=${announcementId}`)).data;
   }
 
   async updateLinkedExternalAccountSettings(externalAccountId: number, settings: GetLinkedExternalAccounts200ResponseInnerSettingsEnum[]): Promise<GetLinkedExternalAccounts200ResponseInner> {

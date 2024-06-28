@@ -14,7 +14,7 @@ interface UseStepProps {
   initialStep?: number
 }
 
-export const useStep = (props: UseStepProps): [number, Helpers] => {
+export default function useStep(props: UseStepProps): [number, Helpers] {
   const { maxStep, initialStep = 0 } = props
   const [currentStep, setCurrentStep] = useState(initialStep)
   const canGoToNextStep = useMemo(() => currentStep + 1 <= maxStep, [currentStep, maxStep])

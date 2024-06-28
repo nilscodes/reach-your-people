@@ -114,6 +114,9 @@ class AccountsApiServiceVibrant(
                 if (linkedExternalAccountPartial.lastConfirmed != null) {
                     linkedExternalAccount.lastConfirmed = linkedExternalAccountPartial.lastConfirmed
                 }
+                if (linkedExternalAccountPartial.lastTested != null) {
+                    linkedExternalAccount.lastTested = linkedExternalAccountPartial.lastTested
+                }
                 // Technically don't need the save call here if only the settings change, but it's a good way to ensure to not introduce bugs when the method is changed later
                 return Mono.just(linkedExternalAccountRepository.save(linkedExternalAccount).toDto())
             }

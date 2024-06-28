@@ -7,14 +7,14 @@ interface RadioCircleProps extends SquareProps {
 }
 
 export const StepCircle = (props: RadioCircleProps) => {
-  const { isCompleted, isActive } = props
+  const { isCompleted, isActive, ...rest } = props
   return (
     <Circle
       size="8"
       bg={isCompleted ? 'accent' : 'inherit'}
       borderWidth={isCompleted ? '0' : '2px'}
       borderColor={isActive ? 'accent' : 'inherit'}
-      {...props}
+      {...rest}
     >
       {isCompleted ? (
         <Icon as={HiCheck} color="fg.inverted" boxSize="5" />

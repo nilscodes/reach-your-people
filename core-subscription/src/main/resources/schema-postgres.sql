@@ -31,6 +31,7 @@ CREATE TABLE "linked_external_accounts"
     "external_account_id" BIGINT NOT NULL,
     "settings" BIT(16) NOT NULL DEFAULT B'1111111111111111',
     "last_confirmed"      timestamp,
+    "last_tested"         timestamp,
     UNIQUE ("account_id", "role", "external_account_id")
 );
 

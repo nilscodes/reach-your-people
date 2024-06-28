@@ -11,6 +11,7 @@
     "connectAccountsDescription": "Connect additional accounts to your Reach Your People account to add wallets or other social media connections.",
     "connectNotificationSystems": "Set up additional notifications",
     "unlink": "Unlink",
+    "testNotifications": "Test notification",
     "walletSignInCancelled": "Could not get signature from wallet. The signing flow was cancelled.",
     "cardanoWallet": "Cardano Wallet",
     "mobilePhoneSms": "Mobile Phone (SMS)",
@@ -21,6 +22,8 @@
     "lastUnlinkError": "You must have at least one linked social account and cannot remove the last wallet if you have only wallets connected.",
     "defaultForNotificationsError": "Select a new default notification account before removing this account.",
     "makeDefaultForNotifications": "Make default",
+    "noWallets": "No Wallets Connected",
+    "noWalletsDescription": "Currently, you have no wallets connected. Connect a wallet to receive notifications about your tokens, NFTs, and stake pool delegations.",
 
     "phoneCodeIncorrect": "The code was not correct.",
     "phoneVerified": "Phone number verified successfully!",
@@ -113,7 +116,44 @@
         },
         "referral": {
             "title": "\"No, of course you are not my exit liquidity!\"",
-            "description": "For each person that signs up with for RYP with a social media account or wallet via your referral link on the Accounts tab, you gain one entry into the Spacebudz NFT giveaway. The more people you invite, the more chances you have to win."
+            "description": "For each person that signs up to RYP with a social media account or wallet via your referral link on the Accounts tab, you gain one entry into the Spacebudz NFT giveaway. The more people you invite, the more chances you have to win."
+        }
+    },
+    "notificationTest": {
+        "modalTitle": "Test Notification",
+        "close": "Close",
+        "discord": {
+            "step1": {
+                "title": "Step 1: Send test message",
+                "description": "Click the button and we will send a test message to you via Discord.",
+                "sendTestMessage": "Send test message"
+            },
+            "step2": {
+                "title": "Step 2: Sending message",
+                "description": "We are sending you a message, hang tight."
+            },
+            "step3": {
+                "title": "Step 3: Check your Discord",
+                "descriptionSuccess": "Our system says the send was successful! Check your Discord for the test message. If you do not see it, please follow the link below and send a message to this user to allow messages from RYP, then run the test again.",
+                "descriptionError": "Our system says the send was not successful. Please follow the link below and send a message to this user to allow messages from RYP, then run the test again.",
+                "discordLink": "Send message to RYP"
+            }
+        },
+        "pushapi": {
+            "step1": {
+                "title": "Step 1: Send test message",
+                "description": "Click the button and we will send a test message to you via browser notification.",
+                "sendTestMessage": "Send test message"
+            },
+            "step2": {
+                "title": "Step 2: Sending message",
+                "description": "We are sending you a message, hang tight."
+            },
+            "step3": {
+                "title": "Step 3: Check your Browser",
+                "descriptionSuccess": "Our system says the send was successful! If you do not see it, please remove and re-add this notification type, as your notification subscription likely expired or was revoked.",
+                "descriptionError": "Our system says the send was not successful. Please remove and re-add this notification type, as your notification subscription likely expired or was revoked."
+            }
         }
     }
 }
