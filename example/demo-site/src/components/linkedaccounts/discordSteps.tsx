@@ -7,8 +7,11 @@ import { useEffect, useState } from "react"
 import NextLink from "../NextLink"
 import { TestStatus } from "@/lib/types/TestStatus"
 import { MdCheck, MdError } from "react-icons/md"
+import discordErrorInstructions from '../../../public/discord-steps.jpg'
+import Image from "../Image"
 
 const rypUserLink = process.env.NEXT_PUBLIC_RYP_DISCORD_USER_LINK ?? '';
+const rypDiscordLink = process.env.NEXT_PUBLIC_RYP_DISCORD_LINK ?? 'https://discord.gg/nzka3K2WUS';
 
 function DiscordStep1() {
   const { t } = useTranslation('accounts')
@@ -83,6 +86,17 @@ function DiscordStep3() {
         {t('notificationTest.discord.step3.discordLink')}
       </NextLink>
     </Box>
+    {status === TestStatus.Failed && (<>
+      <Text>{t('notificationTest.discord.step3.descriptionErrorDetails')}</Text>
+      <NextLink
+        href={rypDiscordLink}
+        isExternal
+      >
+        {t('notificationTest.discord.step3.joinDiscord')}
+      </NextLink>
+      <Image src={discordErrorInstructions} alt={t('notificationTest.discord.step3.imageAlt')} />
+    </>)}
+    
   </Stack>)
 
 }

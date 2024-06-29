@@ -136,7 +136,10 @@
                 "title": "Step 3: Check your Discord",
                 "descriptionSuccess": "Our system says the send was successful! Check your Discord for the test message. If you do not see it, please follow the link below and send a message to this user to allow messages from RYP, then run the test again.",
                 "descriptionError": "Our system says the send was not successful. Please follow the link below and send a message to this user to allow messages from RYP, then run the test again.",
-                "discordLink": "Send message to RYP"
+                "descriptionErrorDetails": "If you cannot send a message to the RYP user for any reason, please join our Discord below, and follow the instructions in the screenshot, then run the test again.",
+                "discordLink": "Send message to RYP",
+                "joinDiscord": "Join our Discord",
+                "imageAlt": "An image of the Discord user interface. The top left server menu is expanded and shows that the user should click on \"Privacy Settings\", and enable \"Direct Messages\" and \"Message Requests\" in the following dialog."
             }
         },
         "pushapi": {
