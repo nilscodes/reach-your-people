@@ -52,7 +52,7 @@ export default function Header() {
     }
   };
 
-  return (<Box borderBottomWidth="1px" bg="bg.surface" position="relative" zIndex="tooltip">
+  return (<Box borderBottomWidth="1px" bg="bg.surface" position="relative" zIndex="200">
     <Container py="4" maxW="100%">
       <HStack justify="space-between" spacing="8">
         <HStack spacing="10">
