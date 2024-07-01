@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Button, Stack, useToast, StackDivider } from '@chakra-ui/react';
+import { Container, Button, Stack, useToast, StackDivider, useDisclosure } from '@chakra-ui/react';
 import { Account, GetLinkedExternalAccounts200ResponseInner } from '../lib/ryp-subscription-api';
 import { CardanoIcon, providerList, providersConfig } from './ProviderIcons';
 import { signIn } from 'next-auth/react';
@@ -18,6 +18,8 @@ import useReferral from './hooks/useReferral';
 import Card from './Card';
 import FirstSteps from './account/FirstSteps';
 import { FirstStepsItems, bitmaskToEnum } from '@/lib/types/FirstSteps';
+import { CardanoHardwareWalletLoginModal } from './login/CardanoHardwareLogin';
+import cardanoWalletLogin from './login/CardanoLogin';
 
 type LinkedAccountsProps = {
   account: Account;
@@ -42,24 +44,16 @@ export default function LinkedAccounts({ account, accountSettings, linkedAccount
   const [showPushApiConnection, setShowPushApiConnection] = React.useState(false);
   const [firstSteps, setFirstSteps] = useState(bitmaskToEnum(+accountSettings['FIRST_STEPS'] ?? 0));
   const [wallets, setWallets] = useState<Wallet[]>([]);
+  const [hwWallet, setHwWallet] = useState<string | null>(null);
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const handleSignIn = (provider: string) => {
     signIn(provider);
   };
 
   const handleWalletSignIn = async (selectedWallet: string) => {
-    const activeWallet = await BrowserWallet.enable(selectedWallet);
-    const rewardAddresses = await activeWallet.getRewardAddresses();
-    const stakeAddress = rewardAddresses[0];
-    const addresses = await activeWallet.getUsedAddresses();
-    const nonceResponse = await api.createNonce(addresses[0], stakeAddress);
     try {
-      const signature = await activeWallet.signData(stakeAddress, nonceResponse.nonce);
-      signIn("cardano", {
-        stakeAddress,
-        signature: JSON.stringify(signature),
-        callbackUrl: '/account',
-      });
+      await cardanoWalletLogin(selectedWallet, api);
     } catch (error) {
       toast({
         title: t('walletSignInCancelled'),
@@ -70,6 +64,11 @@ export default function LinkedAccounts({ account, accountSettings, linkedAccount
         variant: "solid",
       });
     }
+  };
+
+  const handleHwSignIn = async (selectedWallet: string) => {
+    setHwWallet(selectedWallet);
+    onOpen()
   };
 
   useEffect(() => {
@@ -145,7 +144,7 @@ export default function LinkedAccounts({ account, accountSettings, linkedAccount
         </Stack>
       </Card>
       <Card heading={t('connectAccounts')} description={t('connectAccountsDescription')}>
-        {showWalletConnection && (<WalletLogin wallets={wallets} handleSignIn={handleWalletSignIn} onReturn={() => setShowWalletConnection(false)} />)}
+        {showWalletConnection && (<WalletLogin wallets={wallets} handleSignIn={handleWalletSignIn} handleHwSignIn={handleHwSignIn} onReturn={() => setShowWalletConnection(false)} />)}
         {showPhoneConnection && (<PhoneVerification onReturn={finalizePhoneAuth} />)}
         {showPushApiConnection && (<PushApiVerification onReturn={finalizePushApi} />)}
         {showSocialConnections && (<Stack spacing="3">
@@ -190,5 +189,6 @@ export default function LinkedAccounts({ account, accountSettings, linkedAccount
         </Stack>)}
       </Card>
     </Stack>
+    <CardanoHardwareWalletLoginModal isOpen={isOpen} onClose={onClose} currentWallet={hwWallet!} />
   </Container>);
 };
