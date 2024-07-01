@@ -23,11 +23,21 @@ const providers: any = [
         type: "text",
         placeholder: "{}",
       },
+      txCbor: {
+        label: "Transaction CBOR",
+        type: "text",
+        placeholder: "AABBCCDD...",
+      },
     },
     async authorize(credentials) {
       try {
         const api = new RypSiteApi(`${process.env.NEXTAUTH_URL!}/api`);
-        const confirmation = await api.verifySignature(JSON.parse(credentials!.signature), credentials!.stakeAddress);
+        let confirmation = false;
+        if (credentials!.txCbor) {
+          confirmation = await api.verifyTransaction(credentials!.txCbor);
+        } else {
+          confirmation = await api.verifySignature(JSON.parse(credentials!.signature), credentials!.stakeAddress);
+        }
         console.log('Confirmation', confirmation)
         if (confirmation) {
           return {
