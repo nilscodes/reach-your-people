@@ -17,6 +17,7 @@
     "mobilePhoneSms": "Mobile Phone (SMS)",
     "pushApi": "Browser Notification",
     "backToSocial": "Back to social logins",
+    "hardwareWalletName": "{{walletName}} (Hardware)",
     "defaultForNotifications": "Default for Notifications",
     "noNotifications": "No Notifications",
     "lastUnlinkError": "You must have at least one linked social account and cannot remove the last wallet if you have only wallets connected.",
@@ -24,6 +25,15 @@
     "makeDefaultForNotifications": "Make default",
     "noWallets": "No Wallets Connected",
     "noWalletsDescription": "Currently, you have no wallets connected. Connect a wallet to receive notifications about your tokens, NFTs, and stake pool delegations.",
+
+    "hardwareWallet": {
+        "title": "Hardware Wallets",
+        "signingTitle": "Sign in with your hardware wallet",
+        "signingDescription": "For Hardware wallets, the standard signing process is currently not available on Cardano.",
+        "signingDescription2": "Instead, you will be asked to sign an expired transaction, that has both a transfer from your own wallet to itself, and a delegation registration to verify your staking key.",
+        "signingDescription3": "The signed, already expired transaction will be discarded after verification and cannot be used for any other purpose by us.",
+        "signingButton": "Sign expired transaction"
+    },
 
     "phoneCodeIncorrect": "The code was not correct.",
     "phoneVerified": "Phone number verified successfully!",

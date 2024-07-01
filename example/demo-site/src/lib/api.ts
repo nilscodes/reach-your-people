@@ -31,6 +31,10 @@ export class RypSiteApi {
     return (await axios.post(`${this.baseUrl}/wallets/verify`, { signature, stakeAddress })).data;
   }
 
+  async verifyTransaction(txCbor: string): Promise<boolean> {
+    return (await axios.post(`${this.baseUrl}/wallets/verify`, { txCbor })).data
+  }
+
   async getBestHandle(stakeAddress: string): Promise<string> {
     return (await axios.get(`${this.baseUrl}/wallets/besthandle/${stakeAddress}`)).data;
   }
