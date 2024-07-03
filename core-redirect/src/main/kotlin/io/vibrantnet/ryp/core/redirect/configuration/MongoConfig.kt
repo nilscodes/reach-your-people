@@ -2,9 +2,12 @@ package io.vibrantnet.ryp.core.redirect.configuration
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Profile
 import org.springframework.core.convert.converter.Converter
 import org.springframework.data.auditing.DateTimeProvider
+import org.springframework.data.mongodb.config.EnableReactiveMongoAuditing
 import org.springframework.data.mongodb.core.convert.MongoCustomConversions
+import org.springframework.data.mongodb.repository.config.EnableReactiveMongoRepositories
 import java.time.LocalDateTime
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
@@ -12,8 +15,12 @@ import java.time.ZonedDateTime
 import java.time.temporal.TemporalAccessor
 import java.util.*
 
-
+@EnableReactiveMongoRepositories(
+    basePackages = ["io.vibrantnet.ryp.core.redirect.persistence"]
+)
+@EnableReactiveMongoAuditing(dateTimeProviderRef = "offsetDateTimeProvider")
 @Configuration
+@Profile("!test")
 class MongoConfig {
     @Bean
     fun customConversions(): MongoCustomConversions {

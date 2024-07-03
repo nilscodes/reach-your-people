@@ -1,5 +1,6 @@
 package io.vibrantnet.ryp.core.redirect.controller
 
+import io.vibrantnet.ryp.core.redirect.CoreRedirectConfiguration
 import io.vibrantnet.ryp.core.redirect.service.RedirectApiService
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
@@ -13,9 +14,9 @@ import reactor.core.publisher.Mono
 @RequestMapping("\${api.base-path:}")
 @CrossOrigin
 class RedirectApiController(
-    val service: RedirectApiService
+    val service: RedirectApiService,
+    val config: CoreRedirectConfiguration,
 ) {
-
 
     @RequestMapping(
         method = [RequestMethod.GET],
@@ -26,7 +27,10 @@ class RedirectApiController(
             .map {
                 val headers = HttpHeaders()
                 headers["Location"] = it
-                ResponseEntity(headers, HttpStatus.valueOf(301))
+                if (config.redirect.maxCacheAge > 0) {
+                    headers["Cache-Control"] = "max-age=${config.redirect.maxCacheAge}"
+                }
+                ResponseEntity(headers, HttpStatus.PERMANENT_REDIRECT)
             }
     }
 }

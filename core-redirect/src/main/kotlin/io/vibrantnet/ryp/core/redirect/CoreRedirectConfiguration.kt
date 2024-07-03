@@ -7,5 +7,10 @@ import org.springframework.boot.context.properties.bind.ConstructorBinding
 data class CoreRedirectConfiguration @ConstructorBinding constructor(
     val baseUrl: String,
     val shortUrl: String,
+    val redirect: RedirectConfiguration = RedirectConfiguration(),
+)
+
+data class RedirectConfiguration(
+    val maxCacheAge: Int = 86400,
 )
 

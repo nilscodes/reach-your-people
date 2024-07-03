@@ -120,8 +120,8 @@ paths:
       summary: Redirect to URL
       tags: []
       responses:
-        '301':
-          description: Moved Permanently
+        '308':
+          description: Permanent Redirect
           headers:
             Location:
               schema:

@@ -1,0 +1,10 @@
+{
+  "policies": [{
+    "policyId": "1234567890123456789012345678901234567890123456789012345678901234",
+    "permission": "PUBLISHING_MANUAL"
+  }, {
+    "policyId": "abcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcd",
+    "permission": "PUBLISHING_NOT_GRANTED"
+  }],
+  "accountId": 3
+}

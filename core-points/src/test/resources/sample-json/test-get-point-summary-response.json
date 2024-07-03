@@ -1,0 +1,16 @@
+[
+  {
+    "tokenId": 99,
+    "totalPointsClaimed": 100,
+    "totalPointsAvailable": 200,
+    "totalPointsSpent": 50,
+    "totalPointsClaimable": 150
+  },
+  {
+    "tokenId": 18,
+    "totalPointsClaimed": 1,
+    "totalPointsAvailable": 2,
+    "totalPointsSpent": 3,
+    "totalPointsClaimable": 4
+  }
+]

@@ -1,0 +1,24 @@
+[
+  {
+    "claimId": "signup-17",
+    "category": "signup",
+    "tokenId": 18,
+    "accountId": 12,
+    "points": 100,
+    "projectId": 119,
+    "claimed": false,
+    "createTime": "2021-01-01T00:00:00Z",
+    "expirationTime": "2025-02-01T00:00:00Z"
+  },
+  {
+    "claimId": "referral-19",
+    "category": "signup",
+    "tokenId": 18,
+    "accountId": 12,
+    "points": 100,
+    "projectId": 119,
+    "claimed": false,
+    "createTime": "2021-01-01T00:00:00Z",
+    "expirationTime": "2025-02-01T00:00:00Z"
+  }
+]

@@ -1,0 +1,51 @@
+{
+  "id": "f1b3b3b3-1b3b-1b3b-1b3b-1b3b3b3b3b3b",
+  "projectId": 15,
+  "announcement": {
+    "@context": "https://www.w3.org/ns/activitystreams",
+    "type": "Announce",
+    "id": "https://ryp.io/announcements/f1b3b3b3-1b3b-1b3b-1b3b-1b3b3b3b3b3b",
+    "actor": {
+      "type": "Person",
+      "id": "https://ryp.io/users/25",
+      "name": "Jeff Josh"
+    },
+    "object": {
+      "type": "Note",
+      "content": "# Heading\n**Content**",
+      "summary": "Title",
+      "url": "https://somewhere.else"
+    },
+    "attributedTo": {
+      "type": "Organization",
+      "id": "https://ryp.io/projects/15",
+      "name": "RYP Project 15"
+    },
+    "published": "2021-08-03T00:00:00+0000"
+  },
+  "status": "PUBLISHED",
+  "shortLink": "https://go.ryp.io/abcdef",
+  "audience": {
+    "policies": [
+      "abc"
+    ]
+  },
+  "statistics": {
+    "sent": {
+      "twilio": 2
+    },
+    "uniqueAccounts": 7,
+    "explicitSubscribers": 3,
+    "delivered": {
+      "twilio": 2
+    },
+    "failures": {
+      "twilio": 0
+    },
+    "views": {
+      "twilio": 1
+    }
+  },
+  "createdDate": "2021-08-01T00:00:00Z",
+  "modifiedDate": "2021-08-02T00:00:00Z"
+}

@@ -18,6 +18,7 @@ class RedirectApiServiceVibrant(
                 shortenedUrlRepository.save(it.copy(views = it.views + 1))
                     .thenReturn(buildUrl(it))
             }
+            .switchIfEmpty(Mono.error(NoSuchElementException("No URL found for shortcode $shortcode")))
     }
 
     fun buildUrl(shortenedUrl: ShortenedUrl) =

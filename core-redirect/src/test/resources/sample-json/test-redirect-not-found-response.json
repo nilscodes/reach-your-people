@@ -1,0 +1,9 @@
+{
+  "messages": [
+    {
+      "message": "No URL found for shortcode not-found"
+    }
+  ],
+  "httpStatus": "NOT_FOUND",
+  "httpStatusCode": 404
+}

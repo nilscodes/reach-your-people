@@ -77,7 +77,7 @@ class AnnouncementsApiServiceVibrant(
             }
     }
 
-    override fun getPublishingPermissionsForAccount(projectId: Long, accountId: Long): Mono<PublishingPermissions> {
+    override fun getPublishingPermissionsForAccount(projectId: Long, accountId: Long): Mono<PublishingPermissionsDto> {
         val linkedAccountsForAuthor = subscriptionService.getLinkedExternalAccounts(accountId)
         return subscriptionService.getProject(projectId)
             .flatMap { project ->
@@ -85,14 +85,14 @@ class AnnouncementsApiServiceVibrant(
                     .flatMap { policy ->
                         getAllVerificationStatusForAllLinkedAccounts(linkedAccountsForAuthor, policy)
                             .map { verified ->
-                                PolicyPublishingPermission(
+                                PolicyPublishingPermissionDto(
                                     policy.policyId,
                                     verified
                                 )
                             }
                     }.collectList()
                     .map {
-                        PublishingPermissions(it, accountId)
+                        PublishingPermissionsDto(it, accountId)
                     }
             }
     }
@@ -242,5 +242,6 @@ class AnnouncementsApiServiceVibrant(
     override fun getAnnouncementById(announcementId: UUID): Mono<AnnouncementDto> {
         return announcementsRepository.findById(announcementId.toString())
             .map { it.toDto() }
+            .switchIfEmpty(Mono.error(NoSuchElementException("Announcement with ID $announcementId not found.")))
     }
 }

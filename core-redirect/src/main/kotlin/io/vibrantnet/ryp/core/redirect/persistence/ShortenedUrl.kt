@@ -50,8 +50,6 @@ data class ShortenedUrl(
     )
 }
 
-
-
 fun newEntity(id: UUID, shortcode: String, shortenedUrlDto: ShortenedUrlDto) = ShortenedUrl(
     id = id.toString(),
     url = shortenedUrlDto.url,

@@ -4,12 +4,12 @@ import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty
 import jakarta.validation.constraints.Pattern
 
-data class PolicyPublishingPermission @JsonCreator constructor(
+data class PolicyPublishingPermissionDto @JsonCreator constructor(
     @field:Pattern(regexp = "^[A-Za-z0-9]{56}$")
     @JsonProperty("policyId")
     val policyId: String,
 
-    @get:JsonProperty("permission")
+    @JsonProperty("permission")
     val permission: PublishingPermissionStatus,
 )
 

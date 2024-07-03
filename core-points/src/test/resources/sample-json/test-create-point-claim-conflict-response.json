@@ -1,0 +1,9 @@
+{
+  "messages": [
+    {
+      "message": "Claim with ID signup-17 already exists"
+    }
+  ],
+  "httpStatus": "CONFLICT",
+  "httpStatusCode": 409
+}
