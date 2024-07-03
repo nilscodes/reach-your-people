@@ -7,8 +7,6 @@ import org.springframework.data.mongodb.config.EnableReactiveMongoAuditing
 import org.springframework.data.mongodb.repository.config.EnableReactiveMongoRepositories
 
 @SpringBootApplication
-@EnableReactiveMongoRepositories
-@EnableReactiveMongoAuditing(dateTimeProviderRef = "offsetDateTimeProvider")
 @EnableConfigurationProperties(CoreRedirectConfiguration::class)
 class CoreRedirectApplication
 

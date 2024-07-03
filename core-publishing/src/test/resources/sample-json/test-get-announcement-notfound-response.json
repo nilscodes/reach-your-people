@@ -1,0 +1,9 @@
+{
+  "messages": [
+    {
+      "message": "Announcement with ID f1b3b3b3-1b3b-1b3b-1b3b-1b3b3b3b3b3b not found."
+    }
+  ],
+  "httpStatus": "NOT_FOUND",
+  "httpStatusCode": 404
+}

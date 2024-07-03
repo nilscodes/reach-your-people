@@ -62,7 +62,7 @@ class PointsApiServiceVibrant(
             .associate { it.tokenId to it.points }
 
         val totalPointsSpent = pointsClaimRepository.getTotalPointsSpentByTokenIdAndAccountId(accountId)
-            .associate { it.tokenId to -it.points }
+            .associate { it.tokenId to it.points }
 
         val totalPointsClaimable = pointsClaimRepository.getTotalPointsClaimableByTokenIdAndAccountId(accountId)
             .associate { it.tokenId to it.points }
@@ -70,7 +70,8 @@ class PointsApiServiceVibrant(
         val totalPointsAvailable = pointsClaimRepository.getTotalPointsAvailableByTokenIdAndAccountId(accountId)
             .associate { it.tokenId to it.points }
 
-        val allTokenIds = (totalPointsClaimed.keys + totalPointsSpent.keys + totalPointsClaimable.keys + totalPointsAvailable.keys).toSet()
+        val allTokenIds =
+            (totalPointsClaimed.keys + totalPointsSpent.keys + totalPointsClaimable.keys + totalPointsAvailable.keys).toSet()
 
         val pointsSummaries = allTokenIds.map { tokenId ->
             PointsSummaryDto(
@@ -90,11 +91,14 @@ class PointsApiServiceVibrant(
         tokenId: Int,
         claimId: String
     ): Mono<PointsClaimDto> {
-        val pointsClaim = pointsClaimRepository.findById(claimId).get()
-        if (pointsClaim.accountId == accountId && pointsClaim.tokenId == tokenId) {
-            return Mono.just(pointsClaim.toDto())
+        val pointsClaimOptional = pointsClaimRepository.findById(claimId)
+        if (pointsClaimOptional.isPresent) {
+            val pointsClaim = pointsClaimOptional.get()
+            if (pointsClaim.accountId == accountId && pointsClaim.tokenId == tokenId) {
+                return Mono.just(pointsClaim.toDto())
+            }
         }
-        throw NoSuchElementException("Claim with ID $claimId does not exist for account $accountId and token $tokenId")
+        return Mono.error(NoSuchElementException("Claim with ID $claimId does not exist for account $accountId and token $tokenId"))
     }
 
     override fun updatePointClaim(
@@ -103,20 +107,26 @@ class PointsApiServiceVibrant(
         claimId: String,
         pointsClaimPartialDto: PointsClaimPartialDto
     ): Mono<PointsClaimDto> {
-        val pointsClaim = pointsClaimRepository.findById(claimId).get()
-        if (pointsClaim.accountId == accountId && pointsClaim.tokenId == tokenId) {
-            check(!pointsClaim.claimed) { "Claim with ID $claimId has already been claimed and cannot be modified" }
-            if (pointsClaimPartialDto.claimed == true) {
-                check(!pointsClaim.hasExpired()) { "Claim with ID $claimId expired on ${pointsClaim.expirationTime} and cannot be claimed" }
-                pointsClaim.claimTime = OffsetDateTime.now()
-                pointsClaim.claimed = true
-            } else {
-                // Can only change the expiration time if not claiming at the same time (otherwise might be able to have a claim that is already expired)
-                pointsClaim.expirationTime = pointsClaimPartialDto.expirationTime ?: pointsClaim.expirationTime
+        return Mono.justOrEmpty(pointsClaimRepository.findById(claimId))
+            .switchIfEmpty(Mono.error(NoSuchElementException("Claim with ID $claimId does not exist")))
+            .flatMap { pointsClaim ->
+                if (pointsClaim.accountId != accountId || pointsClaim.tokenId != tokenId) {
+                    // Claim exists, but not for the given account and token
+                    Mono.error(NoSuchElementException("Claim with ID $claimId does not exist for account $accountId and token $tokenId"))
+                } else if (pointsClaim.claimed) {
+                    Mono.error(IllegalStateException("Claim with ID $claimId has already been claimed and cannot be modified"))
+                } else if (pointsClaimPartialDto.claimed == true && pointsClaim.hasExpired()) {
+                    Mono.error(IllegalStateException("Claim with ID $claimId expired on ${pointsClaim.expirationTime} and cannot be claimed"))
+                } else {
+                    if (pointsClaimPartialDto.claimed == true) {
+                        pointsClaim.claimTime = OffsetDateTime.now()
+                        pointsClaim.claimed = true
+                    } else {
+                        // Can only change the expiration time if not claiming at the same time (otherwise might be able to have a claim that is already expired)
+                        pointsClaim.expirationTime = pointsClaimPartialDto.expirationTime ?: pointsClaim.expirationTime
+                    }
+                    Mono.just(pointsClaimRepository.save(pointsClaim).toDto())
+                }
             }
-            return Mono.just(pointsClaimRepository.save(pointsClaim).toDto())
-        }
-        // Claim exists, but not for the given account and token
-        throw NoSuchElementException("Claim with ID $claimId does not exist for account $accountId and token $tokenId")
     }
 }

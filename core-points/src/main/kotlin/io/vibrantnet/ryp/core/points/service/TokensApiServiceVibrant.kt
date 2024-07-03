@@ -10,7 +10,7 @@ import java.time.OffsetDateTime
 
 @Service
 class TokensApiServiceVibrant(
-    val pointsTokenRepository: PointsTokenRepository,
+    private val pointsTokenRepository: PointsTokenRepository,
 ) : TokensApiService {
     override fun listPointsTokens() = Flux.fromIterable(pointsTokenRepository.findAll().map { it.toDto() })
 

@@ -4,10 +4,10 @@ import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty
 import jakarta.validation.Valid
 
-data class PublishingPermissions @JsonCreator constructor(
+data class PublishingPermissionsDto @JsonCreator constructor(
     @field:Valid
     @JsonProperty("policies")
-    val policies: List<PolicyPublishingPermission>,
+    val policies: List<PolicyPublishingPermissionDto>,
 
     @JsonProperty("accountId")
     val accountId: Long,

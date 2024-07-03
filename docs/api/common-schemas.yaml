@@ -446,6 +446,8 @@ components:
             $ref: '#/components/schemas/ExternalAccountSetting'
     LinkedExternalAccountPartial:
       type: object
+      required:
+        - settings
       properties:
         settings:
           type: array

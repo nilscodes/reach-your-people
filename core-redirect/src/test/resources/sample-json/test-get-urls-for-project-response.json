@@ -1,0 +1,22 @@
+[
+  {
+    "id": "40000000-0000-0000-0000-000000000000",
+    "shortcode": "one",
+    "createTime": "2021-08-01T00:00:00Z",
+    "type": "EXTERNAL",
+    "status": "ACTIVE",
+    "url": "https://example.com",
+    "projectId": 1,
+    "views": 6
+  },
+  {
+    "id": "50000000-0000-0000-0000-000000000000",
+    "shortcode": "two",
+    "createTime": "2021-08-01T00:00:00Z",
+    "type": "EXTERNAL",
+    "status": "ACTIVE",
+    "url": "https://example.com",
+    "projectId": 1,
+    "views": 6
+  }
+]

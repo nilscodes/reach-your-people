@@ -1,0 +1,9 @@
+{
+  "messages": [
+    {
+      "message": "User with account ID 1 is not authorized to publish announcements for project 15"
+    }
+  ],
+  "httpStatus": "FORBIDDEN",
+  "httpStatusCode": 403
+}

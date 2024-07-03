@@ -3,7 +3,7 @@ package io.vibrantnet.ryp.core.publishing.service
 import io.ryp.shared.model.BasicAnnouncementDto
 import io.ryp.shared.model.BasicAnnouncementWithIdDto
 import io.vibrantnet.ryp.core.publishing.model.AnnouncementDto
-import io.vibrantnet.ryp.core.publishing.model.PublishingPermissions
+import io.vibrantnet.ryp.core.publishing.model.PublishingPermissionsDto
 import io.vibrantnet.ryp.core.publishing.persistence.Announcement
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
@@ -42,7 +42,7 @@ interface AnnouncementsApiService {
      * @return OK (status code 200)
      * @see ProjectsApi#getPublishingPermissionsForAccount
      */
-    fun getPublishingPermissionsForAccount(projectId: Long, accountId: Long): Mono<PublishingPermissions>
+    fun getPublishingPermissionsForAccount(projectId: Long, accountId: Long): Mono<PublishingPermissionsDto>
 
     /**
      * GET /announcements/{announcementId} : Get announcement by ID

@@ -48,7 +48,6 @@ dependencies {
 	testImplementation("io.mockk:mockk:$mockkVersion")
 	testImplementation("nl.jqno.equalsverifier:equalsverifier:$equalsVerifierVersion")
 	testImplementation("de.flapdoodle.embed:de.flapdoodle.embed.mongo:$embeddedMongoVersion")
-
 }
 
 tasks.withType<KotlinCompile> {
