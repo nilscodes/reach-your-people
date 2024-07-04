@@ -1,5 +1,4 @@
 import {
-  Avatar,
   Box,
   Button,
   ButtonGroup,
@@ -26,12 +25,14 @@ import NavPopover from './header/NavPopover';
 import useTranslation from 'next-translate/useTranslation'
 import { ProfileMenu } from './header/ProfileMenu';
 import AppSwitcher from './header/AppSwitcher';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { MdClear } from 'react-icons/md';
+import CatalystBanner from './timer/CatalystBanner';
 
 export default function Header() {
   const { data: session } = useSession();
   const { t } = useTranslation('common')
+  const [catalystBannerVisible, setCatalystBannerVisible] = useState(false);
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
   const [searchTerm, setSearchTerm] = useState('');
@@ -51,6 +52,15 @@ export default function Header() {
       inputRef.current.value = '';
     }
   };
+
+  const onCloseCatalystBanner = () => {
+    setCatalystBannerVisible(false);
+    localStorage.setItem('hideCatalystBanner', 'true');
+  };
+
+  useEffect(() => {
+    setCatalystBannerVisible(localStorage.getItem('hideCatalystBanner') !== 'true');
+  }, []);
 
   return (<Box borderBottomWidth="1px" bg="bg.surface" position="relative" zIndex="200">
     <Container py="4" maxW="100%">
@@ -101,5 +111,6 @@ export default function Header() {
         </HStack>
       </HStack>
     </Container>
+    {catalystBannerVisible && (<CatalystBanner onClose={onCloseCatalystBanner} />)}
   </Box>)
 };
