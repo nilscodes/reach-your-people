@@ -22,7 +22,7 @@ import java.util.*
 
 @WebFluxTest(controllers = [ProjectsApiController::class, ApiExceptionHandler::class])
 @ActiveProfiles("test")
-class ProjectsApiControllerIntegrationTest {
+internal class ProjectsApiControllerIntegrationTest {
     @TestConfiguration
     class TestConfig {
         @Bean

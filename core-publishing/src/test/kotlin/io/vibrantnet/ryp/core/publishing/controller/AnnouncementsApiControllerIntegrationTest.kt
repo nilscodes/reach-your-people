@@ -20,7 +20,7 @@ import kotlin.NoSuchElementException
 
 @WebFluxTest(controllers = [AnnouncementsApiController::class, ApiExceptionHandler::class])
 @ActiveProfiles("test")
-class AnnouncementsApiControllerIntegrationTest {
+internal class AnnouncementsApiControllerIntegrationTest {
     @TestConfiguration
     class TestConfig {
         @Bean

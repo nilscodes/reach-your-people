@@ -35,22 +35,23 @@ class AnnouncementsUpdateService(
             }
     }
 
-    fun mergeStatistics(existingStatistics: Statistics, newStatistics: Statistics): Statistics {
-        return Statistics(
-            sent = mergeMaps(existingStatistics.sent, newStatistics.sent),
-            uniqueAccounts = (newStatistics.uniqueAccounts ?: 0) + (existingStatistics.uniqueAccounts ?: 0),
-            explicitSubscribers = (newStatistics.explicitSubscribers ?: 0) + (existingStatistics.explicitSubscribers ?: 0),
-            delivered = mergeMaps(existingStatistics.delivered, newStatistics.delivered),
-            failures = mergeMaps(existingStatistics.failures, newStatistics.failures),
-            views = mergeMaps(existingStatistics.views, newStatistics.views)
-        )
-    }
+}
 
-    private fun mergeMaps(map1: Map<String, Long>, map2: Map<String, Long>): Map<String, Long> {
-        val result = map1.toMutableMap()
-        for ((key, value) in map2) {
-            result[key] = result.getOrDefault(key, 0L) + value
-        }
-        return result
+fun mergeStatistics(existingStatistics: Statistics, newStatistics: Statistics): Statistics {
+    return Statistics(
+        sent = mergeMaps(existingStatistics.sent, newStatistics.sent),
+        uniqueAccounts = (newStatistics.uniqueAccounts ?: 0) + (existingStatistics.uniqueAccounts ?: 0),
+        explicitSubscribers = (newStatistics.explicitSubscribers ?: 0) + (existingStatistics.explicitSubscribers ?: 0),
+        delivered = mergeMaps(existingStatistics.delivered, newStatistics.delivered),
+        failures = mergeMaps(existingStatistics.failures, newStatistics.failures),
+        views = mergeMaps(existingStatistics.views, newStatistics.views)
+    )
+}
+
+private fun mergeMaps(map1: Map<String, Long>, map2: Map<String, Long>): Map<String, Long> {
+    val result = map1.toMutableMap()
+    for ((key, value) in map2) {
+        result[key] = result.getOrDefault(key, 0L) + value
     }
+    return result
 }
