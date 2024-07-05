@@ -19,7 +19,7 @@ import java.util.*
 
 @WebFluxTest(controllers = [AccountsApiController::class, ApiExceptionHandler::class])
 @ActiveProfiles("test")
-class AccountsApiControllerIntegrationTest {
+internal class AccountsApiControllerIntegrationTest {
     @TestConfiguration
     class TestConfig {
         @Bean fun accountsApiService() = mockk<AccountsApiService>()

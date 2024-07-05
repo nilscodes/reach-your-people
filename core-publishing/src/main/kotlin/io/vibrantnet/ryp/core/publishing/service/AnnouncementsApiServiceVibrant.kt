@@ -20,15 +20,15 @@ val logger = KotlinLogging.logger {}
 
 @Service
 class AnnouncementsApiServiceVibrant(
-    val subscriptionService: SubscriptionService,
-    val verifyService: VerifyService,
-    val rabbitTemplate: RabbitTemplate,
-    val redisTemplate: RedisTemplate<String, Any>,
-    val objectMapper: ObjectMapper,
-    val announcementsRepository: AnnouncementsRepository,
-    val announcementUpdateService: AnnouncementsUpdateService,
-    val redirectService: RedirectService,
-    val config: CorePublishingConfiguration,
+    private val subscriptionService: SubscriptionService,
+    private val verifyService: VerifyService,
+    private val rabbitTemplate: RabbitTemplate,
+    private val redisTemplate: RedisTemplate<String, Any>,
+    private val objectMapper: ObjectMapper,
+    private val announcementsRepository: AnnouncementsRepository,
+    private val announcementUpdateService: AnnouncementsUpdateService,
+    private val redirectService: RedirectService,
+    private val config: CorePublishingConfiguration,
 ) : AnnouncementsApiService {
 
     override fun publishAnnouncementForProject(
@@ -54,10 +54,10 @@ class AnnouncementsApiServiceVibrant(
                                 }
                                 .collectList()
                                 .flatMap { verified ->
-                                    if (verified.all { it.isPublishingAllowed() }) {
+                                    if (verified.isNotEmpty() && verified.all { it.isPublishingAllowed() }) {
                                         checkVerificationStatusAndPublish(announcementWithId, projectId)
                                     } else {
-                                        Mono.error(UserNotAuthorizedToPublishException("User with account ID ${announcement.author} is not authorized to publish announcements for project $projectId"))
+                                        Mono.error(UserNotAuthorizedToPublishException("User with account ID ${announcement.author} is not authorized to publish announcements for project $projectId to policies ${policiesToPublishTo.joinToString(", ") { it.policyId }}."))
                                     }
                                 }
                         }.thenReturn(persistedAnn)
@@ -101,35 +101,9 @@ class AnnouncementsApiServiceVibrant(
         announcement: BasicAnnouncementWithIdDto,
         projectId: Long
     ): Mono<Announcement> {
-        val announcementToStore = Announcement(
-            announcement.id.toString(),
-            projectId,
-            ActivityStream(
-                id = "${config.baseUrl}/announcements/${announcement.id}",
-                actor = Person(
-                    name = announcement.author.toString(),
-                    id = "${config.baseUrl}/users/${announcement.author}"
-                ),
-                `object` = Note(
-                    content = announcement.content,
-                    summary = announcement.title,
-                    url = announcement.externalLink
-                ),
-                attributedTo = Organization(
-                    name = "RYP Project $projectId",
-                    id = "${config.baseUrl}/projects/$projectId"
-                )
-            ),
-            AnnouncementStatus.PENDING,
-            announcement.link,
-            Audience(
-                policies = announcement.policies ?: emptyList()
-            )
-        )
-
+        val announcementToStore = announcementFromBasicAnnouncement(announcement, projectId, config)
         return announcementsRepository.save(announcementToStore)
     }
-
 
     private fun getAllVerificationStatusForAllLinkedAccounts(
         linkedAccountsForAuthor: Flux<LinkedExternalAccountDto>,
@@ -245,3 +219,33 @@ class AnnouncementsApiServiceVibrant(
             .switchIfEmpty(Mono.error(NoSuchElementException("Announcement with ID $announcementId not found.")))
     }
 }
+
+fun announcementFromBasicAnnouncement(
+    announcement: BasicAnnouncementWithIdDto,
+    projectId: Long,
+    config: CorePublishingConfiguration,
+) = Announcement(
+    announcement.id.toString(),
+    projectId,
+    ActivityStream(
+        id = "${config.baseUrl}/announcements/${announcement.id}",
+        actor = Person(
+            name = announcement.author.toString(),
+            id = "${config.baseUrl}/users/${announcement.author}"
+        ),
+        `object` = Note(
+            content = announcement.content,
+            summary = announcement.title,
+            url = announcement.externalLink
+        ),
+        attributedTo = Organization(
+            name = "RYP Project $projectId",
+            id = "${config.baseUrl}/projects/$projectId"
+        )
+    ),
+    AnnouncementStatus.PENDING,
+    announcement.link,
+    Audience(
+        policies = announcement.policies ?: emptyList()
+    )
+)

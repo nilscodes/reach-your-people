@@ -9,10 +9,10 @@ import java.util.*
 
 @Service
 class AccountsApiServiceVibrant(
-    val subscriptionService: SubscriptionService,
-    val rabbitTemplate: RabbitTemplate,
-    val config: CorePublishingConfiguration,
-    val announcementsApiService: AnnouncementsApiService,
+    private val subscriptionService: SubscriptionService,
+    private val rabbitTemplate: RabbitTemplate,
+    private val config: CorePublishingConfiguration,
+    private val announcementsApiService: AnnouncementsApiService,
 ) : AccountsApiService {
     override fun sendTestAnnouncement(accountId: Long, externalAccountId: Long): Mono<BasicAnnouncementWithIdDto> {
         return subscriptionService.getLinkedExternalAccounts(accountId)
