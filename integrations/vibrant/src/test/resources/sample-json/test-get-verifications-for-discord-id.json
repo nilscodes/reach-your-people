@@ -1,0 +1,16 @@
+[
+  {
+    "id": 1,
+    "amount": 1000000,
+    "blockchain": "CARDANO",
+    "address": "addr1123",
+    "cardanoStakeAddress": "stake1_test",
+    "transactionHash": "jbfw",
+    "validAfter": "2024-07-06T12:00:00.000+00:00",
+    "validBefore": "2024-07-06T12:00:00.000+00:00",
+    "confirmed": true,
+    "confirmedAt": "2024-07-06T12:00:00.000+00:00",
+    "obsolete": false,
+    "succeededBy": null
+  }
+]

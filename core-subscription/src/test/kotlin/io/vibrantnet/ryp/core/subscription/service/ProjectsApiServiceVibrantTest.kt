@@ -1,10 +1,7 @@
 package io.vibrantnet.ryp.core.subscription.service
 
 import io.hazelnet.cardano.connect.data.token.PolicyId
-import io.mockk.Called
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.verify
+import io.mockk.*
 import io.ryp.shared.model.PolicyDto
 import io.ryp.shared.model.ProjectCategory
 import io.ryp.shared.model.ProjectDto
@@ -12,6 +9,7 @@ import io.ryp.shared.model.ProjectPartialDto
 import io.vibrantnet.ryp.core.subscription.persistence.Policy
 import io.vibrantnet.ryp.core.subscription.persistence.Project
 import io.vibrantnet.ryp.core.subscription.persistence.ProjectRepository
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import reactor.core.publisher.Mono
 import reactor.test.StepVerifier
@@ -19,12 +17,18 @@ import java.time.OffsetDateTime
 import java.util.Optional
 
 internal class ProjectsApiServiceVibrantTest {
+    private val projectRepository = mockk<ProjectRepository>()
+    private val accountsApiService = mockk<AccountsApiService>()
+    private val projectsApiService = ProjectsApiServiceVibrant(projectRepository, accountsApiService)
+    private val registrationTime = OffsetDateTime.now() // A reusable timestamp that remains consistent
+
+    @BeforeEach
+    fun setup() {
+        clearAllMocks()
+    }
+
     @Test
     fun `adding a new project works if the owner exists`() {
-        val projectRepository = mockk<ProjectRepository>()
-        val accountsApiService = mockk<AccountsApiService>()
-        val projectsApiService = ProjectsApiServiceVibrant(projectRepository, accountsApiService)
-        val registrationTime = OffsetDateTime.now()
         every { accountsApiService.getAccountById(69) } answers { Mono.just(makeAccountDto(69)) }
         every { projectRepository.save(any()) } returns makeProject(69, registrationTime)
         val result = projectsApiService.addNewProject(69, makeProjectDto(null))
@@ -40,9 +44,6 @@ internal class ProjectsApiServiceVibrantTest {
 
     @Test
     fun `adding a new project does nothing if the owner does not exist`() {
-        val projectRepository = mockk<ProjectRepository>()
-        val accountsApiService = mockk<AccountsApiService>()
-        val projectsApiService = ProjectsApiServiceVibrant(projectRepository, accountsApiService)
         every { accountsApiService.getAccountById(69) } answers { Mono.empty() }
         val result = projectsApiService.addNewProject(69, makeProjectDto(null))
 
@@ -54,10 +55,6 @@ internal class ProjectsApiServiceVibrantTest {
 
     @Test
     fun `listing projects works`() {
-        val projectRepository = mockk<ProjectRepository>()
-        val accountsApiService = mockk<AccountsApiService>()
-        val projectsApiService = ProjectsApiServiceVibrant(projectRepository, accountsApiService)
-        val registrationTime = OffsetDateTime.now()
         every { projectRepository.findAll() } returns listOf(
             makeProject(69, registrationTime),
             makeProject(70, registrationTime),
@@ -74,10 +71,6 @@ internal class ProjectsApiServiceVibrantTest {
 
     @Test
     fun `getting a single project that exists works`() {
-        val projectRepository = mockk<ProjectRepository>()
-        val accountsApiService = mockk<AccountsApiService>()
-        val projectsApiService = ProjectsApiServiceVibrant(projectRepository, accountsApiService)
-        val registrationTime = OffsetDateTime.now()
         every { projectRepository.findById(69) } returns Optional.of(makeProject(69, registrationTime))
         val result = projectsApiService.getProject(69)
 
@@ -88,9 +81,6 @@ internal class ProjectsApiServiceVibrantTest {
 
     @Test
     fun `getting a single project that does not exist gives the right error`() {
-        val projectRepository = mockk<ProjectRepository>()
-        val accountsApiService = mockk<AccountsApiService>()
-        val projectsApiService = ProjectsApiServiceVibrant(projectRepository, accountsApiService)
         every { projectRepository.findById(69) } returns Optional.empty()
         val result = projectsApiService.getProject(69)
 
@@ -100,10 +90,6 @@ internal class ProjectsApiServiceVibrantTest {
 
     @Test
     fun `updating a project works`() {
-        val projectRepository = mockk<ProjectRepository>()
-        val accountsApiService = mockk<AccountsApiService>()
-        val projectsApiService = ProjectsApiServiceVibrant(projectRepository, accountsApiService)
-        val registrationTime = OffsetDateTime.now()
         val verifiedDate = OffsetDateTime.now()
         every { projectRepository.findById(69) } returns Optional.of(makeProject(69, registrationTime))
         every { projectRepository.save(any()) } answers { firstArg() }
@@ -141,11 +127,18 @@ internal class ProjectsApiServiceVibrantTest {
     }
 
     @Test
+    fun `updating a project that does not exist errors out appropriately`() {
+        every { projectRepository.findById(69) } returns Optional.empty()
+        val result = projectsApiService.updateProject(69, ProjectPartialDto(
+            name = "Updated Project",
+        ))
+
+        StepVerifier.create(result)
+            .verifyError(NoSuchElementException::class.java)
+    }
+
+    @Test
     fun `getting all projects that an account is associated with via roles works`() {
-        val projectRepository = mockk<ProjectRepository>()
-        val accountsApiService = mockk<AccountsApiService>()
-        val projectsApiService = ProjectsApiServiceVibrant(projectRepository, accountsApiService)
-        val registrationTime = OffsetDateTime.now()
         every { accountsApiService.getAccountById(69) } answers { Mono.just(makeAccountDto(69)) }
         every { projectRepository.findDistinctByRolesAccountId(69) } returns listOf(
             makeProject(69, registrationTime),
@@ -163,9 +156,6 @@ internal class ProjectsApiServiceVibrantTest {
 
     @Test
     fun `getting all projects for an account that does not exist errors out properly`() {
-        val projectRepository = mockk<ProjectRepository>()
-        val accountsApiService = mockk<AccountsApiService>()
-        val projectsApiService = ProjectsApiServiceVibrant(projectRepository, accountsApiService)
         every { accountsApiService.getAccountById(69) } answers { Mono.empty() }
         val result = projectsApiService.getProjectsForAccount(69)
 

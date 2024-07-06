@@ -1,23 +1,32 @@
 package io.vibrantnet.ryp.core.subscription.service
 
+import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot
 import io.ryp.shared.model.ExternalAccountDto
 import io.vibrantnet.ryp.core.subscription.persistence.ExternalAccount
 import io.vibrantnet.ryp.core.subscription.persistence.ExternalAccountRepository
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import reactor.test.StepVerifier
 import java.time.OffsetDateTime
 import java.util.Optional
 
 internal class ExternalAccountsApiServiceVibrantTest {
+
+    private val externalAccountRepository = mockk<ExternalAccountRepository>()
+    private val service = ExternalAccountsApiServiceVibrant(externalAccountRepository)
+
+    @BeforeEach
+    fun setup() {
+        clearAllMocks()
+    }
+
     @Test
     fun `creating an external account works`() {
-        val accountRepository = mockk<ExternalAccountRepository>()
-        val service = ExternalAccountsApiServiceVibrant(accountRepository)
         val slot = slot<ExternalAccount>()
-        every { accountRepository.save(capture(slot)) } answers {
+        every { externalAccountRepository.save(capture(slot)) } answers {
             ExternalAccount(
                 id = 9,
                 referenceId = firstArg<ExternalAccount>().referenceId,
@@ -44,10 +53,8 @@ internal class ExternalAccountsApiServiceVibrantTest {
 
     @Test
     fun `creating an external account correctly decodes base64 into bytes for metadata if provided`() {
-        val accountRepository = mockk<ExternalAccountRepository>()
-        val service = ExternalAccountsApiServiceVibrant(accountRepository)
         val slot = slot<ExternalAccount>()
-        every { accountRepository.save(capture(slot)) } answers {
+        every { externalAccountRepository.save(capture(slot)) } answers {
             ExternalAccount(
                 id = 9,
                 referenceId = firstArg<ExternalAccount>().referenceId,
@@ -76,11 +83,9 @@ internal class ExternalAccountsApiServiceVibrantTest {
 
     @Test
     fun `finding an external account by provider and reference ID works`() {
-        val accountRepository = mockk<ExternalAccountRepository>()
-        val service = ExternalAccountsApiServiceVibrant(accountRepository)
         val now = OffsetDateTime.now()
         val externalAccount = makeExternalAccount(1, now)
-        every { accountRepository.findByTypeAndReferenceId("CHICKEN_SAUCE", "123") } returns Optional.of(externalAccount)
+        every { externalAccountRepository.findByTypeAndReferenceId("CHICKEN_SAUCE", "123") } returns Optional.of(externalAccount)
         val account = service.findExternalAccountByProviderAndReferenceId("CHICKEN_SAUCE", "123")
         StepVerifier.create(account)
             .expectNext(
@@ -91,9 +96,7 @@ internal class ExternalAccountsApiServiceVibrantTest {
 
     @Test
     fun `finding an external account by provider and reference ID fails correctly when not found`() {
-        val accountRepository = mockk<ExternalAccountRepository>()
-        val service = ExternalAccountsApiServiceVibrant(accountRepository)
-        every { accountRepository.findByTypeAndReferenceId("CHICKEN_SAUCE", "123") } returns Optional.empty()
+        every { externalAccountRepository.findByTypeAndReferenceId("CHICKEN_SAUCE", "123") } returns Optional.empty()
         val account = service.findExternalAccountByProviderAndReferenceId("CHICKEN_SAUCE", "123")
         StepVerifier.create(account)
             .expectError(NoSuchElementException::class.java)

@@ -56,26 +56,26 @@ data class PolicyDto @JsonCreator constructor(
 data class ProjectPartialDto @JsonCreator constructor(
 
     @JsonProperty("name", required = false)
-    val name: String?,
+    val name: String? = null,
 
     @JsonProperty("logo", required = false)
-    val logo: String?,
+    val logo: String? = null,
 
     @JsonProperty("url", required = false)
-    val url: String?,
+    val url: String? = null,
 
     @JsonProperty("description", required = false)
-    val description: String?,
+    val description: String? = null,
 
     @JsonProperty("category", required = false)
-    val category: ProjectCategory?,
+    val category: ProjectCategory? = null,
 
     @JsonProperty("tags", required = false)
-    val tags: Set<String>?,
+    val tags: Set<String>? = null,
 
     @field:Valid
     @JsonProperty("policies", required = false)
-    val policies: Set<PolicyDto>?,
+    val policies: Set<PolicyDto>? = null,
 
     @JsonProperty("manuallyVerified")
     val manuallyVerified: OffsetDateTime? = null,
