@@ -1,0 +1,44 @@
+[
+  {
+    "id": 1,
+    "amount": 1000000,
+    "blockchain": "CARDANO",
+    "address": "addr1123",
+    "cardanoStakeAddress": "stake1_test",
+    "transactionHash": "jbfw",
+    "validAfter": "2024-07-06T12:00:00.000+00:00",
+    "validBefore": "2024-07-06T12:00:00.000+00:00",
+    "confirmed": true,
+    "confirmedAt": "2024-07-06T12:00:00.000+00:00",
+    "obsolete": false,
+    "succeededBy": null
+  },
+  {
+    "id": 2,
+    "amount": 1000001,
+    "blockchain": "POLYGON",
+    "address": "addr1124",
+    "cardanoStakeAddress": "stake1kfekoef",
+    "transactionHash": "abkokob",
+    "validAfter": "2024-07-06T12:00:00.000+00:00",
+    "validBefore": "2024-07-06T12:00:00.000+00:00",
+    "confirmed": true,
+    "confirmedAt": "2024-07-06T12:00:00.000+00:00",
+    "obsolete": false,
+    "succeededBy": null
+  },
+  {
+    "id": 3,
+    "amount": 1000002,
+    "blockchain": "CARDANO",
+    "address": "addr1125",
+    "cardanoStakeAddress": "stake1_test2",
+    "transactionHash": "120910",
+    "validAfter": "2024-07-06T12:00:00.000+00:00",
+    "validBefore": "2024-07-06T12:00:00.000+00:00",
+    "confirmed": true,
+    "confirmedAt": "2024-07-06T12:00:00.000+00:00",
+    "obsolete": true,
+    "succeededBy": 123
+  }
+]
