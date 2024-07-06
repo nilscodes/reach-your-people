@@ -1,12 +1,6 @@
 package io.vibrantnet.ryp.core.publishing.model
 
-import com.fasterxml.jackson.annotation.JsonFormat
-import com.fasterxml.jackson.annotation.JsonInclude
-import com.fasterxml.jackson.annotation.JsonProperty
-import com.fasterxml.jackson.annotation.JsonTypeInfo
-import com.fasterxml.jackson.annotation.JsonTypeName
-import org.springframework.data.annotation.Id
-import org.springframework.data.mongodb.core.mapping.Document
+import com.fasterxml.jackson.annotation.*
 import java.time.ZonedDateTime
 
 @JsonInclude(JsonInclude.Include.NON_NULL)

@@ -1,9 +1,7 @@
 package io.vibrantnet.ryp.core.publishing.controller
 
 import io.ryp.shared.model.BasicAnnouncementWithIdDto
-import io.vibrantnet.ryp.core.publishing.model.AnnouncementDto
 import io.vibrantnet.ryp.core.publishing.service.AccountsApiService
-import io.vibrantnet.ryp.core.publishing.service.AnnouncementsApiService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity

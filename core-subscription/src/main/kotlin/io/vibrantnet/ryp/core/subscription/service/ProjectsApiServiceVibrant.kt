@@ -68,9 +68,7 @@ class ProjectsApiServiceVibrant(
             .flatMapMany { account ->
                 Flux.fromIterable(projectRepository.findDistinctByRolesAccountId(account.id!!).map { it.toDto() })
             }
-            .onErrorResume {
-                Flux.error(NoSuchElementException("No account with ID $accountId found"))
-            }
+            .switchIfEmpty(Flux.error(NoSuchElementException("No account with ID $accountId found")))
     }
 
 }

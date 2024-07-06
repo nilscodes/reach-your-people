@@ -13,7 +13,7 @@ import java.time.OffsetDateTime
 import java.util.*
 
 @Service
-class AccountsApiServiceVibrant(
+class  AccountsApiServiceVibrant(
     val accountRepository: AccountRepository,
     val externalAccountRepository: ExternalAccountRepository,
     val linkedExternalAccountRepository: LinkedExternalAccountRepository,
@@ -120,9 +120,9 @@ class AccountsApiServiceVibrant(
                 // Technically don't need the save call here if only the settings change, but it's a good way to ensure to not introduce bugs when the method is changed later
                 return Mono.just(linkedExternalAccountRepository.save(linkedExternalAccount).toDto())
             }
-            throw PermissionDeniedException("Cannot update linked external account $externalAccountId for account $accountId: User is not an owner of the external account for link ${linkedExternalAccount.id}")
+            return Mono.error(PermissionDeniedException("Cannot update linked external account $externalAccountId for account $accountId: User is not an owner of the external account for link ${linkedExternalAccount.id}"))
         }
-        throw NoSuchElementException("Failed to update linked external account $externalAccountId for account $accountId: Not found")
+        return Mono.error(NoSuchElementException("Failed to update linked external account $externalAccountId for account $accountId: Not found"))
     }
 
     @Transactional
@@ -177,12 +177,12 @@ class AccountsApiServiceVibrant(
     @Transactional
     override fun unsubscribeAccountFromProject(accountId: Long, projectId: Long): Mono<Unit> {
         val account = accountRepository.findById(accountId)
-        if (account.isPresent) {
+        return if (account.isPresent) {
             account.get().subscriptions.removeIf { it.projectId == projectId }
             accountRepository.save(account.get())
-            return Mono.empty()
+            Mono.empty()
         } else {
-            return Mono.error(NoSuchElementException("No account with ID $accountId found"))
+            Mono.error(NoSuchElementException("No account with ID $accountId found"))
         }
     }
 

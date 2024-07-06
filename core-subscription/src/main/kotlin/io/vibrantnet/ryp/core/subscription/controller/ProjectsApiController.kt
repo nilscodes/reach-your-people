@@ -33,7 +33,13 @@ class ProjectsApiController(val service: ProjectsApiService) {
     ): Mono<ResponseEntity<ProjectDto>> {
         return service.addNewProject(projectOwner, project)
             .map { savedEntity ->
-                ResponseEntity.created(exchange.request.uri.let { UriComponentsBuilder.fromUri(it).path("/{id}").buildAndExpand(savedEntity.id).toUri() })
+                ResponseEntity.created(exchange.request.uri.let {
+                    UriComponentsBuilder
+                        .fromUri(it)
+                        .path("/{id}")
+                        .query(null)
+                        .buildAndExpand(savedEntity.id).toUri()
+                })
                     .body(savedEntity)
             }
     }
@@ -65,12 +71,4 @@ class ProjectsApiController(val service: ProjectsApiService) {
         @PathVariable("projectId") projectId: Long,
         @Valid @RequestBody projectPartial: ProjectPartialDto,
     ) = service.updateProject(projectId, projectPartial)
-
-//    @RequestMapping(
-//        method = [RequestMethod.GET],
-//        value = ["/projects/{projectId}/subscriptions"]
-//    )
-//    fun getAllSubscriptionsForProject( @PathVariable("projectId") projectId: Long): ResponseEntity<Unit> {
-//        return ResponseEntity(service.getAllSubscriptionsForProject(projectId), )
-//    }
 }

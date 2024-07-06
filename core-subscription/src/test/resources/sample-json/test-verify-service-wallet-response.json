@@ -1,0 +1,12 @@
+[
+  {
+    "stakeAddress": "123",
+    "policyIdWithOptionalAssetFingerprint": "policy1",
+    "assetCount": 1
+  },
+  {
+    "stakeAddress": "123",
+    "policyIdWithOptionalAssetFingerprint": "policy2",
+    "assetCount": 2
+  }
+]

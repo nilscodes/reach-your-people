@@ -29,7 +29,7 @@ class AnnouncementsUpdateService(
                 val updatedStatistics = mergeStatistics(announcement.statistics, newStatistics)
                 val update = Update().set("statistics", updatedStatistics)
                 if (newStatus != null) {
-                    update.set("status", newStatus)
+                    update["status"] = newStatus
                 }
                 reactiveMongoTemplate.updateFirst(query, update, Announcement::class.java)
             }

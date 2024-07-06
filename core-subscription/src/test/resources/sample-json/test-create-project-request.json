@@ -1,0 +1,17 @@
+{
+  "name": "Test Project",
+  "description": "This is a test project",
+  "logo": "",
+  "url": "https://ryp.io/projects/69",
+  "category": "NFT",
+  "policies": [
+    {
+      "name": "Test Policy",
+      "policyId": "df6fe8ac7a40d0be2278d7d0048bc01877533d48852d5eddf2724058"
+    },
+    {
+      "name": "Test Policy 2",
+      "policyId": "4523c5e21d409b81c95b45b0aea275b8ea1406e6cafea5583b9f8a5f"
+    }
+  ]
+}

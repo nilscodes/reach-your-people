@@ -43,6 +43,38 @@ internal class ExternalAccountsApiServiceVibrantTest {
     }
 
     @Test
+    fun `creating an external account correctly decodes base64 into bytes for metadata if provided`() {
+        val accountRepository = mockk<ExternalAccountRepository>()
+        val service = ExternalAccountsApiServiceVibrant(accountRepository)
+        val slot = slot<ExternalAccount>()
+        every { accountRepository.save(capture(slot)) } answers {
+            ExternalAccount(
+                id = 9,
+                referenceId = firstArg<ExternalAccount>().referenceId,
+                referenceName = firstArg<ExternalAccount>().referenceName,
+                displayName = firstArg<ExternalAccount>().displayName,
+                type = firstArg<ExternalAccount>().type,
+                metadata = firstArg<ExternalAccount>().metadata,
+                registrationTime = firstArg<ExternalAccount>().registrationTime,
+            )
+        }
+        val account = service.createExternalAccount(ExternalAccountDto(referenceId = "123", referenceName = "testref", displayName = "Tester McTestface", type = "CHICKEN_SAUCE", metadata = "aGVsbG8="))
+        StepVerifier.create(account)
+            .expectNext(
+                ExternalAccountDto(
+                    id = 9,
+                    referenceId = "123",
+                    referenceName = "testref",
+                    displayName = "Tester McTestface",
+                    type = "CHICKEN_SAUCE",
+                    registrationTime = slot.captured.registrationTime,
+                    metadata = "aGVsbG8="
+                )
+            )
+            .verifyComplete()
+    }
+
+    @Test
     fun `finding an external account by provider and reference ID works`() {
         val accountRepository = mockk<ExternalAccountRepository>()
         val service = ExternalAccountsApiServiceVibrant(accountRepository)

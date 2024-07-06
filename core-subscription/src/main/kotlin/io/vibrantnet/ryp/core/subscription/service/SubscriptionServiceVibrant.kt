@@ -3,7 +3,6 @@ package io.vibrantnet.ryp.core.subscription.service
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ryp.shared.model.*
-import io.vibrantnet.ryp.core.subscription.persistence.AccountRepository
 import io.vibrantnet.ryp.core.subscription.persistence.ExternalAccountRepository
 import io.vibrantnet.ryp.core.subscription.persistence.ExternalAccountWithAccountProjection
 import jakarta.transaction.Transactional
@@ -17,12 +16,11 @@ val logger = KotlinLogging.logger {}
 
 @Service
 class SubscriptionServiceVibrant(
-    val accountRepository: AccountRepository,
-    val projectsService: ProjectsApiService,
-    val externalAccountRepository: ExternalAccountRepository,
-    val redisTemplate: RedisTemplate<String, Any>,
-    val rabbitTemplate: RabbitTemplate,
-    val objectMapper: ObjectMapper,
+    private val projectsService: ProjectsApiService,
+    private val externalAccountRepository: ExternalAccountRepository,
+    private val redisTemplate: RedisTemplate<String, Any>,
+    private val rabbitTemplate: RabbitTemplate,
+    private val objectMapper: ObjectMapper,
 ) {
 
     @RabbitListener(queues = ["announcements"])
