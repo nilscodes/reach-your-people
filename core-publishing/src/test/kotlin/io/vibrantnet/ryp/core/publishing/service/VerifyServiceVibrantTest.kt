@@ -63,7 +63,5 @@ internal class VerifyServiceVibrantTest {
         fun tearDownClass() {
             mockBackend.shutdown()
         }
-
-
     }
 }

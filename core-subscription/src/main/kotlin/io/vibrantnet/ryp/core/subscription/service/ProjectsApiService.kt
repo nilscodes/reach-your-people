@@ -52,13 +52,4 @@ interface ProjectsApiService {
      * @see ProjectsApi#updateProject
      */
     fun updateProject(projectId: Long, projectPartial: ProjectPartialDto): Mono<ProjectDto>
-
-    /**
-     * GET /projects/{projectId}/subscriptions : Get all subscription for a project
-     *
-     * @param projectId The numeric ID of a Project (required)
-     * @return
-     * @see ProjectsApi#getAllSubscriptionsForProject
-     */
-    // fun getAllSubscriptionsForProject(projectId: Long): Unit
 }

@@ -171,8 +171,11 @@ class AccountsApiController(
         @PathVariable("settingName") settingName: String,
         @Valid @RequestBody setting: SettingDto,
     ): Mono<SettingDto> {
-        require(setting.name == settingName) { "Account setting name in path $settingName did not match setting in request body ${setting.name}." }
-        return accountService.updateAccountSetting(accountId, settingName, setting)
+        return if(setting.name == settingName) {
+            accountService.updateAccountSetting(accountId, settingName, setting)
+        } else {
+            Mono.error(IllegalArgumentException("Account setting name in path $settingName did not match setting in request body ${setting.name}."))
+        }
     }
 
     @RequestMapping(

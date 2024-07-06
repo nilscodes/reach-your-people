@@ -55,6 +55,7 @@ dependencies {
 	testImplementation("com.ninja-squad:springmockk:$springMockkVersion")
 	testImplementation("nl.jqno.equalsverifier:equalsverifier:$equalsVerifierVersion")
 	testImplementation("com.h2database:h2")
+	testImplementation("com.squareup.okhttp3:mockwebserver")
 }
 
 allOpen {

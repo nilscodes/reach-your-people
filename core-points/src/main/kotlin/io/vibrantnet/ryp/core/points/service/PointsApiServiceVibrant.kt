@@ -110,22 +110,27 @@ class PointsApiServiceVibrant(
         return Mono.justOrEmpty(pointsClaimRepository.findById(claimId))
             .switchIfEmpty(Mono.error(NoSuchElementException("Claim with ID $claimId does not exist")))
             .flatMap { pointsClaim ->
-                if (pointsClaim.accountId != accountId || pointsClaim.tokenId != tokenId) {
-                    // Claim exists, but not for the given account and token
-                    Mono.error(NoSuchElementException("Claim with ID $claimId does not exist for account $accountId and token $tokenId"))
-                } else if (pointsClaim.claimed) {
-                    Mono.error(IllegalStateException("Claim with ID $claimId has already been claimed and cannot be modified"))
-                } else if (pointsClaimPartialDto.claimed == true && pointsClaim.hasExpired()) {
-                    Mono.error(IllegalStateException("Claim with ID $claimId expired on ${pointsClaim.expirationTime} and cannot be claimed"))
-                } else {
-                    if (pointsClaimPartialDto.claimed == true) {
-                        pointsClaim.claimTime = OffsetDateTime.now()
-                        pointsClaim.claimed = true
-                    } else {
-                        // Can only change the expiration time if not claiming at the same time (otherwise might be able to have a claim that is already expired)
-                        pointsClaim.expirationTime = pointsClaimPartialDto.expirationTime ?: pointsClaim.expirationTime
+                when {
+                    pointsClaim.accountId != accountId || pointsClaim.tokenId != tokenId -> {
+                        // Claim exists, but not for the given account and token
+                        Mono.error(NoSuchElementException("Claim with ID $claimId does not exist for account $accountId and token $tokenId"))
                     }
-                    Mono.just(pointsClaimRepository.save(pointsClaim).toDto())
+                    pointsClaim.claimed -> {
+                        Mono.error(IllegalStateException("Claim with ID $claimId has already been claimed and cannot be modified"))
+                    }
+                    pointsClaimPartialDto.claimed == true && pointsClaim.hasExpired() -> {
+                        Mono.error(IllegalStateException("Claim with ID $claimId expired on ${pointsClaim.expirationTime} and cannot be claimed"))
+                    }
+                    else -> {
+                        if (pointsClaimPartialDto.claimed == true) {
+                            pointsClaim.claimTime = OffsetDateTime.now()
+                            pointsClaim.claimed = true
+                        } else {
+                            // Can only change the expiration time if not claiming at the same time (otherwise might be able to have a claim that is already expired)
+                            pointsClaim.expirationTime = pointsClaimPartialDto.expirationTime ?: pointsClaim.expirationTime
+                        }
+                        Mono.just(pointsClaimRepository.save(pointsClaim).toDto())
+                    }
                 }
             }
     }

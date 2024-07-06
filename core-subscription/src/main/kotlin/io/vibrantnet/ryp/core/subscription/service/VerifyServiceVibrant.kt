@@ -13,9 +13,9 @@ import java.time.temporal.ChronoUnit
 @Service
 class VerifyServiceVibrant(
     @Qualifier("coreVerificationClient")
-    val coreVerificationClient: WebClient,
-    val redisTemplate: RedisTemplate<String, Any>,
-    val objectMapper: ObjectMapper,
+    private val coreVerificationClient: WebClient,
+    private val redisTemplate: RedisTemplate<String, Any>,
+    private val objectMapper: ObjectMapper,
 ): VerifyService {
     override fun getPoliciesInWallet(stakeAddress: String): Flux<TokenOwnershipInfoWithAssetCount> {
         val cachedRaw = redisTemplate.opsForList().range(

@@ -1,5 +1,6 @@
 [
   {
+    "id": 420,
     "externalAccount": {
       "id": 921,
       "referenceId": "123",
@@ -9,6 +10,11 @@
       "type": "discord"
     },
     "role": "OWNER",
-    "linkTime": "2019-01-01T19:00:00Z"
+    "linkTime": "2019-01-01T19:00:00Z",
+    "settings": [
+      "DEFAULT_FOR_NOTIFICATIONS"
+    ],
+    "lastConfirmed": "2019-01-01T20:00:00Z",
+    "lastTested": "2019-01-01T21:00:00Z"
   }
 ]

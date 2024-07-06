@@ -1,0 +1,12 @@
+[
+  {
+    "projectId": 69,
+    "defaultStatus": "Unsubscribed",
+    "currentStatus": "Unsubscribed"
+  },
+  {
+    "projectId": 70,
+    "defaultStatus": "Subscribed",
+    "currentStatus": "Default"
+  }
+]
