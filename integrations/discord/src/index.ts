@@ -75,7 +75,7 @@ const sendStatistics = async (channel: amqplib.Channel, queueName: string, stati
 const connectToAmqp = async () => {
   const rabbitPw = process.env.RABBITMQ_PASSWORD as string;
   try {
-    const conn = await amqplib.connect(`amqp://${process.env.RABBITMQ_USER}:${encodeURIComponent(rabbitPw)}@${process.env.RABBITMQ_HOST}`);
+    const conn = await amqplib.connect(`amqp://${process.env.RABBITMQ_USER}:${encodeURIComponent(rabbitPw)}@${process.env.RABBITMQ_HOST}`) as any; // The Connection class has some weird typescript conflict that seems unresolvable at this time with these versions
     const queue = {
       name: 'discord',
       consume: async (queueChannel: amqplib.Channel, client: Client, msg: MessageDto) => {
@@ -127,7 +127,7 @@ const connectToAmqp = async () => {
       await queueChannel.assertQueue(queue.name);
       // Set prefetch to 5 to avoid overloading the bot
       queueChannel.prefetch(5);
-      queueChannel.consume(queue.name, async (msg) => {
+      queueChannel.consume(queue.name, async (msg: any) => {
         if (msg !== null) {
           queue.consume(queueChannel, client, JSON.parse(msg.content.toString()))
             .finally(() => {;

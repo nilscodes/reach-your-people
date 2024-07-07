@@ -13,17 +13,16 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/amqplib": "^0.10.5",
     "amqplib": "^0.10.4",
     "dotenv": "^16.4.5",
     "marked": "^12.0.2",
-    "pino": "^9.1.0",
+    "pino": "^9.2.0",
     "web-push": "^3.6.7"
   },
   "devDependencies": {
-    "@types/amqplib": "^0.10.5",
-    "@types/pino": "^7.0.5",
     "@types/web-push": "^3.6.3",
     "ts-node": "^10.9.2",
-    "typescript": "^5.4.5"
+    "typescript": "^5.5.3"
   }
 }
