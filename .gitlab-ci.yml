@@ -22,6 +22,13 @@ spotbugs-sast:
       when: always
     - when: never
 
+semgrep-sast:
+  stage: test
+  rules:
+    - if: "$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH"
+      when: always
+    - when: never
+
 variables:
   SAST_JAVA_VERSION: 17 # Use Java 17 for SAST since 21 is not yet available
   SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"  # Defines the location of the analysis task cache
@@ -37,6 +44,7 @@ gradle-build:
         - "core-publishing/**/*"
         - "core-redirect/**/*"
         - "core-points/**/*"
+        - "integrations/vibrant/**/*"
         - "build.gradle.kts"
         - "settings.gradle.kts"
         - ".gitlab-ci.yml"
@@ -84,3 +92,20 @@ sonarcloud-check:
   only:
     - merge_requests
     - main
+
+owasp-dependency-check:
+  image: gradle:jdk21-alpine
+  stage: test
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+    - if: $CI_PIPELINE_SOURCE == "web"
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  cache:
+    key: "$CI_JOB_NAME"  # Use the same cache for all builds
+    paths:
+      - .gradle/dependency-check-data
+  script:
+    - gradle dependencyCheckAnalyze --info -PnvdApiKey=$NVD_API_KEY
+  artifacts:
+    paths:
+      - '**/build/reports/dependency-check-report.html'
