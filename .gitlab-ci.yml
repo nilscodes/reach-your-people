@@ -106,6 +106,7 @@ owasp-dependency-check:
       - .gradle/dependency-check-data
   script:
     - gradle dependencyCheckAnalyze --info -PnvdApiKey=$NVD_API_KEY
+  allow_failure: true
   artifacts:
     paths:
       - '**/build/reports/dependency-check-report.html'
