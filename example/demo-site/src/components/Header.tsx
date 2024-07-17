@@ -58,9 +58,9 @@ export default function Header() {
     localStorage.setItem('hideCatalystBanner', 'true');
   };
 
-  useEffect(() => {
-    setCatalystBannerVisible(localStorage.getItem('hideCatalystBanner') !== 'true');
-  }, []);
+  // useEffect(() => {
+  //   setCatalystBannerVisible(localStorage.getItem('hideCatalystBanner') !== 'true');
+  // }, []);
 
   return (<Box borderBottomWidth="1px" bg="bg.surface" position="relative" zIndex="200">
     <Container py="4" maxW="100%">

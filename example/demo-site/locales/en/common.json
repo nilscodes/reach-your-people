@@ -86,8 +86,15 @@
         "imageAlt": "A diverse group of people holding speech bubbles in front of their faces",
         "betaLaunch": "Our beta version just launched!"
     },
-    "features": {
+    "howitworks": {
         "headline": "How it works",
+        "step1": "Connect your wallet.",
+        "step2": "Connect your socials, email, phone number or other notification preferences.",
+        "step3": "Receive news from projects you own, exactly where you want them.",
+        "done": "Done!"
+    },
+    "features": {
+        "headline": "Features",
         "subtitle": "We keep you in the loop with the latest news from your favorite projects, right where you want them. Subscriptions are managed automatically, so you can focus on what matters most.",
         "subscriptionManagement": "Automatic and manual subscriptions",
         "subscriptionManagementDescription": "We keep track of your subscriptions based on what is in your wallet, and make sure you're always up-to-date. Alternatively, you can always manually subscribe to projects you're interested in, even if you don't own any of their tokens.",

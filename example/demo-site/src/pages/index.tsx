@@ -8,6 +8,7 @@ import rypFull from '../../public/ryp_full.png';
 import rypFullDark from '../../public/ryp_full_dark.png';
 
 import Head from "next/head";
+import HowItWorks from '@/components/landing/HowItWorks';
 
 export default function Home() {
   return (<>
@@ -16,6 +17,7 @@ export default function Home() {
     </Head>
     <SpacebudzTimer />
     <Hero />
+    <HowItWorks />
     <Features />
     <Team />
     <Box as="section" bg="bg.surface">
