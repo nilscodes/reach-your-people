@@ -1,10 +1,13 @@
+DROP TABLE IF EXISTS "project_notification_settings";
 DROP TABLE IF EXISTS "linked_external_accounts";
 DROP TABLE IF EXISTS "subscriptions";
 DROP TABLE IF EXISTS "project_tags";
 DROP TABLE IF EXISTS "project_policies";
 DROP TABLE IF EXISTS "project_roles";
+DROP TABLE IF EXISTS "project_stakepools";
 DROP TABLE IF EXISTS "projects";
 DROP TABLE IF EXISTS "external_accounts";
+DROP TABLE IF EXISTS "account_settings";
 DROP TABLE IF EXISTS "accounts";
 
 CREATE TABLE "accounts"
@@ -88,6 +91,13 @@ CREATE TABLE "project_policies"
     "manually_verified" timestamp    NULL
 );
 
+CREATE TABLE "project_stakepools"
+(
+    "project_id"         INT         NOT NULL,
+    "pool_hash"          varchar(56) NOT NULL,
+    "verification_nonce" varchar(64) NOT NULL
+);
+
 CREATE TABLE "project_roles"
 (
     "project_id" INT      NOT NULL,
@@ -102,6 +112,9 @@ ALTER TABLE "project_tags"
     ADD FOREIGN KEY ("project_id") REFERENCES "projects" ("project_id") ON DELETE CASCADE;
 
 ALTER TABLE "project_policies"
+    ADD FOREIGN KEY ("project_id") REFERENCES "projects" ("project_id") ON DELETE CASCADE;
+
+ALTER TABLE "project_stakepools"
     ADD FOREIGN KEY ("project_id") REFERENCES "projects" ("project_id") ON DELETE CASCADE;
 
 ALTER TABLE "project_roles"

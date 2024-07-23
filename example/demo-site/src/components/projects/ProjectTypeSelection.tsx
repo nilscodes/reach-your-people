@@ -28,9 +28,9 @@ export const projectTypeOptions = [{
     disabled: false,
 }, {
     value: ProjectCategory.SPO,
-    variant: 'link',
+    variant: 'outline',
     icon: <MdWaterDrop />,
-    disabled: true,
+    disabled: false,
 }, {
     value: ProjectCategory.dRep,
     variant: 'link',

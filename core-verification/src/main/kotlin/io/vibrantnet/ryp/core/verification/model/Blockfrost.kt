@@ -28,6 +28,41 @@ data class PartialBlockfrostAssetInfo @JsonCreator constructor(
     val mintOrBurnCount: Int,
 )
 
+@JsonIgnoreProperties(ignoreUnknown = true)
+data class PartialPoolInfo @JsonCreator constructor(
+    @JsonProperty("pool_id")
+    val poolId: String,
+
+    @JsonProperty("hex")
+    val hex: String,
+
+    @JsonProperty("vrf_key")
+    val vrfKeyHash: String,
+
+)
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+data class PartialPoolMetadata @JsonCreator constructor(
+    @JsonProperty("pool_id")
+    val poolView: String,
+
+    @JsonProperty("hex")
+    val poolHash: String,
+
+    @JsonProperty("ticker")
+    val ticker: String,
+
+    @JsonProperty("name")
+    val name: String,
+
+    @JsonProperty("description")
+    val description: String,
+
+    @JsonProperty("homepage")
+    val homepage: String,
+)
+
+
 data class TxMetadataEntry @JsonCreator constructor(
     @JsonProperty("label")
     val label: String,

@@ -64,7 +64,7 @@ const PolicyInputFields = ({ policy, removePolicyWithId, canRemove, errors, regi
                     maxW={{ md: '3xl' }}
                     placeholder={t('add.form.policyId')}
                     isInvalid={hasIdError}
-                    {...register(`policies.${policy.id}.policyId`, { required: true, pattern: /^[A-Za-z0-9]{56}$/i }) }
+                    {...register(`policies.${policy.id}.policyId`, { required: true, pattern: /^[A-Fa-f0-9]{56}$/i }) }
                 />
                 <FormErrorMessage>{t('add.form.policyIdError')}</FormErrorMessage>
             </FormControl>

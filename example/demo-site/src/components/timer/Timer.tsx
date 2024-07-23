@@ -3,17 +3,19 @@ import { useTimer } from './useTimer'
 
 interface TimerProps {
   expiresInSeconds: number
+  isIncludeDays?: boolean
+  isIncludeHours?: boolean
 }
 
-export const Timer = ({ expiresInSeconds }: TimerProps) => {
+export const Timer = ({ expiresInSeconds, isIncludeDays = true, isIncludeHours = true }: TimerProps) => {
   const { seconds, minutes, hours, days } = useTimer({
     expiresInSeconds,
   })
 
   return (
     <HStack spacing="4">
-      <TimeUnit value={days} label="Days" />
-      <TimeUnit value={hours} label="Hours" />
+      {!!isIncludeDays && <TimeUnit value={days} label="Days" />}
+      {!!isIncludeHours && <TimeUnit value={hours} label="Hours" />}
       <TimeUnit value={minutes} label="Minutes" />
       <TimeUnit value={seconds} label="Seconds" />
     </HStack>

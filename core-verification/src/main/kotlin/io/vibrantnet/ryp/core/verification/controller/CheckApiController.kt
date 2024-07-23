@@ -16,15 +16,15 @@ class CheckApiController(
 
     @RequestMapping(
         method = [RequestMethod.GET],
-        value = ["/cip66/{policyId}/{serviceName}/{referenceId}"],
+        value = ["/cip66/{policyId}/{providerType}/{referenceId}"],
         produces = ["application/json"]
     )
     @ResponseStatus(HttpStatus.OK)
-    fun verify(
+    fun verifyCip66(
         @PathVariable("policyId") policyId: String,
-        @PathVariable("serviceName") serviceName: String,
+        @PathVariable("providerType") providerType: String,
         @PathVariable("referenceId") referenceId: String,
     ): Mono<Boolean> {
-        return service.verify(policyId, serviceName, referenceId)
+        return service.verify(policyId, providerType, referenceId)
     }
 }

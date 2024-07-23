@@ -39,6 +39,10 @@ data class ProjectDto @JsonCreator constructor(
     @JsonProperty("policies")
     val policies: Set<PolicyDto> = emptySet(),
 
+    @field:Valid
+    @JsonProperty("stakepools")
+    val stakepools: Set<StakepoolDto> = emptySet(),
+
     @JsonProperty("manuallyVerified")
     val manuallyVerified: OffsetDateTime? = null,
 )
@@ -46,11 +50,20 @@ data class ProjectDto @JsonCreator constructor(
 data class PolicyDto @JsonCreator constructor(
     @JsonProperty("name") val name: String,
 
-    @field:Pattern(regexp="^[A-Za-z0-9]{56}$")
+    @field:Pattern(regexp="^[A-Fa-f0-9]{56}$")
     @JsonProperty("policyId") val policyId: String,
 
     @JsonProperty("manuallyVerified")
     val manuallyVerified: OffsetDateTime? = null,
+)
+
+data class StakepoolDto @JsonCreator constructor(
+    @JsonProperty("poolHash")
+    @field:Pattern(regexp="^[A-Fa-f0-9]{56}$")
+    val poolHash: String,
+
+    @JsonProperty("verificationNonce")
+    val verificationNonce: String,
 )
 
 data class ProjectPartialDto @JsonCreator constructor(
@@ -76,6 +89,10 @@ data class ProjectPartialDto @JsonCreator constructor(
     @field:Valid
     @JsonProperty("policies", required = false)
     val policies: Set<PolicyDto>? = null,
+
+    @field:Valid
+    @JsonProperty("stakepools", required = false)
+    val stakepools: Set<StakepoolDto>? = null,
 
     @JsonProperty("manuallyVerified")
     val manuallyVerified: OffsetDateTime? = null,

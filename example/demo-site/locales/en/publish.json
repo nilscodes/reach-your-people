@@ -94,7 +94,37 @@
             "policyIdHelper": "The primary Cardano policy ID for your project, as well as any additional policies and their readable names. You can add more policies later.",
             "addPolicy": "Add additional policy",
             "removePolicy": "Remove policy",
-            "createNftProject": "Create NFT project"
+            "createNftProject": "Create NFT project",
+            "createStakepoolProject": "Create stakepool project",
+            "stakepools": {
+                "poolHash": "Stakepool ID",
+                "poolHashHelper": "The stakepool hash. This is the 56-character hexadecimal string that identifies your stakepool on Cardano.",
+                "poolHashFormatError": "The stakepool ID must be a 56-character hexadecimal string.",
+                "name": "Pool name",
+                "ticker": "Pool ticker",
+                "verificationNonce": "Verification challenge",
+                "challengeHelper": "You will need to provide this verification challenge within the next 5 minutes.",
+                "restartVerification": "Restart",
+                "stakepoolVerification": "Verification steps",
+                "step1Title": "Step 1: Sign the verification challenge",
+                "step1Description": "To verify your stakepool, you will need to sign the above challenge with your VRF signing key. This will prove that you have control over the pool and are authorized to publish announcements for it.",
+                "step2Title": "Step 2: Provide challenge signature and VRF verification key",
+                "step2Description": "After signing the challenge, you will receive a signed message. Paste this message in the field below. Then attach your VRF verification key file (.vkey). Do NOT attach your VRF signing key file (.skey). We will ignore it if you do, but it puts you at risk.",
+                "challengeSignature": "Challenge signature",
+                "challengeSignatureHelper": "Paste the signed challenge message here (only the signature, not the whole JSON body).",
+                "vrfVKey": "VRF verification key",
+                "vrfVkeyHelper": "Please attach a valid VRF verification key file. It must contain a JSON body with a type property that has the value 'VrfVerificationKey_PraosVRF'. Make sure to not attach your VRF signing key file.",
+                "vrfVkeyGuidance": "JSON file with VRF verification key (.vkey).",
+                "vrfVkeyError": "Invalid verification key file. Please ensure you are using the right .vkey file.",
+                "challengeSignatureError": "The challenge signature could not be verified. Please ensure you have signed with the correct signing key and provided the matching verification key.",
+                "cncliCommand": "cncli sign --domain {{domain}} --nonce {{nonce}} --pool-vrf-skey [vrf-signing-key-file]",
+                "cncliCopiedToClipboard": "CNCLI command copied to clipboard",
+                "submitVerification": "Submit verification",
+                "step3Title": "Success!",
+                "step3Description": "We successfully verified your stakepool credentials. You can now create the project. Do not change the pool hash or you will have to re-verify.",
+                "learnMore": "Learn more"
+            },
+            "automaticallyFilledOut": "This will be automatically filled out for you."
         }
     }
 }
