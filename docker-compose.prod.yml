@@ -8,6 +8,7 @@ services:
             - BLOCKFROST_URL=https://cardano-mainnet.blockfrost.io/api/v0
             - BLOCKFROST_PROJECT_ID=
             - RABBITMQ_PASSWORD=
+            - MONGODB_PASSWORD=
             - REDIS_PASSWORD=
         ports:
             - "8070:8070"

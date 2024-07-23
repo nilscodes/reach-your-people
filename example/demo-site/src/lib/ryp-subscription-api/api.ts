@@ -513,35 +513,17 @@ export type GetProjectsForAccount200ResponseInnerSocialsInnerTypeEnum = typeof G
  */
 export interface GetProjectsForAccount200ResponseInnerStakepoolsInner {
     /**
-     * 
-     * @type {number}
+     * The stakepool hash in hex
+     * @type {string}
      * @memberof GetProjectsForAccount200ResponseInnerStakepoolsInner
      */
-    'id'?: number;
+    'poolHash': string;
     /**
      * 
      * @type {string}
      * @memberof GetProjectsForAccount200ResponseInnerStakepoolsInner
      */
-    'name'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof GetProjectsForAccount200ResponseInnerStakepoolsInner
-     */
-    'ticker'?: string;
-    /**
-     * The Stakepool hash
-     * @type {string}
-     * @memberof GetProjectsForAccount200ResponseInnerStakepoolsInner
-     */
-    'poolId'?: string;
-    /**
-     * The pool ID of a wallet, in viewable Bech32 format
-     * @type {string}
-     * @memberof GetProjectsForAccount200ResponseInnerStakepoolsInner
-     */
-    'bech32'?: string;
+    'verificationNonce': string;
 }
 /**
  * 

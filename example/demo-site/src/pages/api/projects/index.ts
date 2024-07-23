@@ -6,6 +6,8 @@ import formidable from 'formidable';
 import fs from 'fs';
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { nanoid } from "nanoid";
+import { coreVerificationApi } from "@/lib/core-verification-api";
+import { ListProjects200ResponseCategoryEnum } from "@/lib/ryp-subscription-api";
 
 // Configure AWS S3
 const s3Client = new S3Client({
@@ -58,9 +60,7 @@ export default async function handler(
       const { fields, files } = await parseForm(req);
       const file = files.logo?.[0];
       if (file) {
-        const project = JSON.parse(fields.project?.[0]!);
-        project.logo = '';
-        const newProject = await coreSubscriptionApi.addNewProject(project, accountId);
+        const newProject = await createProject(fields, accountId);
         const originalExtension = file.originalFilename?.split('.').pop() ?? 'png';
         const fileStream = fs.createReadStream(file.filepath);
     
@@ -75,7 +75,6 @@ export default async function handler(
         };
 
         // TODO create several blobs for different sizes
-
         const uploadCommand = new PutObjectCommand(uploadParams);
         await s3Client.send(uploadCommand);
         const updatedProject = await coreSubscriptionApi.updateProject(newProject.data.id, {
@@ -84,6 +83,7 @@ export default async function handler(
         res.status(updatedProject.status).json(updatedProject.data);
       }
     } catch(err: any) {
+      console.error(err);
       res.status(500).json({ error: `${err}` });
     };
   } else if (req.method === 'GET') {
@@ -91,3 +91,38 @@ export default async function handler(
     res.status(response.status).json(response.data);
   }
 }
+
+async function createProject(fields: formidable.Fields<string>, accountId: number) {
+  const project = JSON.parse(fields.project?.[0]!);
+  project.logo = '';
+  if (fields.initialStakepool) {
+    const stakepoolProject = await prepareStakepoolProject(fields);
+    return coreSubscriptionApi.addNewProject(stakepoolProject, accountId);
+  } else {
+    return coreSubscriptionApi.addNewProject(project, accountId);
+  }
+}
+
+async function prepareStakepoolProject(fields: formidable.Fields<string>) {
+  const stakepoolInfo = JSON.parse(fields.initialStakepool?.[0]!);
+  const finalizeVerification = await coreVerificationApi.completeStakepoolVerification(stakepoolInfo.verification.poolHash, stakepoolInfo.verification.nonce, stakepoolInfo.verification);
+  if (finalizeVerification.status !== 200) {
+    throw new Error('Failed to verify stakepool');
+  }
+  const stakepoolDetails = (await coreVerificationApi.getStakepoolDetails(stakepoolInfo.verification.poolHash)).data;
+  const stakepoolProject = {
+    id: 0,
+    category: ListProjects200ResponseCategoryEnum.Spo,
+    name: stakepoolDetails.name,
+    url: stakepoolDetails.homepage,
+    description: stakepoolDetails.description,
+    logo: '',
+    stakepools: [{
+      poolHash: (stakepoolInfo.verification.poolHash as string),
+      verificationNonce: (stakepoolInfo.verification.nonce as string),
+    }],
+    manuallyVerified: new Date().toISOString(), // Automatically mark the stakepool project as verified
+  };
+  return stakepoolProject;
+}
+

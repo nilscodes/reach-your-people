@@ -11,6 +11,7 @@ import useTranslation from 'next-translate/useTranslation';
 import { TokenPolicy } from '@vibrantnet/core';
 import { nanoid } from 'nanoid';
 import StandardContentWithHeader from '../StandardContentWithHeader';
+import { StakepoolVerification } from '@/lib/ryp-verification-api';
 
 type NewProjectProps = {
     account: Account;
@@ -22,8 +23,13 @@ export interface ProjectData {
   url: string;
   description: string;
   policies: Record<string, TokenPolicy>;
+  stakepool: StakepoolSignup;
 }
 
+export interface StakepoolSignup {
+  poolHash: string
+  verification?: StakepoolVerification
+}
 
 const defaultFormData: ProjectData = {
   name: '',
@@ -31,6 +37,7 @@ const defaultFormData: ProjectData = {
   url: '',
   description: '',
   policies: { [nanoid()]: { projectName: '', policyId: '' } },
+  stakepool: { poolHash: '' },
 };
 
 export default function NewProject({ account }: NewProjectProps) {
@@ -41,16 +48,18 @@ export default function NewProject({ account }: NewProjectProps) {
 
   const addNewProject = async (projectData: ProjectData) => {
     const url = projectData.url.startsWith('https://') ? projectData.url : `https://${projectData.url.replace('http://', '')}`;
+    const policies = projectData.policies ?? {};
     const newProject = {
       name: projectData.name,
       url,
       category: projectType as ProjectCategory,
       description: projectData.description,
-      policies: Object.values(projectData.policies)
+      stakepools: [],
+      policies: Object.values(policies)
         .filter((policy) => policy.policyId.length > 0 && policy.projectName.length > 0)
         .map((policy) => ({ name: policy.projectName, policyId: policy.policyId })),
     }
-    await api.addNewProject(newProject, projectData.logo);
+    await api.addNewProject(newProject, projectData.logo, projectData.stakepool);
     router.push('/publish');
   }
 

@@ -27,6 +27,8 @@ val loggingVersion: String by rootProject.extra
 val mockkVersion: String by rootProject.extra
 val equalsVerifierVersion: String by rootProject.extra
 val slf4jVersion: String by rootProject.extra
+val libsodiumJnaVersion = "1.2.0-NEWM" // Might be able to use the non-customized version of this JNA library
+val bouncyCastleVersion = "1.78.1" // We can likely skip using bouncycastle if we write some custom hex/byte array concatenation and decoding/encoding methods
 
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-actuator")
@@ -35,13 +37,18 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-amqp")
 	implementation("org.springframework.boot:spring-boot-starter-data-redis")
+	implementation("org.springframework.boot:spring-boot-starter-data-mongodb-reactive")
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+	implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-cbor")
+	implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
 	implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
 	implementation("io.github.oshai:kotlin-logging-jvm:$loggingVersion")
 	implementation("org.slf4j:slf4j-api:$slf4jVersion")
 	implementation("org.postgresql:postgresql")
+	implementation("io.newm:com.muquit.libsodiumjna.libsodium-jna:$libsodiumJnaVersion")
+	implementation("org.bouncycastle:bcprov-jdk18on:$bouncyCastleVersion")
 	implementation(project(":core-api"))
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("io.projectreactor:reactor-test")

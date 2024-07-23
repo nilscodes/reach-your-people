@@ -4,10 +4,7 @@ import io.hazelnet.cardano.connect.data.token.PolicyId
 import io.ryp.shared.model.ProjectDto
 import io.ryp.shared.model.ProjectPartialDto
 import io.ryp.shared.model.ProjectRole
-import io.vibrantnet.ryp.core.subscription.persistence.Policy
-import io.vibrantnet.ryp.core.subscription.persistence.Project
-import io.vibrantnet.ryp.core.subscription.persistence.ProjectRepository
-import io.vibrantnet.ryp.core.subscription.persistence.ProjectRoleAssignment
+import io.vibrantnet.ryp.core.subscription.persistence.*
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
@@ -27,7 +24,9 @@ class ProjectsApiServiceVibrant(
                 category = project.category,
                 tags = project.tags.toMutableSet(),
                 policies = project.policies.map { Policy(it.name, PolicyId(it.policyId)) }.toMutableSet(),
+                stakepools = project.stakepools.map { Stakepool(it.poolHash, it.verificationNonce) }.toMutableSet(),
                 roles = mutableSetOf(ProjectRoleAssignment(ProjectRole.OWNER, projectOwner)),
+                manuallyVerified = project.manuallyVerified,
             )
             projectRepository.save(newProject).toDto()
         }
@@ -56,6 +55,7 @@ class ProjectsApiServiceVibrant(
                 projectPartial.category?.let { category = it }
                 projectPartial.tags?.let { tags = it.toMutableSet() }
                 projectPartial.policies?.let { policies = it.map { Policy(it.name, PolicyId(it.policyId)) }.toMutableSet() }
+                projectPartial.stakepools?.let { stakepools = it.map { Stakepool(it.poolHash, it.verificationNonce) }.toMutableSet() }
                 projectPartial.manuallyVerified?.let { manuallyVerified = it }
             }
             return Mono.just(projectRepository.save(updatedProject).toDto())

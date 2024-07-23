@@ -6,6 +6,11 @@ export type Policy = {
     manuallyVerified?: string;
 }
 
+export type Stakepool = {
+    poolHash: string;
+    verificationNonce: string;
+}
+
 export type Project = {
     id: number;
     name: string;
@@ -17,6 +22,7 @@ export type Project = {
     registrationTime: string;
     manuallyVerified?: string;
     policies: Policy[];
+    stakepools: Stakepool[];
 }
 
 // Request is Project without registrationTime, verified and id

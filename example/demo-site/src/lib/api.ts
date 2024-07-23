@@ -7,6 +7,9 @@ import { GetLinkedExternalAccounts200ResponseInner, GetLinkedExternalAccounts200
 import { BasicAnnouncement, PublishingPermissions } from "./ryp-publishing-api";
 import { Achievement } from "./types/Achievement";
 import { TestStatusObject } from "./types/TestStatus";
+import { StakepoolDetails } from "./types/StakepoolDetails";
+import { StakepoolVerification } from "./ryp-verification-api";
+import { StakepoolSignup } from "@/components/projects/NewProject";
 
 // function getRandomDelay(): Promise<void> {
 //   const delay = Math.random() * (500 - 30) + 30;
@@ -47,9 +50,10 @@ export class RypSiteApi {
     return (await axios.get(`${this.baseUrl}/account/projects`)).data;
   }
 
-  async addNewProject(project: ProjectCreationRequest, logo: File | null): Promise<Project> {
+  async addNewProject(project: ProjectCreationRequest, logo: File | null, initialStakepool: StakepoolSignup | null): Promise<Project> {
     const formData = new FormData();
     formData.append('project', JSON.stringify(project));
+    formData.append('initialStakepool', JSON.stringify(initialStakepool));
     if (logo) {
       formData.append('logo', logo);
     }
@@ -142,6 +146,18 @@ export class RypSiteApi {
 
   async submitReferredBy(referredBy: number): Promise<void> {
     await axios.post(`${this.baseUrl}/account/settings/referral`, { referredBy });
+  }
+
+  async getStakepoolDetails(poolHash: string): Promise<StakepoolDetails> {
+    return (await axios.get(`${this.baseUrl}/cardano/stakepools/${poolHash}`)).data;
+  }
+
+  async startStakepoolVerification(poolHash: string): Promise<StakepoolVerification> {
+    return (await axios.post(`${this.baseUrl}/cardano/stakepools/${poolHash}/verifications`)).data;
+  }
+
+  async testStakepoolVerification(poolHash: string, stakepoolVerification: StakepoolVerification): Promise<StakepoolVerification> {
+    return (await axios.post(`${this.baseUrl}/cardano/stakepools/${poolHash}/verifications/${stakepoolVerification.nonce}`, stakepoolVerification)).data;
   }
 
 }

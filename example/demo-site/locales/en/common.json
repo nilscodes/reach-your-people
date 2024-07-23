@@ -39,7 +39,7 @@
             "name": "SPO",
             "tag": "Stakepool",
             "description": "Be in the know when your Stake Pool Operators have something to say",
-            "createInfo": "Stake pool operator (not yet released)"
+            "createInfo": "Stake pool operator"
         },
         "drep": {
             "name": "dRep",

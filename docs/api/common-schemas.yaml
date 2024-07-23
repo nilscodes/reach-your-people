@@ -45,6 +45,20 @@ components:
       schema:
         type: string
       description: The reference ID used to identify the user in the external provider/integration
+    policyId:
+      name: policyId
+      in: path
+      required: true
+      schema:
+        type: string
+      description: The cardano policy ID of a token
+    poolHash:
+      name: poolHash
+      in: path
+      required: true
+      schema:
+        type: string
+      description: The hash of a Cardano stakepool
     projectId:
       name: projectId
       in: path
@@ -201,18 +215,41 @@ components:
           type: string
     Stakepool:
       type: object
+      required:
+        - poolHash
+        - verificationNonce
       properties:
-        id:
-          type: integer
-          format: int64
-        name:
+        poolHash:
+          $ref: '#/components/schemas/StakepoolHash'
+          x-stoplight:
+            id: vfqbnr4163aci
+        verificationNonce:
           type: string
+          x-stoplight:
+            id: cf3rvz34e82ml
+    StakepoolDetails:
+      type: object
+      x-stoplight:
+        id: emja1vl1u1lt7
+      title: StakepoolDetails
+      required:
+        - poolHash
+        - ticker
+        - name
+        - homepage
+        - description
+      properties:
+        poolHash:
+          $ref: '#/components/schemas/StakepoolHash'
         ticker:
           type: string
-        poolId:
-          $ref: '#/components/schemas/StakepoolHash'
-        bech32:
-          $ref: '#/components/schemas/PoolView'
+        name:
+          type: string
+        homepage:
+          type: string
+          format: uri
+        description:
+          type: string
     Policy:
       type: object
       properties:
@@ -314,15 +351,15 @@ components:
       type: string
       description: The Policy ID
       example: ceb5dedd6cda3f0b4a98919b5d3827e15e324771642b57e0e6aabd57
-      pattern: '^[A-Za-z0-9]{56}$'
+      pattern: '^[A-Fa-f0-9]{56}$'
     StakepoolHash:
       type: string
-      description: The Stakepool hash
+      description: The stakepool hash in hex
       example: be80794a946cf5e578846fc81e3c62ac13f4ab3335e0f5dc046edad4
-      pattern: '^[A-Za-z0-9]{56}$'
+      pattern: '^[A-Fa-f0-9]{56}$'
     PoolView:
       type: string
-      description: 'The pool ID of a wallet, in viewable Bech32 format'
+      description: 'The pool ID of a stakepool, in viewable Bech32 format'
       example: pool1uyhvepgdsd7s07q5cdx9vdemnar4axpe0e9edw2chyd8dpgqnsffq
       pattern: '^pool1[a-zA-Z0-9]{53}$'
     StakeAddressView:
@@ -446,8 +483,6 @@ components:
             $ref: '#/components/schemas/ExternalAccountSetting'
     LinkedExternalAccountPartial:
       type: object
-      required:
-        - settings
       properties:
         settings:
           type: array

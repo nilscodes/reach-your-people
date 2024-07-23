@@ -16,7 +16,7 @@ class CheckApiServiceVibrant(
 ) : CheckApiService {
     override fun getCip66InfoByPolicyId(policyId: String): Mono<Cip66PayloadDto> = cip66Dao.getCip66Payload(policyId)
 
-    override fun verify(policyId: String, serviceName: String, referenceId: String): Mono<Boolean> {
+    override fun verify(policyId: String, providerType: String, referenceId: String): Mono<Boolean> {
         return cip66Dao.getCip66Payload(policyId)
             .flatMap { policyInfo ->
                 val ipfsUrl = policyInfo.policies[PolicyId(policyId)]?.files?.firstOrNull()?.src
@@ -28,7 +28,7 @@ class CheckApiServiceVibrant(
                         .retrieve()
                         .bodyToMono(IamXDid::class.java)
                         .map {
-                            it.isValidMatch(serviceName, referenceId)
+                            it.isValidMatch(providerType, referenceId)
                         }
                 } else {
                     Mono.just(false)

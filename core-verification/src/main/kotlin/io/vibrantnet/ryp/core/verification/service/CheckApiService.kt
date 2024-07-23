@@ -5,5 +5,5 @@ import reactor.core.publisher.Mono
 
 interface CheckApiService {
     fun getCip66InfoByPolicyId(policyId: String): Mono<Cip66PayloadDto>
-    fun verify(policyId: String, serviceName: String, referenceId: String): Mono<Boolean>
+    fun verify(policyId: String, providerType: String, referenceId: String): Mono<Boolean>
 }

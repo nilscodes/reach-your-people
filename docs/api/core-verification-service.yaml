@@ -15,6 +15,125 @@ info:
 servers:
   - url: 'http://localhost:8070'
     description: Local Build
+tags:
+  - name: verification
+    description: Related to verification of subscriber and publisher accounts
+paths:
+  '/stake/{stakeAddress}/assetcounts':
+    parameters:
+      - $ref: '#/components/parameters/stakeAddress'
+    get:
+      summary: Get policy IDs and asset counts for a stake address
+      tags: []
+      responses:
+        '200':
+          description: A list of token policies and associated asset counts currently owned by the stake address
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TokenOwnershipInfoWithAssetCount'
+      operationId: getMultiAssetCountForStakeAddress
+      x-stoplight:
+        id: 27yfis43nerv6
+  '/pools/{poolHash}':
+    parameters:
+      - $ref: ./common-schemas.yaml#/components/parameters/poolHash
+    get:
+      summary: Get stakepool details
+      tags: []
+      operationId: getStakepoolDetails
+      responses:
+        '200':
+          description: The stakepool details
+          content:
+            application/json:
+              schema:
+                $ref: ./common-schemas.yaml#/components/schemas/StakepoolDetails
+  '/pools/{poolHash}/verifications':
+    parameters:
+      - $ref: ./common-schemas.yaml#/components/parameters/poolHash
+    post:
+      summary: Create a new verification flow for stake pool
+      tags: []
+      operationId: startStakepoolVerification
+      responses:
+        '201':
+          description: The stakepool verification details to process
+          headers:
+            Location:
+              schema:
+                type: string
+              description: Resource URL for the new verification flow
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StakepoolVerification'
+      x-stoplight:
+        id: ivcevnekbykhu
+  '/pools/{poolHash}/verifications/{verificationNonce}':
+    parameters:
+      - $ref: ./common-schemas.yaml#/components/parameters/poolHash
+      - $ref: '#/components/parameters/verificationNonce'
+    post:
+      summary: Test verification flow for stake pool
+      tags: []
+      operationId: testStakepoolVerification
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StakepoolVerification'
+      responses:
+        '200':
+          description: Confirmed stakepool verification, verification not persisted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StakepoolVerification'
+        '404':
+          description: Stakepool verification not found under this nonce and likely expired
+        '409':
+          description: Stakepool verification denied because of invalid signature or similar discrepancy
+    put:
+      summary: Complete verification flow for stake pool
+      tags: []
+      operationId: completeStakepoolVerification
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StakepoolVerification'
+      responses:
+        '200':
+          description: Confirmed stakepool verification, and verification persisted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StakepoolVerification'
+        '404':
+          description: Stakepool verification not found under this nonce and likely expired
+        '409':
+          description: Stakepool verification denied because of invalid signature or similar discrepancy
+      x-stoplight:
+        id: 43777830d67af
+  '/cip66/{policyId}/{providerType}/{referenceId}':
+    parameters:
+      - $ref: ./common-schemas.yaml#/components/parameters/policyId
+      - $ref: ./common-schemas.yaml#/components/parameters/providerType
+      - $ref: ./common-schemas.yaml#/components/parameters/referenceId
+    get:
+      summary: Verify if given reference ID of provider is a valid CIP-0066 identity for the given policy ID
+      tags: []
+      operationId: verifyCip66
+      responses:
+        '200':
+          description: 'A boolean indicating if the identity is confirmed, or if the identity is not confirmed or the policy is not a CIP-0066-enabled policy'
+          content:
+            application/json:
+              schema:
+                type: boolean
 components:
   parameters:
     stakeAddress:
@@ -25,6 +144,15 @@ components:
       style: simple
       schema:
         $ref: '#/components/schemas/StakeAddressView'
+    verificationNonce:
+      name: verificationNonce
+      in: path
+      description: The nonce to use in the verification flow
+      required: true
+      style: simple
+      schema:
+        type: string
+        pattern: '^[a-fA-F0-9]{64}$'
   schemas:
     StakeAddressView:
       type: string
@@ -45,26 +173,68 @@ components:
         assetCount:
           type: integer
           format: int64
-tags:
-  - name: verification
-    description: Related to verification of subscriber and publisher accounts
-paths:
-  '/stake/{stakeAddress}/assetcounts':
-    parameters:
-      - $ref: '#/components/parameters/stakeAddress'
-    get:
-      summary: Get policy IDs and asset counts for a stake address
-      tags: []
-      responses:
-        '200':
-          description: 'A list of token policies and associated asset counts currently owned by the stake address'
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/TokenOwnershipInfoWithAssetCount'
-      operationId: getMultiAssetCountForStakeAddress
+    StakepoolVerification:
+      title: StakepoolVerification
+      required:
+        - nonce
+        - domain
+        - poolHash
+        - createTime
+        - expirationTime
       x-stoplight:
-        id: 27yfis43nerv6
-      parameters: []
+        id: 83buzyj2s5kb0
+      type: object
+      properties:
+        nonce:
+          type: string
+          x-stoplight:
+            id: sayblhubnza8u
+          pattern: '^[a-fA-F0-9]{64}$'
+          readOnly: true
+          description: The nonce to use in the CIP-0022 message to sign
+        domain:
+          type: string
+          example: ryp.io
+          description: The domain to use in the CIP-0022 message to sign
+        poolHash:
+          $ref: ./common-schemas.yaml#/components/schemas/StakepoolHash
+          x-stoplight:
+            id: h67xbsgbjwh0n
+        vrfVerificationKey:
+          type: object
+          $ref: '#/components/schemas/VrfVerificationKey'
+        signature:
+          type: string
+          description: The hex string containing the signed message
+        createTime:
+          type: string
+          format: date-time
+          example: '2021-11-10T13:20:57Z'
+          readOnly: true
+          x-stoplight:
+            id: 28a32julufz59
+        expirationTime:
+          type: string
+          format: date-time
+          example: '2021-11-10T18:20:57Z'
+          readOnly: true
+          x-stoplight:
+            id: hlk4gyetevd7x
+    VrfVerificationKey:
+      type: object
+      description: 'The base64 encoded JSON object that is the content of your VRF verification key file. It should have three properties,'
+      required:
+        - type
+        - description
+        - cborHex
+      properties:
+        type:
+          type: string
+          example: VrfVerificationKey_PraosVRF
+        description:
+          type: string
+          example: VRF Verification Key
+        cborHex:
+          type: string
+          description: The CBOR hex string containing your VRF verification key
+          pattern: '^5820[a-fA-F0-9]{64}$'

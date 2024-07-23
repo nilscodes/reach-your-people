@@ -1,6 +1,7 @@
 package io.vibrantnet.ryp.core.verification.configuration
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.KotlinFeature
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import org.springframework.context.annotation.Bean
@@ -28,6 +29,7 @@ class RedisConfig {
                 .configure(KotlinFeature.StrictNullChecks, false)
                 .build()
         )
+            .registerModule(JavaTimeModule())
         val jsonSerializer = Jackson2JsonRedisSerializer(objectMapper, Any::class.java)
 
         template.keySerializer = stringSerializer

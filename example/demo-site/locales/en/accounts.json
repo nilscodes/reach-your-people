@@ -76,6 +76,8 @@
     "referralTitle": "Share Reach Your People with your friends",
     "referralDescription": "Invite your friends to join Reach Your People and increase your chances at a Spacebudz NFT when they sign up. Check your Achievements tab for more information.",
     "referralLink": "Your Referral Link",
+    "referralLinkCopied": "Referral URL copied to clipboard",
+    "referralLinkGenerationError": "Failed to generate referral URL",
 
     "walletsTitle": "Your Wallet Settings",
     "walletsDescription": "Manage your wallet notification settings and determine which subscriptions are active by default for notifications based on your wallet state.",

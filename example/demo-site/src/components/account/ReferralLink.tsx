@@ -1,15 +1,11 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import {
-  Box,
   Button,
-  Container,
   FormControl,
   FormLabel,
-  Heading,
   Input,
   Skeleton,
   Stack,
-  Text,
   useToast
 } from '@chakra-ui/react';
 import { MdContentCopy } from 'react-icons/md';
@@ -35,8 +31,7 @@ export default function ReferralLink({ accountSettings }: ReferralLinkProps) {
     } catch (error) {
       console.error('Error generating referral URL:', error);
       toast({
-        title: 'Error',
-        description: 'Failed to generate referral URL',
+        description: t('referralLinkGenerationError'),
         status: 'error',
         duration: 5000,
         isClosable: true,
@@ -57,8 +52,7 @@ export default function ReferralLink({ accountSettings }: ReferralLinkProps) {
     if (referralUrl) {
       navigator.clipboard.writeText(referralUrl).then(() => {
         toast({
-          title: 'Copied',
-          description: 'Referral URL copied to clipboard',
+          description: t('referralLinkCopied'),
           status: 'success',
           duration: 2000,
           isClosable: true,
