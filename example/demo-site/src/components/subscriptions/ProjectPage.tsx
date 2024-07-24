@@ -7,6 +7,7 @@ import ProjectDetails from './ProjectDetails';
 import StandardContentWithHeader from '../StandardContentWithHeader';
 import { useRouter } from 'next/router';
 import ProjectPolicies from './ProjectPolicies';
+import ProjectStakepools from './ProjectStakepools';
 
 type ProjectPageProps = {
   account: Account | null;
@@ -36,6 +37,7 @@ export default function ProjectPage({ account, project }: ProjectPageProps) {
     <Container py={{ base: '4', md: '8' }}>
       <ProjectDetails account={account} project={project} />
     </Container>
-    <ProjectPolicies project={project} />
+    {project.policies.length > 0 && <ProjectPolicies project={project} />}
+    {project.stakepools.length > 0 && <ProjectStakepools project={project} />}
   </StandardContentWithHeader>);
 }

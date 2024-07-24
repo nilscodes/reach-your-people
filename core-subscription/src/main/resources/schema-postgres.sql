@@ -95,7 +95,8 @@ CREATE TABLE "project_stakepools"
 (
     "project_id"         INT         NOT NULL,
     "pool_hash"          varchar(56) NOT NULL,
-    "verification_nonce" varchar(64) NOT NULL
+    "verification_nonce" varchar(64) NOT NULL,
+    "verification_time"  timestamp   NOT NULL
 );
 
 CREATE TABLE "project_roles"
