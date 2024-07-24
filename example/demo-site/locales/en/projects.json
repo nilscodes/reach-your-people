@@ -58,6 +58,10 @@
     "projectDetails": "Project information",
     "back": "Go back",
     "projectPolicies": "Cardano token policies",
+    "projectStakepools": "Cardano stake pools",
+    "poolName": "{{name}} ({{ticker}})",
     "copyPolicyId": "Copy policy ID",
-    "policyCopied": "Policy ID for \"{{policyName}}\" copied to clipboard"
+    "policyCopied": "Policy ID for \"{{policyName}}\" copied to clipboard",
+    "copyStakepoolHash": "Copy stake pool hash",
+    "stakepoolHashCopied": "Stake pool hash for \"{{name}}\" copied to clipboard"
 }
