@@ -120,7 +120,7 @@
     },
     "types": {
         "discord": "Discord",
-        "twitter": "Twitter",
+        "twitter": "Twitter / X",
         "telegram": "Telegram",
         "sms": "Text message",
         "pushapi": "Browser Notifications",

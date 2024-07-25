@@ -5,6 +5,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { FirstStepsItems, bitmaskToEnum, enumToBitmask } from "@/lib/types/FirstSteps";
 import { corePointsApi } from "@/lib/core-points-api";
 import { GetAllSubscriptionsForAccount200ResponseInner, GetAllSubscriptionsForAccount200ResponseInnerCurrentStatusEnum } from "@/lib/ryp-subscription-api";
+import { isCapableOfReceivingNotifications } from "@/lib/providerutil";
 
 const rypTokenId = +(process.env.RYP_TOKEN_ID || 0);
 
@@ -33,7 +34,7 @@ export default async function handler(
         if (!firstStepsCompleted.includes(FirstStepsItems.ConnectWallet) && linkedAccounts.some((linkedAccount) => linkedAccount.externalAccount.type === 'cardano')) {
           firstStepsCompleted.push(FirstStepsItems.ConnectWallet);
         }
-        if (!firstStepsCompleted.includes(FirstStepsItems.ConnectNotification) && linkedAccounts.some((linkedAccount) => linkedAccount.externalAccount.type !== 'cardano')) {
+        if (!firstStepsCompleted.includes(FirstStepsItems.ConnectNotification) && linkedAccounts.some((linkedAccount) => isCapableOfReceivingNotifications(linkedAccount.externalAccount.type))) {
           firstStepsCompleted.push(FirstStepsItems.ConnectNotification);
         }
         if (!firstStepsCompleted.includes(FirstStepsItems.ReferFriend)) {

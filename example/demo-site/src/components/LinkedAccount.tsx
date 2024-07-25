@@ -8,6 +8,7 @@ import { GiCorkedTube } from 'react-icons/gi';
 import { providerList } from './ProviderIcons';
 import { useState } from 'react';
 import { TestNotificationModal } from './linkedaccounts/TestNotificationModal';
+import { isCapableOfReceivingNotifications } from '@/lib/providerutil';
 
 type LinkedAccountsProps = {
   linkedAccount: GetLinkedExternalAccounts200ResponseInner;
@@ -37,7 +38,7 @@ export const LinkedAccount = ({
   const url = showUrl ? buildUrlForExternalAccount(linkedAccount.externalAccount) : '';
   const hasUrl = url.length > 0;
   const tags: string[] = [];
-  const canReceiveNotifications = linkedAccount.externalAccount.type !== 'cardano';
+  const canReceiveNotifications = isCapableOfReceivingNotifications(linkedAccount.externalAccount.type);
   const canBeTested = canReceiveNotifications && linkedAccount.externalAccount.type !== 'sms';
 
   let isNotDefault = false;
