@@ -1,6 +1,7 @@
 package io.vibrantnet.ryp.core.subscription.persistence
 
 import io.ryp.shared.model.ProjectRole
+import io.ryp.shared.model.ProjectRoleAssignmentDto
 import jakarta.persistence.Column
 import jakarta.persistence.Embeddable
 import jakarta.persistence.EnumType
@@ -15,6 +16,11 @@ class ProjectRoleAssignment(
     @Column(name = "account_id")
     var accountId: Long,
 ) {
+    fun toDto() = ProjectRoleAssignmentDto(
+        role = role,
+        accountId = accountId,
+    )
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is ProjectRoleAssignment) return false

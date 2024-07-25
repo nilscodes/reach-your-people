@@ -47,19 +47,41 @@ class AnnouncementsApiServiceVibrant(
                             val policiesToPublishTo = project.policies.filter {
                                 announcement.policies?.contains(it.policyId) ?: false
                             }
-                            // For each policy to publish to, check if any of them are manually verified or CIP-66 and verify the user's right to publish announcements
-                            Flux.fromIterable(policiesToPublishTo)
-                                .concatMap { policy ->
-                                    getAllVerificationStatusForAllLinkedAccounts(linkedAccountsForAuthor, policy)
-                                }
-                                .collectList()
-                                .flatMap { verified ->
-                                    if (verified.isNotEmpty() && verified.all { it.isPublishingAllowed() }) {
-                                        checkVerificationStatusAndPublish(announcementWithId, projectId)
-                                    } else {
-                                        Mono.error(UserNotAuthorizedToPublishException("User with account ID ${announcement.author} is not authorized to publish announcements for project $projectId to policies ${policiesToPublishTo.joinToString(", ") { it.policyId }}."))
+                            val stakepoolsToPublishTo = project.stakepools.filter {
+                                announcement.stakepools?.contains(it.poolHash) ?: false
+                            }
+
+                            val canAnnounceForStakepools = project.roles.any { it.accountId == announcement.author && it.role == ProjectRole.OWNER }
+
+                            if (stakepoolsToPublishTo.isNotEmpty() && !canAnnounceForStakepools) {
+                                Mono.error(UserNotAuthorizedToPublishException("User with account ID ${announcement.author} is not authorized to publish stakepool announcements for project $projectId to stakepools ${stakepoolsToPublishTo.joinToString(", ") { it.poolHash }}."))
+                            } else if (policiesToPublishTo.isEmpty() && stakepoolsToPublishTo.isEmpty()) {
+                                Mono.error(UserNotAuthorizedToPublishException("No valid policies or stakepools to publish for project $projectId."))
+                            } else {
+                                // For each policy to publish to, check if any of them are manually verified or CIP-66 and verify the user's right to publish announcements. This also executes if no policies are present
+                                Flux.fromIterable(policiesToPublishTo)
+                                    .concatMap { policy ->
+                                        getAllVerificationStatusForAllLinkedAccounts(linkedAccountsForAuthor, policy)
                                     }
-                                }
+                                    .collectList()
+                                    .flatMap { verifiedStatuses ->
+                                        val allPoliciesVerified = verifiedStatuses.isNotEmpty() && verifiedStatuses.all { it.isPublishingAllowed() }
+
+                                        if (policiesToPublishTo.isNotEmpty() && !allPoliciesVerified) {
+                                            Mono.error(
+                                                UserNotAuthorizedToPublishException(
+                                                    "User with account ID ${announcement.author} is not authorized to publish policy announcements for project $projectId to policies ${
+                                                        policiesToPublishTo.joinToString(
+                                                            ", "
+                                                        ) { it.policyId }
+                                                    }."
+                                                )
+                                            )
+                                        } else {
+                                            checkVerificationStatusAndPublish(announcementWithId, projectId)
+                                        }
+                                    }
+                            }
                         }.thenReturn(persistedAnn)
                 }.map {
                     AnnouncementDto(
@@ -139,7 +161,7 @@ class AnnouncementsApiServiceVibrant(
             announcement.id,
         )
 
-        logger.info { "Publishing announcement ${announcement.id} for project $projectId" }
+        logger.info { "Publishing announcement ${announcement.id} for project $projectId, publishing to policies: ${announcement.policies}, stakepools: ${announcement.stakepools}" }
         redisTemplate.opsForValue()
             .set("announcementsdata:${announcement.id}", announcement, 48, java.util.concurrent.TimeUnit.HOURS)
         rabbitTemplate.convertAndSend("announcements", announcementJob)
@@ -246,6 +268,7 @@ fun announcementFromBasicAnnouncement(
     AnnouncementStatus.PENDING,
     announcement.link,
     Audience(
-        policies = announcement.policies ?: emptyList()
+        policies = announcement.policies ?: emptyList(),
+        stakepools = announcement.stakepools ?: emptyList()
     )
 )

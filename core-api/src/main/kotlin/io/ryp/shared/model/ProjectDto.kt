@@ -43,6 +43,10 @@ data class ProjectDto @JsonCreator constructor(
     @JsonProperty("stakepools")
     val stakepools: Set<StakepoolDto> = emptySet(),
 
+    @field:Valid
+    @JsonProperty("roles")
+    val roles: Set<ProjectRoleAssignmentDto> = emptySet(),
+
     @JsonProperty("manuallyVerified")
     val manuallyVerified: OffsetDateTime? = null,
 )
@@ -67,6 +71,14 @@ data class StakepoolDto @JsonCreator constructor(
 
     @JsonProperty("verificationTime")
     val verificationTime: OffsetDateTime,
+)
+
+data class ProjectRoleAssignmentDto @JsonCreator constructor(
+    @JsonProperty("role", required = true)
+    val role: ProjectRole,
+
+    @JsonProperty("accountId", required = true)
+    val accountId: Long,
 )
 
 data class ProjectPartialDto @JsonCreator constructor(

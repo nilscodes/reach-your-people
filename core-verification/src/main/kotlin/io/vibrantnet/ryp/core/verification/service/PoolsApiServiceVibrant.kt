@@ -10,7 +10,8 @@ import io.vibrantnet.ryp.core.verification.CoreVerificationConfiguration
 import io.vibrantnet.ryp.core.verification.model.ExpiredCip22Verification
 import io.vibrantnet.ryp.core.verification.model.InvalidCip22Verification
 import io.vibrantnet.ryp.core.verification.persistence.Cip22Dao
-import io.vibrantnet.ryp.core.verification.persistence.PoolVerificationRepository
+import io.vibrantnet.ryp.core.verification.persistence.StakepoolDao
+import io.vibrantnet.ryp.core.verification.persistence.StakepoolVerificationRepository
 import io.vibrantnet.ryp.core.verification.persistence.StakepoolVerificationDocument
 import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.stereotype.Service
@@ -21,8 +22,9 @@ import java.security.SecureRandom
 @Service
 class PoolsApiServiceVibrant(
     private val cip22Dao: Cip22Dao,
+    private val stakepoolDao: StakepoolDao,
     private val redisTemplate: RedisTemplate<String, Any>,
-    private val poolVerificationRepository: PoolVerificationRepository,
+    private val stakepoolVerificationRepository: StakepoolVerificationRepository,
     private val objectMapper: ObjectMapper,
     private val config: CoreVerificationConfiguration,
 ): PoolsApiService {
@@ -30,7 +32,7 @@ class PoolsApiServiceVibrant(
         SodiumLibrary.setLibraryPath(config.libsodiumPath)
     }
 
-    override fun getStakepoolDetails(poolHash: String) = cip22Dao.getStakepoolDetails(poolHash)
+    override fun getStakepoolDetails(poolHash: String) = stakepoolDao.getStakepoolDetails(poolHash)
 
     override fun startStakepoolVerification(poolHash: String): Mono<StakepoolVerificationDto> {
         return cip22Dao.getVrfVerificationKeyHashForPool(poolHash)
@@ -95,7 +97,7 @@ class PoolsApiServiceVibrant(
                                 ) {
                                     // If not finalizing, we intentionally leave the verification in Redis, as it used both for displaying verification success on the frontend, but run again on the backend on submission
                                     if (finalize) {
-                                        poolVerificationRepository.save(StakepoolVerificationDocument(
+                                        stakepoolVerificationRepository.save(StakepoolVerificationDocument(
                                             verificationNonce = verificationNonce,
                                             verificationData = stakepoolVerification,
                                         )).subscribe()

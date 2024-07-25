@@ -39,7 +39,11 @@ export class RypSiteApi {
   }
 
   async getBestHandle(stakeAddress: string): Promise<string> {
-    return (await axios.get(`${this.baseUrl}/wallets/besthandle/${stakeAddress}`)).data;
+    return (await axios.get(`${this.baseUrl}/stake/${stakeAddress}/besthandle`)).data;
+  }
+
+  async getStakepoolDetailsForStakeAddress(stakeAddress: string): Promise<StakepoolDetails> {
+    return (await axios.get(`${this.baseUrl}/stake/${stakeAddress}/pool`)).data;
   }
 
   async unlinkExternalAccount(externalAccountId: number): Promise<void> {

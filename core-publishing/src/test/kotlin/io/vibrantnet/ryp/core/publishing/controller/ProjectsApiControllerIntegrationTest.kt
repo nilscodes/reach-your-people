@@ -97,7 +97,7 @@ internal class ProjectsApiControllerIntegrationTest {
         ),
         status = AnnouncementStatus.PENDING,
         shortLink = "https://go.ryp.io/abcdef",
-        audience = Audience(listOf("abc")),
+        audience = Audience(listOf("abc"), listOf("def")),
         statistics = Statistics(),
         createdDate = OffsetDateTime.parse("2021-08-01T00:00:00Z"),
         modifiedDate = OffsetDateTime.parse("2021-08-01T00:00:00Z")

@@ -16,7 +16,6 @@ import reactor.core.publisher.Mono
 import java.time.OffsetDateTime
 import java.time.ZonedDateTime
 import java.util.*
-import kotlin.NoSuchElementException
 
 @WebFluxTest(controllers = [AnnouncementsApiController::class, ApiExceptionHandler::class])
 @ActiveProfiles("test")
@@ -59,7 +58,7 @@ internal class AnnouncementsApiControllerIntegrationTest {
                 ),
                 status = AnnouncementStatus.PUBLISHED,
                 shortLink = "https://go.ryp.io/abcdef",
-                audience = Audience(listOf("abc")),
+                audience = Audience(listOf("abc"), listOf("def")),
                 statistics = Statistics(
                     sent = mapOf("twilio" to 2),
                     uniqueAccounts = 7L,

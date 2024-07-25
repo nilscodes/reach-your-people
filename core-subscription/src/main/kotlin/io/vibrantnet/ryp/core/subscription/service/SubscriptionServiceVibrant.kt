@@ -2,8 +2,12 @@ package io.vibrantnet.ryp.core.subscription.service
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.github.oshai.kotlinlogging.KotlinLogging
+import io.ryp.cardano.model.SnapshotRequestDto
+import io.ryp.cardano.model.SnapshotStakeAddressDto
+import io.ryp.cardano.model.SnapshotType
 import io.ryp.shared.model.*
 import io.vibrantnet.ryp.core.subscription.persistence.ExternalAccountRepository
+import io.vibrantnet.ryp.core.subscription.persistence.ExternalAccountSettingsUtil
 import io.vibrantnet.ryp.core.subscription.persistence.ExternalAccountWithAccountProjection
 import jakarta.transaction.Transactional
 import org.springframework.amqp.rabbit.annotation.RabbitListener
@@ -27,17 +31,21 @@ class SubscriptionServiceVibrant(
     @Transactional
     fun prepareRecipients(announcementJob: AnnouncementJobDto) {
         logger.info { "Preparing recipients for announcement ${announcementJob.announcementId} for project ${announcementJob.projectId}" }
-        projectsService.getProject(announcementJob.projectId).blockOptional().ifPresent { project ->
-            if (project.policies.isEmpty()) {
-                logger.info { "No policies found for project ${announcementJob.announcementId}, publishing immediately to direct subscribers." }
+        projectsService.getProject(announcementJob.projectId).blockOptional().ifPresent {
+            // TODO Decide if we want to check if policies/stakepools have been removed from the project in the meantime. Currently, we ignore the project info and just make sure it still exists
+            val announcementRaw = redisTemplate.opsForValue()["announcementsdata:${announcementJob.announcementId}"]
+            val announcement = objectMapper.convertValue(announcementRaw, BasicAnnouncementWithIdDto::class.java)
+            val policiesToAnnounceTo = announcement.policies ?: emptyList()
+            val stakepoolsToAnnounceTo = announcement.stakepools ?: emptyList()
+            if (policiesToAnnounceTo.isEmpty() && stakepoolsToAnnounceTo.isEmpty()) {
+                logger.info { "No policies or stakepools found for announcement ${announcementJob.announcementId}, publishing immediately and only to direct subscribers." }
                 val recipients = getExplicitlySubscribedAccounts(announcementJob.projectId)
                 redisTemplate.opsForList().rightPushAll("announcements:${announcementJob.announcementId}", recipients)
                 redisTemplate.expire("announcements:${announcementJob.announcementId}", 48, java.util.concurrent.TimeUnit.HOURS)
                 rabbitTemplate.convertAndSend("completed", announcementJob.announcementId)
             } else {
-                logger.info { "Policies found for project ${announcementJob.announcementId}, sending snapshot request for ${project.policies.size} policies." }
-                val policyIds = project.policies.map { it.policyId }
-                rabbitTemplate.convertAndSend("snapshot", SnapshotRequestDto(announcementJob, policyIds))
+                logger.info { "Policies and stakepools found for announcement ${announcementJob.announcementId}, sending snapshot request for ${policiesToAnnounceTo.size} policies and ${stakepoolsToAnnounceTo.size} stakepools." }
+                rabbitTemplate.convertAndSend("snapshot", SnapshotRequestDto(announcementJob, policiesToAnnounceTo, stakepoolsToAnnounceTo))
             }
         }
     }
@@ -73,9 +81,9 @@ class SubscriptionServiceVibrant(
         logger.info { "Processing snapshot completion for announcement ${announcementJob.announcementId}, snapshot ID is ${announcementJob.snapshotId}" }
         val snapshotDataRaw = redisTemplate.opsForList().range("snapshot:${announcementJob.snapshotId}", 0, -1) ?: emptyList()
         val snapshotData = snapshotDataRaw.map {
-            objectMapper.convertValue(it, TokenOwnershipInfoWithAssetCount::class.java)
+            objectMapper.convertValue(it, SnapshotStakeAddressDto::class.java)
         }
-        val accountIds = externalAccountRepository.findEligibleAccountsByWallet(announcementJob.projectId, snapshotData.map { it.stakeAddress }, listOf(SubscriptionStatus.BLOCKED, SubscriptionStatus.MUTED))
+        val accountIds = collectAutomaticallySubscribedAccounts(snapshotData, announcementJob)
         val externalAccounts = externalAccountRepository.findMessagingExternalAccountsForProjectAndAccounts(announcementJob.projectId, accountIds, listOf("cardano"))
         val recipients = externalAccounts.map {
             announcementRecipientDtoFromExternalAccount(it, SubscriptionStatus.DEFAULT)
@@ -93,5 +101,26 @@ class SubscriptionServiceVibrant(
         redisTemplate.opsForList().rightPushAll("announcements:${announcementJob.announcementId}", recipients.toList())
         redisTemplate.expire("announcements:${announcementJob.announcementId}", 48, java.util.concurrent.TimeUnit.HOURS)
         rabbitTemplate.convertAndSend("completed", announcementJob)
+    }
+
+    private fun collectAutomaticallySubscribedAccounts(
+        snapshotData: List<SnapshotStakeAddressDto>,
+        announcementJob: AnnouncementJobDto
+    ): List<Int> {
+        val tokenWallets = snapshotData.filter { it.snapshotType == SnapshotType.POLICY }.map { it.stakeAddress }
+        val tokenAccountIds = externalAccountRepository.findEligibleAccountsByWallet(
+            announcementJob.projectId,
+            tokenWallets,
+            listOf(SubscriptionStatus.BLOCKED, SubscriptionStatus.MUTED),
+            ExternalAccountSettingsUtil.settingsFromSet(setOf(ExternalAccountSetting.NON_FUNGIBLE_TOKEN_ANNOUNCEMENTS, ExternalAccountSetting.FUNGIBLE_TOKEN_ANNOUNCEMENTS, ExternalAccountSetting.RICH_FUNGIBLE_TOKEN_ANNOUNCEMENTS), '0')
+        )
+        val stakepoolWallets = snapshotData.filter { it.snapshotType == SnapshotType.STAKEPOOL }.map { it.stakeAddress }
+        val stakepoolAccountIds = externalAccountRepository.findEligibleAccountsByWallet(
+            announcementJob.projectId,
+            stakepoolWallets,
+            listOf(SubscriptionStatus.BLOCKED, SubscriptionStatus.MUTED),
+            ExternalAccountSettingsUtil.settingsFromSet(setOf(ExternalAccountSetting.STAKEPOOL_ANNOUNCEMENTS), '0')
+        )
+        return tokenAccountIds + stakepoolAccountIds
     }
 }

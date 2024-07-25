@@ -1,7 +1,7 @@
 package io.vibrantnet.ryp.core.verification.persistence
 
 import io.hazelnet.cardano.connect.data.token.PolicyId
-import io.ryp.shared.model.TokenOwnershipInfoWithAssetCount
+import io.ryp.cardano.model.TokenOwnershipInfoWithAssetCount
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.stereotype.Repository

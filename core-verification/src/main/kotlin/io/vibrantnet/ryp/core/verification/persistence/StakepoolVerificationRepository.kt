@@ -4,4 +4,4 @@ import org.springframework.data.repository.reactive.ReactiveCrudRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface PoolVerificationRepository: ReactiveCrudRepository<StakepoolVerificationDocument, String>
+interface StakepoolVerificationRepository: ReactiveCrudRepository<StakepoolVerificationDocument, String>

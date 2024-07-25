@@ -1,6 +1,7 @@
 package io.vibrantnet.ryp.core.subscription.service
 
 import io.mockk.*
+import io.ryp.cardano.model.TokenOwnershipInfoWithAssetCount
 import io.ryp.shared.model.*
 import io.vibrantnet.ryp.core.subscription.model.*
 import io.vibrantnet.ryp.core.subscription.persistence.*
@@ -9,6 +10,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.dao.DataIntegrityViolationException
 import reactor.core.publisher.Flux
+import reactor.core.publisher.Mono
 import reactor.test.StepVerifier
 import java.time.OffsetDateTime
 
@@ -510,6 +512,8 @@ internal class AccountsApiServiceVibrantTest {
                 )
             )
         }
+        every { verifyService.getStakepoolDetailsForStakeAddress("stake1herpderp") } answers { Mono.empty() }
+
         every { projectRepository.findByPoliciesPolicyIdIn(listOf("policy1", "policy2")) } returns listOf(makeProject(1), makeProject(2))
         every { accountRepository.findById(12) } returns java.util.Optional.of(account)
         val subscriptions = service.getAllSubscriptionsForAccount(12)

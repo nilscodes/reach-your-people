@@ -1,4 +1,4 @@
-package io.ryp.shared.model
+package io.ryp.cardano.model
 
 data class TokenOwnershipInfoWithAssetCount(
     val stakeAddress: String,

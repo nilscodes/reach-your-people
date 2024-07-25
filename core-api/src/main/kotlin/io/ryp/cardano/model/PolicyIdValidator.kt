@@ -1,4 +1,4 @@
-package io.ryp.shared.model
+package io.ryp.cardano.model
 
 import jakarta.validation.Constraint
 import jakarta.validation.Payload

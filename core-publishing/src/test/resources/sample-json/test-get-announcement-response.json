@@ -28,6 +28,9 @@
   "audience": {
     "policies": [
       "abc"
+    ],
+    "stakepools": [
+      "def"
     ]
   },
   "statistics": {

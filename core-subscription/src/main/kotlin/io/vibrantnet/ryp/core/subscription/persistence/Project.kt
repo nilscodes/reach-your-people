@@ -65,6 +65,7 @@ class Project(
         tags = tags,
         policies = policies.map { it.toDto() }.toSet(),
         stakepools = stakepools.map { it.toDto() }.toSet(),
+        roles = roles.map { it.toDto() }.toSet(),
         manuallyVerified = manuallyVerified,
     )
 
