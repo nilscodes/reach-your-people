@@ -3,6 +3,8 @@ package io.ryp.shared.model
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
+import io.ryp.cardano.model.ValidPolicyList
+import io.ryp.cardano.model.ValidStakepoolHashList
 import java.util.*
 
 data class BasicAnnouncementDto @JsonCreator constructor(
@@ -24,9 +26,13 @@ data class BasicAnnouncementDto @JsonCreator constructor(
     @JsonProperty("policies")
     @field:ValidPolicyList
     val policies: List<String>? = null,
+
+    @JsonProperty("stakepools")
+    @field:ValidStakepoolHashList
+    val stakepools: List<String>? = null,
 ) {
     fun toBasicAnnouncementWithIdDto(id: UUID, link: String): BasicAnnouncementWithIdDto {
-        return BasicAnnouncementWithIdDto(id, type, author, title, content, link, externalLink, policies)
+        return BasicAnnouncementWithIdDto(id, type, author, title, content, link, externalLink, policies, stakepools)
     }
 }
 
@@ -56,6 +62,10 @@ data class BasicAnnouncementWithIdDto @JsonCreator constructor(
     @JsonProperty("policies")
     @field:ValidPolicyList
     val policies: List<String>? = null,
+
+    @JsonProperty("stakepools")
+    @field:ValidStakepoolHashList
+    val stakepools: List<String>? = null,
 )
 
 enum class AnnouncementType {

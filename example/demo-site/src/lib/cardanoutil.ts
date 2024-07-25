@@ -6,3 +6,7 @@ export function getWalletDisplayName(stakeAddress: string): string {
 export function getPolicyIdDisplayName(policyId: string): string {
   return policyId.substring(0, 11) + '…' + policyId.substring(policyId.length - 5);
 }
+
+export function getStakepoolHashDisplayName(poolHash: string): string {
+  return poolHash.substring(0, 11) + '…' + poolHash.substring(poolHash.length - 5);
+}

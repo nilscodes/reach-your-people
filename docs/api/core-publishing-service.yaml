@@ -190,6 +190,11 @@ components:
             $ref: ./common-schemas.yaml#/components/schemas/TokenPolicyId
             x-stoplight:
               id: p55cb7tf2uzhm
+        stakepools:
+          type: array
+          description: 'If for a project containing stake pools, the pool hashes to publish to.'
+          items:
+            $ref: ./common-schemas.yaml#/components/schemas/StakepoolHash
         type:
           x-stoplight:
             id: pqmcs1vtsuj7m

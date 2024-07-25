@@ -33,6 +33,9 @@
         "form": {
             "policies": "Policies to announce for",
             "policiesError": "At least one policy is required",
+            "stakepools": "Stakepools to announce for",
+            "stakepoolsError": "At least one stakepool is required",
+            "poolName": "{{name}} ({{ticker}})",
             "title": "Title",
             "titleError": "Title is required",
             "contentWithMarkdown": "Content (Markdown allowed)",

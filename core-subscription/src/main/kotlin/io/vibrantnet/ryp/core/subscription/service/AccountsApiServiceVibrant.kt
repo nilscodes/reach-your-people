@@ -306,25 +306,60 @@ class  AccountsApiServiceVibrant(
 
     /**
      * Get wallet-based subscriptions for Cardano by querying the verify service for policies in the account's wallets,
-     * then get associated projects. Every policy that is present will result in a default-subscription.
+     * delegated stakepools, and then get associated projects. Every policy or stakepool that is present will result
+     * in a default-subscription, unless turned off for that wallet.
      */
     private fun getCardanoWalletBasedSubscriptions(account: Account): Flux<ProjectSubscriptionDto> {
         val ownedCardanoWallets = account.linkedExternalAccounts.filter { it.externalAccount.type == "cardano" }
-            .map { it.externalAccount.referenceId }
+            .map { it.toDto() }
 
-        return Flux.fromIterable(ownedCardanoWallets)
-            .flatMap { verifyService.getPoliciesInWallet(it) }
+        val policyBasedSubscriptions = getCardanoWalletTokenBasedSubscriptions(ownedCardanoWallets)
+        val stakepoolBasedSubscriptions = getCardanoWalletStakepoolBasedSubscriptions(ownedCardanoWallets)
+
+        return Flux.merge(policyBasedSubscriptions, stakepoolBasedSubscriptions)
+    }
+
+    private fun getCardanoWalletTokenBasedSubscriptions(ownedCardanoWallets: List<LinkedExternalAccountDto>) =
+        Flux.fromIterable(ownedCardanoWallets)
+            .filter { it.settings.contains(ExternalAccountSetting.NON_FUNGIBLE_TOKEN_ANNOUNCEMENTS) }
+            .flatMap { verifyService.getPoliciesInWallet(it.externalAccount.referenceId) }
             .map { it.policyIdWithOptionalAssetFingerprint }
             .collectList()
             .flatMapMany { policyIds ->
-                Flux.fromIterable(projectRepository.findByPoliciesPolicyIdIn(policyIds))
-                    .map { project ->
-                        ProjectSubscriptionDto(
-                            projectId = project.id!!,
-                            defaultStatus = DefaultSubscriptionStatus.SUBSCRIBED,
-                            currentStatus = SubscriptionStatus.DEFAULT
-                        )
-                    }
+                if (policyIds.isEmpty()) {
+                    Flux.empty()
+                } else {
+                    Flux.fromIterable(projectRepository.findByPoliciesPolicyIdIn(policyIds))
+                        .map { project ->
+                            ProjectSubscriptionDto(
+                                projectId = project.id!!,
+                                defaultStatus = DefaultSubscriptionStatus.SUBSCRIBED,
+                                currentStatus = SubscriptionStatus.DEFAULT
+                            )
+                        }
+                }
             }
-    }
+
+
+    private fun getCardanoWalletStakepoolBasedSubscriptions(ownedCardanoWallets: List<LinkedExternalAccountDto>) =
+        Flux.fromIterable(ownedCardanoWallets)
+            .filter { it.settings.contains(ExternalAccountSetting.STAKEPOOL_ANNOUNCEMENTS) }
+            .flatMap { verifyService.getStakepoolDetailsForStakeAddress(it.externalAccount.referenceId) }
+            .map { it.poolHash }
+            .collectList()
+            .flatMapMany { poolIds ->
+                if (poolIds.isEmpty()) {
+                    Flux.empty()
+                } else {
+                    Flux.fromIterable(projectRepository.findByStakepoolsPoolHashIn(poolIds))
+                        .map { project ->
+                            ProjectSubscriptionDto(
+                                projectId = project.id!!,
+                                defaultStatus = DefaultSubscriptionStatus.SUBSCRIBED,
+                                currentStatus = SubscriptionStatus.DEFAULT
+                            )
+                        }
+                }
+            }
+
 }

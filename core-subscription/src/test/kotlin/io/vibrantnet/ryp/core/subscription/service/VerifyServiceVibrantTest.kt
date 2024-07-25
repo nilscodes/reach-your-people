@@ -6,7 +6,7 @@ import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
-import io.ryp.shared.model.TokenOwnershipInfoWithAssetCount
+import io.ryp.cardano.model.TokenOwnershipInfoWithAssetCount
 import io.vibrantnet.ryp.core.loadJsonFromResource
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
@@ -19,6 +19,7 @@ import org.springframework.web.reactive.function.client.WebClient
 import reactor.test.StepVerifier
 import java.time.Duration
 import java.time.temporal.ChronoUnit
+import java.util.concurrent.TimeUnit
 
 internal class VerifyServiceVibrantTest {
     @Test
@@ -30,9 +31,9 @@ internal class VerifyServiceVibrantTest {
         val redisTemplate = mockk<RedisTemplate<String, Any>>()
         val opsForList = mockk<ListOperations<String, Any>>()
         every { redisTemplate.opsForList() } returns opsForList
-        every { opsForList.range("stakeAddress:123", 0, -1) } returns null
-        every { opsForList.rightPushAll("stakeAddress:123", any<TokenOwnershipInfoWithAssetCount>()) } returns 2
-        every { redisTemplate.expire("stakeAddress:123", any()) } returns true
+        every { opsForList.range("stakeAddress:assetcounts:123", 0, -1) } returns null
+        every { opsForList.rightPushAll("stakeAddress:assetcounts:123", any<TokenOwnershipInfoWithAssetCount>()) } returns 2
+        every { redisTemplate.expire("stakeAddress:assetcounts:123", any(), any()) } returns true
         val verifyService = VerifyServiceVibrant(
             WebClient.builder().baseUrl(String.format("http://localhost:%s", mockBackend.port)).build(),
             redisTemplate,
@@ -48,10 +49,10 @@ internal class VerifyServiceVibrantTest {
             .verifyComplete()
 
         verify(exactly = 2) {
-            opsForList.rightPushAll("stakeAddress:123", any<TokenOwnershipInfoWithAssetCount>())
+            opsForList.rightPushAll("stakeAddress:assetcounts:123", any<TokenOwnershipInfoWithAssetCount>())
         }
         verify(exactly = 1) {
-            redisTemplate.expire("stakeAddress:123", Duration.of(10, ChronoUnit.MINUTES)) // Exists to ensure we do not cache unreasonably long
+            redisTemplate.expire("stakeAddress:assetcounts:123",  10, TimeUnit.MINUTES) // Exists to ensure we do not cache unreasonably long
         }
     }
 
@@ -60,7 +61,7 @@ internal class VerifyServiceVibrantTest {
         val redisTemplate = mockk<RedisTemplate<String, Any>>()
         val opsForList = mockk<ListOperations<String, Any>>()
         every { redisTemplate.opsForList() } returns opsForList
-        every { opsForList.range("stakeAddress:123", 0, -1) } returns listOf(
+        every { opsForList.range("stakeAddress:assetcounts:123", 0, -1) } returns listOf(
             TokenOwnershipInfoWithAssetCount("123", "policy1", 1),
             TokenOwnershipInfoWithAssetCount("123", "policy2", 2)
         )
@@ -79,10 +80,10 @@ internal class VerifyServiceVibrantTest {
             .verifyComplete()
 
         verify(exactly = 0) {
-            opsForList.rightPushAll("stakeAddress:123", any<TokenOwnershipInfoWithAssetCount>())
+            opsForList.rightPushAll("stakeAddress:assetcounts:123", any<TokenOwnershipInfoWithAssetCount>())
         }
         verify(exactly = 0) {
-            redisTemplate.expire("stakeAddress:123", Duration.of(10, ChronoUnit.MINUTES))
+            redisTemplate.expire("stakeAddress:assetcounts:123", Duration.of(10, ChronoUnit.MINUTES))
         }
 
     }

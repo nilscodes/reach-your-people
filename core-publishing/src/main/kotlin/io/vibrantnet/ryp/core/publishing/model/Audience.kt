@@ -6,4 +6,7 @@ import com.fasterxml.jackson.annotation.JsonInclude
 data class Audience @JsonCreator constructor(
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     val policies: List<String>,
+
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    val stakepools: List<String>,
 )

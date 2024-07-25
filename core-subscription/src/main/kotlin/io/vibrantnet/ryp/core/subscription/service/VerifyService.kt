@@ -1,10 +1,16 @@
 package io.vibrantnet.ryp.core.subscription.service
 
-import io.ryp.shared.model.TokenOwnershipInfoWithAssetCount
+import io.ryp.cardano.model.StakepoolDetailsDto
+import io.ryp.cardano.model.TokenOwnershipInfoWithAssetCount
 import reactor.core.publisher.Flux
+import reactor.core.publisher.Mono
 
-fun interface VerifyService {
+interface VerifyService {
     fun getPoliciesInWallet(
         stakeAddress: String,
     ): Flux<TokenOwnershipInfoWithAssetCount>
+
+    fun getStakepoolDetailsForStakeAddress(
+        stakeAddress: String,
+    ): Mono<StakepoolDetailsDto>
 }

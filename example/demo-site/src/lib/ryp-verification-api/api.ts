@@ -63,6 +63,43 @@ export interface StakepoolDetails {
 /**
  * 
  * @export
+ * @interface StakepoolDetails1
+ */
+export interface StakepoolDetails1 {
+    /**
+     * The stakepool hash in hex
+     * @type {string}
+     * @memberof StakepoolDetails1
+     */
+    'poolHash': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof StakepoolDetails1
+     */
+    'ticker': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof StakepoolDetails1
+     */
+    'name': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof StakepoolDetails1
+     */
+    'homepage': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof StakepoolDetails1
+     */
+    'description': string;
+}
+/**
+ * 
+ * @export
  * @interface StakepoolVerification
  */
 export interface StakepoolVerification {
@@ -278,6 +315,40 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         },
         /**
          * 
+         * @summary Get stake pool details for a given stake address, if currently staked
+         * @param {string} stakeAddress The staking address of a wallet in view format
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getStakepoolDetailsForStakeAddress: async (stakeAddress: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'stakeAddress' is not null or undefined
+            assertParamExists('getStakepoolDetailsForStakeAddress', 'stakeAddress', stakeAddress)
+            const localVarPath = `/stake/{stakeAddress}/pool`
+                .replace(`{${"stakeAddress"}}`, encodeURIComponent(String(stakeAddress)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary Create a new verification flow for stake pool
          * @param {string} poolHash The hash of a Cardano stakepool
          * @param {*} [options] Override http request option.
@@ -439,10 +510,23 @@ export const DefaultApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getStakepoolDetails(poolHash: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<StakepoolDetails>> {
+        async getStakepoolDetails(poolHash: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<StakepoolDetails1>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.getStakepoolDetails(poolHash, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['DefaultApi.getStakepoolDetails']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Get stake pool details for a given stake address, if currently staked
+         * @param {string} stakeAddress The staking address of a wallet in view format
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getStakepoolDetailsForStakeAddress(stakeAddress: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<StakepoolDetails>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getStakepoolDetailsForStakeAddress(stakeAddress, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DefaultApi.getStakepoolDetailsForStakeAddress']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -527,8 +611,18 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getStakepoolDetails(poolHash: string, options?: any): AxiosPromise<StakepoolDetails> {
+        getStakepoolDetails(poolHash: string, options?: any): AxiosPromise<StakepoolDetails1> {
             return localVarFp.getStakepoolDetails(poolHash, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Get stake pool details for a given stake address, if currently staked
+         * @param {string} stakeAddress The staking address of a wallet in view format
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getStakepoolDetailsForStakeAddress(stakeAddress: string, options?: any): AxiosPromise<StakepoolDetails> {
+            return localVarFp.getStakepoolDetailsForStakeAddress(stakeAddress, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -610,6 +704,18 @@ export class DefaultApi extends BaseAPI {
      */
     public getStakepoolDetails(poolHash: string, options?: RawAxiosRequestConfig) {
         return DefaultApiFp(this.configuration).getStakepoolDetails(poolHash, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Get stake pool details for a given stake address, if currently staked
+     * @param {string} stakeAddress The staking address of a wallet in view format
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DefaultApi
+     */
+    public getStakepoolDetailsForStakeAddress(stakeAddress: string, options?: RawAxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).getStakepoolDetailsForStakeAddress(stakeAddress, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

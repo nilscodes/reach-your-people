@@ -17,9 +17,10 @@ import useTranslation from 'next-translate/useTranslation';
 import { components } from '../chakraMarkdownComponents';
 import { Project } from '@/lib/types/Project';
 import { PolicySelection } from './PolicySelection';
-import { Controller, useForm } from 'react-hook-form';
+import { Controller, set, useForm } from 'react-hook-form';
 import { useApi } from '@/contexts/ApiProvider';
 import { PublishingPermissions } from '@/lib/ryp-publishing-api';
+import { StakepoolSelection } from './StakepoolSelection';
 
 
 interface AnnouncementFormProps {
@@ -31,7 +32,6 @@ export default function PublishAnnouncementForm({ project, onSubmit }: Announcem
   const [content, setContent] = useState('');
   const [title, setTitle] = useState('');
   const [markdown, setMarkdown] = useState('');
-  const [policies, setPolicies] = useState(project.policies.map((policy) => policy.policyId));
   const [publishingPermissions, setPublishingPermissions] = useState<PublishingPermissions | null>(null);
   const titleRef = useRef<HTMLInputElement | null>(null);
   const api = useApi();
@@ -42,9 +42,15 @@ export default function PublishAnnouncementForm({ project, onSubmit }: Announcem
     handleSubmit,
     formState: { errors },
     setValue,
-  } = useForm<AnnouncementFormData>();
+  } = useForm<AnnouncementFormData>({
+    defaultValues: {
+      policies: project.policies.map((policy) => policy.policyId),
+      stakepools: project.stakepools.map((stakepool) => stakepool.poolHash),
+    },
+  });
   const { ref } = register('title', { required: true });
-  register('policies', { required: true });
+  register('policies', { required: project.stakepools.length === 0 });
+  register('stakepools', { required: project.policies.length === 0 });
 
   useEffect(() => {
     const fetchPublishingPermissions = async () => {
@@ -54,10 +60,6 @@ export default function PublishAnnouncementForm({ project, onSubmit }: Announcem
     titleRef.current?.focus();
     fetchPublishingPermissions();
   }, [api, project.id, titleRef])
-
-  useEffect(() => {
-    setValue('policies', policies);
-  }, [policies, setValue]);
 
   const handleOnChange = (event: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>, onChange: (...event: any[]) => void) => {
     if (event.target.name === 'title') {
@@ -70,25 +72,51 @@ export default function PublishAnnouncementForm({ project, onSubmit }: Announcem
     onChange(event);
   };
 
-  const changePolicy = (values: any) => {
-    setPolicies(values);
+  const changePolicies = (values: any) => {
+    setValue('policies', values);
   };
+
+  const changeStakepools = (values: any) => {
+    setValue('stakepools', values);
+  };
+
+  // For later, if we want to validate that at least one policy or stakepool is selected
+  // const watchPolicies = watch('policies');
+  // const watchStakepools = watch('stakepools');
+
+  // const validateAtLeastOneSelection = () => {
+  //   if (watchPolicies.length === 0 && watchStakepools.length === 0) {
+  //     setError('policies', { type: 'manual', message: 'At least one policy or stakepool must be selected' });
+  //   } else {
+  //     clearErrors('policies');
+  //   }
+  // };
 
   return (
     <Container py={{ base: '4', md: '8' }}>
       <Stack spacing="5">
         <Stack spacing="5" divider={<StackDivider />}>
-          <FormControl id="policies" isRequired isInvalid={!!errors.policies}>
+          {project.policies.length > 0 && (<FormControl id="policies" isRequired isInvalid={!!errors.policies}>
             <FormLabel>{t('publish.form.policies')}</FormLabel>
             <Stack w="100%">
               <PolicySelection
                 project={project}
-                onChange={changePolicy}
+                onChange={changePolicies}
                 publishingPermissions={publishingPermissions}
               />
               <FormErrorMessage>{errors.policies && t('publish.form.policiesError')}</FormErrorMessage>
             </Stack>
-          </FormControl>
+          </FormControl>)}
+          {project.stakepools.length > 0 && (<FormControl id="stakepools" isRequired isInvalid={!!errors.stakepools}>
+            <FormLabel>{t('publish.form.stakepools')}</FormLabel>
+            <Stack w="100%">
+              <StakepoolSelection
+                project={project}
+                onChange={changeStakepools}
+              />
+              <FormErrorMessage>{errors.stakepools && t('publish.form.stakepoolsError')}</FormErrorMessage>
+            </Stack>
+          </FormControl>)}
           <FormControl id="title" isRequired isInvalid={!!errors.title}>
             <FormLabel>{t('publish.form.title')}</FormLabel>
             <Stack w="100%">
@@ -132,7 +160,7 @@ export default function PublishAnnouncementForm({ project, onSubmit }: Announcem
                 <FormErrorMessage>{errors.content && t('publish.form.contentError')}</FormErrorMessage>
               </Stack>
             </FormControl>
-            <Box w={{ base: '100%', md: '50%' }} pl={{ base: 0, md: 5}}>
+            <Box w={{ base: '100%', md: '50%' }} pl={{ base: 0, md: 5 }}>
               <FormLabel>{t('publish.form.preview')}</FormLabel>
               <Markdown components={components}>{markdown}</Markdown>
             </Box>

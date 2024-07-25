@@ -57,21 +57,11 @@ class LinkedExternalAccount(
     )
 
     fun settingsAsSet(): Set<ExternalAccountSetting> {
-        val enumSet = EnumSet.noneOf(ExternalAccountSetting::class.java)
-        for (i in 0..<ExternalAccountSetting.entries.size) {
-            if (settings[15 - i] == '1') {
-                enumSet.add(ExternalAccountSetting.entries[i])
-            }
-        }
-        return enumSet
+        return ExternalAccountSettingsUtil.settingsAsSet(settings)
     }
 
     fun settingsFromSet(settings: Set<ExternalAccountSetting>) {
-        val bitArray = CharArray(16) { '1' }
-        for (i in 0..<ExternalAccountSetting.entries.size) {
-            bitArray[15 - i] = if(settings.contains(ExternalAccountSetting.entries[i])) '1' else '0'
-        }
-        this.settings = String(bitArray)
+        this.settings = ExternalAccountSettingsUtil.settingsFromSet(settings)
     }
 
     override fun equals(other: Any?): Boolean {
@@ -98,4 +88,24 @@ class LinkedExternalAccount(
         return result
     }
 
+}
+
+object ExternalAccountSettingsUtil {
+    fun settingsAsSet(settings: String): Set<ExternalAccountSetting> {
+        val enumSet = EnumSet.noneOf(ExternalAccountSetting::class.java)
+        for (i in 0 until ExternalAccountSetting.entries.size) {
+            if (settings[15 - i] == '1') {
+                enumSet.add(ExternalAccountSetting.entries[i])
+            }
+        }
+        return enumSet
+    }
+
+    fun settingsFromSet(settings: Set<ExternalAccountSetting>, base: Char = '1'): String {
+        val bitArray = CharArray(16) { base }
+        for (i in 0 until ExternalAccountSetting.entries.size) {
+            bitArray[15 - i] = if (settings.contains(ExternalAccountSetting.entries[i])) '1' else '0'
+        }
+        return String(bitArray)
+    }
 }

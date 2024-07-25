@@ -19,6 +19,7 @@ type PublishAnnouncementProps = {
 
 export interface AnnouncementFormData {
   policies: string[];
+  stakepools: string[];
   title: string;
   content: string;
   externalLink?: string;

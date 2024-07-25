@@ -29,8 +29,6 @@ export default function ProjectStakepools({ project }: { project: Project }) {
         setPoolDetails(data);
       } catch (error) {
         console.error('Error fetching pool details:', error);
-      } finally {
-        // setLoading(false);
       }
     };
 

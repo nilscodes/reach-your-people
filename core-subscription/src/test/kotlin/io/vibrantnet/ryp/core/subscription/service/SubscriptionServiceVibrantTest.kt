@@ -7,6 +7,9 @@ import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import io.ryp.cardano.model.SnapshotRequestDto
+import io.ryp.cardano.model.SnapshotStakeAddressDto
+import io.ryp.cardano.model.SnapshotType
 import io.ryp.shared.model.*
 import io.vibrantnet.ryp.core.subscription.controller.makeProjectDto
 import io.vibrantnet.ryp.core.subscription.persistence.ExternalAccountRepository
@@ -16,6 +19,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.amqp.rabbit.core.RabbitTemplate
 import org.springframework.data.redis.core.ListOperations
 import org.springframework.data.redis.core.RedisTemplate
+import org.springframework.data.redis.core.ValueOperations
 import reactor.core.publisher.Mono
 import java.time.OffsetDateTime
 import java.util.*
@@ -26,6 +30,7 @@ internal class SubscriptionServiceVibrantTest {
     private val externalAccountRepository = mockk<ExternalAccountRepository>()
     private val redisTemplate = mockk<RedisTemplate<String, Any>>()
     private val opsForList = mockk<ListOperations<String, Any>>()
+    private val opsForValue = mockk<ValueOperations<String, Any>>()
     private val rabbitTemplate = mockk<RabbitTemplate>()
     private val objectMapper = jacksonObjectMapper()
         .registerKotlinModule()
@@ -43,6 +48,7 @@ internal class SubscriptionServiceVibrantTest {
         clearAllMocks()
         every { redisTemplate.opsForList() } returns opsForList
         every { opsForList.rightPushAll(any(), any()) } returns 2
+        every { redisTemplate.opsForValue() } returns opsForValue
         every { redisTemplate.expire(any(), any(), any()) } returns true
         every { rabbitTemplate.convertAndSend(any(), any<UUID>()) } returns Unit
     }
@@ -57,6 +63,8 @@ internal class SubscriptionServiceVibrantTest {
             makeExternalAccountWithAccountProjection(41),
         )
         val announcementId = UUID.randomUUID()
+        every { opsForValue["announcementsdata:$announcementId"] } returns TEST_ANNOUNCEMENT
+
         subscriptionServiceVibrant.prepareRecipients(AnnouncementJobDto(420, announcementId))
 
         verify(exactly = 1) {
@@ -76,6 +84,8 @@ internal class SubscriptionServiceVibrantTest {
             makeExternalAccountWithAccountProjection(41),
         )
         val announcementId = UUID.randomUUID()
+        every { opsForValue["announcementsdata:$announcementId"] } returns TEST_ANNOUNCEMENT.copy(policies = listOf("df6fe8ac7a40d0be2278d7d0048bc01877533d48852d5eddf2724058", "4523c5e21d409b81c95b45b0aea275b8ea1406e6cafea5583b9f8a5f"))
+
         val announcement = AnnouncementJobDto(420, announcementId)
         subscriptionServiceVibrant.prepareRecipients(announcement)
 
@@ -84,9 +94,11 @@ internal class SubscriptionServiceVibrantTest {
             redisTemplate.expire("announcements:$announcementId", 48, java.util.concurrent.TimeUnit.HOURS)
         } // No announcement published when we make a snapshot request
         verify(exactly = 1) { rabbitTemplate.convertAndSend("snapshot", SnapshotRequestDto(
-            announcement,
-            listOf("df6fe8ac7a40d0be2278d7d0048bc01877533d48852d5eddf2724058", "4523c5e21d409b81c95b45b0aea275b8ea1406e6cafea5583b9f8a5f")
-        )) }
+                announcement,
+                listOf("df6fe8ac7a40d0be2278d7d0048bc01877533d48852d5eddf2724058", "4523c5e21d409b81c95b45b0aea275b8ea1406e6cafea5583b9f8a5f"),
+                emptyList()
+            )
+        ) }
     }
 
     @Test
@@ -95,11 +107,12 @@ internal class SubscriptionServiceVibrantTest {
         val snapshotId = UUID.randomUUID()
         val announcement = AnnouncementJobDto(420, announcementId, snapshotId)
         every { opsForList.range("snapshot:$snapshotId", 0, -1) } returns listOf(
-            TokenOwnershipInfoWithAssetCount("123", "df6fe8ac7a40d0be2278d7d0048bc01877533d48852d5eddf2724058", 1),
-            TokenOwnershipInfoWithAssetCount("456", "4523c5e21d409b81c95b45b0aea275b8ea1406e6cafea5583b9f8a5f", 52),
+            SnapshotStakeAddressDto("123", SnapshotType.POLICY),
+            SnapshotStakeAddressDto("456", SnapshotType.POLICY),
         )
         every { opsForList.rightPushAll("announcements:$announcementId", any<List<AnnouncementRecipientDto>>()) } returns 3
-        every { externalAccountRepository.findEligibleAccountsByWallet(420, listOf("123", "456"), listOf(SubscriptionStatus.BLOCKED, SubscriptionStatus.MUTED)) } returns listOf(40, 41)
+        every { externalAccountRepository.findEligibleAccountsByWallet(420, listOf("123", "456"), listOf(SubscriptionStatus.BLOCKED, SubscriptionStatus.MUTED), "0000000000000111") } returns listOf(40, 41)
+        every { externalAccountRepository.findEligibleAccountsByWallet(420, emptyList(), listOf(SubscriptionStatus.BLOCKED, SubscriptionStatus.MUTED), "0000000000001000") } returns emptyList()
         every { externalAccountRepository.findMessagingExternalAccountsForProjectAndAccounts(420, listOf(40, 41), listOf("cardano")) } returns listOf(
             makeExternalAccountWithAccountProjection(40),
             makeExternalAccountWithAccountProjection(41),
@@ -124,11 +137,12 @@ internal class SubscriptionServiceVibrantTest {
         val snapshotId = UUID.randomUUID()
         val announcement = AnnouncementJobDto(420, announcementId, snapshotId)
         every { opsForList.range("snapshot:$snapshotId", 0, -1) } returns listOf(
-            TokenOwnershipInfoWithAssetCount("123", "df6fe8ac7a40d0be2278d7d0048bc01877533d48852d5eddf2724058", 1),
-            TokenOwnershipInfoWithAssetCount("456", "4523c5e21d409b81c95b45b0aea275b8ea1406e6cafea5583b9f8a5f", 52),
+            SnapshotStakeAddressDto("123", SnapshotType.POLICY),
+            SnapshotStakeAddressDto("456", SnapshotType.POLICY),
         )
         every { opsForList.rightPushAll("announcements:$announcementId", any<List<AnnouncementRecipientDto>>()) } returns 3
-        every { externalAccountRepository.findEligibleAccountsByWallet(420, listOf("123", "456"), listOf(SubscriptionStatus.BLOCKED, SubscriptionStatus.MUTED)) } returns listOf(40)
+        every { externalAccountRepository.findEligibleAccountsByWallet(420, listOf("123", "456"), listOf(SubscriptionStatus.BLOCKED, SubscriptionStatus.MUTED), "0000000000000111") } returns listOf(40)
+        every { externalAccountRepository.findEligibleAccountsByWallet(420, emptyList(), listOf(SubscriptionStatus.BLOCKED, SubscriptionStatus.MUTED), "0000000000001000") } returns emptyList()
         every { externalAccountRepository.findMessagingExternalAccountsForProjectAndAccounts(420, listOf(40), listOf("cardano")) } returns listOf(
             makeExternalAccountWithAccountProjection(40),
         )
@@ -151,11 +165,12 @@ internal class SubscriptionServiceVibrantTest {
         val snapshotId = UUID.randomUUID()
         val announcement = AnnouncementJobDto(420, announcementId, snapshotId)
         every { opsForList.range("snapshot:$snapshotId", 0, -1) } returns listOf(
-            TokenOwnershipInfoWithAssetCount("123", "df6fe8ac7a40d0be2278d7d0048bc01877533d48852d5eddf2724058", 1),
-            TokenOwnershipInfoWithAssetCount("456", "4523c5e21d409b81c95b45b0aea275b8ea1406e6cafea5583b9f8a5f", 52),
+            SnapshotStakeAddressDto("123", SnapshotType.POLICY),
+            SnapshotStakeAddressDto("456", SnapshotType.POLICY),
         )
         every { opsForList.rightPushAll("announcements:$announcementId", any<List<AnnouncementRecipientDto>>()) } returns 3
-        every { externalAccountRepository.findEligibleAccountsByWallet(420, listOf("123", "456"), listOf(SubscriptionStatus.BLOCKED, SubscriptionStatus.MUTED)) } returns listOf(40)
+        every { externalAccountRepository.findEligibleAccountsByWallet(420, listOf("123", "456"), listOf(SubscriptionStatus.BLOCKED, SubscriptionStatus.MUTED), "0000000000000111") } returns listOf(40)
+        every { externalAccountRepository.findEligibleAccountsByWallet(420, emptyList(), listOf(SubscriptionStatus.BLOCKED, SubscriptionStatus.MUTED), "0000000000001000") } returns emptyList()
         every { externalAccountRepository.findMessagingExternalAccountsForProjectAndAccounts(420, listOf(40), listOf("cardano")) } returns emptyList()
         every { externalAccountRepository.findExternalAccountsByProjectIdAndSubscriptionStatus(420, SubscriptionStatus.SUBSCRIBED) } returns emptyList()
         subscriptionServiceVibrant.processSnapshotCompleted(announcement)
@@ -176,5 +191,16 @@ internal class SubscriptionServiceVibrantTest {
             override val metadata: ByteArray? = null
             override val accountId: Long = 4
         }
+    }
+
+    companion object {
+        private val TEST_ANNOUNCEMENT = BasicAnnouncementWithIdDto(
+            UUID.randomUUID(),
+            AnnouncementType.STANDARD,
+            1L,
+            "title",
+            "content",
+            "link",
+        )
     }
 }

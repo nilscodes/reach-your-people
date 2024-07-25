@@ -7,7 +7,6 @@ import { InferGetServerSidePropsType } from "next";
 import { Account, GetLinkedExternalAccounts200ResponseInner } from "../../lib/ryp-subscription-api";
 import NewProject from "@/components/projects/NewProject";
 import Head from "next/head";
-import PublishingBeta from "@/components/PublishingBeta";
 
 export default function Home({
   account,
@@ -16,21 +15,12 @@ export default function Home({
   const { data: session } = useSession()
 
   if (session?.userId && account) {
-    if (accountSettings?.PUBLISHING_ENABLED === 'true') {
-      return (<>
-        <Head>
-          <title>RYP: New Project</title>
-        </Head>
-        <NewProject account={account} />
-      </>);
-    } else {
-      return (<>
-        <Head>
-          <title>RYP: New Project</title>
-        </Head>
-        <PublishingBeta />
-      </>);
-    }
+    return (<>
+      <Head>
+        <title>RYP: New Project</title>
+      </Head>
+      <NewProject account={account} />
+    </>);
   }
 
   return <AccessDenied />;
