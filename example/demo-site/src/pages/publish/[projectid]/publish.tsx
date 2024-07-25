@@ -10,13 +10,14 @@ import Head from "next/head";
 import PublishingBeta from "@/components/PublishingBeta";
 import { Project } from "@/lib/types/Project";
 import { verifyProjectOwnership } from "@/lib/permissions";
+import ProjectCategory from "@/lib/types/ProjectCategory";
 
 export default function Home({
   account,
   accountSettings,
   project,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-  if (accountSettings?.PUBLISHING_ENABLED === 'true') {
+  if (accountSettings?.PUBLISHING_ENABLED === 'true' || project.category === ProjectCategory.SPO) {
     return (<>
       <Head>
         <title>RYP: Publish</title>
