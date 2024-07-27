@@ -7,9 +7,10 @@ ENV RYP_POSTGRES_URL=""
 ENV RYP_POSTGRES_USER=""
 ENV RYP_POSTGRES_PASSWORD=""
 ENV REDIS_PASSWORD=""
+ENV RYP_API_KEY=""
 
 EXPOSE 8075
 ENTRYPOINT [ "sh", \
     "-c", \
-    "java -jar -Dspring.datasource.url=\"${RYP_POSTGRES_URL}\" -Dspring.datasource.username=${RYP_POSTGRES_USER} -Dspring.datasource.password=${RYP_POSTGRES_PASSWORD} -Dspring.rabbitmq.password=${RABBITMQ_PASSWORD} -Dspring.data.redis.password=${REDIS_PASSWORD} ${JAVA_OPTS} /app/app.jar" \
+    "java -jar -Dspring.datasource.url=\"${RYP_POSTGRES_URL}\" -Dspring.datasource.username=${RYP_POSTGRES_USER} -Dspring.datasource.password=${RYP_POSTGRES_PASSWORD} -Dspring.rabbitmq.password=${RABBITMQ_PASSWORD} -Dspring.data.redis.password=${REDIS_PASSWORD} -Dio.vibrantnet.ryp.security.api-key=${RYP_API_KEY} ${JAVA_OPTS} /app/app.jar" \
 ]

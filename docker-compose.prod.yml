@@ -10,6 +10,7 @@ services:
             - RABBITMQ_PASSWORD=
             - MONGODB_PASSWORD=
             - REDIS_PASSWORD=
+            - RYP_API_KEY=
         ports:
             - "8070:8070"
 
@@ -20,6 +21,7 @@ services:
             - RYP_POSTGRES_PASSWORD=
             - RABBITMQ_PASSWORD=
             - REDIS_PASSWORD=
+            - RYP_API_KEY=
 
 
 
@@ -30,6 +32,7 @@ services:
             - RABBITMQ_PASSWORD=
             - MONGODB_PASSWORD=
             - REDIS_PASSWORD=
+            - RYP_API_KEY=
 
 
 
@@ -39,6 +42,7 @@ services:
         environment:
             - MONGODB_PASSWORD=
             - REDIS_PASSWORD=
+            - RYP_API_KEY=
 
 
 
@@ -49,6 +53,7 @@ services:
             - RYP_POSTGRES_PASSWORD=
             - RABBITMQ_PASSWORD=
             - REDIS_PASSWORD=
+            - RYP_API_KEY=
 
 
 

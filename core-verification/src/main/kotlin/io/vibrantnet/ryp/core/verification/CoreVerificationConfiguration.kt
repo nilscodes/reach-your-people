@@ -1,5 +1,6 @@
 package io.vibrantnet.ryp.core.verification
 
+import io.ryp.shared.SecurityConfiguration
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.boot.context.properties.bind.ConstructorBinding
 
@@ -10,6 +11,7 @@ data class CoreVerificationConfiguration @ConstructorBinding constructor(
     val blockfrost: BlockfrostConfig?,
     val libsodiumPath: String = "/usr/local/lib/libsodium.so",
     val cip22: Cip22Config = Cip22Config(),
+    val security: SecurityConfiguration = SecurityConfiguration(),
 )
 
 data class BlockfrostConfig(

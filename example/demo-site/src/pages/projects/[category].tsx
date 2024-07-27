@@ -28,7 +28,7 @@ export default function SubscriptionCategory({
     <Head>
       <title>RYP: Projects</title>
     </Head>
-    <SubscriptionsDashboard account={account} title={category as string} all />;
+    <SubscriptionsDashboard account={account} title={category as string} all />
   </>)
 }
 

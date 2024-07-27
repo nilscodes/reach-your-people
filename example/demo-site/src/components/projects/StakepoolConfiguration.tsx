@@ -52,6 +52,7 @@ export default function StakepoolConfiguration({ type, formData, onSubmit }: Pro
     const [selectedLogo, setSelectedLogo] = useState<File | null>(null);
     const [ticker, setTicker] = useState<string>('');
     const [urlPrefix, setUrlPrefix] = useState<string>('https://');
+    const [poolHash, setPoolHash] = useState('');
     const [expired, setExpired] = useState<boolean>(false);
     const [stakepoolVerification, setStakepoolVerification] = useState<StakepoolVerification | null>(null);
     const [verificationLoading, setVerificationLoading] = useState<boolean>(false);
@@ -82,6 +83,9 @@ export default function StakepoolConfiguration({ type, formData, onSubmit }: Pro
         setSelectedLogo(file);
         const fileUrl = URL.createObjectURL(file);
         setAvatarUrl(fileUrl);
+        if (poolHash !== '' && stakepoolVerification === null) {
+            startStakepoolVerification(poolHash);
+        }
     };
 
     const finalizeSubmit = (data: ProjectData) => {
@@ -102,10 +106,11 @@ export default function StakepoolConfiguration({ type, formData, onSubmit }: Pro
     const poolHashChanged = async (event: React.ChangeEvent<HTMLTextAreaElement>, onChange: (...event: any[]) => void) => {
         onChange(event);
         resetVerification();
-        const poolHash = event.target.value;
-        if (poolHashRegex.test(poolHash)) {
+        const newPoolHash = event.target.value;
+        if (poolHashRegex.test(newPoolHash)) {
             try {
-                const poolDetails = await api.getStakepoolDetails(poolHash);
+                const poolDetails = await api.getStakepoolDetails(newPoolHash);
+                setPoolHash(newPoolHash);
                 setTicker(poolDetails.ticker);
                 setValue('description', poolDetails.description);
                 if (poolDetails.homepage.startsWith('http://')) {
@@ -115,7 +120,9 @@ export default function StakepoolConfiguration({ type, formData, onSubmit }: Pro
                 }
                 setValue('url', poolDetails.homepage.split('://')[1]);
                 setValue('name', poolDetails.name);
-                startStakepoolVerification(poolHash);
+                if (selectedLogo !== null) {
+                    startStakepoolVerification(newPoolHash);
+                }
                 return;
             } catch (e) {
             }
@@ -124,12 +131,11 @@ export default function StakepoolConfiguration({ type, formData, onSubmit }: Pro
         setValue('description', '');
         setValue('url', '');
         setValue('name', '');
-        setStakepoolVerification(null);
     }
 
-    function startStakepoolVerification(poolHash: string) {
+    function startStakepoolVerification(verifyPoolHash: string) {
         setVerificationLoading(true);
-        api.startStakepoolVerification(poolHash).then((stakepoolVerification) => {
+        api.startStakepoolVerification(verifyPoolHash).then((stakepoolVerification) => {
             setStakepoolVerification(stakepoolVerification);
             setCncliCommand(t('add.form.stakepools.cncliCommand', { domain: CIP_0022_DOMAIN, nonce: stakepoolVerification.nonce }));
         }).finally(() => {
@@ -139,12 +145,13 @@ export default function StakepoolConfiguration({ type, formData, onSubmit }: Pro
     
     function restartVerification() {
         resetVerification();
-        startStakepoolVerification(watch(`stakepool.poolHash`));
+        startStakepoolVerification(poolHash);
     }
 
     function resetVerification() {
         setCurrentVerificationStep(0);
         setStakepoolVerification(null);
+        setCncliCommand('');
         setChallengeError('');
         setVrfKeyError('');
     }
@@ -360,7 +367,7 @@ export default function StakepoolConfiguration({ type, formData, onSubmit }: Pro
                         </Stack>
                     </Stack>
                 </FormControl>
-                <FormControl id="verificationNonce" isReadOnly>
+                {stakepoolVerification !== null && (<FormControl id="verificationNonce" isReadOnly>
                     <Stack
                         direction={{ base: 'column', md: 'row' }}
                         spacing={{ base: '1.5', md: '8' }}
@@ -372,13 +379,13 @@ export default function StakepoolConfiguration({ type, formData, onSubmit }: Pro
                                 <FormHelperText mt="0" color="fg.muted" mb={4}>
                                     {t('add.form.stakepools.challengeHelper')}
                                 </FormHelperText>
-                                {!expired && stakepoolVerification?.expirationTime && (
+                                {!expired && stakepoolVerification.expirationTime && (
                                     <HStack spacing={6}>
                                         <Icon as={MdOutlineTimer} color={mode('brand.500', 'brand.200')} boxSize="2em" />
-                                        <Timer expiresInSeconds={new Date(stakepoolVerification?.expirationTime).getTime()} isIncludeDays={false} isIncludeHours={false} />
+                                        <Timer expiresInSeconds={new Date(stakepoolVerification.expirationTime).getTime()} isIncludeDays={false} isIncludeHours={false} />
                                     </HStack>
                                 )}
-                                {expired && stakepoolVerification?.expirationTime && (
+                                {expired && stakepoolVerification.expirationTime && (
                                     <Button onClick={restartVerification} leftIcon={<MdRefresh />}>{t('add.form.stakepools.restartVerification')}</Button>
                                 )}
                             </Box>
@@ -387,9 +394,9 @@ export default function StakepoolConfiguration({ type, formData, onSubmit }: Pro
                             </Box>
                         </Stack>
                         {verificationLoading && <Box><Spinner /></Box>}
-                        {!verificationLoading && <Textarea maxW={{ md: '3xl' }} rows={2} resize="none" variant='unstyled' readOnly value={stakepoolVerification?.nonce ?? ''} />}
+                        {!verificationLoading && <Textarea maxW={{ md: '3xl' }} rows={2} resize="none" variant='unstyled' readOnly value={stakepoolVerification.nonce ?? ''} />}
                     </Stack>
-                </FormControl>
+                </FormControl>)}
                 {cncliCommand.length > 0 && (<Box maxW="3xl">
                     <Text textStyle="lg" fontWeight="medium">
                         {t('add.form.stakepools.stakepoolVerification')}

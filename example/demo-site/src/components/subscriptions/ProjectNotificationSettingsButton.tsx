@@ -15,7 +15,7 @@ import { useApi } from '@/contexts/ApiProvider';
 import { GetLinkedExternalAccounts200ResponseInner, GetLinkedExternalAccounts200ResponseInnerSettingsEnum } from '@/lib/ryp-subscription-api';
 import { MdOutlineEditNotifications, MdWarning } from 'react-icons/md';
 import { sortLinkedExternalAccounts } from '../LinkedAccounts';
-import { findProviderByType } from '@/lib/providerutil';
+import { findProviderByType, isCapableOfReceivingNotifications } from '@/lib/providerutil';
 
 interface ProjectNotificationSettingsButtonProps extends ButtonProps {
   projectId: number;
@@ -49,7 +49,7 @@ const ButtonPopoverTrigger = forwardRef(function TriggerRef(props: ButtonPopover
 
 function prepareNotificationAccounts(linkedAccounts: GetLinkedExternalAccounts200ResponseInner[]) {
   return sortLinkedExternalAccounts(linkedAccounts)
-    .filter((linkedAccount) => linkedAccount.externalAccount.type !== 'cardano')
+    .filter((linkedAccount) => isCapableOfReceivingNotifications(linkedAccount.externalAccount.type))
     .reduce<NotificationAccount[]>((arr, linkedAccount) => {
       const provider = findProviderByType(linkedAccount.externalAccount.type);
       if (provider) {

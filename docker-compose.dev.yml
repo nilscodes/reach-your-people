@@ -10,6 +10,7 @@ services:
             - RABBITMQ_PASSWORD=
             - MONGODB_PASSWORD=
             - REDIS_PASSWORD=
+
         ports:
             - "8070:8070"
 
@@ -20,6 +21,7 @@ services:
             - RYP_POSTGRES_PASSWORD=
             - RABBITMQ_PASSWORD=
             - REDIS_PASSWORD=
+
         ports:
             - "8071:8071"
 
@@ -30,6 +32,7 @@ services:
             - RABBITMQ_PASSWORD=
             - MONGODB_PASSWORD=
             - REDIS_PASSWORD=
+
         ports:
             - "8072:8072"
 
@@ -39,6 +42,7 @@ services:
         environment:
             - MONGODB_PASSWORD=
             - REDIS_PASSWORD=
+
         ports:
             - "8074:8074"
 
@@ -49,6 +53,7 @@ services:
             - RYP_POSTGRES_PASSWORD=
             - RABBITMQ_PASSWORD=
             - REDIS_PASSWORD=
+
         ports:
             - "8075:8075"
 
