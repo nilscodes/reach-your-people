@@ -11,6 +11,7 @@ import io.vibrantnet.ryp.core.subscription.service.AccountsApiService
 import io.vibrantnet.ryp.core.subscription.service.ProjectsApiService
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.autoconfigure.security.reactive.ReactiveSecurityAutoConfiguration
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
@@ -36,7 +37,10 @@ private val defaultLinkedExternalAccountDto = LinkedExternalAccountDto(
     settings = setOf(ExternalAccountSetting.DEFAULT_FOR_NOTIFICATIONS)
 )
 
-@WebFluxTest(controllers = [AccountsApiController::class, ApiExceptionHandler::class])
+@WebFluxTest(
+    controllers = [AccountsApiController::class, ApiExceptionHandler::class],
+    excludeAutoConfiguration = [ReactiveSecurityAutoConfiguration::class],
+)
 internal class AccountsApiControllerIntegrationTest {
     @TestConfiguration
     class TestConfig {

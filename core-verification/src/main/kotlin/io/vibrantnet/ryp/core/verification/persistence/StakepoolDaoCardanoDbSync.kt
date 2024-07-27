@@ -39,6 +39,8 @@ const val SQL_GET_STAKEPOOL_DETAILS_FOR_STAKE_ADDRESS = """
             WHERE stake_deregistration.addr_id=d1.addr_id
                 AND stake_deregistration.tx_id>d1.tx_id
             )
+    ORDER BY o.id DESC
+    LIMIT 1
 """
 
 const val SQL_GET_DELEGATION_TO_POOL_IN_EPOCH = """

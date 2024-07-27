@@ -6,13 +6,17 @@ import io.mockk.mockk
 import io.vibrantnet.ryp.core.verification.service.CheckApiService
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.autoconfigure.security.reactive.ReactiveSecurityAutoConfiguration
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
 import org.springframework.test.web.reactive.server.WebTestClient
 import reactor.core.publisher.Mono
 
-@WebFluxTest(controllers = [CheckApiController::class, ApiExceptionHandler::class])
+@WebFluxTest(
+    controllers = [CheckApiController::class, ApiExceptionHandler::class],
+    excludeAutoConfiguration = [ReactiveSecurityAutoConfiguration::class],
+)
 class CheckApiControllerIntegrationTest {
     @TestConfiguration
     class TestConfig {

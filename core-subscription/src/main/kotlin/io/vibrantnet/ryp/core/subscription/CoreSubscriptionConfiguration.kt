@@ -1,5 +1,6 @@
 package io.vibrantnet.ryp.core.subscription
 
+import io.ryp.shared.SecurityConfiguration
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.boot.context.properties.bind.ConstructorBinding
 
@@ -7,6 +8,7 @@ import org.springframework.boot.context.properties.bind.ConstructorBinding
 data class CoreSubscriptionConfiguration @ConstructorBinding constructor(
     val verifyServiceUrl: String,
     val points: PointsConfiguration = PointsConfiguration(),
+    val security: SecurityConfiguration = SecurityConfiguration(),
 )
 
 data class PointsConfiguration(

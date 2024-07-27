@@ -1,7 +1,14 @@
 import { Configuration, CreateExternalAccountRequest, DefaultApi, GetLinkedExternalAccounts200ResponseInner, GetLinkedExternalAccounts200ResponseInnerSettingsEnum, LinkExternalAccount200Response } from "@/lib/ryp-subscription-api/index"
 
+const apiKey = process.env.IO_VIBRANTNET_RYP_SECURITY_APIKEY;
+
 export const coreSubscriptionApi = new DefaultApi(new Configuration({
   basePath: process.env.SUBSCRIPTION_SERVICE_URL ?? "http://localhost:8071",
+  baseOptions: apiKey ? {
+    headers: {
+      "Authorization": `${apiKey}`,
+    },
+  } : {},
 }));
 
 export async function makeNewLinkedExternalAccountDefaultForNotificationsIfRequired(accountId: number, externalAccountId: number) {

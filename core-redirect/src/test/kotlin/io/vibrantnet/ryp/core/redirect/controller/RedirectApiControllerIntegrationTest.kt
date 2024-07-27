@@ -6,6 +6,7 @@ import io.vibrantnet.ryp.core.loadJsonFromResource
 import io.vibrantnet.ryp.core.redirect.service.RedirectApiService
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.autoconfigure.security.reactive.ReactiveSecurityAutoConfiguration
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
@@ -13,7 +14,10 @@ import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.reactive.server.WebTestClient
 import reactor.core.publisher.Mono
 
-@WebFluxTest(controllers = [RedirectApiController::class, ApiExceptionHandler::class])
+@WebFluxTest(
+    controllers = [RedirectApiController::class, ApiExceptionHandler::class],
+    excludeAutoConfiguration = [ReactiveSecurityAutoConfiguration::class],
+)
 @ActiveProfiles("test")
 class RedirectApiControllerIntegrationTest {
     @TestConfiguration

@@ -15,15 +15,12 @@ plugins {
     id("org.sonarqube") version "4.4.1.3373"
     id("org.springframework.boot") version "3.3.0" apply false
     id("io.spring.dependency-management") version "1.1.5" apply false
-    id("org.owasp.dependencycheck") version "10.0.1" apply true
+    id("org.owasp.dependencycheck") version "10.0.3" apply true
 }
 
 buildscript {
     repositories {
         mavenCentral()
-    }
-    dependencies {
-        classpath("org.owasp:dependency-check-gradle:10.0.1")
     }
 }
 

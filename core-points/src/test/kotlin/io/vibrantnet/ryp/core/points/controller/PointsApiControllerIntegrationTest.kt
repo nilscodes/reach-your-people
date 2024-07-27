@@ -9,6 +9,7 @@ import io.vibrantnet.ryp.core.points.model.PointsSummaryDto
 import io.vibrantnet.ryp.core.points.service.PointsApiService
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.autoconfigure.security.reactive.ReactiveSecurityAutoConfiguration
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
@@ -20,7 +21,10 @@ import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import java.time.OffsetDateTime
 
-@WebFluxTest(controllers = [PointsApiController::class, ApiExceptionHandler::class])
+@WebFluxTest(
+    controllers = [PointsApiController::class, ApiExceptionHandler::class],
+    excludeAutoConfiguration = [ReactiveSecurityAutoConfiguration::class]
+)
 class PointsApiControllerIntegrationTest {
     @TestConfiguration
     class TestConfig {

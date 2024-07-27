@@ -57,7 +57,9 @@ export class RypSiteApi {
   async addNewProject(project: ProjectCreationRequest, logo: File | null, initialStakepool: StakepoolSignup | null): Promise<Project> {
     const formData = new FormData();
     formData.append('project', JSON.stringify(project));
-    formData.append('initialStakepool', JSON.stringify(initialStakepool));
+    if (initialStakepool) {
+      formData.append('initialStakepool', JSON.stringify(initialStakepool));
+    }
     if (logo) {
       formData.append('logo', logo);
     }

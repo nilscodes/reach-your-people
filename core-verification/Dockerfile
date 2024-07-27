@@ -28,6 +28,7 @@ ENV BLOCKFROST_PROJECT_ID=""
 ENV RABBITMQ_PASSWORD=""
 ENV MONGODB_PASSWORD=""
 ENV REDIS_PASSWORD=""
+ENV RYP_API_KEY=""
 
 ENV LD_LIBRARY_PATH="/usr/local/lib"
 ENV PKG_CONFIG_PATH="/usr/local/lib/pkgconfig"
@@ -37,5 +38,5 @@ COPY --from=libsodium /usr/local/lib /usr/local/lib
 EXPOSE 8070
 ENTRYPOINT [ "sh", \
     "-c", \
-    "java -jar -Dspring.datasource.url=\"${DB_SYNC_POSTGRES_URL}\" -Dspring.datasource.username=${DB_SYNC_POSTGRES_USER} -Dspring.datasource.password=${DB_SYNC_POSTGRES_PASSWORD} -Dio.vibrantnet.ryp.type=${INDEXER_TYPE} -Dio.vibrantnet.ryp.blockfrost.url=${BLOCKFROST_URL} -Dio.vibrantnet.ryp.blockfrost.apiKey=${BLOCKFROST_PROJECT_ID} -Dspring.rabbitmq.password=${RABBITMQ_PASSWORD} -Dspring.data.mongodb.password=${MONGODB_PASSWORD} -Dspring.data.redis.password=${REDIS_PASSWORD} ${JAVA_OPTS} /app/app.jar" \
+    "java -jar -Dspring.datasource.url=\"${DB_SYNC_POSTGRES_URL}\" -Dspring.datasource.username=${DB_SYNC_POSTGRES_USER} -Dspring.datasource.password=${DB_SYNC_POSTGRES_PASSWORD} -Dio.vibrantnet.ryp.type=${INDEXER_TYPE} -Dio.vibrantnet.ryp.blockfrost.url=${BLOCKFROST_URL} -Dio.vibrantnet.ryp.blockfrost.apiKey=${BLOCKFROST_PROJECT_ID} -Dspring.rabbitmq.password=${RABBITMQ_PASSWORD} -Dspring.data.mongodb.password=${MONGODB_PASSWORD} -Dspring.data.redis.password=${REDIS_PASSWORD} -Dio.vibrantnet.ryp.security.api-key=${RYP_API_KEY} ${JAVA_OPTS} /app/app.jar" \
 ]

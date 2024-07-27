@@ -7,6 +7,7 @@ import io.vibrantnet.ryp.core.publishing.model.*
 import io.vibrantnet.ryp.core.publishing.service.AnnouncementsApiService
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.autoconfigure.security.reactive.ReactiveSecurityAutoConfiguration
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
@@ -17,7 +18,10 @@ import java.time.OffsetDateTime
 import java.time.ZonedDateTime
 import java.util.*
 
-@WebFluxTest(controllers = [AnnouncementsApiController::class, ApiExceptionHandler::class])
+@WebFluxTest(
+    controllers = [AnnouncementsApiController::class, ApiExceptionHandler::class],
+    excludeAutoConfiguration = [ReactiveSecurityAutoConfiguration::class],
+)
 @ActiveProfiles("test")
 internal class AnnouncementsApiControllerIntegrationTest {
     @TestConfiguration
