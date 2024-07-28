@@ -1,4 +1,5 @@
 import { Configuration, CreateExternalAccountRequest, DefaultApi, GetLinkedExternalAccounts200ResponseInner, GetLinkedExternalAccounts200ResponseInnerSettingsEnum, LinkExternalAccount200Response } from "@/lib/ryp-subscription-api/index"
+import { isCapableOfReceivingNotifications } from "./providerutil";
 
 const apiKey = process.env.IO_VIBRANTNET_RYP_SECURITY_APIKEY;
 
@@ -18,10 +19,6 @@ export async function makeNewLinkedExternalAccountDefaultForNotificationsIfRequi
   return coreSubscriptionApi.updateLinkedExternalAccount(accountId, externalAccountId, { settings });
 }
 
-function isNotificationEnabledExternalAccount(externalAccount: CreateExternalAccountRequest) {
-  return externalAccount.type !== 'cardano';
-}
-
 // TODO Might be possible to consolidate this with makeNewLinkedExternalAccountDefaultForNotificationsIfRequired
 export async function makeDefaultNotificationsAccountIfNecessary(
   existingLinkedAccounts: GetLinkedExternalAccounts200ResponseInner[],
@@ -30,7 +27,7 @@ export async function makeDefaultNotificationsAccountIfNecessary(
   accountId: number
 ) {
   const hasDefaultNotificationsAccount = existingLinkedAccounts.some((linkedAccount) => linkedAccount.settings?.includes(GetLinkedExternalAccounts200ResponseInnerSettingsEnum.DefaultForNotifications));
-  if (!hasDefaultNotificationsAccount && isNotificationEnabledExternalAccount(externalAccount)) {
+  if (!hasDefaultNotificationsAccount && isCapableOfReceivingNotifications(externalAccount.type)) {
     const newSettingsWithDefaultOn = [...(linkedExternalAccount.settings ?? []), GetLinkedExternalAccounts200ResponseInnerSettingsEnum.DefaultForNotifications];
     await coreSubscriptionApi.updateLinkedExternalAccount(accountId, linkedExternalAccount.externalAccount.id!, { settings: newSettingsWithDefaultOn });
   }
