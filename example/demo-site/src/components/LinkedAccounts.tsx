@@ -4,10 +4,10 @@ import { Account, GetLinkedExternalAccounts200ResponseInner } from '../lib/ryp-s
 import { CardanoIcon, providerList, providersConfig } from './ProviderIcons';
 import { signIn } from 'next-auth/react';
 import { LinkedAccount } from './LinkedAccount';
-import WalletLogin from './WalletLogin';
+import WalletLogin from './login/WalletLogin';
 import { BrowserWallet, Wallet } from '@meshsdk/core';
 import { useApi } from '@/contexts/ApiProvider';
-import { MdPhone, MdWeb } from 'react-icons/md';
+import { MdEmail, MdPhone, MdWeb } from 'react-icons/md';
 import PhoneVerification from './phone/PhoneVerification';
 import useTranslation from 'next-translate/useTranslation';
 import PushApiVerification from './pushapi/PushApiVerification';
@@ -20,6 +20,7 @@ import FirstSteps from './account/FirstSteps';
 import { FirstStepsItems, bitmaskToEnum } from '@/lib/types/FirstSteps';
 import { CardanoHardwareWalletLoginModal } from './login/CardanoHardwareLogin';
 import cardanoWalletLogin from './login/CardanoLogin';
+import EmailLogin from './login/EmailLogin';
 
 type LinkedAccountsProps = {
   account: Account;
@@ -28,6 +29,7 @@ type LinkedAccountsProps = {
 };
 
 const isWalletExternalAccount = (type: string) => type === 'cardano';
+const enabledProviders = process.env.NEXT_PUBLIC_ENABLED_AUTH_PROVIDERS?.split(',') ?? [];
 
 export function sortLinkedExternalAccounts(linkedAccounts: GetLinkedExternalAccounts200ResponseInner[]) {
   return [...linkedAccounts].sort((a, b) => a.externalAccount.id! - b.externalAccount.id!);
@@ -42,10 +44,12 @@ export default function LinkedAccounts({ account, accountSettings, linkedAccount
   const [showWalletConnection, setShowWalletConnection] = React.useState(false);
   const [showPhoneConnection, setShowPhoneConnection] = React.useState(false);
   const [showPushApiConnection, setShowPushApiConnection] = React.useState(false);
+  const [showEmailConnection, setShowEmailConnection] = React.useState(false);
   const [firstSteps, setFirstSteps] = useState(bitmaskToEnum(+accountSettings['FIRST_STEPS'] ?? 0));
   const [wallets, setWallets] = useState<Wallet[]>([]);
   const [hwWallet, setHwWallet] = useState<string | null>(null);
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const isEmailEnabled = enabledProviders.includes('email');
 
   const handleSignIn = (provider: string) => {
     signIn(provider);
@@ -110,6 +114,11 @@ export default function LinkedAccounts({ account, accountSettings, linkedAccount
     setFirstSteps(bitmaskToEnum(+firstStepsSetting.value));
   }
 
+  const finalizeEmailSignIn = async (email: string) => {
+    setShowEmailConnection(false);
+    signIn('email', { email });
+  }
+
   const onFinishSteps = async (firstSteps: FirstStepsItems[]) => {
     setFirstSteps(firstSteps);
   }
@@ -117,10 +126,11 @@ export default function LinkedAccounts({ account, accountSettings, linkedAccount
   const isNonSocialAccount = (type: string) => ['sms', 'pushapi'].includes(type);
 
   const canRemove = linkedAccounts.filter((linkedAccount) => providerList.some((provider) => provider.id === linkedAccount.externalAccount.type)).length > 1;
-  const unlinkedProviders = providersConfig.filter((provider) => !linkedAccounts.some((linkedAccount) => linkedAccount.externalAccount.type === provider.id));
+  const unlinkedProviders = providersConfig.filter((provider) => !linkedAccounts.some((linkedAccount) => linkedAccount.externalAccount.type === provider.id) && provider.id !== 'email');
   const hasSms = linkedAccounts.some((linkedAccount) => linkedAccount.externalAccount.type === 'sms');
   const hasPushApi = linkedAccounts.some((linkedAccount) => linkedAccount.externalAccount.type === 'pushapi');
-  const showSocialConnections = !showWalletConnection && !showPhoneConnection && !showPushApiConnection;
+  const hasEmail = linkedAccounts.some((linkedAccount) => linkedAccount.externalAccount.type === 'email');
+  const showSocialConnections = !showWalletConnection && !showPhoneConnection && !showPushApiConnection && !showEmailConnection;
   const showFirstSteps = !firstSteps.includes(FirstStepsItems.Completed) && !firstSteps.includes(FirstStepsItems.Cancelled);
 
   return (<Container maxW="3xl" py={{ base: '0', md: '12' }} px="0">
@@ -147,6 +157,7 @@ export default function LinkedAccounts({ account, accountSettings, linkedAccount
         {showWalletConnection && (<WalletLogin wallets={wallets} handleSignIn={handleWalletSignIn} handleHwSignIn={handleHwSignIn} onReturn={() => setShowWalletConnection(false)} />)}
         {showPhoneConnection && (<PhoneVerification onReturn={finalizePhoneAuth} />)}
         {showPushApiConnection && (<PushApiVerification onReturn={finalizePushApi} />)}
+        {showEmailConnection && (<EmailLogin handleSignIn={finalizeEmailSignIn} onReturn={() => setShowEmailConnection(false)} />)}
         {showSocialConnections && (<Stack spacing="3">
           <Button key="cardano"
             variant="secondary"
@@ -172,6 +183,14 @@ export default function LinkedAccounts({ account, accountSettings, linkedAccount
           >
             {t('pushApi')}
           </Button>}
+          {isEmailEnabled && !hasEmail && (<Button key="email"
+            variant="secondary"
+            leftIcon={<MdEmail />}
+            cursor="pointer"
+            onClick={() => setShowEmailConnection(true)}
+          >
+            {t('email')}
+          </Button>)}
           {unlinkedProviders.map((provider) => {
               return (
                 <Button key={provider.id}

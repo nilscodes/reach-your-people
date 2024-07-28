@@ -14,6 +14,7 @@
     "testNotifications": "Test notification",
     "walletSignInCancelled": "Could not get signature from wallet. The signing flow was cancelled.",
     "cardanoWallet": "Cardano Wallet",
+    "email" : "Email",
     "mobilePhoneSms": "Mobile Phone (SMS)",
     "pushApi": "Browser Notification",
     "backToSocial": "Back to social logins",

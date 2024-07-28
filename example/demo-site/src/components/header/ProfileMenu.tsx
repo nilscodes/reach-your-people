@@ -34,7 +34,7 @@ export const ProfileMenu = ({ user }: ProfileMenuProps) => {
   ) === 'true';
   const { toggleColorMode } = useColorMode()
   const colorModeText = useColorModeValue("switchToDarkMode", "switchToLightMode");
-  const userDisplayName = user.name ?? 'Unknown';
+  const userDisplayName = user.name ?? (user.email ?? 'Unknown');
   return (
     <Menu>
       <MenuButton as={Button} variant='link'>

@@ -123,6 +123,7 @@
         "twitter": "Twitter / X",
         "google": "Google",
         "telegram": "Telegram",
+        "email": "Email",
         "sms": "Text message",
         "pushapi": "Browser Notifications",
         "cardano": "Cardano",

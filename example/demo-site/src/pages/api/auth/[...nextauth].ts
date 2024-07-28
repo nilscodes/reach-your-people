@@ -13,16 +13,19 @@ import { ExternalAccount } from "@vibrantnet/core";
 
 const getExternalAccountInfoFromProviderAccount = (user: User | AdapterUser, account: Account) => {
   let referenceName = user.name ?? '';
+  let displayName = user.name ?? 'N/A';
   if (account.provider === 'google' || account.provider === 'github') {
     referenceName = user.email ?? '';
   } else if (account.provider === 'twitter') {
     referenceName = '';
+  } else if(account.provider === 'email' && user.email) {
+    displayName = user.email;
   }
   return {
     type: account.provider,
     referenceId: account.providerAccountId,
     referenceName,
-    displayName: user.name ?? 'N/A',
+    displayName,
   }
 }
 
@@ -50,9 +53,13 @@ export const getNextAuthOptions = <Req extends Request, Res extends Response>(
       },
       callbacks: {
         async signIn(params) {
-          const { account, user } = params;
+          const { account, user, email } = params;
 
           const currentSession = await getServerSession(req, res, extendedOptions);
+
+          if (email?.verificationRequest) {
+            return true; // Prevent the actual login flow, we just sent a verification email and don't need to log anyone in.
+          }
 
           const currentUserId = currentSession?.userId;
 
@@ -126,12 +133,27 @@ export const getNextAuthOptions = <Req extends Request, Res extends Response>(
         },
 
         async session(params) {
-          const { session, token } = params;
+          const { session, token, user } = params;
           // Attach the user id from our table to session to be able to link accounts later on sign in
           // when we make the call to getServerSession
-          session.userId = token.userId;
+
+          if (token) {
+            session.userId = token?.userId;
+          } else if (user.emailVerified && user.email) {
+            const existingAccount = await coreSubscriptionApi.findAccountByProviderAndReferenceId('email', user.email);
+            session.userId = existingAccount.data.id;
+            if (session.user) {
+              session.user.name = user.email;
+            }
+          }
           if (session.user && session.user.email === undefined) { // Set email to null if it is undefined so it can be serialized in getServerSideProps
             session.user.email = null;
+          }
+          if (session.user && session.user.name === undefined) { // Set name to null if it is undefined so it can be serialized in getServerSideProps
+            session.user.name = null;
+          }
+          if (session.user && session.user.image === undefined) { // Set image to null if it is undefined so it can be serialized in getServerSideProps
+            session.user.image = null;
           }
           return session;
         },

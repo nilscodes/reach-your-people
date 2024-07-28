@@ -2,10 +2,17 @@ import type { AuthOptions } from "next-auth"
 import Discord from "next-auth/providers/discord"
 import Github from "next-auth/providers/github"
 import CredentialsProvider from "next-auth/providers/credentials"
+import Email from "next-auth/providers/email"
 import { RypSiteApi } from "./lib/api"
 import Twitter from "next-auth/providers/twitter"
 import Google from "next-auth/providers/google"
 import { getWalletDisplayName } from "./lib/cardanoutil"
+import { DynamoDB, DynamoDBClientConfig } from "@aws-sdk/client-dynamodb"
+import { DynamoDBDocument } from "@aws-sdk/lib-dynamodb"
+import { DynamoDBAdapter } from "@auth/dynamodb-adapter"
+import type { Adapter } from 'next-auth/adapters';
+
+let customAdapter: Adapter | undefined = undefined;
 
 const providers: any = [
   // Custom Cardano wallet provider
@@ -94,9 +101,49 @@ if (enabledProviders.includes('google')) {
   )
 }
 
+if (enabledProviders.includes('email')) {
+  providers.push(
+    Email({
+      from: process.env.AUTH_EMAIL_FROM,
+      server: {
+        host: "smtp.sendgrid.net",
+        port: 587,
+        auth: {
+          user: "apikey",
+          pass: process.env.AUTH_SENDGRID_KEY,
+        }
+      },
+      maxAge: 30 * 60, // 30 minutes magic link validity
+    }),
+  )
+
+  const config: DynamoDBClientConfig = {
+    credentials: {
+      accessKeyId: process.env.AUTH_DYNAMODB_ID!,
+      secretAccessKey: process.env.AUTH_DYNAMODB_SECRET!,
+    },
+    region: process.env.AUTH_DYNAMODB_REGION,
+  }
+   
+  const client = DynamoDBDocument.from(new DynamoDB(config), {
+    marshallOptions: {
+      convertEmptyValues: true,
+      removeUndefinedValues: true,
+      convertClassInstanceToMap: true,
+    },
+  })
+  customAdapter = DynamoDBAdapter(client, {
+    tableName: process.env.AUTH_DYNAMODB_TABLE!,
+  }) as Adapter;
+}
+
 export const config = {
+  adapter: customAdapter,
   theme: {
     logo: "https://vibrantnet.io/logo192.png",
   },
   providers,
+  session: {
+    strategy: 'jwt',
+  }
 } satisfies AuthOptions

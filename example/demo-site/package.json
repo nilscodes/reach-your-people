@@ -9,7 +9,10 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@auth/dynamodb-adapter": "^2.4.2",
+    "@aws-sdk/client-dynamodb": "^3.620.0",
     "@aws-sdk/client-s3": "^3.588.0",
+    "@aws-sdk/lib-dynamodb": "^3.620.0",
     "@chakra-ui/next-js": "^2.2.0",
     "@chakra-ui/pro-theme": "^0.10.0",
     "@chakra-ui/react": "^2.8.2",
@@ -29,8 +32,9 @@
     "keen-slider": "^6.8.6",
     "nanoid": "^5.0.7",
     "next": "14.1.0",
-    "next-auth": "^4.24.6",
+    "next-auth": "^4.24.7",
     "next-translate": "^2.6.2",
+    "nodemailer": "^6.9.14",
     "react": "^18",
     "react-dom": "^18",
     "react-hook-form": "^7.51.5",
