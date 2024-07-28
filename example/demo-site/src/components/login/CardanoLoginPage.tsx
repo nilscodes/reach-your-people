@@ -5,7 +5,7 @@ import { signIn } from "next-auth/react";
 import { useRouter } from 'next/navigation';
 import { Logo } from '@/components/Logo';
 import { useApi } from '@/contexts/ApiProvider';
-import WalletLogin from '@/components/WalletLogin';
+import WalletLogin from '@/components/login/WalletLogin';
 import useTranslation from 'next-translate/useTranslation';
 import { CardanoHardwareWalletLoginModal } from './CardanoHardwareLogin';
 import { RypSiteApi } from '@/lib/api';

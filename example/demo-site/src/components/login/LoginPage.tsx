@@ -10,6 +10,9 @@ import { signIn } from "next-auth/react";
 import { useRouter } from 'next/navigation';
 import { Logo } from '@/components/Logo';
 import useTranslation from 'next-translate/useTranslation';
+import { MdEmail } from 'react-icons/md';
+
+const enabledProviders = process.env.NEXT_PUBLIC_ENABLED_AUTH_PROVIDERS?.split(',') ?? [];
 
 export default function LoginPage() {
   const router = useRouter();
@@ -19,7 +22,9 @@ export default function LoginPage() {
     signIn(provider, { callbackUrl: '/account' });
   };
 
+  const isEmailEnabled = enabledProviders.includes('email');
   const linkedProviders: string[] = []; // accounts.map((account) => account.provider);
+  const providersConfigWithoutEmail = providersConfig.filter((provider) => provider.id !== 'email');
 
   return (<Container maxW="md" py={{ base: '12', md: '24' }}>
     <Stack spacing="8">
@@ -57,7 +62,17 @@ export default function LoginPage() {
           >
             {t('cardanoWallet')}
           </Button>
-          {providersConfig.map((provider) => {
+          {isEmailEnabled && (<Button key="email"
+            variant="secondary"
+            leftIcon={<MdEmail />}
+            cursor="pointer"
+            onClick={() => {
+              router.push('/login/mail');
+            }}
+          >
+            {t('email')}
+          </Button>)}
+          {providersConfigWithoutEmail.map((provider) => {
               const isLinked = linkedProviders.includes(provider.id);
               return (
                 <Button key={provider.id}

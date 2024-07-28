@@ -95,7 +95,6 @@ export default async function handler(
 async function createProject(fields: formidable.Fields<string>, accountId: number) {
   const project = JSON.parse(fields.project?.[0]!);
   project.logo = '';
-  console.log(fields.initialStakepool);
   if (fields.initialStakepool) {
     const stakepoolProject = await prepareStakepoolProject(fields);
     return coreSubscriptionApi.addNewProject(stakepoolProject, accountId);
