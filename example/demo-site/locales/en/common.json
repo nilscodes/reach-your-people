@@ -121,6 +121,7 @@
     "types": {
         "discord": "Discord",
         "twitter": "Twitter / X",
+        "google": "Google",
         "telegram": "Telegram",
         "sms": "Text message",
         "pushapi": "Browser Notifications",

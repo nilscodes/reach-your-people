@@ -39,7 +39,7 @@ export const LinkedAccount = ({
   const hasUrl = url.length > 0;
   const tags: string[] = [];
   const canReceiveNotifications = isCapableOfReceivingNotifications(linkedAccount.externalAccount.type);
-  const canBeTested = canReceiveNotifications && linkedAccount.externalAccount.type !== 'sms';
+  const canBeTested = canReceiveNotifications && linkedAccount.externalAccount.type !== 'sms' && linkedAccount.externalAccount.type !== 'google';
 
   let isNotDefault = false;
   if (canReceiveNotifications && linkedAccount.settings?.includes(GetLinkedExternalAccounts200ResponseInnerSettingsEnum.DefaultForNotifications)) {

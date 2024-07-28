@@ -105,7 +105,7 @@ owasp-dependency-check:
     paths:
       - .gradle/dependency-check-data
   script:
-    - gradle dependencyCheckAnalyze -Dorg.gradle.jvmargs="-Xmx2g" --info -PnvdApiKey=$NVD_API_KEY
+    - gradle dependencyCheckAnalyze -Dorg.gradle.jvmargs="-XX:MaxMetaspaceSize=384m -XX:+HeapDumpOnOutOfMemoryError -Xms256m -Xmx2g" --info -PnvdApiKey=$NVD_API_KEY
   allow_failure: true
   artifacts:
     paths:
