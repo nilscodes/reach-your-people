@@ -1,5 +1,5 @@
 import Head from "next/head";
-import EmailLoginPage from "../../../components/login/EmailLoginpage";
+import EmailLoginPage from "../../../components/login/EmailLoginPage";
 
 export default function Home() {
   return (<>
