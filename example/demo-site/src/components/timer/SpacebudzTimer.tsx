@@ -4,7 +4,7 @@ import { Timer } from './Timer'
 import NextLink from '../NextLink';
 
 export const SpacebudzTimer = () => {
-  const spacebudzRaffleTime = new Date('2024-07-31T23:59:59Z').getTime();
+  const spacebudzRaffleTime = new Date('2024-08-31T23:59:59Z').getTime();
   return (<Box as="section">
     <Box bg={useColorModeValue('black', 'gray.700')} color="white" position="relative">
       <Box maxW="7xl" mx="auto" px={{ base: '4', md: '8', lg: '12' }} py={{ base: '3', md: '2.5' }}>
@@ -15,7 +15,7 @@ export const SpacebudzTimer = () => {
           spacing={{ base: '2', md: '20', lg: '7.5rem' }}
         >
           <Text fontWeight="medium" fontSize="xl">
-            Your chance to win a Spacebudz NFT, simply by signing up!
+            Your chance to win a Omen NFT, simply by signing up!
           </Text>
           <Timer expiresInSeconds={spacebudzRaffleTime} />
           <LightMode>
