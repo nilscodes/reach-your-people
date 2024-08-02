@@ -5,6 +5,7 @@ import io.ryp.shared.model.LinkedExternalAccountPartialDto
 import io.vibrantnet.ryp.core.subscription.model.*
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
+import java.time.Duration
 
 interface AccountsApiService {
 
@@ -183,4 +184,6 @@ interface AccountsApiService {
      * @see AccountsApi#updateNotificationsSettingsForAccountAndProject
      */
     fun updateNotificationsSettingsForAccountAndProject(accountId: Long, projectId: Long, projectNotificationSettings: List<ProjectNotificationSettingDto>): Flux<ProjectNotificationSettingDto>
+
+    fun extendPremium(accountId: Long, premiumDuration: Duration): Mono<AccountDto>
 }

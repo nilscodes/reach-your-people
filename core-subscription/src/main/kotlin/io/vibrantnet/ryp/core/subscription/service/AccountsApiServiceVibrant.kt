@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
+import java.time.Duration
 import java.time.OffsetDateTime
 import java.util.*
 
@@ -141,12 +142,46 @@ class  AccountsApiServiceVibrant(
     }
 
     override fun updateAccountById(accountId: Long, accountPartialDto: AccountPartialDto): Mono<AccountDto> {
-        val account = accountRepository.findById(accountId).orElseThrow()
-        if (accountPartialDto.displayName != null && accountPartialDto.displayName != account.displayName) {
-            account.displayName = accountPartialDto.displayName
-            return Mono.just(accountRepository.save(account).toDto())
+        return updateAccountById(accountId, accountPartialDto, null)
+    }
+
+    @PointsClaim(
+        points = "0",
+        category = "'premium'",
+        claimId = "'premium-' + #accountId",
+        accountId = "#accountId",
+    )
+    override fun extendPremium(accountId: Long, premiumDuration: Duration): Mono<AccountDto> {
+        return updateAccountById(accountId, AccountPartialDto(), premiumDuration)
+    }
+
+    private fun updateAccountById(accountId: Long, accountPartialDto: AccountPartialDto, premiumDuration: Duration?): Mono<AccountDto> {
+        val accountOptional = accountRepository.findById(accountId)
+        return if (accountOptional.isEmpty) {
+            Mono.error(NoSuchElementException("No account with ID $accountId found"))
+        } else {
+            val account = accountOptional.get()
+            var save = false
+            if (accountPartialDto.displayName != null && accountPartialDto.displayName != account.displayName) {
+                account.displayName = accountPartialDto.displayName
+                save = true
+            }
+            if (premiumDuration != null) {
+                val now = OffsetDateTime.now()
+                val currentPremiumUntil = account.premiumUntil
+                account.premiumUntil = if (currentPremiumUntil != null && currentPremiumUntil.isAfter(now)) {
+                    currentPremiumUntil.plus(premiumDuration)
+                } else {
+                    now.plus(premiumDuration)
+                }
+                save = true
+            }
+            return if (save) {
+                Mono.just(accountRepository.save(account).toDto())
+            } else {
+                Mono.just(account.toDto())
+            }
         }
-        return Mono.just(account.toDto())
     }
 
     @Transactional

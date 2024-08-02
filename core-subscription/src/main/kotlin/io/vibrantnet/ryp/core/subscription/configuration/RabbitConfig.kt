@@ -24,5 +24,8 @@ class RabbitConfig {
     fun claimsQueue() = Queue("pointclaims")
 
     @Bean
+    fun orderConfirmationsQueue() = Queue("orderconfirmations")
+
+    @Bean
     fun messageConverter() = Jackson2JsonMessageConverter()
 }

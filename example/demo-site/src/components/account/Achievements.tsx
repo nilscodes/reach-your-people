@@ -5,7 +5,7 @@ import useTranslation from 'next-translate/useTranslation';
 import Card from '../Card';
 import { Achievement } from '@/lib/types/Achievement';
 import { useApi } from '@/contexts/ApiProvider';
-import { AchievementBlock } from './AchievementBlock';
+import AchievementBlock from './AchievementBlock';
 
 type AchievementsProps = {
   account: Account;

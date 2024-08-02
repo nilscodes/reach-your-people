@@ -193,6 +193,8 @@ components:
         id: ooexgs49d1dgy
       type: object
       properties:
+        shortcode:
+          type: string
         status:
           enum:
             - ACTIVE

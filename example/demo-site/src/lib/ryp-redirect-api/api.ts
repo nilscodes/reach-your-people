@@ -103,6 +103,12 @@ export interface ShortenedUrlPartial {
      * @type {string}
      * @memberof ShortenedUrlPartial
      */
+    'shortcode'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ShortenedUrlPartial
+     */
     'status'?: ShortenedUrlPartialStatusEnum;
     /**
      * 

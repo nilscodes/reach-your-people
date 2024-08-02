@@ -136,7 +136,7 @@ export default function LinkedAccounts({ account, accountSettings, linkedAccount
   return (<Container maxW="3xl" py={{ base: '0', md: '12' }} px="0">
     <Stack spacing="8" gap="0">
       {showFirstSteps === true && (<FirstSteps account={account} accountSettings={accountSettings} linkedAccounts={linkedAccounts} onFinishSteps={onFinishSteps} />)}
-      <ReferralLink accountSettings={accountSettings} />
+      <ReferralLink account={account} accountSettings={accountSettings} />
       {accountSettings['VIBRANT_SYNC_STATUS'] === VibrantSyncStatus.CompletedConfirmed && (<VibrantSyncStatusMessage />)}
       <Card heading={t('linkedAccounts')} description={t('linkedAccountsDescription')}>
         <Stack spacing="5" divider={<StackDivider />} pt="5">

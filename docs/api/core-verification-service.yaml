@@ -41,19 +41,33 @@ paths:
     parameters:
       - $ref: '#/components/parameters/stakeAddress'
     get:
-      summary: Get stake pool details for a given stake address, if currently staked
+      summary: 'Get stake pool details for a given stake address, if currently staked'
       tags: []
       responses:
-        '404':
-          description: Not found if the stake address is not found or currently not delegated (it would be nice to separate those two cases by an error, but it is not currently possible)
         '200':
           description: The stakepool details for this particular stake address
           content:
             application/json:
               schema:
                 $ref: ./common-schemas.yaml#/components/schemas/StakepoolDetails
+        '404':
+          description: 'Not found if the stake address is not found or currently not delegated (it would be nice to separate those two cases by an error, but it is not currently possible)'
       operationId: getStakepoolDetailsForStakeAddress
-  '/pools/{poolHash}':
+  '/transactions/{transactionHash}/summary':
+    parameters:
+      - $ref: '#/components/parameters/transactionHash'
+    get:
+      summary: Get transaction summary
+      tags: []
+      operationId: getTransactionSummary
+      responses:
+        '200':
+          description: 'The payment summary of this transaction, which includes output addresses and summarized amounts of transferred ADA/Lovelace'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionSummary'
+  '/pools/{poolHash}''':
     parameters:
       - $ref: ./common-schemas.yaml#/components/parameters/poolHash
     get:
@@ -67,6 +81,8 @@ paths:
             application/json:
               schema:
                 $ref: ./common-schemas.yaml#/components/schemas/StakepoolDetails
+      x-stoplight:
+        id: p3haok6ogvyvu
   '/pools/{poolHash}/verifications':
     parameters:
       - $ref: ./common-schemas.yaml#/components/parameters/poolHash
@@ -103,7 +119,7 @@ paths:
               $ref: '#/components/schemas/StakepoolVerification'
       responses:
         '200':
-          description: Confirmed stakepool verification, verification not persisted
+          description: 'Confirmed stakepool verification, verification not persisted'
           content:
             application/json:
               schema:
@@ -123,7 +139,7 @@ paths:
               $ref: '#/components/schemas/StakepoolVerification'
       responses:
         '200':
-          description: Confirmed stakepool verification, and verification persisted
+          description: 'Confirmed stakepool verification, and verification persisted'
           content:
             application/json:
               schema:
@@ -160,6 +176,14 @@ components:
       style: simple
       schema:
         $ref: '#/components/schemas/StakeAddressView'
+    transactionHash:
+      name: transactionHash
+      in: path
+      description: The hash of the transaction
+      required: true
+      style: simple
+      schema:
+        $ref: '#/components/schemas/TransactionHash'
     verificationNonce:
       name: verificationNonce
       in: path
@@ -175,6 +199,36 @@ components:
       description: 'The staking address of a wallet, in viewable format'
       example: stake1uyhvepgdsd7s07q5cdx9vdemnar4axpe0e9edw2chyd8dpgqnsffq
       pattern: '^stake1[a-zA-Z0-9]{53}$'
+    TransactionHash:
+      type: string
+      description: The transaction hash in hex format
+      example: 93b8936b5c9b5848fc5140eee293622b5d7c50f050f39ce1e6016d9780335c1d
+      pattern: '^[a-zA-Z0-9]{64}$'
+    TransactionSummary:
+      type: object
+      required:
+        - transactionHash
+        - outputs
+      properties:
+        transactionHash:
+          $ref: '#/components/schemas/TransactionHash'
+        outputs:
+          type: array
+          items:
+            $ref: '#/components/schemas/TxOutputSummary'
+    TxOutputSummary:
+      type: object
+      required:
+        - address
+        - lovelace
+      properties:
+        address:
+          type: string
+        lovelace:
+          type: integer
+          format: int64
+      x-stoplight:
+        id: 59f9d89bfc073
     TokenOwnershipInfoWithAssetCount:
       type: object
       required:

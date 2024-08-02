@@ -30,6 +30,8 @@ data class ShortenedUrlDto(
 )
 
 data class ShortenedUrlPartialDto(
+    @JsonProperty("shortcode")
+    val shortcode: String? = null,
 
     @JsonProperty("status")
     val status: Status? = null,

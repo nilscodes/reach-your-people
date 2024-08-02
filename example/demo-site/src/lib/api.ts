@@ -10,6 +10,7 @@ import { TestStatusObject } from "./types/TestStatus";
 import { StakepoolDetails } from "./types/StakepoolDetails";
 import { StakepoolVerification } from "./ryp-verification-api";
 import { StakepoolSignup } from "@/components/projects/NewProject";
+import { Bill } from "./ryp-billing-api";
 
 // function getRandomDelay(): Promise<void> {
 //   const delay = Math.random() * (500 - 30) + 30;
@@ -150,6 +151,10 @@ export class RypSiteApi {
     return (await axios.post(`${this.baseUrl}/account/settings/referralurl`)).data.referralUrl;
   }
 
+  async updateReferralShortcode(shortcode: string): Promise<string> {
+    return (await axios.post(`${this.baseUrl}/account/settings/referralurl`, { shortcode })).data.referralUrl;
+  }
+
   async submitReferredBy(referredBy: number): Promise<void> {
     await axios.post(`${this.baseUrl}/account/settings/referral`, { referredBy });
   }
@@ -164,6 +169,14 @@ export class RypSiteApi {
 
   async testStakepoolVerification(poolHash: string, stakepoolVerification: StakepoolVerification): Promise<StakepoolVerification> {
     return (await axios.post(`${this.baseUrl}/cardano/stakepools/${poolHash}/verifications/${stakepoolVerification.nonce}`, stakepoolVerification)).data;
+  }
+
+  async submitOrder(transactionId: string, orderItem: string): Promise<Bill> {
+    return (await axios.post(`${this.baseUrl}/account/orders`, { transactionId, orderItem })).data;
+  }
+
+  async getOrderStatus(channel: string, transactionId: string): Promise<Bill> {
+    return (await axios.get(`${this.baseUrl}/account/orders/${channel}/${transactionId}`)).data;
   }
 
 }

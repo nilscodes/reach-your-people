@@ -57,6 +57,18 @@ services:
         ports:
             - "8075:8075"
 
+    core-billing:
+        image: core-billing:latest
+        container_name: core_billing_dev
+        environment:
+            - RYP_POSTGRES_PASSWORD=
+            - RABBITMQ_PASSWORD=
+            - CARDANO_RECEIVE_ADDRESS=
+
+
+        ports:
+            - "8076:8076"
+
     integration-discord:
         image: integration-discord:latest
         container_name: integration_discord_dev

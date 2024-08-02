@@ -40,7 +40,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: ./common-schemas.yaml#/components/schemas/Account
+              $ref: ./common-schemas.yaml#/components/schemas/AccountCreate
         description: Post the necessary fields for the API to create a new user.
       description: Create a new account.
       x-stoplight:
