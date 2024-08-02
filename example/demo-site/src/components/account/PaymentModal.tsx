@@ -67,7 +67,8 @@ export default function PaymentModal({ isOpen, completeOrder, paymentAborted, he
           `${paymentAmount}`
         );
       const unsignedTx = await tx.build();
-      const transactionId = await activeWallet.signTx(unsignedTx);
+      const signedTx = await activeWallet.signTx(unsignedTx);
+      const transactionId = await activeWallet.submitTx(signedTx);
       await api.submitOrder(transactionId, duration);
       window.sessionStorage.setItem('premiumBuyInProgress', transactionId);
       completeOrder(transactionId);
