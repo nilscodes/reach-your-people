@@ -12,7 +12,9 @@ import org.springframework.dao.DataIntegrityViolationException
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import reactor.test.StepVerifier
+import java.time.Duration
 import java.time.OffsetDateTime
+import java.time.temporal.ChronoUnit
 
 internal class AccountsApiServiceVibrantTest {
 
@@ -284,6 +286,36 @@ internal class AccountsApiServiceVibrantTest {
                     createTime = account.createTime,
                 )
             )
+            .verifyComplete()
+    }
+
+    @Test
+    fun `updating premium time when the existing premium time is in the past pushes the date out from now instead of the expired timestamp`() {
+        val account = makeAccount(OffsetDateTime.now())
+        account.premiumUntil = OffsetDateTime.now().minusMonths(1)
+        every { accountRepository.findById(12) } returns java.util.Optional.of(account)
+        val slot = slot<Account>()
+        every { accountRepository.save(capture(slot)) } answers { slot.captured }
+        val updatedAccount = service.extendPremium(12, Duration.of(1, ChronoUnit.DAYS))
+        StepVerifier.create(updatedAccount)
+            .expectNextMatches {
+                it.premiumUntil!!.isAfter(OffsetDateTime.now())
+            }
+            .verifyComplete()
+    }
+
+    @Test
+    fun `updating premium time when the existing premium time is in the future pushes it out from that date instead of now`() {
+        val account = makeAccount(OffsetDateTime.now())
+        account.premiumUntil = OffsetDateTime.now().plusMonths(1)
+        every { accountRepository.findById(12) } returns java.util.Optional.of(account)
+        val slot = slot<Account>()
+        every { accountRepository.save(capture(slot)) } answers { slot.captured }
+        val updatedAccount = service.extendPremium(12, Duration.of(90, ChronoUnit.DAYS))
+        StepVerifier.create(updatedAccount)
+            .expectNextMatches {
+                it.premiumUntil!!.isAfter(OffsetDateTime.now().plusMonths(2))
+            }
             .verifyComplete()
     }
 

@@ -57,6 +57,18 @@ services:
 
 
 
+    core-billing:
+
+        container_name: core_billing_prod
+        environment:
+            - RYP_POSTGRES_PASSWORD=
+            - RABBITMQ_PASSWORD=
+            - CARDANO_RECEIVE_ADDRESS=
+            - RYP_API_KEY=
+
+
+
+
     integration-discord:
 
         container_name: integration_discord_prod

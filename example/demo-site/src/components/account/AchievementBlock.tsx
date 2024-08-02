@@ -1,3 +1,4 @@
+import { iconMap } from '@/lib/achievements'
 import { Achievement } from '@/lib/types/Achievement'
 import { Box, BoxProps, Divider, HStack, Heading, Icon, Progress, Stack, Text, useColorModeValue } from '@chakra-ui/react'
 import useTranslation from 'next-translate/useTranslation'
@@ -38,7 +39,7 @@ const AchievementProgress = ({ achievement, value, limit, ...boxProps }: Achieve
               <Box srOnly>out of {limit}</Box>
             </Stack>
           </Stack>
-          <Icon as={MdOutlineShare} color={iconColor} boxSize="3em" />
+          <Icon as={iconMap[achievement.icon]} color={iconColor} boxSize="3em" />
         </HStack>
       </Box>
       <Progress value={(value / limit) * 100} size="xs" borderRadius="none" bg="bg.surface" />
@@ -68,10 +69,10 @@ const AchievementYesNo = ({ achievement, achieved, ...boxProps }: AchievementYes
               <Text aria-hidden fontWeight="semibold" color="fg.muted">
                 / 1
               </Text>
-              <Box srOnly>achieved</Box>
+              <Box srOnly>{t('achievements.achievedScreenReader')}</Box>
             </Stack>
           </Stack>
-          <Icon as={MdAccountBox} color={iconColor} boxSize="3em" />
+          <Icon as={iconMap[achievement.icon]} color={iconColor} boxSize="3em" />
         </HStack>
       </Box>
       <Divider />
@@ -84,7 +85,7 @@ const AchievementYesNo = ({ achievement, achieved, ...boxProps }: AchievementYes
   )
 }
 
-export const AchievementBlock = (props: AchievementBlockProps) => {
+export default function AchievementBlock(props: AchievementBlockProps) {
   const { achievement, ...boxProps } = props
   if (achievement.type === 'numeric') {
     const limit = achievement.maxPoints ?? 1;

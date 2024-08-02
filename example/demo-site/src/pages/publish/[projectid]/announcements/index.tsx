@@ -12,6 +12,7 @@ import { useSession } from "next-auth/react";
 
 const fallbackAuthor: Account = {
   id: 0,
+  createTime: '',
   displayName: "Deleted",
 };
 

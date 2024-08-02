@@ -7,6 +7,7 @@ import io.ryp.shared.model.ShortenedUrlDto
 import io.ryp.shared.model.ShortenedUrlPartialDto
 import io.ryp.shared.model.Status
 import io.ryp.shared.model.Type
+import io.vibrantnet.ryp.core.redirect.model.DuplicateShortcodeException
 import io.vibrantnet.ryp.core.redirect.persistence.ShortenedUrl
 import io.vibrantnet.ryp.core.redirect.persistence.ShortenedUrlRepository
 import org.junit.jupiter.api.Test
@@ -23,6 +24,9 @@ class UrlsApiServiceVibrantTest {
         val urlsApiServiceVibrant = UrlsApiServiceVibrant(shortenedUrlRepository)
         val uuid = UUID.randomUUID()
         val shortcode = "brandnew"
+        every { shortenedUrlRepository.findByShortcode(shortcode) } answers {
+            Mono.empty()
+        }
         every { shortenedUrlRepository.save(any()) } answers {
             Mono.just(makeShortenedUrlDocument(uuid, shortcode))
         }
@@ -39,13 +43,32 @@ class UrlsApiServiceVibrantTest {
         val uuid = UUID.randomUUID()
         val shortenedUrl = makeShortenedUrlDto(uuid)
         val slot = slot<ShortenedUrl>()
+        every { shortenedUrlRepository.findByShortcode(any()) } answers {
+            Mono.empty()
+        }
         every { shortenedUrlRepository.save(capture(slot)) } answers {
             Mono.just(makeShortenedUrlDocument(uuid, firstArg<ShortenedUrl>().shortcode))
         }
         val url = urlsApiServiceVibrant.createShortUrl(shortenedUrl)
         StepVerifier.create(url)
-            .expectNext(shortenedUrl.copy(shortcode = slot.captured.shortcode))
+            .expectNextMatches { // For some reason expectNext does not work and here and does not trigger the deferred Mono in the implementation. Maybe a Reactor bug?
+                it == shortenedUrl.copy(shortcode = slot.captured.shortcode)
+            }
             .verifyComplete()
+    }
+
+    @Test
+    fun `creating a shortened URL with a shortcode that is already in use returns an appropriate exception`() {
+        val shortenedUrlRepository = mockk<ShortenedUrlRepository>()
+        val urlsApiServiceVibrant = UrlsApiServiceVibrant(shortenedUrlRepository)
+        val shortcode = "brandnew"
+        every { shortenedUrlRepository.findByShortcode(shortcode) } answers {
+            Mono.just(makeShortenedUrlDocument(UUID.randomUUID(), shortcode))
+        }
+        val url = urlsApiServiceVibrant.createShortUrl(makeShortenedUrlDto(UUID.randomUUID(), shortcode))
+        StepVerifier.create(url)
+            .expectError(DuplicateShortcodeException::class.java)
+            .verify()
     }
 
     @Test
@@ -102,7 +125,7 @@ class UrlsApiServiceVibrantTest {
     }
 
     @Test
-    fun `updating a URL by ID works`() {
+    fun `updating a URL by ID works when shortcode is not changed`() {
         val shortenedUrlRepository = mockk<ShortenedUrlRepository>()
         val urlsApiServiceVibrant = UrlsApiServiceVibrant(shortenedUrlRepository)
         val uuid = UUID.randomUUID()
@@ -127,6 +150,63 @@ class UrlsApiServiceVibrantTest {
                 url = "derp",
             ))
             .verifyComplete()
+    }
+
+    @Test
+    fun `updating a URL by ID works when shortcode is changed`() {
+        val shortenedUrlRepository = mockk<ShortenedUrlRepository>()
+        val urlsApiServiceVibrant = UrlsApiServiceVibrant(shortenedUrlRepository)
+        val uuid = UUID.randomUUID()
+        val shortcode = "short"
+        val shortenedUrlPartialDto = ShortenedUrlPartialDto(
+            shortcode = "newshort",
+            type = Type.RYP,
+            status = Status.INACTIVE,
+            url = "derp",
+        )
+        every { shortenedUrlRepository.findById(uuid.toString()) } answers {
+            Mono.just(makeShortenedUrlDocument(uuid, shortcode))
+        }
+        every { shortenedUrlRepository.findByShortcode("newshort") } answers {
+            Mono.empty()
+        }
+        val slot = slot<ShortenedUrl>()
+        every { shortenedUrlRepository.save(capture(slot)) } answers {
+            Mono.just(slot.captured)
+        }
+        val updatedUrl = urlsApiServiceVibrant.updateUrlById(uuid.toString(), shortenedUrlPartialDto)
+        StepVerifier.create(updatedUrl)
+            .expectNext(makeShortenedUrlDto(uuid, shortcode).copy(
+                shortcode = "newshort",
+                type = Type.RYP,
+                status = Status.INACTIVE,
+                url = "derp",
+            ))
+            .verifyComplete()
+    }
+
+    @Test
+    fun `updating a URL by ID fails if the shortcode is already in use` () {
+        val shortenedUrlRepository = mockk<ShortenedUrlRepository>()
+        val urlsApiServiceVibrant = UrlsApiServiceVibrant(shortenedUrlRepository)
+        val uuid = UUID.randomUUID()
+        val shortcode = "short"
+        val shortenedUrlPartialDto = ShortenedUrlPartialDto(
+            shortcode = "newshort",
+            type = Type.RYP,
+            status = Status.INACTIVE,
+            url = "derp",
+        )
+        every { shortenedUrlRepository.findById(uuid.toString()) } answers {
+            Mono.just(makeShortenedUrlDocument(uuid, shortcode))
+        }
+        every { shortenedUrlRepository.findByShortcode("newshort") } answers {
+            Mono.just(makeShortenedUrlDocument(UUID.randomUUID(), "newshort"))
+        }
+        val updatedUrl = urlsApiServiceVibrant.updateUrlById(uuid.toString(), shortenedUrlPartialDto)
+        StepVerifier.create(updatedUrl)
+            .expectError(DuplicateShortcodeException::class.java)
+            .verify()
 
     }
 

@@ -11,6 +11,7 @@ import { Project } from "@/lib/types/Project";
 
 const fallbackAuthor: Account = {
   id: 0,
+  createTime: '',
   displayName: "Deleted",
 };
 

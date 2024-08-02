@@ -1,7 +1,8 @@
 package io.vibrantnet.ryp.core.redirect.controller
 
-import io.hazelnet.shared.data.ApiErrorResponse
 import io.github.oshai.kotlinlogging.KotlinLogging
+import io.hazelnet.shared.data.ApiErrorResponse
+import io.vibrantnet.ryp.core.redirect.model.DuplicateShortcodeException
 import org.springframework.core.annotation.Order
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.ControllerAdvice
@@ -23,5 +24,11 @@ class ApiExceptionHandler {
         return ApiErrorResponse(ex.message ?: "", HttpStatus.NOT_FOUND)
     }
 
-
+    @ExceptionHandler(DuplicateShortcodeException::class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ResponseBody
+    fun processDuplicateShortcodeException(ex: DuplicateShortcodeException): ApiErrorResponse {
+        logger.info { ex }
+        return ApiErrorResponse(ex.message ?: "", HttpStatus.CONFLICT)
+    }
 }

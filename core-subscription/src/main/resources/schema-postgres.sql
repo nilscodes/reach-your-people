@@ -12,9 +12,10 @@ DROP TABLE IF EXISTS "accounts";
 
 CREATE TABLE "accounts"
 (
-    "account_id"   BIGSERIAL PRIMARY KEY,
-    "display_name" varchar(200) NOT NULL,
-    "create_time"  timestamp    NOT NULL
+    "account_id"    BIGSERIAL PRIMARY KEY,
+    "display_name"  varchar(200) NOT NULL,
+    "create_time"   timestamp    NOT NULL,
+    "premium_until" timestamp    NULL
 );
 
 CREATE TABLE "account_settings"
@@ -58,14 +59,15 @@ CREATE TABLE "external_accounts"
 
 CREATE TABLE "projects"
 (
-    "project_id"        SERIAL PRIMARY KEY,
-    "name"              varchar(255),
-    "logo"              text,
-    "url"               varchar(255),
-    "description"       text,
-    "registration_time" timestamp NOT NULL,
-    "category"          INTEGER   NOT NULL,
-    "manually_verified" timestamp NULL
+    "project_id"          SERIAL PRIMARY KEY,
+    "name"                varchar(255),
+    "logo"                text,
+    "url"                 varchar(255),
+    "description"         text,
+    "registration_time"   timestamp NOT NULL,
+    "category"            INTEGER   NOT NULL,
+    "manually_verified"   timestamp NULL,
+    "verification_reason" text      NULL
 );
 
 CREATE TABLE "project_notification_settings"
@@ -85,10 +87,11 @@ CREATE TABLE "project_tags"
 
 CREATE TABLE "project_policies"
 (
-    "project_id"        INT          NOT NULL,
-    "name"              varchar(200) NOT NULL,
-    "policy_id"         varchar(56)  NOT NULL,
-    "manually_verified" timestamp    NULL
+    "project_id"          INT          NOT NULL,
+    "name"                varchar(200) NOT NULL,
+    "policy_id"           varchar(56)  NOT NULL,
+    "manually_verified"   timestamp    NULL,
+    "verification_reason" text         NULL
 );
 
 CREATE TABLE "project_stakepools"

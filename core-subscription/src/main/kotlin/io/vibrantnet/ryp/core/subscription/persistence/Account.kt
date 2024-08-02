@@ -30,12 +30,17 @@ class Account(
     @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(name = "account_settings", joinColumns = [JoinColumn(name = "account_id")])
     var settings: MutableSet<EmbeddableSetting> = mutableSetOf(),
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "premium_until")
+    var premiumUntil: OffsetDateTime? = null,
 ) {
 
     fun toDto() = AccountDto(
         id = id,
         displayName = displayName!!,
         createTime = createTime,
+        premiumUntil = premiumUntil,
     )
 
     override fun equals(other: Any?): Boolean {
@@ -47,6 +52,7 @@ class Account(
         if (linkedExternalAccounts != other.linkedExternalAccounts) return false
         if (subscriptions != other.subscriptions) return false
         if (settings != other.settings) return false
+        if (premiumUntil != other.premiumUntil) return false
 
         return true
     }
@@ -57,11 +63,12 @@ class Account(
         result = 31 * result + linkedExternalAccounts.hashCode()
         result = 31 * result + subscriptions.hashCode()
         result = 31 * result + settings.hashCode()
+        result = 31 * result + (premiumUntil?.hashCode() ?: 0)
         return result
     }
 
     override fun toString(): String {
-        return "Account(id=$id, displayName=$displayName, createTime=$createTime)"
+        return "Account(id=$id, displayName=$displayName, createTime=$createTime, premiumUntil=$premiumUntil)"
     }
 
 }

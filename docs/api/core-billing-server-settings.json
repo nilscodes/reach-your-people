@@ -1,0 +1,13 @@
+{
+  "basePackage": "io.vibrantnet.ryp.core.billing",
+  "packageName": "io.vibrantnet.ryp.core.billing",
+  "apiPackage": "io.vibrantnet.ryp.core.billing.controller",
+  "modelPackage": "io.vibrantnet.ryp.core.billing.model",
+  "documentationProvider": "none",
+  "artifactId": "core-billing",
+  "groupId": "io.vibrantnet.ryp",
+  "title": "Reach your People - Core Billing Service",
+  "useSpringBoot3": true,
+  "useSwaggerUI": false,
+  "serviceInterface": true
+}

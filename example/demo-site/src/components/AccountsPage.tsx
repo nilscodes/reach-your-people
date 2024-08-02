@@ -6,6 +6,7 @@ import LinkedAccounts from './LinkedAccounts';
 import WalletSettingsList from './wallets/WalletSettingsList';
 import Achievements from './account/Achievements';
 import { Achievement } from '@/lib/types/Achievement';
+import PremiumAccount from './account/PremiumAccount';
 
 
 type AccountsPageProps = {
@@ -16,8 +17,8 @@ type AccountsPageProps = {
   achievements?: Achievement[];
 };
 
-const tabs = ['accounts', 'wallets', 'achievements'];
-const tabUrls = ['/account', '/account/wallets', '/account/achievements'];
+const tabs = ['accounts', 'wallets', 'achievements', 'premium'];
+const tabUrls = ['/account', '/account/wallets', '/account/achievements', '/account/premium'];
 
 export default function AccountsPage({ account, accountSettings, linkedAccounts, achievements, currentTab }: AccountsPageProps) {
   const [tabIndex, setTabIndex] = useState(tabs.indexOf(currentTab));
@@ -52,6 +53,9 @@ export default function AccountsPage({ account, accountSettings, linkedAccounts,
           </TabPanel>
           <TabPanel>
             <Achievements account={account} achievements={achievements ?? []} />
+          </TabPanel>
+          <TabPanel>
+            <PremiumAccount account={account} />
           </TabPanel>
         </TabPanels>
       </Stack>

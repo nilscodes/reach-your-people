@@ -2,7 +2,8 @@
     "tabs": {
         "accounts": "Accounts",
         "wallets": "Wallets",
-        "achievements": "Achievements"
+        "achievements": "Achievements",
+        "premium": "Premium"
     },
     "loginTitle": "Log in to your account",
     "linkedAccounts": "Your Linked Accounts",
@@ -26,13 +27,15 @@
     "makeDefaultForNotifications": "Make default",
     "noWallets": "No Wallets Connected",
     "noWalletsDescription": "Currently, you have no wallets connected. Connect a wallet to receive notifications about your tokens, NFTs, and stake pool delegations.",
+    "referralShortcodePlaceholder": "YourCode",
+    "referralShortcodeUpdated": "Your custom referral code has been updated.",
 
     "hardwareWallet": {
         "title": "Hardware Wallets",
         "signingTitle": "Sign in with your hardware wallet",
         "signingDescription": "For Hardware wallets, the standard signing process is currently not available on Cardano.",
         "signingDescription2": "Instead, you will be asked to sign an expired transaction, that has both a transfer from your own wallet to itself, and a delegation registration to verify your staking key.",
-        "signingDescription3": "The signed, already expired transaction will be discarded after verification and cannot be used for any other purpose by us.",
+        "signingDescription3": "The signed, already expired transaction does not cost you anything, will be discarded after verification, and cannot be used for any other purpose by us or someone else.",
         "signingButton": "Sign expired transaction"
     },
 
@@ -52,6 +55,9 @@
     "phoneConsent": "Consent",
     "phoneSubscriptionLegal": "I agree to receive recurring announcements and account notifications from Reach Your People via text message to the above provided mobile number. I also agree to the <0>Terms of Service</0> and <1>Privacy Policy</1>. Message and data rates may apply. Reply STOP to cancel.",
     "errors": {
+        "premiumShortcodeRestrictions": "Your custom referral code must be between 3 and 10 characters long and can only contain letters and numbers.",
+        "premiumShortcodeProfanity": "Your custom referral code was flagged as containing profanity and cannot be used.",
+        "referralShortcodeInUse": "This custom referral code is already in use.",
         "countryCodeRequired": "Please select a country from the list.",
         "phoneNumberRequired": "Phone number is required.",
         "consentRequired": "You must agree to the terms to continue."
@@ -75,7 +81,7 @@
     "vibrantSyncSuccessImageAltText": "Vibrant Sync Success Image",
 
     "referralTitle": "Share Reach Your People with your friends",
-    "referralDescription": "Invite your friends to join Reach Your People and increase your chances at a Spacebudz NFT when they sign up. Check your Achievements tab for more information.",
+    "referralDescription": "Invite your friends to join Reach Your People and increase your chances at an Omen NFT when they sign up. Check your Achievements tab for more information.",
     "referralLink": "Your Referral Link",
     "referralLinkCopied": "Referral URL copied to clipboard",
     "referralLinkGenerationError": "Failed to generate referral URL",
@@ -103,7 +109,7 @@
         "description": "Welcome to Reach Your People (RYP)! We are happy you are here, and encourage you to complete the following steps to get the best experience. We will walk you through the initial process and help you set up your account.",
         "step1": {
             "title": "Set up notifications",
-            "description": "Connect at least one social media or notification-enabled account to be able to receive messages from pojects. Scroll down to connect."
+            "description": "Connect at least one social media or notification-enabled account to be able to receive messages from projects. Scroll down to connect."
         },
         "step2": {
             "title": "Connect your wallet",
@@ -115,7 +121,7 @@
         },
         "step4": {
             "title": "Invite your friends",
-            "description": "Share Reach Your People with your friends! Each one will increase your chance at a Spacebudz NFT. Use the referral link below and as soon as someone signs up with it, you will unlock this. You have up to 50 entries to gain and can check your progress in the Achievements tab."
+            "description": "Share Reach Your People with your friends! Each one will increase your chance at an Omen NFT. Use the referral link below and as soon as someone signs up with it, you will unlock this. You have up to 50 entries to gain and can check your progress in the Achievements tab."
         },
         "doNotShowAgain": "Do not show again",
         "complete": "Mark complete"
@@ -123,13 +129,73 @@
     "achievements": {
         "title": "Achievements for {{displayName}}",
         "description": "Complete achievements to earn rewards and show off your engagement. Some achievements are hidden and will be revealed when you complete them, others are simply there for you to turn into action.",
+        "achievedScreenReader": "achieved",
         "signup": {
             "title": "Join the club, we have cookies",
-            "description": "Sign up for Reach Your People and start your journey. Joining our app gives you one entry into the Spacebudz NFT giveaway."
+            "description": "Sign up for Reach Your People and start your journey. Joining our app gives you one entry into the Omen NFT giveaway."
         },
         "referral": {
             "title": "\"No, of course you are not my exit liquidity!\"",
-            "description": "For each person that signs up to RYP with a social media account or wallet via your referral link on the Accounts tab, you gain one entry into the Spacebudz NFT giveaway. The more people you invite, the more chances you have to win."
+            "description": "For each person that signs up to RYP with a social media account or wallet via your referral link on the Accounts tab, you gain one entry into the Omen NFT giveaway. The more people you invite, the more chances you have to win."
+        },
+        "earlySupporter": {
+            "title": "I am the Catalyst",
+            "description": "We are immensely grateful for your early support of Reach Your People. You are a catalyst for our growth and we appreciate you. This achievement is awarded to all users who subscribe to a Black Edition premium account of any duration, before the RYP Beta ends."
+        }
+    },
+    "premiumAccount": {
+        "title": "Premium Account",
+        "descriptionNonPremium": "Upgrade to a premium Black Edition account to unlock additional features and benefits.",
+        "descriptionPremium": "You are currently a premium Black Edition member. Enjoy the additional features and benefits and thank you for your support.",
+        "premiumUntil": "Black Edition until",
+        "extend": "Extend Black Edition",
+        "levels": {
+            "basic": {
+                "title": "Basic",
+                "price": "Free"
+            },
+            "premium": {
+                "title": "Black Edition",
+                "price": "Premium",
+                "priceSub1": "15 ADA / month",
+                "or": "or",
+                "priceSub2": "150 ADA / year (2 months free)",
+                "subscribe": "Subscribe to Premium"
+            }
+        },
+        "benefitsHeader": "Benefits",
+        "features": {
+            "privacy": "All privacy, security and scam protection features",
+            "projectAnnouncements": "Project news on any account type",
+            "stakepoolAnnouncements": "Stakepool update tracker (coming soon)",
+            "drepAnnouncements": "dRep update tracker (coming soon)",
+            "allFree": "All free features PLUS",
+            "noAds": "No ads",
+            "noAdsDescription": "You will not see any ads on the RYP platform or in notifications.",
+            "customLink": "Custom referral link",
+            "customLinkDescription": "Get a custom referral link to share with your friends and earn rewards. Pick your preferred link on the accounts overview page.",
+            "walletNotifications": "Transaction notifications (coming soon)",
+            "instantUpdates": "Instant updates via text and email (coming soon)",
+            "earlySupporterAchievement": "Early supporter achievement"
+        },
+        "popular": "Beta pricing",
+        "buy": {
+            "ctaButton": "Get Black Edition",
+            "header": "Upgrade to Black Edition",
+            "headerExtend":"Extend Black Edition",
+            "cancelButton": "Cancel",
+            "next": "Next",
+            "toPaymentButton": "Buy now",
+            "description": "Choose your premium duration below. There is no subscription, the premium account will be prepaid for the selected period. If you already have a premium account, the new period will be added on to your current subscription.",
+            "walletSelection": "Click your wallet to choose how to pay and sign your transaction.",
+            "productSelection": "Your order",
+            "1month": "1 month - 15 ADA",
+            "1year": "1 year - 150 ADA (2 months free)",
+            "copyTransactionId": "Copy Transaction ID",
+            "waitingForPayment": "Waiting for payment...",
+            "transactionId": "Transaction ID: {{transactionId}}",
+            "transactionIdCopied": "Transaction ID copied to clipboard",
+            "paymentFailed": "Payment failed. The transaction was recognized but did not fulfill the requirements for a successful purchase. Please copy the transaction ID from below and contact us in our support Discord to get assistance."
         }
     },
     "notificationTest": {

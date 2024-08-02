@@ -1,3 +1,8 @@
+import { iconMap } from "../achievements";
+
+type IconMap = typeof iconMap;
+type IconKey = keyof IconMap;
+
 export type Achievement = {
   id: string
   title: string
@@ -7,4 +12,5 @@ export type Achievement = {
   points?: number
   hasMax?: boolean
   maxPoints?: number
+  icon: IconKey
 }

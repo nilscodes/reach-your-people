@@ -55,6 +55,18 @@ services:
                 max-size: "100m"
                 max-file: "10"
 
+    core-billing:
+        image: registry.gitlab.com/vibrantnet/ryp/core-billing:latest
+        restart: on-failure
+        environment:
+            - RYP_POSTGRES_URL=jdbc:postgresql://postgres:5432/ryp
+            - RYP_POSTGRES_USER=postgres
+        logging:
+            driver: "json-file"
+            options:
+                max-size: "100m"
+                max-file: "10"
+
     integration-discord:
         image: registry.gitlab.com/vibrantnet/ryp/integration-discord:latest
         restart: on-failure

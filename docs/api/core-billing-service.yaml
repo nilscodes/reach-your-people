@@ -1,0 +1,131 @@
+openapi: 3.1.0
+x-stoplight:
+  id: a2y71rzvvm7b3
+info:
+  title: Core Billing Service
+  version: '1.0'
+  description: The API for the core billing and payment checking service of the Cardano Blockchain announcement and notification application "Reach Your People"
+  contact:
+    name: Nils Codes
+    url: 'https://vibrantnet.io'
+    email: contact@vibrantnet.io
+  license:
+    name: Apache 2.0
+    url: 'https://www.apache.org/licenses/LICENSE-2.0'
+servers:
+  - url: 'http://localhost:8076'
+    description: Local Build
+paths:
+  '/billing/accounts/{accountId}':
+    parameters:
+      - $ref: ./common-schemas.yaml#/components/parameters/accountId
+    get:
+      summary: Get all bills for this account
+      tags: []
+      operationId: getBillsForAccount
+      x-stoplight:
+        id: w0tcfb0xc5nww
+      description: Get a list of all open and paid bills for an account
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Bill'
+    post:
+      summary: Create new bill
+      tags: []
+      operationId: createBill
+      description: Create a bill for an account
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Bill'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Bill'
+tags:
+  - name: bills
+    description: Related to bill retrieval and payment
+components:
+  schemas:
+    Bill:
+      type: object
+      required:
+        - id
+        - channel
+        - amountRequested
+        - currencyId
+        - order
+        - createTime
+      properties:
+        id:
+          type: integer
+          format: int32
+          readOnly: true
+        channel:
+          type: string
+          description: The payment channel for this bill.
+        createTime:
+          type: string
+          format: date-time
+          example: '2020-05-02T14:00:00Z'
+          readOnly: true
+        amountRequested:
+          type: integer
+          format: int64
+          description: The amount requested in the currency denoted in the respective property
+        amountReceived:
+          type: integer
+          format: int64
+          description: The amount received in the currency denoted in the respective property
+          readOnly: true
+        currencyId:
+          type: integer
+          format: int32
+          description: The currency in which the transaction will be performed (for now only ADA (lovelace) with ID 1 is supported)
+        transactionId:
+          type: string
+          description: The identifier by which the payment transaction can be looked up. Depends on the channel type.
+        paymentProcessedTime:
+          type: string
+          format: date-time
+          example: '2020-05-02T14:00:00Z'
+          readOnly: true
+        order:
+          $ref: '#/components/schemas/Order'
+    Order:
+      type: object
+      required:
+        - id
+        - items
+      properties:
+        id:
+          type: integer
+          format: int32
+          readOnly: true
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderItem'
+    OrderItem:
+      type: object
+      required:
+        - type
+        - amount
+      properties:
+        type:
+          type: string
+          description: The type of item
+        amount:
+          type: integer
+          format: int64
+          description: The amount of the item that was ordered the claim

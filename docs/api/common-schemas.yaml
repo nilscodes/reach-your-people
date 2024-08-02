@@ -367,24 +367,43 @@ components:
       description: 'The staking address of a wallet, in viewable Bech32 format'
       example: stake1uyhvepgdsd7s07q5cdx9vdemnar4axpe0e9edw2chyd8dpgqnsffq
       pattern: '^stake1[a-zA-Z0-9]{53}$'
-    Account:
-      title: Account
+    AccountBase:
+      title: AccountBase
       x-stoplight:
         id: ywj95ewcj1j6s
       type: object
       required:
         - displayName
       properties:
-        id:
-          $ref: '#/components/schemas/AccountId'
-          x-stoplight:
-            id: lb886zl0hmtsn
         displayName:
           type: string
           x-stoplight:
             id: bayk8gr8x58o3
           example: Jim Jergens
+    AccountCreate:
+      title: AccountCreate
+      allOf:
+        - $ref: '#/components/schemas/AccountBase'
+    Account:
+      title: Account
+      allOf:
+        - $ref: '#/components/schemas/AccountBase'
+      required:
+        - id
+        - createTime
+        - displayName
+      properties:
+        id:
+          $ref: '#/components/schemas/AccountId'
+          readOnly: true
+          x-stoplight:
+            id: lb886zl0hmtsn
         createTime:
+          type: string
+          format: date-time
+          example: '2020-05-02T14:00:00Z'
+          readOnly: true
+        premiumUntil:
           type: string
           format: date-time
           example: '2020-05-02T14:00:00Z'
@@ -483,8 +502,6 @@ components:
             $ref: '#/components/schemas/ExternalAccountSetting'
     LinkedExternalAccountPartial:
       type: object
-      required:
-        - settings
       properties:
         settings:
           type: array
