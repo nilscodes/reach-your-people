@@ -28,7 +28,7 @@ export default function PaymentWaiting({ transactionId, completeOrder }: Payment
     const checkInterval = setInterval(async () => {
         try {
           const bill = await api.getOrderStatus('cardano', transactionId);
-          if (bill.amountReceived && bill.amountReceived > bill.amountRequested) {
+          if (bill.amountReceived && bill.amountReceived >= bill.amountRequested) {
             window.sessionStorage.removeItem('premiumBuyInProgress');
             clearInterval(checkInterval!);
             completeOrder()
