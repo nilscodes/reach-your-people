@@ -66,8 +66,8 @@ export default function PhoneNumberInput({ countryCode: initialCountryCode, phon
             >
               <Text fontSize="xs" color="fg.muted" align='justify'>
                 <Trans i18nKey='accounts:phoneSubscriptionLegal' components={[
-                  <NextLink key='link' href='https://app.termly.io/document/terms-of-use-for-saas/7a266cd3-f4f6-464e-8e0a-28f7a07ba7e0' target='_blank' />,
-                  <NextLink key='link' href='https://app.termly.io/document/privacy-policy/03f7e652-321e-4bc6-a043-a7880d90b223' target='_blank' />,
+                  <NextLink key='link' href='/legal/terms' target='_blank' />,
+                  <NextLink key='link' href='/legal/privacypolicy' target='_blank' />,
                 ]} />
               </Text>
           </Checkbox>
