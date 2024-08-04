@@ -9,6 +9,6 @@ FROM node:alpine AS run
 WORKDIR /app
 COPY --from=build ./app/dist ./dist
 COPY package* ./
-RUN npm install --only=prod && chown -R node:node dist
+RUN npm install --only=prod && chown -R node:node dist && mv dist/templates .
 USER node
 CMD ["node", "./dist"]
