@@ -5,6 +5,7 @@ export enum FirstStepsItems {
   ReferFriend = 1 << 3,  // 8
   Completed = 1 << 4,  // 16
   Cancelled = 1 << 5,  // 32
+  CreateProject = 1 << 6,  // 64
 }
 
 export function enumToBitmask(items: FirstStepsItems[]): number {

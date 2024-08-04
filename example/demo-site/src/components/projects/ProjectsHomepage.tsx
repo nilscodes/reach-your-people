@@ -22,7 +22,7 @@ export default function ProjectsHomepage(props: ProjectsHomepageProps) {
 
   useEffect(() => {
     api.getProjectsForAccount().then((projects) => {
-      setProjects(projects);
+      // setProjects(projects);
       setIsProjectsLoading(false);
     });
   }, [api]);
@@ -35,7 +35,7 @@ export default function ProjectsHomepage(props: ProjectsHomepageProps) {
       description={t('projectsDescription')}
     >
       <NextLink href="/publish/new">
-        <Button variant={isFirstProject && !isProjectsLoading ? 'solid' : 'outline'}>{t('addNewProjectButton')}</Button>
+        <Button variant='outline'>{t('addNewProjectButton')}</Button>
       </NextLink>
     </ProjectsHeader>}
     px="0"
@@ -44,6 +44,9 @@ export default function ProjectsHomepage(props: ProjectsHomepageProps) {
       <Stack spacing="4" direction={{ base: 'row', md: 'column' }}>
         <Text textStyle="lg" fontWeight="medium">{t('noProjects')}</Text>
         <Text textStyle="sm" color="fg.muted">{t('noProjectsCta')}</Text>
+        <NextLink href="/publish/new">
+          <Button variant='solid'>{t('addNewProjectButton')}</Button>
+        </NextLink>
       </Stack>
     </Container>}
     {!isFirstProject && <ProjectGrid>

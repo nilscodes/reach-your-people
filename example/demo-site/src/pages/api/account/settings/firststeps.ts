@@ -54,11 +54,19 @@ export default async function handler(
             firstStepsCompleted.push(FirstStepsItems.SubscribeExplicitly);
           }
         }
+        if (!firstStepsCompleted.includes(FirstStepsItems.CreateProject)) {
+          const projects = (await coreSubscriptionApi.getProjectsForAccount(accountId)).data;
+          if (projects.length > 0) {
+            firstStepsCompleted.push(FirstStepsItems.CreateProject);
+          }
+        }
       } else {
         if (firstStepsCompleted.includes(FirstStepsItems.ConnectNotification)
           && firstStepsCompleted.includes(FirstStepsItems.ConnectWallet)
           && firstStepsCompleted.includes(FirstStepsItems.SubscribeExplicitly)
-          && firstStepsCompleted.includes(FirstStepsItems.ReferFriend)) {
+          && firstStepsCompleted.includes(FirstStepsItems.ReferFriend)
+          && firstStepsCompleted.includes(FirstStepsItems.CreateProject)
+        ) {
           firstStepsCompleted.push(FirstStepsItems.Completed);
         } else {
           firstStepsCompleted.push(FirstStepsItems.Cancelled);

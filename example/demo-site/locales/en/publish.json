@@ -1,7 +1,7 @@
 {
     "projectsTitle": "Your Projects",
     "projectsDescription": "See the projects you have a role in, publish announcements and set up your project details.",
-    "addNewProjectButton": "Add new",
+    "addNewProjectButton": "Create new project",
     "noProjects": "You don't have any projects yet.",
     "noProjectsCta": "Create a new project to get started.",
     "backToProjectList": "Back to list",
