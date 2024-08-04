@@ -10,6 +10,7 @@ import java.util.*
 @Repository
 interface ExternalAccountRepository: CrudRepository<ExternalAccount, Long> {
     fun findByTypeAndReferenceId(providerType: String, referenceId: String): Optional<ExternalAccount>
+    fun findByTypeAndReferenceName(providerType: String, referenceName: String): Optional<ExternalAccount>
 
     // TODO This will want a decent set of test cases with an H2 database
     // Will likely need some sort of splitting of wallet IDs once a certain threshold is met

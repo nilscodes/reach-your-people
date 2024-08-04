@@ -99,12 +99,20 @@ export class RypSiteApi {
     return (await axios.put(`${this.baseUrl}/account/externalaccounts/${externalAccountId}/default`)).data;
   }
 
+  async resubscribe(externalAccountId: number): Promise<GetLinkedExternalAccounts200ResponseInner[]> {
+    return (await axios.post(`${this.baseUrl}/account/externalaccounts/${externalAccountId}/subscribe`, { subscribe: true })).data;
+  }
+
   async getNotificationsSettingsForAccountAndProject(projectId: number): Promise<ProjectNotificationSetting[]> {
     return (await axios.get(`${this.baseUrl}/account/projects/${projectId}/notifications`)).data;
   }
 
   async getAchievements(): Promise<Achievement[]> {
     return (await axios.get(`${this.baseUrl}/account/achievements`)).data;
+  }
+
+  async unsubscribe(email: string): Promise<void> {
+    await axios.post(`${this.baseUrl}/account/unsubscribe`, { email });
   }
 
   async updateNotificationsSettingsForAccountAndProject(projectId: number, settings: ProjectNotificationSetting[]): Promise<ProjectNotificationSetting[]> {

@@ -1,0 +1,48 @@
+<mjml>
+  <mj-head>
+    <mj-title>{{title}}</mj-title>
+    <mj-preview>{{preview}}</mj-preview>
+    <mj-attributes>
+      <mj-font name="Roboto" href="https://fonts.googleapis.com/css?family=Roboto:400,700"></mj-font>
+      <mj-all font-family="Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif"></mj-all>
+      <mj-class name="footer-text" color="#ffffff" font-size="12px"></mj-class>
+    </mj-attributes>
+  </mj-head>
+  <mj-body background-color="#eeeeee">
+    <mj-section background-color="#ffffff">
+      <mj-column>
+        <mj-image width="600px" src="{{headerImageUrl}}" alt="RYP Logo"></mj-image>
+      </mj-column>
+    </mj-section>
+    
+    <mj-section background-color="#ffffff">
+      <mj-column>
+        <mj-text font-size="24px" font-weight="bold" color="#333333">
+          {{title}}
+        </mj-text>
+        <mj-text font-size="16px" color="#555555">
+          {{announcementBody}}
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <mj-section background-color="#ffffff">
+      <mj-column>
+        <mj-button background-color="#101C2E" color="#FFFFFF" href="{{ctaUrl}}" font-size="16px" padding="10px 25px" font-weight="bold">
+          {{ctaText}}
+        </mj-button>
+      </mj-column>
+    </mj-section>
+    
+    <mj-section background-url="{{footerImageUrl}}">
+      <mj-column>
+        <mj-text mj-class="footer-text" align="center">
+          © 2024 Vibrant Solutions LLC, All Rights Reserved
+        </mj-text>
+        <mj-text mj-class="footer-text" align="center">
+          <a href="{{unsubscribeLink}}" style="color:#ffffff; text-decoration:none;">Unsubscribe</a> | <a href="{{preferencesLink}}" style="color:#ffffff; text-decoration:none;">Manage Preferences</a>
+        </mj-text>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>

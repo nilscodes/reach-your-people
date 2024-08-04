@@ -3,7 +3,7 @@ import { Box, Button, HStack, IconButton, Menu, MenuButton, MenuItem, MenuList, 
 import { Link } from '@chakra-ui/next-js'
 import useTranslation from 'next-translate/useTranslation';
 import { FiMoreVertical } from 'react-icons/fi';
-import { MdLinkOff, MdNotificationsActive } from 'react-icons/md';
+import { MdLinkOff, MdMarkEmailRead, MdNotificationsActive, MdWarning } from 'react-icons/md';
 import { GiCorkedTube } from 'react-icons/gi';
 import { providerList } from './ProviderIcons';
 import { useState } from 'react';
@@ -17,6 +17,7 @@ type LinkedAccountsProps = {
   canRemove: boolean;
   onRemove: (externalAccountId: number) => void;
   makeDefaultForNotifications: (externalAccountId: number) => void;
+  resubscribe: (externalAccountId: number) => void;
 };
 
 const buildUrlForExternalAccount = (externalAccount: CreateExternalAccountRequest) => {
@@ -27,7 +28,7 @@ const buildUrlForExternalAccount = (externalAccount: CreateExternalAccountReques
 }
 
 export const LinkedAccount = ({
-  linkedAccount, icon, canRemove, onRemove, makeDefaultForNotifications, showUrl,
+  linkedAccount, icon, canRemove, onRemove, makeDefaultForNotifications, resubscribe, showUrl,
 }: LinkedAccountsProps) => {
   const [testType, setTestType] = useState('discord');
   const { t } = useTranslation('accounts');
@@ -40,6 +41,7 @@ export const LinkedAccount = ({
   const tags: string[] = [];
   const canReceiveNotifications = isCapableOfReceivingNotifications(linkedAccount.externalAccount.type);
   const canBeTested = canReceiveNotifications && linkedAccount.externalAccount.type !== 'sms' && linkedAccount.externalAccount.type !== 'google' && linkedAccount.externalAccount.type !== 'email';
+  const unsubscribed = linkedAccount.externalAccount.unsubscribeTime !== undefined && linkedAccount.externalAccount.unsubscribeTime !== null;
 
   let isNotDefault = false;
   if (canReceiveNotifications && linkedAccount.settings?.includes(GetLinkedExternalAccounts200ResponseInnerSettingsEnum.DefaultForNotifications)) {
@@ -108,6 +110,7 @@ export const LinkedAccount = ({
               {tag}
             </Tag>
           ))}
+          {unsubscribed && (<Tag as="div" textStyle="sm" colorScheme="orange"><HStack><MdWarning /><span>{t('unsubscribed')}</span></HStack></Tag>)}
         </Stack>
       </Stack>
       <Box display="flex" alignItems="center" flexDirection="row">
@@ -120,6 +123,14 @@ export const LinkedAccount = ({
               color="fg.muted"
             />
             <MenuList>
+              {unsubscribed && (
+                <MenuItem
+                  onClick={() => resubscribe(linkedAccount.externalAccount.id!)}
+                  icon={<MdMarkEmailRead size="1.5em" />}
+                >
+                  {t('resubscribe')}
+                </MenuItem>
+              )}
               {isNotDefault && canReceiveNotifications && (
                 <MenuItem
                   onClick={() => makeDefaultForNotifications(linkedAccount.externalAccount.id!)}

@@ -7,7 +7,7 @@ internal class ExternalAccountTest {
     @Test
     fun testEqualsAndHashCode() {
         EqualsVerifier.forClass(ExternalAccount::class.java)
-            .withIgnoredFields("referenceName", "displayName", "registrationTime", "metadata")
+            .withIgnoredFields("referenceName", "displayName", "registrationTime", "unsubscribeTime", "metadata")
             .verify()
     }
 }

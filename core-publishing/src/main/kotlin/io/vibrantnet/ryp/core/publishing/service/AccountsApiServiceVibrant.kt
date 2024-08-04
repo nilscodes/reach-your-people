@@ -41,7 +41,8 @@ class AccountsApiServiceVibrant(
                             name = "Test Project",
                             logo = "",
                             url = announcement.link,
-                        )
+                        ),
+                        it.externalAccount.referenceName,
                     )
                 )
                 announcement

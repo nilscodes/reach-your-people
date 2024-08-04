@@ -100,6 +100,21 @@ export default function LinkedAccounts({ account, accountSettings, linkedAccount
     setLinkedAccounts(sortLinkedExternalAccounts(await api.makeDefaultForNotifications(externalAccountId)));
   }
 
+  const resubscribe = async (externalAccountId: number) => {
+    try {
+      setLinkedAccounts(sortLinkedExternalAccounts(await api.resubscribe(externalAccountId)));
+    } catch (error) {
+      toast({
+        title: t('resubscribeError'),
+        status: "error",
+        duration: 300000,
+        isClosable: true,
+        position: "top",
+        variant: "solid",
+      });
+    }
+  }
+
   const finalizePhoneAuth = async () => {
     setShowPhoneConnection(false);
     setLinkedAccounts(sortLinkedExternalAccounts(await api.getLinkedExternalAccounts()));
@@ -149,6 +164,7 @@ export default function LinkedAccounts({ account, accountSettings, linkedAccount
               canRemove={canRemove || (isWalletExternalAccount(linkedAccount.externalAccount.type) && linkedAccounts.length > 1) || isNonSocialAccount(linkedAccount.externalAccount.type)}
               onRemove={unlinkExternalAccount}
               makeDefaultForNotifications={makeDefaultForNotifications}
+              resubscribe={resubscribe}
             />);
           })}
         </Stack>

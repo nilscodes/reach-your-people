@@ -86,6 +86,7 @@ paths:
                 Updated User Jim Jergens:
                   value:
                     id: 12
+                    createTime: '2024-02-18T11:15:09.618911-08:00'
                     displayName: Jim Jergens
         '404':
           description: User Not Found
@@ -274,6 +275,32 @@ paths:
       x-stoplight:
         id: pgxcykih0shh0
       description: Unlink the external account from this account
+  '/accounts/{accountId}/externalaccounts/{externalAccountId}/subscriptionstatus':
+    parameters:
+      - $ref: ./common-schemas.yaml#/components/parameters/accountId
+      - $ref: ./common-schemas.yaml#/components/parameters/externalAccountId
+    post:
+      summary: Resubscribe an explicitly unsubscribed external account
+      x-stoplight:
+        id: 9b25aa072a2cc
+      tags: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: boolean
+      responses:
+        '409':
+          description: If the account was not recently verified via this linked account, a resubscription is not possible and a 409 will be returned.
+        '200':
+          description: The confirmed subscription status
+          content:
+            application/json:
+              schema:
+                type: boolean
+      operationId: updateLinkedExternalAccountSubscriptionStatus
+      description: 'In particular for emails and phone numbers it is possible to unsubscribe to comply with spam protection laws. This endpoint allows users to resubscribe. It verifies that the account has been verified recently (configurable) and if yes, re-enables the subscription.'
   '/accounts/{accountId}/projects':
     parameters:
       - $ref: ./common-schemas.yaml#/components/parameters/accountId
@@ -334,7 +361,7 @@ paths:
                 items:
                   $ref: ./common-schemas.yaml#/components/schemas/ProjectNotificationSetting
       operationId: updateNotificationsSettingsForAccountAndProject
-      description: Update the notification settings for this account on this project. Will remove any invalid settings, like notification settings for non-linked external accounts or external accounts that cannot receive notifications.  
+      description: 'Update the notification settings for this account on this project. Will remove any invalid settings, like notification settings for non-linked external accounts or external accounts that cannot receive notifications.'
   '/accounts/{accountId}/settings':
     parameters:
       - $ref: ./common-schemas.yaml#/components/parameters/accountId
@@ -497,6 +524,26 @@ paths:
       x-stoplight:
         id: candiq0d6nerz
       description: Get all subscriptions that are global and as such relate to everything that occurs to projects related in an account's wallet.
+  /email/unsubscribe:
+    post:
+      summary: Unsubscribe any email address from the service
+      description: 'To comply with spam protection laws, we allow an email to unsubscribe even if the person is not logged in or can confirm ownership of the email address.'
+      tags: []
+      operationId: unsubscribeFromEmail
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+              properties:
+                email:
+                  type: string
+                  format: email
+      responses:
+        '204':
+          description: 'Always returns 204 and no content, even if the email address did not actually exist'
 tags:
   - name: subscription
     description: Related to subscribing to announcements

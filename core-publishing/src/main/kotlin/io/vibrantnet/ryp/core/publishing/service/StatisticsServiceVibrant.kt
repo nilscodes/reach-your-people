@@ -40,6 +40,11 @@ class StatisticsServiceVibrant(
         processStatisticsUpdate("pushapi", statisticsUpdateDto)
     }
 
+    @RabbitListener(queues = ["statistics-email"])
+    fun processEmailStatistics(statisticsUpdateDto: StatisticsUpdateDto) {
+        processStatisticsUpdate("email", statisticsUpdateDto)
+    }
+
     @Scheduled(fixedDelayString = "10", timeUnit = TimeUnit.SECONDS)
     fun processBufferedMessages() {
         processBufferedMessagesReactive().subscribe()

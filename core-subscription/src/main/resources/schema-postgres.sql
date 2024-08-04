@@ -53,6 +53,7 @@ CREATE TABLE "external_accounts"
     "external_reference_name" varchar(200),
     "display_name"            varchar(200),
     "registration_time"       timestamp,
+    "unsubscribe_time"        timestamp,
     "account_type"            varchar(32)  NOT NULL,
     "metadata"                bytea NULL
 );

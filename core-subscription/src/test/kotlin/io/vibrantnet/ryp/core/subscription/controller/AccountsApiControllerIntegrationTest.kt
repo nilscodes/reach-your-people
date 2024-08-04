@@ -29,7 +29,7 @@ private val defaultAccountDto = AccountDto(
 )
 private val defaultLinkedExternalAccountDto = LinkedExternalAccountDto(
     id = 420,
-    externalAccount = ExternalAccountDto(921, "123", "jeff", "The Real Jeff", OffsetDateTime.parse("2019-01-01T18:00:00Z"), "discord"),
+    externalAccount = ExternalAccountDto(921, "123", "jeff", "The Real Jeff", OffsetDateTime.parse("2019-01-01T18:00:00Z"), null, "discord"),
     role = ExternalAccountRole.OWNER,
     linkTime = OffsetDateTime.parse("2019-01-01T19:00:00Z"),
     lastConfirmed = OffsetDateTime.parse("2019-01-01T20:00:00Z"),

@@ -27,6 +27,9 @@ data class ExternalAccountDto @JsonCreator constructor(
     @JsonProperty("registrationTime")
     val registrationTime: OffsetDateTime? = null,
 
+    @JsonProperty("unsubscribeTime")
+    val unsubscribeTime: OffsetDateTime? = null,
+
     @JsonProperty("type")
     @field:NotNull
     @field:Size(min = 1, max = 64)
