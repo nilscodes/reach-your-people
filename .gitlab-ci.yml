@@ -9,6 +9,7 @@ include:
   - local: 'integrations/discord/.gitlab-ci-discord.yml'
   - local: 'integrations/twilio/.gitlab-ci-twilio.yml'
   - local: 'integrations/webpush/.gitlab-ci-webpush.yml'
+  - local: 'integrations/sendgrid/.gitlab-ci-sendgrid.yml'
   - local: 'integrations/vibrant/.gitlab-ci-vibrant.yml'
 
 stages:

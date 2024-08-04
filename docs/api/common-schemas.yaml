@@ -457,6 +457,10 @@ components:
           type: string
           x-stoplight:
             id: h1ax74cglex3v
+        unsubscribeTime:
+          type: string
+          format: date-time
+          example: '2021-11-10T13:20:57Z'
         metadata:
           type: string
           contentEncoding: base64

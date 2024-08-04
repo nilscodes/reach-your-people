@@ -94,6 +94,14 @@ services:
             - VAPID_SUBJECT=
             - PUBLIC_RYP_SITE=
 
+    integration-sendgrid:
+
+        container_name: integration_sendgrid_prod
+        environment:
+            - RABBITMQ_PASSWORD=
+            - SENDGRID_FROM=
+            - SENDGRID_API_KEY=
+
     rabbitmq:
         container_name: ryp_rabbitmq_prod
         environment:

@@ -26,6 +26,10 @@ class ExternalAccount(
         @Column(name = "registration_time", updatable = false)
         var registrationTime: OffsetDateTime = OffsetDateTime.now(),
 
+        @Temporal(TemporalType.TIMESTAMP)
+        @Column(name = "unsubscribe_time")
+        var unsubscribeTime: OffsetDateTime? = null,
+
         @Column(name = "account_type")
         var type: String,
 
@@ -41,6 +45,7 @@ class ExternalAccount(
         referenceName = referenceName,
         displayName = displayName,
         registrationTime = registrationTime,
+        unsubscribeTime = unsubscribeTime,
         type = type,
         // Not ideal that we do this for all metadata-containing external accounts, might be worth revisiting
         metadata = metadata.let { metadata ->

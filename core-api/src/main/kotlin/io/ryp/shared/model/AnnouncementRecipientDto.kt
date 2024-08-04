@@ -23,4 +23,7 @@ data class AnnouncementRecipientDto @JsonCreator constructor(
 
     @JsonProperty("subscriptionStatus")
     val subscriptionStatus: SubscriptionStatus,
+
+    @JsonProperty("referenceName")
+    val referenceName: String? = null,
 )

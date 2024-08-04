@@ -74,6 +74,7 @@ class SubscriptionServiceVibrant(
                 }
             },
             subscriptionStatus = subscriptionStatus,
+            referenceName = it.referenceName,
         )
 
     @RabbitListener(queues = ["snapshotcompleted"])

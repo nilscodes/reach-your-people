@@ -190,6 +190,7 @@ class AnnouncementsApiServiceVibrant(
                         announcement,
                         recipient.metadata,
                         minimalProjectInfo,
+                        recipient.referenceName,
                     )
                 )
             }
@@ -214,7 +215,7 @@ class AnnouncementsApiServiceVibrant(
 
     private fun calculateInitialStatistics(recipients: List<AnnouncementRecipientDto>) = Statistics(
         sent = recipients
-            .groupBy { it.type }
+            .groupBy { getEffectiveType(it) }
             .mapValues { it.value.size.toLong() },
         uniqueAccounts = recipients
             .distinctBy { it.accountId }.size.toLong(),
@@ -222,6 +223,8 @@ class AnnouncementsApiServiceVibrant(
             .filter { it.subscriptionStatus == SubscriptionStatus.SUBSCRIBED }
             .distinctBy { it.accountId }.size.toLong(),
     )
+
+    private fun getEffectiveType(it: AnnouncementRecipientDto) = if (it.type == "google") "email" else it.type
 
     private fun getBasicProjectDto(announcementJob: AnnouncementJobDto): BasicProjectDto {
         val project = subscriptionService.getProject(announcementJob.projectId)

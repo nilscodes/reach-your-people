@@ -1,6 +1,7 @@
 package io.vibrantnet.ryp.core.subscription.service
 
 import io.ryp.shared.model.ExternalAccountDto
+import io.vibrantnet.ryp.core.subscription.model.UnsubscribeFromEmailRequest
 import reactor.core.publisher.Mono
 
 interface ExternalAccountsApiService {
@@ -25,4 +26,14 @@ interface ExternalAccountsApiService {
      * @see ExternalAccountsApi#findExternalAccountByProviderAndReferenceId
      */
     fun findExternalAccountByProviderAndReferenceId(providerType: String, referenceId: String): Mono<ExternalAccountDto>
+
+    /**
+     * POST /email/unsubscribe : Unsubscribe any email address from the service
+     * To comply with spam protection laws, we allow an email to unsubscribe even if the person is not logged in or can confirm ownership of the email address.
+     *
+     * @param unsubscribeFromEmailRequest
+     * @return Always returns 204 and no content, even if the email address did not actually exist (status code 204)
+     * @see EmailApi#unsubscribeFromEmail
+     */
+    fun unsubscribeFromEmail(unsubscribeFromEmailRequest: UnsubscribeFromEmailRequest): Mono<Unit>
 }

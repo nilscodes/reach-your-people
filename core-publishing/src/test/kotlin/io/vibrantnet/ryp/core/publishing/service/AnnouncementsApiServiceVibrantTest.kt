@@ -252,6 +252,39 @@ internal class AnnouncementsApiServiceVibrantTest {
     }
 
     @Test
+    fun `sending a message to google is qualified as email statistic but sent to the google queue`() {
+        val uuid = UUID.randomUUID()
+        val testAnnouncement = makeTestAnnouncement(listOf("test-policy")).toBasicAnnouncementWithIdDto(uuid, "https://ryp.io/announcements/1")
+        val valueOperations = mockk<ValueOperations<String, Any>>(relaxed = true)
+        val listOperations = mockk<ListOperations<String, Any>>(relaxed = true)
+        every { redisTemplate.opsForValue() } answers { valueOperations }
+        every { valueOperations["announcementsdata:$uuid"] } returns testAnnouncement
+        every { redisTemplate.opsForList() } answers { listOperations }
+        every { redisTemplate.delete(any<String>()) } returns true
+        every { listOperations.range("announcements:$uuid", 0, -1) } answers {
+            listOf(
+                AnnouncementRecipientDto(13, "google", 26, "456", null, SubscriptionStatus.SUBSCRIBED),
+            )
+        }
+
+        every { subscriptionService.getProject(82) } answers { Mono.just(makeProjectDto(82)) }
+        every { rabbitTemplate.convertAndSend(any(), any<MessageDto>()) } just Runs
+        announcementsApiService.sendAnnouncementToSubscribers(AnnouncementJobDto(82, uuid))
+
+        // Announcement should be sent to google queue
+        verify(exactly = 1) { rabbitTemplate.convertAndSend("google", MessageDto(
+            "456",
+            testAnnouncement,
+            null,
+            BasicProjectDto(makeProjectDto(82)),
+        )) }
+        // Announcement statistics should log email instead of google
+        verify(exactly = 1) { announcementUpdateService.updateAnnouncementStatistics(uuid.toString(), match {
+            it.sent == mapOf("email" to 1L)
+        }, AnnouncementStatus.PUBLISHED) }
+    }
+
+    @Test
     fun `sending a message is marked correctly as failed if redis retrieval fails`() {
         val uuid = UUID.randomUUID()
         val valueOperations = mockk<ValueOperations<String, Any>>(relaxed = true)

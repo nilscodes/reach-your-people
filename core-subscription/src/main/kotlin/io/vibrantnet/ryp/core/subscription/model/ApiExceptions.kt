@@ -7,3 +7,5 @@ class ExternalAccountAlreadyLinkedException(message: String? = null, cause: Thro
 class IncompatibleExternalAccountChangeException(message: String? = null, cause: Throwable? = null) : ApiException(message, cause)
 
 class PermissionDeniedException(message: String? = null, cause: Throwable? = null) : ApiException(message, cause)
+
+class LastConfirmationTooOldException(message: String? = null, cause: Throwable? = null) : ApiException(message, cause)

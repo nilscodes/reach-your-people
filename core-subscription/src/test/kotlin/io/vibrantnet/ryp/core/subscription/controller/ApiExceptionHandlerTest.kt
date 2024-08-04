@@ -3,8 +3,9 @@ package io.vibrantnet.ryp.core.subscription.controller
 import io.hazelnet.shared.data.ApiErrorResponse
 import io.vibrantnet.ryp.core.subscription.model.ExternalAccountAlreadyLinkedException
 import io.vibrantnet.ryp.core.subscription.model.IncompatibleExternalAccountChangeException
+import io.vibrantnet.ryp.core.subscription.model.LastConfirmationTooOldException
 import io.vibrantnet.ryp.core.subscription.model.PermissionDeniedException
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.springframework.http.HttpStatus
 
@@ -87,5 +88,21 @@ internal class ApiExceptionHandlerTest {
         val exception = PermissionDeniedException(null as String?)
         val result = apiExceptionHandler.processPermissionDeniedException(exception)
         assertEquals(ApiErrorResponse("", HttpStatus.FORBIDDEN), result)
+    }
+
+    @Test
+    fun `processLastConfirmationTooOldException works with message`() {
+        val apiExceptionHandler = ApiExceptionHandler()
+        val exception = LastConfirmationTooOldException("test")
+        val result = apiExceptionHandler.processLastConfirmationTooOldException(exception)
+        assertEquals(ApiErrorResponse("test", HttpStatus.CONFLICT), result)
+    }
+
+    @Test
+    fun `processLastConfirmationTooOldException works without message`() {
+        val apiExceptionHandler = ApiExceptionHandler()
+        val exception = LastConfirmationTooOldException(null as String?)
+        val result = apiExceptionHandler.processLastConfirmationTooOldException(exception)
+        assertEquals(ApiErrorResponse("", HttpStatus.CONFLICT), result)
     }
 }

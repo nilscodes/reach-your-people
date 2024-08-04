@@ -276,6 +276,36 @@ class  AccountsApiServiceVibrant(
         return Flux.fromIterable(newNotifications)
     }
 
+    @Transactional
+    override fun updateLinkedExternalAccountSubscriptionStatus(
+        accountId: Long,
+        externalAccountId: Long,
+        subscribe: Boolean
+    ): Mono<Boolean> {
+        val account = accountRepository.findById(accountId).orElseThrow()
+        val linkedExternalAccount = account.linkedExternalAccounts.find { it.externalAccount.id == externalAccountId }
+        if (linkedExternalAccount != null) {
+            if (linkedExternalAccount.role == ExternalAccountRole.OWNER) {
+                if ((linkedExternalAccount.externalAccount.unsubscribeTime != null && subscribe)
+                    || (linkedExternalAccount.externalAccount.unsubscribeTime == null && !subscribe)
+                ) { // Expression could be simplified but is kept for clarity
+                    val lastConfirmed = linkedExternalAccount.lastConfirmed
+                    return if (lastConfirmed != null && lastConfirmed.isAfter(OffsetDateTime.now().minusDays(1))) {
+                        linkedExternalAccount.externalAccount.unsubscribeTime =
+                            if (subscribe) null else OffsetDateTime.now()
+                        linkedExternalAccountRepository.save(linkedExternalAccount)
+                        Mono.just(subscribe)
+                    } else {
+                        Mono.error(LastConfirmationTooOldException("Cannot update linked external account $externalAccountId for account $accountId: Last confirmation is too old (more than 1 day)"))
+                    }
+                }
+                return Mono.just(linkedExternalAccount.externalAccount.unsubscribeTime == null)
+            }
+            return Mono.error(PermissionDeniedException("Cannot update linked external account $externalAccountId for account $accountId: User is not an owner of the external account for link ${linkedExternalAccount.id}"))
+        }
+        return Mono.error(NoSuchElementException("Failed to update linked external account $externalAccountId for account $accountId: Not found"))
+    }
+
     private fun addNewNotifications(
         projectNotificationSetting: List<ProjectNotificationSettingDto>,
         accountId: Long,

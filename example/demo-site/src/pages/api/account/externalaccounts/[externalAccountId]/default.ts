@@ -22,10 +22,12 @@ export default async function handler(
     const updatedLinkedAccounts = [];
     for (const linkedExternalAccount of currentLinkedAccounts.data) {
       if (linkedExternalAccount.id !== externalAccountId && linkedExternalAccount.settings?.includes(GetLinkedExternalAccounts200ResponseInnerSettingsEnum.DefaultForNotifications)) {
+        // Set all non-chosen external accounts that are currently the default to not be the default any more
         const newSettings = linkedExternalAccount.settings?.filter((setting) => setting !== GetLinkedExternalAccounts200ResponseInnerSettingsEnum.DefaultForNotifications);
         await coreSubscriptionApi.updateLinkedExternalAccount(accountId, linkedExternalAccount.externalAccount.id!, { settings: newSettings });
         updatedLinkedAccounts.push({ ...linkedExternalAccount, settings: newSettings });
       } else if (linkedExternalAccount.externalAccount.id === externalAccountId && !linkedExternalAccount.settings?.includes(GetLinkedExternalAccounts200ResponseInnerSettingsEnum.DefaultForNotifications)) {
+        // Set the chosen external account to be the default
         const newSettingsWithDefaultOn = [...(linkedExternalAccount.settings ?? []), GetLinkedExternalAccounts200ResponseInnerSettingsEnum.DefaultForNotifications];
         await coreSubscriptionApi.updateLinkedExternalAccount(accountId, linkedExternalAccount.externalAccount.id!, { settings: newSettingsWithDefaultOn });
         updatedLinkedAccounts.push({ ...linkedExternalAccount, settings: newSettingsWithDefaultOn });

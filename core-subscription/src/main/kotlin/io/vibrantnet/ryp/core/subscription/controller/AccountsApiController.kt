@@ -212,5 +212,17 @@ class AccountsApiController(
         @Valid @RequestBody projectNotificationSettings: List<ProjectNotificationSettingDto>
     ) = accountService.updateNotificationsSettingsForAccountAndProject(accountId, projectId, projectNotificationSettings)
 
+    @RequestMapping(
+        method = [RequestMethod.POST],
+        value = ["/accounts/{accountId}/externalaccounts/{externalAccountId}/subscriptionstatus"],
+        produces = ["application/json"],
+        consumes = ["application/json"]
+    )
+    @ResponseStatus(HttpStatus.OK)
+    fun updateLinkedExternalAccountSubscriptionStatus(
+        @PathVariable("accountId") accountId: Long,
+        @PathVariable("externalAccountId") externalAccountId: Long,
+        @Valid @RequestBody subscribe: Boolean
+    ) = accountService.updateLinkedExternalAccountSubscriptionStatus(accountId, externalAccountId, subscribe)
 
 }

@@ -17,6 +17,9 @@ data class MessageDto @JsonCreator constructor(
 
     @JsonProperty("project")
     val project: BasicProjectDto,
+
+    @JsonProperty("referenceName")
+    val referenceName: String? = null,
 )
 
 data class BasicProjectDto @JsonCreator constructor(

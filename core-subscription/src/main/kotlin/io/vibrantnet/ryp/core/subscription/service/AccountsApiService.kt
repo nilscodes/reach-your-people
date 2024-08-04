@@ -186,4 +186,17 @@ interface AccountsApiService {
     fun updateNotificationsSettingsForAccountAndProject(accountId: Long, projectId: Long, projectNotificationSettings: List<ProjectNotificationSettingDto>): Flux<ProjectNotificationSettingDto>
 
     fun extendPremium(accountId: Long, premiumDuration: Duration): Mono<AccountDto>
+
+    /**
+     * POST /accounts/{accountId}/externalaccounts/{externalAccountId}/subscriptionstatus : Resubscribe an explicitly unsubscribed external account
+     * In particular for emails and phone numbers it is possible to unsubscribe to comply with spam protection laws. This endpoint allows users to resubscribe. It verifies that the account has been verified recently (configurable) and if yes, re-enables the subscription.
+     *
+     * @param accountId The numeric ID of an account (required)
+     * @param externalAccountId The numeric ID of an external account (required)
+     * @param subscribe  (required)
+     * @return If the account was not recently verified via this linked account, a resubscription is not possible and a 409 will be returned. (status code 409)
+     *         or The confirmed subscription status (status code 200)
+     * @see AccountsApi#updateLinkedExternalAccountSubscriptionStatus
+     */
+    fun updateLinkedExternalAccountSubscriptionStatus(accountId: Long, externalAccountId: Long, subscribe: Boolean): Mono<Boolean>
 }

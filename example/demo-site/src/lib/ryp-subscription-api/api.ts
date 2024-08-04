@@ -154,6 +154,12 @@ export interface CreateExternalAccountRequest {
      */
     'displayName'?: string;
     /**
+     * 
+     * @type {string}
+     * @memberof CreateExternalAccountRequest
+     */
+    'unsubscribeTime'?: string;
+    /**
      * Any additional metadata for the external account (like a Push API subscription JSON blob), binary data encoded as base64.
      * @type {string}
      * @memberof CreateExternalAccountRequest
@@ -826,6 +832,19 @@ export const SubscribeAccountToProjectRequestStatusEnum = {
 
 export type SubscribeAccountToProjectRequestStatusEnum = typeof SubscribeAccountToProjectRequestStatusEnum[keyof typeof SubscribeAccountToProjectRequestStatusEnum];
 
+/**
+ * 
+ * @export
+ * @interface UnsubscribeFromEmailRequest
+ */
+export interface UnsubscribeFromEmailRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof UnsubscribeFromEmailRequest
+     */
+    'email': string;
+}
 /**
  * 
  * @export
@@ -1688,6 +1707,40 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
             };
         },
         /**
+         * To comply with spam protection laws, we allow an email to unsubscribe even if the person is not logged in or can confirm ownership of the email address.
+         * @summary Unsubscribe any email address from the service
+         * @param {UnsubscribeFromEmailRequest} [unsubscribeFromEmailRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        unsubscribeFromEmail: async (unsubscribeFromEmailRequest?: UnsubscribeFromEmailRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/email/unsubscribe`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(unsubscribeFromEmailRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
          * Update the information of an existing user.
          * @summary Update Account Information
          * @param {number} accountId The numeric ID of an account
@@ -1809,6 +1862,50 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
             localVarRequestOptions.data = serializeDataIfNeeded(updateLinkedExternalAccountRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * In particular for emails and phone numbers it is possible to unsubscribe to comply with spam protection laws. This endpoint allows users to resubscribe. It verifies that the account has been verified recently (configurable) and if yes, re-enables the subscription.
+         * @summary Resubscribe an explicitly unsubscribed external account
+         * @param {number} accountId The numeric ID of an account
+         * @param {number} externalAccountId The numeric ID of an external account
+         * @param {boolean} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateLinkedExternalAccountSubscriptionStatus: async (accountId: number, externalAccountId: number, body: boolean, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'accountId' is not null or undefined
+            assertParamExists('updateLinkedExternalAccountSubscriptionStatus', 'accountId', accountId)
+            // verify required parameter 'externalAccountId' is not null or undefined
+            assertParamExists('updateLinkedExternalAccountSubscriptionStatus', 'externalAccountId', externalAccountId)
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('updateLinkedExternalAccountSubscriptionStatus', 'body', body)
+            const localVarPath = `/accounts/{accountId}/externalaccounts/{externalAccountId}/subscriptionstatus`
+                .replace(`{${"accountId"}}`, encodeURIComponent(String(accountId)))
+                .replace(`{${"externalAccountId"}}`, encodeURIComponent(String(externalAccountId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -2177,6 +2274,19 @@ export const DefaultApiFp = function(configuration?: Configuration) {
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
+         * To comply with spam protection laws, we allow an email to unsubscribe even if the person is not logged in or can confirm ownership of the email address.
+         * @summary Unsubscribe any email address from the service
+         * @param {UnsubscribeFromEmailRequest} [unsubscribeFromEmailRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async unsubscribeFromEmail(unsubscribeFromEmailRequest?: UnsubscribeFromEmailRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.unsubscribeFromEmail(unsubscribeFromEmailRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DefaultApi.unsubscribeFromEmail']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
          * Update the information of an existing user.
          * @summary Update Account Information
          * @param {number} accountId The numeric ID of an account
@@ -2218,6 +2328,21 @@ export const DefaultApiFp = function(configuration?: Configuration) {
             const localVarAxiosArgs = await localVarAxiosParamCreator.updateLinkedExternalAccount(accountId, externalAccountId, updateLinkedExternalAccountRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['DefaultApi.updateLinkedExternalAccount']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * In particular for emails and phone numbers it is possible to unsubscribe to comply with spam protection laws. This endpoint allows users to resubscribe. It verifies that the account has been verified recently (configurable) and if yes, re-enables the subscription.
+         * @summary Resubscribe an explicitly unsubscribed external account
+         * @param {number} accountId The numeric ID of an account
+         * @param {number} externalAccountId The numeric ID of an external account
+         * @param {boolean} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async updateLinkedExternalAccountSubscriptionStatus(accountId: number, externalAccountId: number, body: boolean, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<boolean>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.updateLinkedExternalAccountSubscriptionStatus(accountId, externalAccountId, body, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DefaultApi.updateLinkedExternalAccountSubscriptionStatus']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -2469,6 +2594,16 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
             return localVarFp.unsubscribeAccountFromProject(accountId, projectId, options).then((request) => request(axios, basePath));
         },
         /**
+         * To comply with spam protection laws, we allow an email to unsubscribe even if the person is not logged in or can confirm ownership of the email address.
+         * @summary Unsubscribe any email address from the service
+         * @param {UnsubscribeFromEmailRequest} [unsubscribeFromEmailRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        unsubscribeFromEmail(unsubscribeFromEmailRequest?: UnsubscribeFromEmailRequest, options?: any): AxiosPromise<void> {
+            return localVarFp.unsubscribeFromEmail(unsubscribeFromEmailRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
          * Update the information of an existing user.
          * @summary Update Account Information
          * @param {number} accountId The numeric ID of an account
@@ -2502,6 +2637,18 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
          */
         updateLinkedExternalAccount(accountId: number, externalAccountId: number, updateLinkedExternalAccountRequest: UpdateLinkedExternalAccountRequest, options?: any): AxiosPromise<LinkExternalAccount200Response> {
             return localVarFp.updateLinkedExternalAccount(accountId, externalAccountId, updateLinkedExternalAccountRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * In particular for emails and phone numbers it is possible to unsubscribe to comply with spam protection laws. This endpoint allows users to resubscribe. It verifies that the account has been verified recently (configurable) and if yes, re-enables the subscription.
+         * @summary Resubscribe an explicitly unsubscribed external account
+         * @param {number} accountId The numeric ID of an account
+         * @param {number} externalAccountId The numeric ID of an external account
+         * @param {boolean} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateLinkedExternalAccountSubscriptionStatus(accountId: number, externalAccountId: number, body: boolean, options?: any): AxiosPromise<boolean> {
+            return localVarFp.updateLinkedExternalAccountSubscriptionStatus(accountId, externalAccountId, body, options).then((request) => request(axios, basePath));
         },
         /**
          * Update the notification settings for this account on this project. Will remove any invalid settings, like notification settings for non-linked external accounts or external accounts that cannot receive notifications.
@@ -2786,6 +2933,18 @@ export class DefaultApi extends BaseAPI {
     }
 
     /**
+     * To comply with spam protection laws, we allow an email to unsubscribe even if the person is not logged in or can confirm ownership of the email address.
+     * @summary Unsubscribe any email address from the service
+     * @param {UnsubscribeFromEmailRequest} [unsubscribeFromEmailRequest] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DefaultApi
+     */
+    public unsubscribeFromEmail(unsubscribeFromEmailRequest?: UnsubscribeFromEmailRequest, options?: RawAxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).unsubscribeFromEmail(unsubscribeFromEmailRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
      * Update the information of an existing user.
      * @summary Update Account Information
      * @param {number} accountId The numeric ID of an account
@@ -2824,6 +2983,20 @@ export class DefaultApi extends BaseAPI {
      */
     public updateLinkedExternalAccount(accountId: number, externalAccountId: number, updateLinkedExternalAccountRequest: UpdateLinkedExternalAccountRequest, options?: RawAxiosRequestConfig) {
         return DefaultApiFp(this.configuration).updateLinkedExternalAccount(accountId, externalAccountId, updateLinkedExternalAccountRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * In particular for emails and phone numbers it is possible to unsubscribe to comply with spam protection laws. This endpoint allows users to resubscribe. It verifies that the account has been verified recently (configurable) and if yes, re-enables the subscription.
+     * @summary Resubscribe an explicitly unsubscribed external account
+     * @param {number} accountId The numeric ID of an account
+     * @param {number} externalAccountId The numeric ID of an external account
+     * @param {boolean} body 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DefaultApi
+     */
+    public updateLinkedExternalAccountSubscriptionStatus(accountId: number, externalAccountId: number, body: boolean, options?: RawAxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).updateLinkedExternalAccountSubscriptionStatus(accountId, externalAccountId, body, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

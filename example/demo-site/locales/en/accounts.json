@@ -22,6 +22,9 @@
     "hardwareWalletName": "{{walletName}} (Hardware)",
     "defaultForNotifications": "Default for Notifications",
     "noNotifications": "No Notifications",
+    "unsubscribed": "Unsubscribed",
+    "resubscribe": "Resubscribe",
+    "resubscribeError": "Resubscribing failed because you have not authenticated with this account recently and as such we cannot confirm you are still authorized for this account. Please log out and log in again with this particular account to be able to resubscribe.",
     "lastUnlinkError": "You must have at least one linked social account and cannot remove the last wallet if you have only wallets connected.",
     "defaultForNotificationsError": "Select a new default notification account before removing this account.",
     "makeDefaultForNotifications": "Make default",
@@ -29,6 +32,16 @@
     "noWalletsDescription": "Currently, you have no wallets connected. Connect a wallet to receive notifications about your tokens, NFTs, and stake pool delegations.",
     "referralShortcodePlaceholder": "YourCode",
     "referralShortcodeUpdated": "Your custom referral code has been updated.",
+    "emailConfirmationTitle": "Sign in link sent",
+    "emailConfirmationDescription": "We have sent you an email with a login link. Click the link to confirm your email address and sign in.",
+
+    "unsubscribeTitle": "Unsubscribe from Project Announcements",
+    "unsubscribeDescription": "You are opting out of announcements from projects. This means you will not receive notifications about updates or news. However, you will still receive essential emails related to maintaining and using your account. To unsubscribe, confirm your email below and click the button. You can resubscribe anytime from your account page.",
+    "unsubscribeButton": "Unsubscribe",
+    "unsubscribeSuccessTitle": "Unsubscribed",
+    "unsubscribeSuccessMessage": "You have been unsubscribed from project announcements. Thank you for using Reach Your People and we look forward to helping you again, soon.",
+    "unsubscribeError": "We are sorry, but your unsubscribe request failed. We recommend reaching out to our team at the support link below, so we can ensure your unsubscription can be properly processed.",
+    "supportLink": "Go to Support Discord",
 
     "hardwareWallet": {
         "title": "Hardware Wallets",

@@ -11,6 +11,7 @@ import { DynamoDB, DynamoDBClientConfig } from "@aws-sdk/client-dynamodb"
 import { DynamoDBDocument } from "@aws-sdk/lib-dynamodb"
 import { DynamoDBAdapter } from "@auth/dynamodb-adapter"
 import type { Adapter } from 'next-auth/adapters';
+import { sendVerificationRequest } from "./lib/email"
 
 let customAdapter: Adapter | undefined = undefined;
 
@@ -114,6 +115,7 @@ if (enabledProviders.includes('email')) {
         }
       },
       maxAge: 30 * 60, // 30 minutes magic link validity
+      sendVerificationRequest: sendVerificationRequest,
     }),
   )
 

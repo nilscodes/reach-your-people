@@ -1,10 +1,11 @@
 package io.vibrantnet.ryp.core.subscription.controller
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import io.hazelnet.shared.data.ApiErrorResponse
 import io.vibrantnet.ryp.core.subscription.model.ExternalAccountAlreadyLinkedException
 import io.vibrantnet.ryp.core.subscription.model.IncompatibleExternalAccountChangeException
+import io.vibrantnet.ryp.core.subscription.model.LastConfirmationTooOldException
 import io.vibrantnet.ryp.core.subscription.model.PermissionDeniedException
-import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.core.annotation.Order
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.ControllerAdvice
@@ -56,5 +57,13 @@ class ApiExceptionHandler {
     fun processPermissionDeniedException(ex: PermissionDeniedException): ApiErrorResponse {
         logger.info { ex }
         return ApiErrorResponse(ex.message ?: "", HttpStatus.FORBIDDEN)
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ResponseBody
+    fun processLastConfirmationTooOldException(ex: LastConfirmationTooOldException): ApiErrorResponse {
+        logger.info { ex }
+        return ApiErrorResponse(ex.message ?: "", HttpStatus.CONFLICT)
     }
 }
