@@ -136,6 +136,10 @@
             "title": "Invite your friends",
             "description": "Share Reach Your People with your friends! Each one will increase your chance at an Omen NFT. Use the referral link below and as soon as someone signs up with it, you will unlock this. You have up to 50 entries to gain and can check your progress in the Achievements tab."
         },
+        "step5": {
+            "title": "Create a project",
+            "description": "If you are a project owner, create a project to send announcements to your community. You can also create a project to send updates to your delegators if you are a stake pool operator or a dRep. Simply go to <0>Publish</0> and click the button to create a new project."
+        },
         "doNotShowAgain": "Do not show again",
         "complete": "Mark complete"
     },

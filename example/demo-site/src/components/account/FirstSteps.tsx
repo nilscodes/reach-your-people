@@ -8,6 +8,8 @@ import Card from '../Card';
 import { List } from '../ui/List';
 import { ListItem } from '../ui/ListItem';
 import { FirstStepsItems, bitmaskToEnum } from '@/lib/types/FirstSteps';
+import Trans from 'next-translate/Trans';
+import NextLink from '../NextLink';
 
 type FirstStepsProps = {
   account: Account;
@@ -44,6 +46,14 @@ function Step4() {
   );
 }
 
+function Step5() {
+  return (
+    <Text><Trans i18nKey='accounts:firstSteps.step5.description' components={[
+      <NextLink key='link' href='/publish' />,
+    ]} /></Text>
+  );
+}
+
 
 export default function FirstSteps({ account, accountSettings, linkedAccounts, onFinishSteps }: FirstStepsProps) {
   const api = useApi()
@@ -56,7 +66,8 @@ export default function FirstSteps({ account, accountSettings, linkedAccounts, o
     if (firstStepsCompleted.includes(FirstStepsItems.ConnectNotification)
       && firstStepsCompleted.includes(FirstStepsItems.ConnectWallet)
       && firstStepsCompleted.includes(FirstStepsItems.SubscribeExplicitly)
-      && firstStepsCompleted.includes(FirstStepsItems.ReferFriend)) {
+      && firstStepsCompleted.includes(FirstStepsItems.ReferFriend)
+      && firstStepsCompleted.includes(FirstStepsItems.CreateProject)) {
       setCompleteButtonText('firstSteps.complete');
       setCompleteButtonIcon(<MdCheckCircle />);
     }
@@ -84,6 +95,12 @@ export default function FirstSteps({ account, accountSettings, linkedAccounts, o
         icon: firstStepsCompleted.includes(FirstStepsItems.ReferFriend) ? <MdCheckCircleOutline size="1.5em" /> : <MdHourglassTop size="1.5em" />,
         log: <Step4 />,
         completed: firstStepsCompleted.includes(FirstStepsItems.ReferFriend),
+      },
+      {
+        title: t('firstSteps.step5.title'),
+        icon: firstStepsCompleted.includes(FirstStepsItems.CreateProject) ? <MdCheckCircleOutline size="1.5em" /> : <MdHourglassTop size="1.5em" />,
+        log: <Step5 />,
+        completed: firstStepsCompleted.includes(FirstStepsItems.CreateProject),
       },
     ];
   }, [firstStepsCompleted, t]);
@@ -120,7 +137,7 @@ export default function FirstSteps({ account, accountSettings, linkedAccounts, o
                 p={4}
               >
                 <Stack>
-                  <Heading lineHeight='2.5rem' fontSize="md" fontWeight="semibold">
+                  <Heading lineHeight='1.5rem' fontSize="md" fontWeight="semibold">
                     {step.title}
                   </Heading>
                   {step.log}
