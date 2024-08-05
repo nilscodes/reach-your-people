@@ -22,7 +22,7 @@ export default function ProjectsHomepage(props: ProjectsHomepageProps) {
 
   useEffect(() => {
     api.getProjectsForAccount().then((projects) => {
-      // setProjects(projects);
+      setProjects(projects);
       setIsProjectsLoading(false);
     });
   }, [api]);
