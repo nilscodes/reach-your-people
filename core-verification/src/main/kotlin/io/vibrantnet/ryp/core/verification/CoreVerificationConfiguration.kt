@@ -21,5 +21,5 @@ data class BlockfrostConfig(
 
 data class Cip22Config(
     val domain: String = "ryp.io",
-    val expirationMinutes: Long = 5L,
+    val expirationMinutes: Long = 10L,
 )

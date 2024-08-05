@@ -70,7 +70,7 @@ data class StakepoolDto @JsonCreator constructor(
     val verificationNonce: String,
 
     @JsonProperty("verificationTime")
-    val verificationTime: OffsetDateTime,
+    val verificationTime: OffsetDateTime? = null,
 )
 
 data class ProjectRoleAssignmentDto @JsonCreator constructor(

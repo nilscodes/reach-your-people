@@ -84,11 +84,13 @@ export default function WalletSettings({ wallet, onChangeWalletSettings, ...prop
             <Trans i18nKey='accounts:settings.spo.description' components={[<NextLink key="" href='/projects/spo' />]}></Trans>
           </Text>
         </Stack>
-        <Box>
-          {stakepoolLoading && (<Skeleton height="6" width="15" />)}
-          {!stakepoolLoading && stakepoolDetails !== null && (<Wrap spacing="2"><Tag title={stakepoolDetails.name}>{stakepoolDetails.ticker}</Tag></Wrap>)}
-        </Box>
-        <Switch colorScheme="brand" isChecked={spoEnabled} onChange={(e) => updateWalletSettings(e.target.checked, [LinkExternalAccount200ResponseSettingsEnum.StakepoolAnnouncements])} />
+        <Stack direction={{ base: 'column-reverse', md: 'row' }} alignItems={{ base: 'flex-end', md: 'flex-start' }} justifyContent='flex-end' spacing="4">
+          <Box>
+            {stakepoolLoading && (<Skeleton height="6" width="15" />)}
+            {!stakepoolLoading && stakepoolDetails !== null && (<Wrap spacing="2"><Tag title={stakepoolDetails.name}>{stakepoolDetails.ticker}</Tag></Wrap>)}
+          </Box>
+          <Switch colorScheme="brand" isChecked={spoEnabled} onChange={(e) => updateWalletSettings(e.target.checked, [LinkExternalAccount200ResponseSettingsEnum.StakepoolAnnouncements])} />
+        </Stack>
       </Stack>
       <Stack justify="space-between" direction="row" spacing="16">
         <Stack spacing="0.5" fontSize="sm">

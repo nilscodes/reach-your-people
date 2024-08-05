@@ -41,7 +41,9 @@
             "contentWithMarkdown": "Content (Markdown allowed)",
             "contentError": "Content is required",
             "preview": "Preview",
-            "link": "Link (Optional)"
+            "link": "Link (Optional)",
+            "betaProgram": "Beta Program",
+            "betaProgramDescription": "During the Reach Your People beta program, all announcements for projects are free of cost and immediately published. Participate actively in our beta to gain publishing credits for the official launch and explore the product free of charge until then. Thank you for helping us connect people!"
         }
     },
     "status": {
@@ -97,7 +99,7 @@
             "policyIdHelper": "The primary Cardano policy ID for your project, as well as any additional policies and their readable names. You can add more policies later.",
             "addPolicy": "Add additional policy",
             "removePolicy": "Remove policy",
-            "createNftProject": "Create NFT project",
+            "createTokenBasedProject": "Create project",
             "createStakepoolProject": "Create stakepool project",
             "stakepools": {
                 "poolHash": "Stakepool ID",
@@ -106,7 +108,7 @@
                 "name": "Pool name",
                 "ticker": "Pool ticker",
                 "verificationNonce": "Verification challenge",
-                "challengeHelper": "You will need to provide this verification challenge within the next 5 minutes.",
+                "challengeHelper": "You will need to provide this verification challenge within the next ten minutes.",
                 "restartVerification": "Restart",
                 "stakepoolVerification": "Verification steps",
                 "step1Title": "Step 1: Sign the verification challenge",

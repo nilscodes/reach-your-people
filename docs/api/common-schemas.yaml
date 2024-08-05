@@ -227,6 +227,11 @@ components:
           type: string
           x-stoplight:
             id: cf3rvz34e82ml
+        verificationTime:
+          type: string
+          format: date-time
+          example: '2021-11-10T13:20:57Z'
+          readOnly: true
     StakepoolDetails:
       type: object
       x-stoplight:

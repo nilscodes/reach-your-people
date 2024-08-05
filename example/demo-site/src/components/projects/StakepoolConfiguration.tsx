@@ -54,6 +54,7 @@ export default function StakepoolConfiguration({ type, formData, onSubmit }: Pro
     const [urlPrefix, setUrlPrefix] = useState<string>('https://');
     const [poolHash, setPoolHash] = useState('');
     const [expired, setExpired] = useState<boolean>(false);
+    const [expirationTime, setExpirationTime] = useState<string>(new Date().toISOString());
     const [stakepoolVerification, setStakepoolVerification] = useState<StakepoolVerification | null>(null);
     const [verificationLoading, setVerificationLoading] = useState<boolean>(false);
     const [currentVerificationStep, setCurrentVerificationStep] = useState<number>(0);
@@ -61,6 +62,7 @@ export default function StakepoolConfiguration({ type, formData, onSubmit }: Pro
     const [challengeError, setChallengeError] = useState<string>('');
     const [vrfVerificationKey, setVrfVerificationKey] = useState<any>(null);
     const [vrfVkeyError, setVrfKeyError] = useState<string>('');
+    const [submitting, setSubmitting] = useState<boolean>(false);
     const api = useApi();
     const toast = useToast();
     const poolHashRef = useRef<HTMLTextAreaElement | null>(null);
@@ -100,6 +102,7 @@ export default function StakepoolConfiguration({ type, formData, onSubmit }: Pro
             }
         }
         data.logo = selectedLogo;
+        setSubmitting(true);
         onSubmit(data);
     }
 
@@ -137,6 +140,8 @@ export default function StakepoolConfiguration({ type, formData, onSubmit }: Pro
         setVerificationLoading(true);
         api.startStakepoolVerification(verifyPoolHash).then((stakepoolVerification) => {
             setStakepoolVerification(stakepoolVerification);
+            setExpired(false);
+            setExpirationTime(stakepoolVerification.expirationTime);
             setCncliCommand(t('add.form.stakepools.cncliCommand', { domain: CIP_0022_DOMAIN, nonce: stakepoolVerification.nonce }));
         }).finally(() => {
             setVerificationLoading(false);
@@ -203,19 +208,26 @@ export default function StakepoolConfiguration({ type, formData, onSubmit }: Pro
     }
 
     useEffect(() => {
-        const expiredChecker = setInterval(() => {
-            if (stakepoolVerification?.expirationTime) {
-                const isExpired = new Date(stakepoolVerification.expirationTime) < new Date();
-                if (!!isExpired !== expired) {
-                    setExpired(!!isExpired);
-                }
-            } else {
-                setExpired(false);
-            }
+        const expirationDate = new Date(expirationTime);
+        const currentTime = new Date();
+        const timeToExpiration = expirationDate.getTime() - currentTime.getTime() + 1000;
+    
+        let timerId: NodeJS.Timeout | null = null;
+    
+        if (timeToExpiration > 0) {
+          timerId = setTimeout(() => {
+            setExpired(true);
+          }, timeToExpiration);
+        } else {
+          setExpired(false);
         }
-        , 1000);
-        return () => clearInterval(expiredChecker);
-    }, []);
+    
+        return () => {
+          if (timerId) {
+            clearTimeout(timerId);
+          }
+        };
+      }, [expirationTime, setExpired]);
 
     return (<Container py={{ base: '4', md: '8' }}>
         <Stack spacing="5">
@@ -379,15 +391,11 @@ export default function StakepoolConfiguration({ type, formData, onSubmit }: Pro
                                 <FormHelperText mt="0" color="fg.muted" mb={4}>
                                     {t('add.form.stakepools.challengeHelper')}
                                 </FormHelperText>
-                                {!expired && stakepoolVerification.expirationTime && (
-                                    <HStack spacing={6}>
-                                        <Icon as={MdOutlineTimer} color={mode('brand.500', 'brand.200')} boxSize="2em" />
-                                        <Timer expiresInSeconds={new Date(stakepoolVerification.expirationTime).getTime()} isIncludeDays={false} isIncludeHours={false} />
-                                    </HStack>
-                                )}
-                                {expired && stakepoolVerification.expirationTime && (
-                                    <Button onClick={restartVerification} leftIcon={<MdRefresh />}>{t('add.form.stakepools.restartVerification')}</Button>
-                                )}
+                                <HStack spacing={6} hidden={expired}>
+                                    <Icon as={MdOutlineTimer} color={mode('brand.500', 'brand.200')} boxSize="2em" />
+                                    <Timer expiresInSeconds={new Date(expirationTime).getTime()} isIncludeDays={false} isIncludeHours={false} />
+                                </HStack>
+                                <Button hidden={!expired} onClick={restartVerification} leftIcon={<MdRefresh />}>{t('add.form.stakepools.restartVerification')}</Button>
                             </Box>
                             <Box>
                                 <NextLink href='https://cips.cardano.org/cip/CIP-0022' isExternal>{t('add.form.stakepools.learnMore')}</NextLink>
@@ -474,7 +482,7 @@ export default function StakepoolConfiguration({ type, formData, onSubmit }: Pro
                 </Box>)}
 
                 <Flex direction="row-reverse">
-                    {currentVerificationStep >= 2 && (<Button onClick={handleSubmit(finalizeSubmit)}>{t('add.form.createStakepoolProject')}</Button>)}
+                    {currentVerificationStep >= 2 && (<Button isLoading={submitting} onClick={handleSubmit(finalizeSubmit)}>{t('add.form.createStakepoolProject')}</Button>)}
                 </Flex>
             </Stack>
         </Stack>
