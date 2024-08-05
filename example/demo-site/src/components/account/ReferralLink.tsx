@@ -122,16 +122,16 @@ export default function ReferralLink({ account, accountSettings }: ReferralLinkP
       </Stack> */}
       <VStack spacing="6" alignItems="start">
         {referralUrl ? (<>
-          {!editing && (<Stack direction={{ base: 'column', sm: 'row' }} spacing="3">
-            <FormControl id="referralLink" width={{ sm: 'sm' }}>
+          {!editing && (<Stack direction={{ base: 'column', sm: 'row' }} spacing="3" w='full'>
+            <FormControl id="referralLink" width={{ base: 'full', sm: 'sm' }}>
               <FormLabel>{t('referralLink')}</FormLabel>
               <Input type="text" value={referralUrl} maxW={{ sm: 'sm' }} readOnly />
             </FormControl>
-            {isPremium && <Button alignSelf={{ sm: 'flex-end' }} variant="ghost" onClick={() => setEditing(true)} aria-label='edit'><MdEdit /></Button>}
+            {isPremium && <Button alignSelf={{ sm: 'flex-end' }} variant="outline" onClick={() => setEditing(true)} aria-label='edit'><MdEdit /></Button>}
             <Button alignSelf={{ sm: 'flex-end' }} onClick={copyToClipboard} aria-label='copy to clipboard'><MdContentCopy /></Button>
           </Stack>)}
-          {editing && (<Stack direction={{ base: 'column', sm: 'row' }} spacing="3">
-            <FormControl id="shortcode" width={{ sm: 'sm' }} isInvalid={!!errors.shortcode}>
+          {editing && (<Stack direction={{ base: 'column', sm: 'row' }} spacing="3" w='full'>
+            <FormControl id="shortcode" width={{ base: 'full', sm: 'sm' }} isInvalid={!!errors.shortcode}>
               <FormLabel>{t('referralLink')}</FormLabel>
               <FormErrorMessage mb="3">{errors.shortcode && t('errors.premiumShortcodeRestrictions')}</FormErrorMessage>
               <InputGroup maxW={{ md: 'xl' }}>
@@ -139,7 +139,7 @@ export default function ReferralLink({ account, accountSettings }: ReferralLinkP
                 <Input type="text" maxW={{ sm: 'sm' }} maxLength={10} defaultValue={currentShortcode} placeholder={t('referralShortcodePlaceholder')} {...register('shortcode', { required: true, pattern: /^[A-Za-z0-9]{4,10}$/i })} />
               </InputGroup>
             </FormControl>
-            <Button alignSelf={{ sm: 'flex-end' }} variant="ghost" onClick={() => setEditing(false)} aria-label='cancel editing'><MdCancel /></Button>
+            <Button alignSelf={{ sm: 'flex-end' }} variant="outline" onClick={() => setEditing(false)} aria-label='cancel editing'><MdCancel /></Button>
             <Button alignSelf={{ sm: 'flex-end' }} onClick={handleSubmit(updatePremiumShortcode)} aria-label='save changes'><MdCheck /></Button>
           </Stack>)}
         </>) : (

@@ -1,4 +1,4 @@
-import React, { FormEventHandler, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   Box,
   Button,
@@ -10,6 +10,11 @@ import {
   Stack,
   StackDivider,
   Textarea,
+  Alert,
+  AlertIcon,
+  AlertTitle,
+  AlertDescription,
+  CloseButton,
 } from '@chakra-ui/react';
 import { AnnouncementFormData } from './PublishAnnouncement';
 import Markdown from 'react-markdown';
@@ -17,7 +22,7 @@ import useTranslation from 'next-translate/useTranslation';
 import { components } from '../chakraMarkdownComponents';
 import { Project } from '@/lib/types/Project';
 import { PolicySelection } from './PolicySelection';
-import { Controller, set, useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { useApi } from '@/contexts/ApiProvider';
 import { PublishingPermissions } from '@/lib/ryp-publishing-api';
 import { StakepoolSelection } from './StakepoolSelection';
@@ -176,6 +181,15 @@ export default function PublishAnnouncementForm({ project, onSubmit }: Announcem
           </FormControl>
 
           <Button alignSelf="flex-end" onClick={handleSubmit(onSubmit)}>{t('publishAnnouncementButton')}</Button>
+          <Alert status="info" variant="left-accent">
+            <AlertIcon />
+            <Box flex="1">
+              <AlertTitle>{t('publish.form.betaProgram')}</AlertTitle>
+              <AlertDescription display="block">
+                {t('publish.form.betaProgramDescription')}
+              </AlertDescription>
+            </Box>
+          </Alert>
         </Stack>
       </Stack>
     </Container>

@@ -250,7 +250,7 @@ export default function NFTConfiguration({ type, formData, onSubmit }: ProjectCo
                 
 
                 <Flex direction="row-reverse">
-                    <Button onClick={handleSubmit(finalizeSubmit)}>{t('add.form.createNftProject')}</Button>
+                    <Button onClick={handleSubmit(finalizeSubmit)}>{t('add.form.createTokenBasedProject')}</Button>
                 </Flex>
             </Stack>
         </Stack>

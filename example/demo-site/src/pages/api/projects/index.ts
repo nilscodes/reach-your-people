@@ -120,6 +120,7 @@ async function prepareStakepoolProject(fields: formidable.Fields<string>) {
     stakepools: [{
       poolHash: (stakepoolInfo.verification.poolHash as string),
       verificationNonce: (stakepoolInfo.verification.nonce as string),
+      verificationTime: new Date().toISOString(),
     }],
     manuallyVerified: new Date().toISOString(), // Automatically mark the stakepool project as verified
   };
