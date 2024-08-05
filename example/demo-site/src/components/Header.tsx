@@ -18,7 +18,7 @@ import AuthButton from './AuthButton';
 import NextLink from './NextLink';
 import { ColorModeSwitcher } from './ColorModeSwitcher';
 import nav from '@/lib/nav';
-import { FiSearch } from 'react-icons/fi';
+import { FiHelpCircle, FiSearch } from 'react-icons/fi';
 import { useRouter } from 'next/navigation';
 import MobileDrawer from './header/MobileDrawer';
 import NavPopover from './header/NavPopover';
@@ -26,8 +26,9 @@ import useTranslation from 'next-translate/useTranslation'
 import { ProfileMenu } from './header/ProfileMenu';
 import AppSwitcher from './header/AppSwitcher';
 import { useEffect, useRef, useState } from 'react';
-import { MdClear } from 'react-icons/md';
+import { MdClear, MdHelp, MdHelpOutline } from 'react-icons/md';
 import CatalystBanner from './timer/CatalystBanner';
+import { IoHelpOutline } from 'react-icons/io5';
 
 export default function Header() {
   const { data: session } = useSession();
@@ -85,6 +86,9 @@ export default function Header() {
                 <Button color="fg.muted" variant="ghost" borderRadius="25">{t(item.label)}</Button>
               </NextLink>)
             })}
+            <NextLink href="https://docs.ryp.io" isExternal={true}>
+              <Button aria-label={t('nav.help')} variant="ghost" color="fg.muted" borderRadius="25">{t('nav.help')}</Button>
+            </NextLink>
           </ButtonGroup>
         </HStack>
         <HStack spacing={{ base: '2', md: '4' }}>

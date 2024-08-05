@@ -14,7 +14,8 @@
         "publish": "Publish",
         "projects": "Projects",
         "wallets": "Wallets",
-        "apps": "Apps"
+        "apps": "Apps",
+        "help": "Help"
     },
     "apps": {
         "vibrantNet": "VibrantNet",
