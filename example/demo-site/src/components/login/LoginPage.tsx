@@ -5,12 +5,13 @@ import {
   Stack,
 } from '@chakra-ui/react'
 import { CardanoIcon, providersConfig } from '@/components/ProviderIcons';
-import { FaCheck } from 'react-icons/fa';
+import { FaCheck, FaTelegram } from 'react-icons/fa';
 import { signIn } from "next-auth/react";
 import { useRouter } from 'next/navigation';
 import { Logo } from '@/components/Logo';
 import useTranslation from 'next-translate/useTranslation';
 import { MdEmail } from 'react-icons/md';
+import { LoginButton } from '@telegram-auth/react';
 
 const enabledProviders = process.env.NEXT_PUBLIC_ENABLED_AUTH_PROVIDERS?.split(',') ?? [];
 
@@ -23,8 +24,9 @@ export default function LoginPage() {
   };
 
   const isEmailEnabled = enabledProviders.includes('email');
+  const isTelegramEnabled = enabledProviders.includes('telegram');
   const linkedProviders: string[] = []; // accounts.map((account) => account.provider);
-  const providersConfigWithoutEmail = providersConfig.filter((provider) => provider.id !== 'email');
+  const providersConfigWithoutEmail = providersConfig.filter((provider) => provider.id !== 'email' && provider.id !== 'telegram');
 
   return (<Container maxW="md" py={{ base: '12', md: '24' }}>
     <Stack spacing="8">
@@ -71,6 +73,16 @@ export default function LoginPage() {
             }}
           >
             {t('email')}
+          </Button>)}
+          {isTelegramEnabled && (<Button key="telegram"
+            variant="secondary"
+            leftIcon={<FaTelegram color='#2AABEE' />}
+            cursor="pointer"
+            onClick={() => {
+              router.push('/login/telegram');
+            }}
+          >
+            {t('telegram')}
           </Button>)}
           {providersConfigWithoutEmail.map((provider) => {
               const isLinked = linkedProviders.includes(provider.id);

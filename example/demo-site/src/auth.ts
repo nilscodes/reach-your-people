@@ -12,6 +12,7 @@ import { DynamoDBDocument } from "@aws-sdk/lib-dynamodb"
 import { DynamoDBAdapter } from "@auth/dynamodb-adapter"
 import type { Adapter } from 'next-auth/adapters';
 import { sendVerificationRequest } from "./lib/email"
+import { AuthDataValidator, objectToAuthDataMap } from "@telegram-auth/server"
 
 let customAdapter: Adapter | undefined = undefined;
 
@@ -100,6 +101,33 @@ if (enabledProviders.includes('google')) {
       clientSecret: process.env.AUTH_GOOGLE_CLIENT_SECRET ?? '',
     }),
   )
+}
+
+if (enabledProviders.includes('telegram')) {
+  providers.push(
+    CredentialsProvider({
+			id: 'telegram',
+			name: 'Telegram',
+			credentials: {},
+			async authorize(credentials, req) {
+				const validator = new AuthDataValidator({ botToken: `${process.env.AUTH_TELEGRAM_BOT_TOKEN}` });
+
+				const data = objectToAuthDataMap(req.query || {});
+				const user = await validator.validate(data);
+
+				if (user.id && user.first_name) {
+					return {
+						id: user.id.toString(),
+            username: user.username,
+						name: [user.first_name, user.last_name || ''].join(' '),
+						image: user.photo_url,
+					};
+				}
+
+				return null;
+			},
+		}),
+  );
 }
 
 if (enabledProviders.includes('email')) {

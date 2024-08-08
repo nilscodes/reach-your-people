@@ -102,6 +102,13 @@ services:
             - SENDGRID_FROM=
             - SENDGRID_API_KEY=
 
+    integration-telegram:
+        image: integration-telegram:latest
+        container_name: integration_telegram_dev
+        environment:
+            - RABBITMQ_PASSWORD=
+            - TELEGRAM_BOT_TOKEN=
+
     rabbitmq:
         container_name: ryp_rabbitmq_dev
         environment:

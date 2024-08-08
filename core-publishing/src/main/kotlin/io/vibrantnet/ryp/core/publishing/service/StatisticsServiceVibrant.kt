@@ -45,6 +45,11 @@ class StatisticsServiceVibrant(
         processStatisticsUpdate("email", statisticsUpdateDto)
     }
 
+    @RabbitListener(queues = ["statistics-telegram"])
+    fun processTelegramStatistics(statisticsUpdateDto: StatisticsUpdateDto) {
+        processStatisticsUpdate("telegram", statisticsUpdateDto)
+    }
+
     @Scheduled(fixedDelayString = "10", timeUnit = TimeUnit.SECONDS)
     fun processBufferedMessages() {
         processBufferedMessagesReactive().subscribe()

@@ -30,6 +30,9 @@ class RabbitConfig {
     fun googleQueue() = Queue("google")
 
     @Bean
+    fun telegramQueue() = Queue("telegram")
+
+    @Bean
     fun discordStatisticsQueue() = Queue("statistics-discord")
 
     @Bean
@@ -40,6 +43,9 @@ class RabbitConfig {
 
     @Bean
     fun emailStatisticsQueue() = Queue("statistics-email")
+
+    @Bean
+    fun telegramStatisticsQueue() = Queue("statistics-telegram")
 
     @Bean
     fun messageConverter() = Jackson2JsonMessageConverter()
