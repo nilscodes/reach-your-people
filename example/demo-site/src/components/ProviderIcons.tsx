@@ -1,4 +1,6 @@
+import { ProviderInfo } from '@/lib/types/ProviderInfo';
 import { createIcon } from '@chakra-ui/react'
+import { FaTelegram } from 'react-icons/fa';
 import { MdEmail, MdNotifications, MdPhone, MdWeb } from 'react-icons/md';
 
 export const GoogleIcon = createIcon({
@@ -105,13 +107,6 @@ export const XIcon = createIcon({
   )
 });
 
-type ProviderInfo = {
-  id: string;
-  name: string;
-  Component: JSX.Element;
-};
-
-
 export const providerList: ProviderInfo[] = [
   {
     id: "google",
@@ -147,6 +142,11 @@ export const providerList: ProviderInfo[] = [
     id: "email",
     name: "Email",
     Component: <MdEmail />,
+  },
+  {
+    id: "telegram",
+    name: "Telegram",
+    Component: <FaTelegram color='#2AABEE' />,
   },
 ]
 

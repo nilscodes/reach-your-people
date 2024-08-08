@@ -27,6 +27,8 @@
     "@meshsdk/react": "^1.1.8",
     "@sendgrid/mail": "^8.1.3",
     "@sidan-lab/sidan-csl-rs-nodejs": "^0.6.3",
+    "@telegram-auth/react": "^1.0.3",
+    "@telegram-auth/server": "^1.0.4",
     "@vibrantnet/core": "^0.0.10",
     "axios": "^1.6.7",
     "formidable": "^3.5.1",

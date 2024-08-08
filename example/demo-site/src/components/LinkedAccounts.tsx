@@ -21,6 +21,10 @@ import { FirstStepsItems, bitmaskToEnum } from '@/lib/types/FirstSteps';
 import { CardanoHardwareWalletLoginModal } from './login/CardanoHardwareLogin';
 import cardanoWalletLogin from './login/CardanoLogin';
 import EmailLogin from './login/EmailLogin';
+import { TelegramAuthData } from '@telegram-auth/react';
+import { FaTelegram } from 'react-icons/fa';
+import TelegramLogin from './login/TelegramLogin';
+import { ProviderInfo } from '@/lib/types/ProviderInfo';
 
 type LinkedAccountsProps = {
   account: Account;
@@ -45,11 +49,13 @@ export default function LinkedAccounts({ account, accountSettings, linkedAccount
   const [showPhoneConnection, setShowPhoneConnection] = React.useState(false);
   const [showPushApiConnection, setShowPushApiConnection] = React.useState(false);
   const [showEmailConnection, setShowEmailConnection] = React.useState(false);
+  const [showTelegramConnection, setShowTelegramConnection] = React.useState(false);
   const [firstSteps, setFirstSteps] = useState(bitmaskToEnum(+accountSettings['FIRST_STEPS'] ?? 0));
   const [wallets, setWallets] = useState<Wallet[]>([]);
   const [hwWallet, setHwWallet] = useState<string | null>(null);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const isEmailEnabled = enabledProviders.includes('email');
+  const isTelegramEnabled = enabledProviders.includes('telegram');
 
   const handleSignIn = (provider: string) => {
     signIn(provider);
@@ -134,6 +140,10 @@ export default function LinkedAccounts({ account, accountSettings, linkedAccount
     signIn('email', { email });
   }
 
+  const handleTelegramSignIn = (data: TelegramAuthData) => {
+    signIn('telegram', { callbackUrl: '/account' }, data as any);
+  };
+
   const onFinishSteps = async (firstSteps: FirstStepsItems[]) => {
     setFirstSteps(firstSteps);
   }
@@ -141,11 +151,13 @@ export default function LinkedAccounts({ account, accountSettings, linkedAccount
   const isNonSocialAccount = (type: string) => ['sms', 'pushapi'].includes(type);
 
   const canRemove = linkedAccounts.filter((linkedAccount) => providerList.some((provider) => provider.id === linkedAccount.externalAccount.type)).length > 1;
-  const unlinkedProviders = providersConfig.filter((provider) => !linkedAccounts.some((linkedAccount) => linkedAccount.externalAccount.type === provider.id) && provider.id !== 'email');
+  const providerWithCustomLogin = (provider: ProviderInfo) => (provider.id === 'email' || provider.id === 'telegram')
+  const unlinkedProviders = providersConfig.filter((provider) => !linkedAccounts.some((linkedAccount) => linkedAccount.externalAccount.type === provider.id) && !providerWithCustomLogin(provider));
   const hasSms = linkedAccounts.some((linkedAccount) => linkedAccount.externalAccount.type === 'sms');
   const hasPushApi = linkedAccounts.some((linkedAccount) => linkedAccount.externalAccount.type === 'pushapi');
   const hasEmail = linkedAccounts.some((linkedAccount) => linkedAccount.externalAccount.type === 'email');
-  const showSocialConnections = !showWalletConnection && !showPhoneConnection && !showPushApiConnection && !showEmailConnection;
+  const hasTelegram = linkedAccounts.some((linkedAccount) => linkedAccount.externalAccount.type === 'telegram');
+  const showSocialConnections = !showWalletConnection && !showPhoneConnection && !showPushApiConnection && !showEmailConnection && !showTelegramConnection;
   const showFirstSteps = !firstSteps.includes(FirstStepsItems.Completed) && !firstSteps.includes(FirstStepsItems.Cancelled);
 
   return (<Container maxW="3xl" py={{ base: '0', md: '12' }} px="0">
@@ -174,6 +186,7 @@ export default function LinkedAccounts({ account, accountSettings, linkedAccount
         {showPhoneConnection && (<PhoneVerification onReturn={finalizePhoneAuth} />)}
         {showPushApiConnection && (<PushApiVerification onReturn={finalizePushApi} />)}
         {showEmailConnection && (<EmailLogin handleSignIn={finalizeEmailSignIn} onReturn={() => setShowEmailConnection(false)} />)}
+        {showTelegramConnection && (<TelegramLogin handleSignIn={handleTelegramSignIn} onReturn={() => setShowTelegramConnection(false)} />)}
         {showSocialConnections && (<Stack spacing="3">
           <Button key="cardano"
             variant="secondary"
@@ -206,6 +219,14 @@ export default function LinkedAccounts({ account, accountSettings, linkedAccount
             onClick={() => setShowEmailConnection(true)}
           >
             {t('email')}
+          </Button>)}
+          {isTelegramEnabled && !hasTelegram && (<Button key="telegram"
+            variant="secondary"
+            leftIcon={<FaTelegram color='#2AABEE' />}
+            cursor="pointer"
+            onClick={() => setShowTelegramConnection(true)}
+          >
+            {t('telegram')}
           </Button>)}
           {unlinkedProviders.map((provider) => {
               return (

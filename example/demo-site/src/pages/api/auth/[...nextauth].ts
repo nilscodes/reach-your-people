@@ -18,6 +18,8 @@ const getExternalAccountInfoFromProviderAccount = (user: User | AdapterUser, acc
     referenceName = user.email ?? '';
   } else if (account.provider === 'twitter') {
     referenceName = '';
+  } else if (account.provider === 'telegram') {
+    referenceName = (user as any).username ?? '';
   } else if(account.provider === 'email' && user.email) {
     displayName = user.email;
   }

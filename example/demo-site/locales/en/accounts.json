@@ -18,6 +18,7 @@
     "email" : "Email",
     "mobilePhoneSms": "Mobile Phone (SMS)",
     "pushApi": "Browser Notification",
+    "telegram": "Telegram",
     "backToSocial": "Back to social logins",
     "hardwareWalletName": "{{walletName}} (Hardware)",
     "defaultForNotifications": "Default for Notifications",
@@ -252,6 +253,22 @@
                 "title": "Step 3: Check your Browser",
                 "descriptionSuccess": "Our system says the send was successful! If you do not see it, please remove and re-add this notification type, as your notification subscription likely expired or was revoked.",
                 "descriptionError": "Our system says the send was not successful. Please remove and re-add this notification type, as your notification subscription likely expired or was revoked."
+            }
+        },
+        "telegram": {
+            "step1": {
+                "title": "Step 1: Send test message",
+                "description": "Click the button and we will send a test message to you via Telegram.",
+                "sendTestMessage": "Send test message"
+            },
+            "step2": {
+                "title": "Step 2: Sending message",
+                "description": "We are sending you a message, hang tight."
+            },
+            "step3": {
+                "title": "Step 3: Check your Telegram client",
+                "descriptionSuccess": "Our system says the send was successful! If you do not see it, please ensure you have not blocked the bot. Click the link below to go to our bot.",
+                "descriptionError": "Our system says the send was not successful. Please ensure you have not blocked the bot linked below. If it still does not work, try reconnecting your Telegram account."
             }
         }
     }

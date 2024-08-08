@@ -4,6 +4,7 @@ import { discordSteps } from './discordSteps';
 import useTranslation from 'next-translate/useTranslation';
 import { StepProvider, useStepContext } from '../stepper/StepContext';
 import { pushapiSteps } from './pushapiSteps';
+import { telegramSteps } from './telegramSteps';
 
 type TestNotificationModalProps = {
   testType: string;
@@ -34,6 +35,7 @@ const StepComponent = ({ id, title, isLastStep, children }: StepComponentProps) 
 const availableSteps: { [key: string]: { title: string; children: React.ReactNode }[] } = {
   discord: discordSteps,
   pushapi: pushapiSteps,
+  telegram: telegramSteps,
 };
 
 export function TestNotificationModal({ testType, externalAccountId }: TestNotificationModalProps) {
