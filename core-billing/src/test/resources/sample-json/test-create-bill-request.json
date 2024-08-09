@@ -1,0 +1,11 @@
+{
+  "channel": "cardano",
+  "currencyId": 1,
+  "order": {
+    "items": [{
+      "type": "stuff",
+      "amount": 17
+    }]
+  },
+  "amountRequested": 25000000
+}

@@ -15,6 +15,7 @@ repositories {
 }
 
 val loggingVersion: String by rootProject.extra
+val mockkVersion: String by rootProject.extra
 
 dependencies {
     // Uses the same version as our spring boot implementation
@@ -27,6 +28,7 @@ dependencies {
     // Uses the same version as our spring boot implementation
     implementation("com.fasterxml.jackson.core:jackson-databind")
     testImplementation("org.jetbrains.kotlin:kotlin-test")
+    testImplementation("io.mockk:mockk:$mockkVersion")
 }
 
 val springBootVersion: String by rootProject.extra

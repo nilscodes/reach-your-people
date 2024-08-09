@@ -6,7 +6,6 @@ import io.mockk.verify
 import io.ryp.shared.model.points.PointsClaimDto
 import io.vibrantnet.ryp.core.points.model.DuplicatePointsClaimException
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.Assertions.*
 import org.springframework.amqp.rabbit.core.RabbitTemplate
 import org.springframework.dao.DataIntegrityViolationException
 import reactor.core.publisher.Mono

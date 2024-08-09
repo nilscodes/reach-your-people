@@ -15,7 +15,6 @@ class ExternalAccountsApiServiceVibrant(
     val externalAccountRepository: ExternalAccountRepository,
 ) : ExternalAccountsApiService {
     override fun createExternalAccount(externalAccountDto: ExternalAccountDto): Mono<ExternalAccountDto> {
-        // TODO: Valid dynamically registered account types can be checked here before saving
         val newExternalAccount = ExternalAccount(
             referenceId = externalAccountDto.referenceId,
             referenceName = externalAccountDto.referenceName,
@@ -23,7 +22,7 @@ class ExternalAccountsApiServiceVibrant(
             type = externalAccountDto.type,
             metadata = externalAccountDto.metadata.let {
                 if (it != null) {
-                    java.util.Base64.getDecoder().decode(it)
+                    Base64.getDecoder().decode(it)
                 } else {
                     null
                 }
