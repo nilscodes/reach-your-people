@@ -44,8 +44,8 @@ internal class VerifyServiceVibrantTest {
         val result = verifyService.getPoliciesInWallet("123")
 
         StepVerifier.create(result)
-            .expectNext(TokenOwnershipInfoWithAssetCount("123", "policy1", 1))
-            .expectNext(TokenOwnershipInfoWithAssetCount("123", "policy2", 2))
+            .expectNext(TokenOwnershipInfoWithAssetCount("123", "4523c5e21d409b81c95b45b0aea275b8ea1406e6cafea5583b9f8a5f", 1))
+            .expectNext(TokenOwnershipInfoWithAssetCount("123", "2d01b3496fd22b1a61e6227c27250225b1186e5ebae7360b1fc5392c", 2))
             .verifyComplete()
 
         verify(exactly = 2) {

@@ -1,4 +1,5 @@
 core-publishing-docker:
+    tags: [ saas-linux-medium-amd64 ]
     rules:
         - if: $CI_COMMIT_BRANCH == "main"
         - if: $CI_PIPELINE_SOURCE == "web"

@@ -24,9 +24,6 @@ class BillingApiServiceVibrant(
 ) : BillingApiService {
     @Transactional
     override fun createBill(accountId: Long, bill: BillDto): Mono<BillDto> {
-        // TODO verify minimum requested price is met
-        // TODO verify account exists?
-
         val newOrder = orderRepository.save(Order(
             items = bill.order.items.map { OrderItem(it.type, it.amount) }.toMutableList(),
         ))

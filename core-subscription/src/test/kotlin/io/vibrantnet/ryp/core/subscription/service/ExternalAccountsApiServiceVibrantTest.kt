@@ -1,17 +1,15 @@
 package io.vibrantnet.ryp.core.subscription.service
 
-import io.mockk.clearAllMocks
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.slot
+import io.mockk.*
 import io.ryp.shared.model.ExternalAccountDto
+import io.vibrantnet.ryp.core.subscription.model.UnsubscribeFromEmailRequest
 import io.vibrantnet.ryp.core.subscription.persistence.ExternalAccount
 import io.vibrantnet.ryp.core.subscription.persistence.ExternalAccountRepository
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import reactor.test.StepVerifier
 import java.time.OffsetDateTime
-import java.util.Optional
+import java.util.*
 
 internal class ExternalAccountsApiServiceVibrantTest {
 
@@ -101,6 +99,40 @@ internal class ExternalAccountsApiServiceVibrantTest {
         StepVerifier.create(account)
             .expectError(NoSuchElementException::class.java)
             .verify()
+    }
+
+    @Test
+    fun `unsubscribing from email works for both email and google providers`() {
+        val now = OffsetDateTime.now()
+        val externalMailAccountWithEmailAddress = makeExternalAccount(1, now)
+        externalMailAccountWithEmailAddress.referenceId = "ryp@ryp.io"
+        val googleMailAccountWithEmailAddress = makeExternalAccount(2, now)
+        googleMailAccountWithEmailAddress.referenceName = "ryp@ryp.io"
+        every { externalAccountRepository.findByTypeAndReferenceId("email", "ryp@ryp.io") } returns Optional.of(
+            externalMailAccountWithEmailAddress
+        )
+        every { externalAccountRepository.findByTypeAndReferenceName("google", "ryp@ryp.io") } returns Optional.of(
+            googleMailAccountWithEmailAddress
+        )
+        val unsubscribes = mutableListOf<ExternalAccount>()
+
+        every { externalAccountRepository.save(capture(unsubscribes)) } returnsArgument 0
+
+        val result = service.unsubscribeFromEmail(UnsubscribeFromEmailRequest("ryp@ryp.io"))
+        StepVerifier.create(result)
+            .verifyComplete()
+        verify(exactly = 1) { externalAccountRepository.save(match { it.unsubscribeTime != null && it.referenceId == "ryp@ryp.io" })}
+        verify(exactly = 1) { externalAccountRepository.save(match { it.unsubscribeTime != null && it.referenceName == "ryp@ryp.io" })}
+    }
+
+    @Test
+    fun `unsubscribing does nothing and does not fail if no accounts found`() {
+        every { externalAccountRepository.findByTypeAndReferenceId("email", any()) } returns Optional.empty()
+        every { externalAccountRepository.findByTypeAndReferenceName("google", any()) } returns Optional.empty()
+        val result = service.unsubscribeFromEmail(UnsubscribeFromEmailRequest("ryp@ryp.io"))
+        StepVerifier.create(result)
+            .verifyComplete()
+        verify(exactly = 0) { externalAccountRepository.save(any()) }
     }
 
     private fun makeExternalAccount(id: Long, now: OffsetDateTime) = ExternalAccount(
