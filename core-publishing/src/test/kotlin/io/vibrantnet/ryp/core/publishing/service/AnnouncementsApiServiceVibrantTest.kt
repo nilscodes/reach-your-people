@@ -6,9 +6,7 @@ import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import io.mockk.*
 import io.ryp.shared.model.*
 import io.vibrantnet.ryp.core.publishing.CorePublishingConfiguration
-import io.vibrantnet.ryp.core.publishing.model.AnnouncementStatus
-import io.vibrantnet.ryp.core.publishing.model.Note
-import io.vibrantnet.ryp.core.publishing.model.UserNotAuthorizedToPublishException
+import io.vibrantnet.ryp.core.publishing.model.*
 import io.vibrantnet.ryp.core.publishing.persistence.AnnouncementsRepository
 import io.vibrantnet.ryp.core.publishing.persistence.AnnouncementsUpdateService
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -104,6 +102,36 @@ internal class AnnouncementsApiServiceVibrantTest {
         every { verifyService.verifyCip66("test-policy", "discord", "1212") } answers { Mono.just(true) }
         val result = announcementsApiService.publishAnnouncementForProject(82, makeTestAnnouncement(
             listOf("test-policy")
+        ))
+
+        var announcementId = UUID.fromString("00000000-0000-0000-0000-000000000000")
+        StepVerifier.create(result)
+            .assertNext {
+                announcementId = it.id
+                assertEquals(82, it.projectId)
+                assertEquals("Test Announcement", (it.announcement.`object` as Note).summary)
+                assertEquals("This is a test announcement", (it.announcement.`object` as Note).content)
+                assertEquals("https://go.ryp.io/test", it.shortLink)
+            }
+            .verifyComplete()
+
+        verify(exactly = 1) { rabbitTemplate.convertAndSend("announcements", any<AnnouncementJobDto>()) }
+        verify(exactly = 1) { valueOperations.set(match {
+            it == "announcementsdata:$announcementId"
+        }, match<BasicAnnouncementWithIdDto> {
+            it.id == announcementId && it.title == "Test Announcement" && it.content == "This is a test announcement"
+        }, 48, TimeUnit.HOURS) }
+    }
+
+    @Test
+    fun `publishing to announcement queue works if publishing for a stake pool and user is owner of the project`() {
+        val valueOperations = mockk<ValueOperations<String, Any>>(relaxed = true)
+        every { redisTemplate.opsForValue() } answers { valueOperations }
+        every { rabbitTemplate.convertAndSend("announcements", match<AnnouncementJobDto> { it.projectId == 82L }) } just Runs
+        every { subscriptionService.getProject(82) } answers { Mono.just(makeProjectDto(82)) }
+        val result = announcementsApiService.publishAnnouncementForProject(82, makeTestAnnouncement(
+            null,
+            listOf("test-stakepool")
         ))
 
         var announcementId = UUID.fromString("00000000-0000-0000-0000-000000000000")
@@ -305,11 +333,33 @@ internal class AnnouncementsApiServiceVibrantTest {
         verify(exactly = 1) { announcementUpdateService.updateAnnouncementStatus(uuid.toString(), AnnouncementStatus.FAILED) }
     }
 
-    private fun makeTestAnnouncement(policies: List<String>) = BasicAnnouncementDto(
+    @Test
+    fun `getting permissions for an account on a project works`() {
+        val projectId = 69L
+        val accountId = 12L
+        val project = makeProjectDto(projectId).copy(policies = setOf(
+            PolicyDto("Test Policy", "0b80b4ac493eb53970282b9d19174d44892ca86a52e080fb013eed5b", OffsetDateTime.now()),
+        ))
+        every { subscriptionService.getProject(projectId) } answers { Mono.just(project) }
+        val result = announcementsApiService.getPublishingPermissionsForAccount(projectId, accountId)
+
+        StepVerifier.create(result)
+            .expectNext(PublishingPermissionsDto(
+                policies = listOf(PolicyPublishingPermissionDto("0b80b4ac493eb53970282b9d19174d44892ca86a52e080fb013eed5b", PublishingPermissionStatus.PUBLISHING_MANUAL)),
+                accountId = accountId,
+            ))
+            .verifyComplete()
+    }
+
+    private fun makeTestAnnouncement(
+        policies: List<String>? = null,
+        stakepools: List<String>? = null,
+    ) = BasicAnnouncementDto(
         title = "Test Announcement",
         content = "This is a test announcement",
         author = 12,
         policies = policies,
+        stakepools = stakepools,
     )
 
     private fun makeProjectDto(projectId: Long, manuallyVerified: OffsetDateTime? = OffsetDateTime.now()) = ProjectDto(
@@ -319,9 +369,13 @@ internal class AnnouncementsApiServiceVibrantTest {
         logo = "",
         url = "https://ryp.io/projects/$projectId",
         category = ProjectCategory.nFT,
+        roles = setOf(ProjectRoleAssignmentDto(ProjectRole.OWNER, 12)),
         policies = setOf(
             PolicyDto("Test Policy", "test-policy", manuallyVerified),
             PolicyDto("Test Policy 2", "test-policy-2", null),
-        )
+        ),
+        stakepools = setOf(
+            StakepoolDto("test-stakepool", "abc", manuallyVerified),
+        ),
     )
 }

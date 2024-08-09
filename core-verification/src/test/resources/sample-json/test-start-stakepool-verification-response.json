@@ -1,0 +1,9 @@
+{
+  "nonce": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "domain": "ryp.io",
+  "poolHash": "0b80b4ac493eb53970282b9d19174d44892ca86a52e080fb013eed5b",
+  "vrfVerificationKey": null,
+  "signature": null,
+  "createTime": "2021-01-01T00:00:00Z",
+  "expirationTime": "2021-01-01T00:10:00Z"
+}

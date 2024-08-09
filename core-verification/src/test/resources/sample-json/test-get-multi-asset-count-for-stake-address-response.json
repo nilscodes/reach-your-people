@@ -1,0 +1,12 @@
+[
+  {
+    "stakeAddress": "stake1baked",
+    "policyIdWithOptionalAssetFingerprint": "4523c5e21d409b81c95b45b0aea275b8ea1406e6cafea5583b9f8a5f",
+    "assetCount": 12
+  },
+  {
+    "stakeAddress": "stake1baked",
+    "policyIdWithOptionalAssetFingerprint": "df6fe8ac7a40d0be2278d7d0048bc01877533d48852d5eddf2724058",
+    "assetCount": 2
+  }
+]

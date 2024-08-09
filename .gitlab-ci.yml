@@ -49,6 +49,7 @@ gradle-build:
         - "core-redirect/**/*"
         - "core-points/**/*"
         - "core-billing/**/*"
+        - "core-api/**/*"
         - "integrations/vibrant/**/*"
         - "build.gradle.kts"
         - "settings.gradle.kts"
@@ -78,6 +79,7 @@ gradle-build:
       - core-points/build/jacoco.xml
       - core-billing/build/libs
       - core-billing/build/jacoco.xml
+      - core-api/build/jacoco.xml
       - integrations/vibrant/build/libs
       - integrations/vibrant/build/jacoco.xml
   cache:
