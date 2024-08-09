@@ -55,7 +55,7 @@ class PoolsApiController(val service: PoolsApiService) {
     fun testStakepoolVerification(
         @PathVariable("poolHash") poolHash: String,
         @PathVariable("verificationNonce") verificationNonce: String,
-        @Valid @RequestBody(required = false) stakepoolVerification: StakepoolVerificationDto,
+        @Valid @RequestBody stakepoolVerification: StakepoolVerificationDto,
     ) = service.testStakepoolVerification(poolHash, verificationNonce, stakepoolVerification)
 
     @RequestMapping(
@@ -68,6 +68,6 @@ class PoolsApiController(val service: PoolsApiService) {
     fun completeStakepoolVerification(
         @PathVariable("poolHash") poolHash: String,
         @PathVariable("verificationNonce") verificationNonce: String,
-        @Valid @RequestBody(required = false) stakepoolVerification: StakepoolVerificationDto,
+        @Valid @RequestBody stakepoolVerification: StakepoolVerificationDto,
     ) = service.completeStakepoolVerification(poolHash, verificationNonce, stakepoolVerification)
 }

@@ -1,0 +1,10 @@
+{
+  "transactionHash": "9f83e5484f543e05b52e99988272a31da373f3aab4c064c76db96643a355d9dc",
+  "transactionTime": "2021-07-01T00:00:00Z",
+  "outputs": [
+    {
+      "address": "addr1itsyou",
+      "lovelace": 25000000
+    }
+  ]
+}

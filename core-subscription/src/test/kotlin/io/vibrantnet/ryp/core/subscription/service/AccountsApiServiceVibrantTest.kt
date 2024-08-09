@@ -15,6 +15,7 @@ import reactor.test.StepVerifier
 import java.time.Duration
 import java.time.OffsetDateTime
 import java.time.temporal.ChronoUnit
+import java.util.*
 
 internal class AccountsApiServiceVibrantTest {
 
@@ -743,6 +744,107 @@ internal class AccountsApiServiceVibrantTest {
 
         StepVerifier.create(updatedSettings)
             .verifyComplete()
+    }
+
+    @Test
+    fun `successful subscription update if currently unsubscribed`() {
+        val account = makeAccount(OffsetDateTime.now(), 12, ExternalAccountRole.OWNER)
+        account.linkedExternalAccounts.first { it.externalAccount.id == 1L }.apply {
+            lastConfirmed = OffsetDateTime.now().minusMinutes(5)
+            externalAccount.unsubscribeTime = OffsetDateTime.now()
+        }
+
+        every { accountRepository.findById(12) } returns Optional.of(account)
+        every { linkedExternalAccountRepository.save(any()) } returnsArgument 0
+
+        val result = service.updateLinkedExternalAccountSubscriptionStatus(12, 1, true)
+
+        StepVerifier.create(result)
+            .expectNext(true)
+            .verifyComplete()
+
+        verify(exactly = 1) { linkedExternalAccountRepository.save(match { it.externalAccount.unsubscribeTime == null }) }
+    }
+
+    @Test
+    fun `successful subscription update if currently subscribed`() {
+        val account = makeAccount(OffsetDateTime.now(), 12, ExternalAccountRole.OWNER)
+        account.linkedExternalAccounts.first { it.externalAccount.id == 1L }.apply {
+            lastConfirmed = OffsetDateTime.now().minusMinutes(5)
+        }
+
+        every { accountRepository.findById(12) } returns Optional.of(account)
+        every { linkedExternalAccountRepository.save(any()) } returnsArgument 0
+
+        val result = service.updateLinkedExternalAccountSubscriptionStatus(12, 1, false)
+
+        StepVerifier.create(result)
+            .expectNext(false)
+            .verifyComplete()
+
+        verify(exactly = 1) { linkedExternalAccountRepository.save(match { it.externalAccount.unsubscribeTime != null }) }
+    }
+
+    @Test
+    fun `unsuccessful subscription update due to last confirmation too old`() {
+        val account = makeAccount(OffsetDateTime.now(), 12, ExternalAccountRole.OWNER)
+        account.linkedExternalAccounts.first { it.externalAccount.id == 1L }.lastConfirmed = OffsetDateTime.now().minusDays(5)
+
+        every { accountRepository.findById(12) } returns Optional.of(account)
+
+        val result = service.updateLinkedExternalAccountSubscriptionStatus(12, 1, false)
+
+        StepVerifier.create(result)
+            .expectError(LastConfirmationTooOldException::class.java)
+            .verify()
+
+        verify(exactly = 0) { linkedExternalAccountRepository.save(any()) }
+    }
+
+    @Test
+    fun `unsuccessful subscription update due to not being an owner`() {
+        val account = makeAccount(OffsetDateTime.now(), 12, ExternalAccountRole.PUBLISHER)
+
+        every { accountRepository.findById(12) } returns Optional.of(account)
+
+        val result = service.updateLinkedExternalAccountSubscriptionStatus(12, 1, true)
+
+        StepVerifier.create(result)
+            .expectError(PermissionDeniedException::class.java)
+            .verify()
+
+        verify(exactly = 0) { linkedExternalAccountRepository.save(any()) }
+    }
+
+    @Test
+    fun `unsuccessful subscription update due to linked external account not found`() {
+        val account = makeAccount(OffsetDateTime.now(), 12, ExternalAccountRole.OWNER)
+
+        every { accountRepository.findById(12) } returns Optional.of(account)
+
+        val result = service.updateLinkedExternalAccountSubscriptionStatus(12, 2, true)
+
+        StepVerifier.create(result)
+            .expectError(NoSuchElementException::class.java)
+            .verify()
+
+        verify(exactly = 0) { linkedExternalAccountRepository.save(any()) }
+    }
+
+    @Test
+    fun `successful update with no subscription change`() {
+        val account = makeAccount(OffsetDateTime.now(), 12, ExternalAccountRole.OWNER)
+        account.linkedExternalAccounts.first { it.externalAccount.id == 1L }.lastConfirmed = OffsetDateTime.now().minusMinutes(5)
+
+        every { accountRepository.findById(12) } returns Optional.of(account)
+
+        val result = service.updateLinkedExternalAccountSubscriptionStatus(12, 1, true)
+
+        StepVerifier.create(result)
+            .expectNext(true)
+            .verifyComplete()
+
+        verify(exactly = 0) { linkedExternalAccountRepository.save(any()) }
     }
 
     private fun makeAccount(now: OffsetDateTime, id: Long = 12, role: ExternalAccountRole = ExternalAccountRole.OWNER) = Account(
