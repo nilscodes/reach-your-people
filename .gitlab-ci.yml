@@ -79,6 +79,7 @@ gradle-build:
       - core-points/build/jacoco.xml
       - core-billing/build/libs
       - core-billing/build/jacoco.xml
+      - core-api/build/libs
       - core-api/build/jacoco.xml
       - integrations/vibrant/build/libs
       - integrations/vibrant/build/jacoco.xml
