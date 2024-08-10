@@ -1,10 +1,17 @@
 package io.ryp.shared.model
 
+import nl.jqno.equalsverifier.EqualsVerifier
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import java.util.*
 
 internal class BasicAnnouncementDtoTest {
+    @Test
+    fun testEqualsAndHashCode() {
+        EqualsVerifier.forClass(BasicAnnouncementDto::class.java)
+            .verify()
+    }
+
     @Test
     fun `toBasicAnnouncementWithIdDto call copies all properties`() {
         val id = UUID.randomUUID()

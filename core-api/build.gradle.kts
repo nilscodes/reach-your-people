@@ -19,6 +19,7 @@ repositories {
 
 val loggingVersion: String by rootProject.extra
 val mockkVersion: String by rootProject.extra
+val equalsVerifierVersion: String by rootProject.extra
 
 dependencies {
     // Uses the same version as our spring boot implementation
@@ -38,6 +39,7 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-amqp")
     testImplementation("org.jetbrains.kotlin:kotlin-test")
     testImplementation("io.mockk:mockk:$mockkVersion")
+    testImplementation("nl.jqno.equalsverifier:equalsverifier:$equalsVerifierVersion")
 }
 
 val springBootVersion: String by rootProject.extra
