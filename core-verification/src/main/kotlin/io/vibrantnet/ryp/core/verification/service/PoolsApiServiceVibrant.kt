@@ -4,15 +4,14 @@ import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.node.BinaryNode
 import com.fasterxml.jackson.dataformat.cbor.CBORFactory
-import com.muquit.libsodiumjna.SodiumLibrary
 import io.ryp.cardano.model.StakepoolVerificationDto
 import io.vibrantnet.ryp.core.verification.CoreVerificationConfiguration
 import io.vibrantnet.ryp.core.verification.model.ExpiredCip22Verification
 import io.vibrantnet.ryp.core.verification.model.InvalidCip22Verification
 import io.vibrantnet.ryp.core.verification.persistence.Cip22Dao
 import io.vibrantnet.ryp.core.verification.persistence.StakepoolDao
-import io.vibrantnet.ryp.core.verification.persistence.StakepoolVerificationRepository
 import io.vibrantnet.ryp.core.verification.persistence.StakepoolVerificationDocument
+import io.vibrantnet.ryp.core.verification.persistence.StakepoolVerificationRepository
 import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Mono
@@ -21,6 +20,7 @@ import java.security.SecureRandom
 
 @Service
 class PoolsApiServiceVibrant(
+    private val libSodiumService: LibSodiumService,
     private val cip22Dao: Cip22Dao,
     private val stakepoolDao: StakepoolDao,
     private val redisTemplate: RedisTemplate<String, Any>,
@@ -28,9 +28,7 @@ class PoolsApiServiceVibrant(
     private val objectMapper: ObjectMapper,
     private val config: CoreVerificationConfiguration,
 ): PoolsApiService {
-    init {
-        SodiumLibrary.setLibraryPath(config.libsodiumPath)
-    }
+
 
     override fun getStakepoolDetails(poolHash: String) = stakepoolDao.getStakepoolDetails(poolHash)
 
@@ -80,7 +78,7 @@ class PoolsApiServiceVibrant(
     ): Mono<StakepoolVerificationDto> {
         if (stakepoolVerification.vrfVerificationKey != null && stakepoolVerification.signature != null) {
             val currentVerificationRaw = redisTemplate.opsForValue().get("$CIP_0022:$poolHash")
-            val currentVerification = objectMapper.convertValue(currentVerificationRaw, StakepoolVerificationDto::class.java)
+            val currentVerification = if(currentVerificationRaw != null) objectMapper.convertValue(currentVerificationRaw, StakepoolVerificationDto::class.java) else null
             if (currentVerification != null && currentVerification.nonce == verificationNonce) {
                 val cbor = parseCborFromHex(stakepoolVerification.vrfVerificationKey!!.cborHex)
                 if (cbor is BinaryNode) {
@@ -134,12 +132,12 @@ class PoolsApiServiceVibrant(
         )
         logger.info { "Challenge: ${challenge.toHexString()}" }
 
-        val challengeHash = SodiumLibrary.cryptoBlake2bHash(org.bouncycastle.util.encoders.Hex.decode(challenge), null)
+        val challengeHash = libSodiumService.cryptoBlake2bHash(org.bouncycastle.util.encoders.Hex.decode(challenge), null)
         logger.info { "Challenge Hash: ${challengeHash.toHexString()}" }
 
         logger.info { "Provided Vkey Hash: ${vrfVKeyHash.toHexString()}" }
 
-        val vkeyHashVerify = SodiumLibrary.cryptoBlake2bHash(vrfVkey, null)
+        val vkeyHashVerify = libSodiumService.cryptoBlake2bHash(vrfVkey, null)
         logger.info { "Vkey Hash created from VRF VKey: ${vkeyHashVerify.toHexString()}" }
 
         if (!vrfVKeyHash.contentEquals(vkeyHashVerify)) {
@@ -149,7 +147,7 @@ class PoolsApiServiceVibrant(
 
         val signedMessage = signedMessageHex.hexToByteArray()
         val signatureHash = try {
-            SodiumLibrary.cryptoVrfProofToHash_ietfdraft03(signedMessage).also {
+            libSodiumService.cryptoVrfProofToHash_ietfdraft03(signedMessage).also {
                 logger.info { "Signature Hash: ${it.toHexString()}" }
             }
         } catch (e: Exception) {
@@ -158,7 +156,7 @@ class PoolsApiServiceVibrant(
         }
 
         val verification = try {
-            SodiumLibrary.cryptoVrfVerify_ietfdraft03(vrfVkey, signedMessage, challengeHash)
+            libSodiumService.cryptoVrfVerify_ietfdraft03(vrfVkey, signedMessage, challengeHash)
         } catch (e: Exception) {
             logger.error(e) { "Failed to verify VRF: ${e.message}" }
             return false
