@@ -33,7 +33,7 @@ class PointsClaimAspectTest {
         val method = TestService::class.java.getMethod("claimPointsReactive", Long::class.java)
         every { joinPoint.signature } returns methodSignature
         every { methodSignature.method } returns method
-        every { joinPoint.args } returns arrayOf(1L)
+        every { joinPoint.args } returns arrayOf(12L)
 
         val pointsClaimSlot = slot<PointsClaimDto>()
 
@@ -45,7 +45,7 @@ class PointsClaimAspectTest {
         assertEquals(100L, capturedPointsClaim.points)
         assertEquals("categoryValue", capturedPointsClaim.category)
         assertEquals("claimIdValue", capturedPointsClaim.claimId)
-        assertEquals(1L, capturedPointsClaim.accountId)
+        assertEquals(12L, capturedPointsClaim.accountId)
         assertEquals(rypTokenId, capturedPointsClaim.tokenId)
         assertTrue(capturedPointsClaim.claimed)
     }
@@ -57,7 +57,7 @@ class PointsClaimAspectTest {
         val method = TestService::class.java.getMethod("claimPointsNonReactive", Long::class.java)
         every { joinPoint.signature } returns methodSignature
         every { methodSignature.method } returns method
-        every { joinPoint.args } returns arrayOf(1L)
+        every { joinPoint.args } returns arrayOf(12L)
 
         val pointsClaimSlot = slot<PointsClaimDto>()
 
@@ -69,7 +69,7 @@ class PointsClaimAspectTest {
         assertEquals(100L, capturedPointsClaim.points)
         assertEquals("categoryValue", capturedPointsClaim.category)
         assertEquals("claimIdValue", capturedPointsClaim.claimId)
-        assertEquals(1L, capturedPointsClaim.accountId)
+        assertEquals(12L, capturedPointsClaim.accountId)
         assertEquals(rypTokenId, capturedPointsClaim.tokenId)
         assertTrue(capturedPointsClaim.claimed)
     }
@@ -81,7 +81,7 @@ class PointsClaimAspectTest {
         val method = TestService::class.java.getMethod("claimPointsReactiveWithMultipleClaims", Long::class.java)
         every { joinPoint.signature } returns methodSignature
         every { methodSignature.method } returns method
-        every { joinPoint.args } returns arrayOf(1L)
+        every { joinPoint.args } returns arrayOf(12L)
 
         val pointsClaimSlot = mutableListOf<PointsClaimDto>()
 
@@ -93,7 +93,7 @@ class PointsClaimAspectTest {
         assertEquals(100L, capturedPointsClaim.points)
         assertEquals("categoryValue", capturedPointsClaim.category)
         assertEquals("claimIdValue", capturedPointsClaim.claimId)
-        assertEquals(1L, capturedPointsClaim.accountId)
+        assertEquals(12L, capturedPointsClaim.accountId)
         assertEquals(rypTokenId, capturedPointsClaim.tokenId)
         assertTrue(capturedPointsClaim.claimed)
 
@@ -113,7 +113,7 @@ class PointsClaimAspectTest {
         val method = TestService::class.java.getMethod("claimPointsReactiveWithInvalidExpression", Long::class.java)
         every { joinPoint.signature } returns methodSignature
         every { methodSignature.method } returns method
-        every { joinPoint.args } returns arrayOf(1L)
+        every { joinPoint.args } returns arrayOf(12L)
 
         aspect.afterReturningAdvice(joinPoint, Mono.just("result"))
 
@@ -126,7 +126,7 @@ class PointsClaimAspectTest {
             points = "#points['reward']",
             category = "'categoryValue'",
             claimId = "'claimIdValue'",
-            accountId = "1",
+            accountId = "#accountId",
             tokenId = "#rypTokenId",
             claimed = "true"
         )
@@ -138,7 +138,7 @@ class PointsClaimAspectTest {
             points = "#points['reward']",
             category = "'categoryValue'",
             claimId = "'claimIdValue'",
-            accountId = "1",
+            accountId = "#accountId",
             tokenId = "#rypTokenId",
             claimed = "true"
         )
@@ -150,7 +150,7 @@ class PointsClaimAspectTest {
             points = "#points['reward']",
             category = "'categoryValue'",
             claimId = "'claimIdValue'",
-            accountId = "1",
+            accountId = "#accountId",
             tokenId = "#rypTokenId",
             claimed = "true"
         )
@@ -170,7 +170,7 @@ class PointsClaimAspectTest {
             points = "#points['reward']x",
             category = "'categoryValue'",
             claimId = "'claimIdValue'",
-            accountId = "1",
+            accountId = "#accountId",
             tokenId = "#rypTokenId",
             claimed = "true"
         )

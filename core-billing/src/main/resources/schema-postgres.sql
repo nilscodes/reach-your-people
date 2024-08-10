@@ -1,3 +1,7 @@
+DROP TABLE IF EXISTS "bills";
+DROP TABLE IF EXISTS "order_items";
+DROP TABLE IF EXISTS "orders";
+
 CREATE TABLE "bills"
 (
     "id"                     SERIAL PRIMARY KEY,

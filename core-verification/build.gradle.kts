@@ -51,7 +51,6 @@ dependencies {
 	implementation("io.newm:com.muquit.libsodiumjna.libsodium-jna:$libsodiumJnaVersion")
 	implementation("org.bouncycastle:bcprov-jdk18on:$bouncyCastleVersion")
 	implementation(project(":core-api"))
-	testImplementation(project(":core-api"))
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("io.projectreactor:reactor-test")
 	testImplementation("io.mockk:mockk:$mockkVersion")
