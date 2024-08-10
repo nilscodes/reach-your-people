@@ -20,6 +20,7 @@ repositories {
 val loggingVersion: String by rootProject.extra
 val mockkVersion: String by rootProject.extra
 val equalsVerifierVersion: String by rootProject.extra
+val jsonAssertVersion = "1.5.3"
 
 dependencies {
     // Uses the same version as our spring boot implementation
@@ -33,6 +34,9 @@ dependencies {
     // Uses the same version as our spring boot implementation
     implementation("com.fasterxml.jackson.core:jackson-databind")
 
+    testImplementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+    testImplementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
+    testImplementation("org.skyscreamer:jsonassert:$jsonAssertVersion")
     testImplementation("org.springframework.boot:spring-boot-starter-validation")
     testImplementation("org.springframework.boot:spring-boot-starter-aop")
     testImplementation("org.springframework.boot:spring-boot-starter-webflux")

@@ -1,8 +1,10 @@
 package io.ryp.shared.model
 
+import io.ryp.core.createDefaultObjectMapper
 import nl.jqno.equalsverifier.EqualsVerifier
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import org.skyscreamer.jsonassert.JSONAssert
 import java.util.*
 
 internal class BasicAnnouncementDtoTest {
@@ -37,5 +39,31 @@ internal class BasicAnnouncementDtoTest {
         assertEquals(dto.externalLink, result.externalLink)
         assertEquals(dto.policies, result.policies)
         assertEquals(dto.stakepools, result.stakepools)
+    }
+
+    @Test
+    fun serializationTest() {
+        val dto = BasicAnnouncementDto(
+            author = 69L,
+            AnnouncementType.STANDARD,
+            title = "Test Announcement",
+            content = "This is a test announcement",
+            externalLink = "https://ryp.io/announcements/12",
+            policies = listOf("test-policy"),
+            stakepools = listOf("test-stakepool")
+        )
+        val objectMapper = createDefaultObjectMapper()
+
+        JSONAssert.assertEquals("""
+            {
+              "author": 69,
+              "type": "STANDARD",
+              "title": "Test Announcement",
+              "content": "This is a test announcement",
+              "externalLink": "https://ryp.io/announcements/12",
+              "policies": ["test-policy"],
+              "stakepools": ["test-stakepool"]
+            }
+            """.trimIndent(), objectMapper.writeValueAsString(dto), false)
     }
 }
