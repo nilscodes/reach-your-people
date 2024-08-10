@@ -49,6 +49,17 @@ Everything generally runs out of the box, but you will need to initialize the `r
 - [Core points service SQL scripts](./core-points/src/main/resources/schema-postgres.sql)
 - [Core billing service SQL scripts](./core-billing/src/main/resources/schema-postgres.sql)
 
+You can execute them against your now running postgres instance with the following commands:
+
+```
+wget -O core-subscription-schema-postgres.sql https://raw.githubusercontent.com/nilscodes/reach-your-people/main/core-subscription/src/main/resources/schema-postgres.sql
+docker exec -i ryp_postgres_prod psql -U postgres -d ryp < core-subscription-schema-postgres.sql
+wget -O core-points-schema-postgres.sql https://raw.githubusercontent.com/nilscodes/reach-your-people/main/core-points/src/main/resources/schema-postgres.sql
+docker exec -i ryp_postgres_prod psql -U postgres -d ryp < core-points-schema-postgres.sql
+wget -O core-billing-schema-postgres.sql https://raw.githubusercontent.com/nilscodes/reach-your-people/main/core-billing/src/main/resources/schema-postgres.sql
+docker exec -i ryp_postgres_prod psql -U postgres -d ryp < core-billing-schema-postgres.sql
+```
+
 Once the SQL scripts have been deployed, the services are ready to use.
 
 ## Testing
