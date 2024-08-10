@@ -22,8 +22,8 @@ services:
             - RABBITMQ_PASSWORD=
             - REDIS_PASSWORD=
             - RYP_API_KEY=
-
-
+        ports:
+            - "8071:8071"
 
     core-publishing:
 
@@ -33,8 +33,8 @@ services:
             - MONGODB_PASSWORD=
             - REDIS_PASSWORD=
             - RYP_API_KEY=
-
-
+        ports:
+            - "8072:8072"
 
     core-redirect:
 
@@ -43,8 +43,8 @@ services:
             - MONGODB_PASSWORD=
             - REDIS_PASSWORD=
             - RYP_API_KEY=
-
-
+        ports:
+            - "8074:8074"
 
     core-points:
 
@@ -54,8 +54,8 @@ services:
             - RABBITMQ_PASSWORD=
             - REDIS_PASSWORD=
             - RYP_API_KEY=
-
-
+        ports:
+            - "8075:8075"
 
     core-billing:
 
@@ -65,8 +65,8 @@ services:
             - RABBITMQ_PASSWORD=
             - CARDANO_RECEIVE_ADDRESS=
             - RYP_API_KEY=
-
-
+        ports:
+            - "8076:8076"
 
 
     integration-discord:

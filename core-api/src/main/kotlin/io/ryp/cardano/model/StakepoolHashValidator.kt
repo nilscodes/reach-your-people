@@ -17,7 +17,7 @@ annotation class ValidStakepoolHashList(
 )
 
 class StakepoolHashValidator : ConstraintValidator<ValidStakepoolHashList, List<String>?> {
-    private val pattern = "^[A-Za-z0-9]{56}$".toRegex()
+    private val pattern = "^[A-Fa-f0-9]{56}$".toRegex()
 
     override fun isValid(value: List<String>?, context: ConstraintValidatorContext): Boolean {
         if (value == null) {
