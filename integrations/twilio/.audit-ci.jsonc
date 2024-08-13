@@ -1,0 +1,11 @@
+{
+  "low": false,
+  "moderate": false,
+  "high": true,
+  "critical": true,
+  "report-type": "summary",
+  "allowlist": [
+    // Axios SSRF currently has no fix available
+    "GHSA-8hc4-vh64-cxmj"
+  ]
+}
