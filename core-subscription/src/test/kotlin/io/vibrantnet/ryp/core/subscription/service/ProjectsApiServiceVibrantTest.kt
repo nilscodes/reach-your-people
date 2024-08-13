@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test
 import reactor.core.publisher.Mono
 import reactor.test.StepVerifier
 import java.time.OffsetDateTime
-import java.util.Optional
+import java.util.*
 
 internal class ProjectsApiServiceVibrantTest {
     private val projectRepository = mockk<ProjectRepository>()
@@ -161,6 +161,16 @@ internal class ProjectsApiServiceVibrantTest {
 
         StepVerifier.create(result)
             .verifyError(NoSuchElementException::class.java)
+    }
+
+    @Test
+    fun `getting all projects for an account does not throw an error if no projects are connected with the account`() {
+        every { accountsApiService.getAccountById(69) } answers { Mono.just(makeAccountDto(69)) }
+        every { projectRepository.findDistinctByRolesAccountId(69) } returns listOf()
+        val result = projectsApiService.getProjectsForAccount(69)
+
+        StepVerifier.create(result)
+            .verifyComplete()
     }
 
     private fun makeProjectDto(projectId: Long?) = ProjectDto(

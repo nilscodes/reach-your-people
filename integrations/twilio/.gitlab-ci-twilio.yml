@@ -36,4 +36,4 @@ integration-twilio-dependency-check:
     script:
         - cd integrations/twilio
         - npm install --save-dev audit-ci
-        - npx audit-ci --config .audit-ci.json
+        - npx audit-ci --config .audit-ci.jsonc
