@@ -232,10 +232,20 @@ class AnnouncementsApiServiceVibrant(
     private fun getEffectiveType(it: AnnouncementRecipientDto) = if (it.type == "google") "email" else it.type
 
     private fun getBasicProjectDto(announcementJob: AnnouncementJobDto): BasicProjectDto {
-        val project = subscriptionService.getProject(announcementJob.projectId)
-            .blockOptional()
-            .orElseThrow { IllegalStateException("Cannot publish announcement ${announcementJob.announcementId} for project ${announcementJob.projectId} as the project does not exist.") }
-        return BasicProjectDto(project)
+        return if (announcementJob.projectId > 0) {
+            val project = subscriptionService.getProject(announcementJob.projectId)
+                .blockOptional()
+                .orElseThrow { IllegalStateException("Cannot publish announcement ${announcementJob.announcementId} for project ${announcementJob.projectId} as the project does not exist.") }
+            BasicProjectDto(project)
+        } else {
+            // TODO can be done better
+            BasicProjectDto(
+                id = 0,
+                name = "RYP",
+                logo = "",
+                url = "https://ryp.io",
+            )
+        }
     }
 
     override fun listAnnouncementsForProject(projectId: Long): Flux<AnnouncementDto> {
