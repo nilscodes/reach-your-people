@@ -1,4 +1,4 @@
-import { Alert, AlertIcon, Box, Button, Container, HStack, Img, Stack, Text, VStack, useToast } from '@chakra-ui/react'
+import { Alert, AlertIcon, Button, Container, HStack, Img, Stack, Text, VStack, useToast } from '@chakra-ui/react'
 import { Account } from '../../lib/ryp-subscription-api';
 import ProjectsHeader from './ProjectsHeader';
 import { useRouter } from 'next/router';
@@ -10,7 +10,7 @@ import { Project } from '@/lib/types/Project';
 import { makeCdnUrl } from '@/lib/cdn';
 import StandardContentWithHeader from '../StandardContentWithHeader';
 import NextLink from '../NextLink';
-import { MdArrowRight, MdAssessment } from 'react-icons/md';
+import { MdAssessment } from 'react-icons/md';
 
 type PublishAnnouncementProps = {
   account: Account;
@@ -20,6 +20,7 @@ type PublishAnnouncementProps = {
 export interface AnnouncementFormData {
   policies: string[];
   stakepools: string[];
+  dreps: string[];
   title: string;
   content: string;
   externalLink?: string;

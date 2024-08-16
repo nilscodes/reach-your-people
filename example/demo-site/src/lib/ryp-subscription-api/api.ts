@@ -474,29 +474,23 @@ export type GetProjectsForAccount200ResponseInnerCategoryEnum = typeof GetProjec
  */
 export interface GetProjectsForAccount200ResponseInnerDrepsInner {
     /**
-     * 
-     * @type {number}
+     * The dRep pubkey blake hash in hex
+     * @type {string}
      * @memberof GetProjectsForAccount200ResponseInnerDrepsInner
      */
-    'id'?: number;
+    'drepId': string;
     /**
      * 
      * @type {string}
      * @memberof GetProjectsForAccount200ResponseInnerDrepsInner
      */
-    'name'?: string;
+    'verificationNonce': string;
     /**
      * 
      * @type {string}
      * @memberof GetProjectsForAccount200ResponseInnerDrepsInner
      */
-    'drepId'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof GetProjectsForAccount200ResponseInnerDrepsInner
-     */
-    'bech32'?: string;
+    'verificationTime'?: string;
 }
 /**
  * 
@@ -580,6 +574,12 @@ export interface GetProjectsForAccount200ResponseInnerStakepoolsInner {
      * @memberof GetProjectsForAccount200ResponseInnerStakepoolsInner
      */
     'verificationNonce': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof GetProjectsForAccount200ResponseInnerStakepoolsInner
+     */
+    'verificationTime'?: string;
 }
 /**
  * 

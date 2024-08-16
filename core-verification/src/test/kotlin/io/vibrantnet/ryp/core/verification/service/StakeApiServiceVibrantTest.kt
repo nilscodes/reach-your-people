@@ -5,6 +5,7 @@ import io.mockk.every
 import io.mockk.mockk
 import io.ryp.cardano.model.StakepoolDetailsDto
 import io.ryp.cardano.model.TokenOwnershipInfoWithAssetCount
+import io.vibrantnet.ryp.core.verification.persistence.DrepDao
 import io.vibrantnet.ryp.core.verification.persistence.StakepoolDao
 import io.vibrantnet.ryp.core.verification.persistence.TokenDao
 import org.junit.jupiter.api.BeforeEach
@@ -15,7 +16,8 @@ import reactor.test.StepVerifier
 internal class StakeApiServiceVibrantTest {
     private val tokenDao = mockk<TokenDao>()
     private val stakepoolDao = mockk<StakepoolDao>()
-    private val service = StakeApiServiceVibrant(tokenDao, stakepoolDao)
+    private val drepDao = mockk<DrepDao>()
+    private val service = StakeApiServiceVibrant(tokenDao, stakepoolDao, drepDao)
 
     @BeforeEach
     fun setUp() {

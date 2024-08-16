@@ -55,6 +55,7 @@ export default function NewProject({ account }: NewProjectProps) {
       category: projectType as ProjectCategory,
       description: projectData.description,
       stakepools: [],
+      dreps: [],
       policies: Object.values(policies)
         .filter((policy) => policy.policyId.length > 0 && policy.projectName.length > 0)
         .map((policy) => ({ name: policy.projectName, policyId: policy.policyId })),

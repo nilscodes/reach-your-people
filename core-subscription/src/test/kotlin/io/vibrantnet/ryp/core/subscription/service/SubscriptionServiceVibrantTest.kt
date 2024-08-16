@@ -96,6 +96,7 @@ internal class SubscriptionServiceVibrantTest {
         verify(exactly = 1) { rabbitTemplate.convertAndSend("snapshot", SnapshotRequestDto(
                 announcement,
                 listOf("df6fe8ac7a40d0be2278d7d0048bc01877533d48852d5eddf2724058", "4523c5e21d409b81c95b45b0aea275b8ea1406e6cafea5583b9f8a5f"),
+                emptyList(),
                 emptyList()
             )
         ) }
@@ -113,6 +114,7 @@ internal class SubscriptionServiceVibrantTest {
         every { opsForList.rightPushAll("announcements:$announcementId", any<List<AnnouncementRecipientDto>>()) } returns 3
         every { externalAccountRepository.findEligibleAccountsByWallet(420, listOf("123", "456"), listOf(SubscriptionStatus.BLOCKED, SubscriptionStatus.MUTED), "0000000000000111") } returns listOf(40, 41)
         every { externalAccountRepository.findEligibleAccountsByWallet(420, emptyList(), listOf(SubscriptionStatus.BLOCKED, SubscriptionStatus.MUTED), "0000000000001000") } returns emptyList()
+        every { externalAccountRepository.findEligibleAccountsByWallet(420, emptyList(), listOf(SubscriptionStatus.BLOCKED, SubscriptionStatus.MUTED), "0000000000010000") } returns emptyList()
         every { externalAccountRepository.findMessagingExternalAccountsForProjectAndAccounts(420, listOf(40, 41), listOf("cardano")) } returns listOf(
             makeExternalAccountWithAccountProjection(40),
             makeExternalAccountWithAccountProjection(41),
@@ -143,6 +145,7 @@ internal class SubscriptionServiceVibrantTest {
         every { opsForList.rightPushAll("announcements:$announcementId", any<List<AnnouncementRecipientDto>>()) } returns 3
         every { externalAccountRepository.findEligibleAccountsByWallet(420, listOf("123", "456"), listOf(SubscriptionStatus.BLOCKED, SubscriptionStatus.MUTED), "0000000000000111") } returns listOf(40)
         every { externalAccountRepository.findEligibleAccountsByWallet(420, emptyList(), listOf(SubscriptionStatus.BLOCKED, SubscriptionStatus.MUTED), "0000000000001000") } returns emptyList()
+        every { externalAccountRepository.findEligibleAccountsByWallet(420, emptyList(), listOf(SubscriptionStatus.BLOCKED, SubscriptionStatus.MUTED), "0000000000010000") } returns emptyList()
         every { externalAccountRepository.findMessagingExternalAccountsForProjectAndAccounts(420, listOf(40), listOf("cardano")) } returns listOf(
             makeExternalAccountWithAccountProjection(40),
         )
@@ -171,6 +174,7 @@ internal class SubscriptionServiceVibrantTest {
         every { opsForList.rightPushAll("announcements:$announcementId", any<List<AnnouncementRecipientDto>>()) } returns 3
         every { externalAccountRepository.findEligibleAccountsByWallet(420, listOf("123", "456"), listOf(SubscriptionStatus.BLOCKED, SubscriptionStatus.MUTED), "0000000000000111") } returns listOf(40)
         every { externalAccountRepository.findEligibleAccountsByWallet(420, emptyList(), listOf(SubscriptionStatus.BLOCKED, SubscriptionStatus.MUTED), "0000000000001000") } returns emptyList()
+        every { externalAccountRepository.findEligibleAccountsByWallet(420, emptyList(), listOf(SubscriptionStatus.BLOCKED, SubscriptionStatus.MUTED), "0000000000010000") } returns emptyList()
         every { externalAccountRepository.findMessagingExternalAccountsForProjectAndAccounts(420, listOf(40), listOf("cardano")) } returns emptyList()
         every { externalAccountRepository.findExternalAccountsByProjectIdAndSubscriptionStatus(420, SubscriptionStatus.SUBSCRIBED) } returns emptyList()
         subscriptionServiceVibrant.processSnapshotCompleted(announcement)

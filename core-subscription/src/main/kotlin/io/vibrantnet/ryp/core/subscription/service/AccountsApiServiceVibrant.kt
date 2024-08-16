@@ -380,8 +380,9 @@ class  AccountsApiServiceVibrant(
 
         val policyBasedSubscriptions = getCardanoWalletTokenBasedSubscriptions(ownedCardanoWallets)
         val stakepoolBasedSubscriptions = getCardanoWalletStakepoolBasedSubscriptions(ownedCardanoWallets)
+        val dRepBasedSubscriptions = getCardanoWalletDRepBasedSubscriptions(ownedCardanoWallets)
 
-        return Flux.merge(policyBasedSubscriptions, stakepoolBasedSubscriptions)
+        return Flux.merge(policyBasedSubscriptions, stakepoolBasedSubscriptions, dRepBasedSubscriptions)
     }
 
     private fun getCardanoWalletTokenBasedSubscriptions(ownedCardanoWallets: List<LinkedExternalAccountDto>) =
@@ -417,6 +418,27 @@ class  AccountsApiServiceVibrant(
                     Flux.empty()
                 } else {
                     Flux.fromIterable(projectRepository.findByStakepoolsPoolHashIn(poolIds))
+                        .map { project ->
+                            ProjectSubscriptionDto(
+                                projectId = project.id!!,
+                                defaultStatus = DefaultSubscriptionStatus.SUBSCRIBED,
+                                currentStatus = SubscriptionStatus.DEFAULT
+                            )
+                        }
+                }
+            }
+
+    private fun getCardanoWalletDRepBasedSubscriptions(ownedCardanoWallets: List<LinkedExternalAccountDto>) =
+        Flux.fromIterable(ownedCardanoWallets)
+            .filter { it.settings.contains(ExternalAccountSetting.DREP_ANNOUNCEMENTS) }
+            .flatMap { verifyService.getDRepDetailsForStakeAddress(it.externalAccount.referenceId) }
+            .map { it.drepId }
+            .collectList()
+            .flatMapMany { dRepIds ->
+                if (dRepIds.isEmpty()) {
+                    Flux.empty()
+                } else {
+                    Flux.fromIterable(projectRepository.findByDrepsDrepIdIn(dRepIds))
                         .map { project ->
                             ProjectSubscriptionDto(
                                 projectId = project.id!!,

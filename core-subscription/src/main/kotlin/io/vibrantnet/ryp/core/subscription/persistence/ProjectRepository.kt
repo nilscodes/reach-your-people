@@ -9,4 +9,5 @@ interface ProjectRepository: CrudRepository<Project, Long> {
 
     fun findByPoliciesPolicyIdIn(policyIds: Collection<String>): List<Project>
     fun findByStakepoolsPoolHashIn(poolHashes: Collection<String>): List<Project>
+    fun findByDrepsDrepIdIn(drepIds: Collection<String>): List<Project>
 }

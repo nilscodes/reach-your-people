@@ -59,9 +59,13 @@
     "back": "Go back",
     "projectPolicies": "Cardano token policies",
     "projectStakepools": "Cardano stake pools",
+    "projectDReps": "Cardano delegated representatives",
     "poolName": "{{name}} ({{ticker}})",
+    "dRepName": "{{displayName}}",
     "copyPolicyId": "Copy policy ID",
     "policyCopied": "Policy ID for \"{{policyName}}\" copied to clipboard",
     "copyStakepoolHash": "Copy stake pool hash",
-    "stakepoolHashCopied": "Stake pool hash for \"{{name}}\" copied to clipboard"
+    "stakepoolHashCopied": "Stake pool hash for \"{{name}}\" copied to clipboard",
+    "copyDRepId": "Copy dRep ID",
+    "dRepIdCopied": "dRep ID for \"{{name}}\" copied to clipboard"
 }

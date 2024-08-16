@@ -5,16 +5,16 @@ import nl.jqno.equalsverifier.EqualsVerifier
 import org.junit.jupiter.api.Test
 import org.skyscreamer.jsonassert.JSONAssert
 
-internal class DelegationInfoDtoTest {
+internal class StakepoolDelegationInfoDtoTest {
     @Test
     fun testEqualsAndHashCode() {
-        EqualsVerifier.forClass(DelegationInfoDto::class.java)
+        EqualsVerifier.forClass(StakepoolDelegationInfoDto::class.java)
             .verify()
     }
 
     @Test
     fun serializationTest() {
-        val dto = DelegationInfoDto(
+        val dto = StakepoolDelegationInfoDto(
             poolHash = "poolHash",
             amount = 17000000,
             stakeAddress = "stakeAddress",

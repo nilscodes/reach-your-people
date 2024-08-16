@@ -10,3 +10,7 @@ export function getPolicyIdDisplayName(policyId: string): string {
 export function getStakepoolHashDisplayName(poolHash: string): string {
   return poolHash.substring(0, 11) + '…' + poolHash.substring(poolHash.length - 5);
 }
+
+export function getDRepIdDisplayName(drepId: string): string {
+  return drepId.substring(0, 11) + '…' + drepId.substring(drepId.length - 5);
+}

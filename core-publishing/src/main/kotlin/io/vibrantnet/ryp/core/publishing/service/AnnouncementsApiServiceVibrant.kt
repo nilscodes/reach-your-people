@@ -50,13 +50,18 @@ class AnnouncementsApiServiceVibrant(
                             val stakepoolsToPublishTo = project.stakepools.filter {
                                 announcement.stakepools?.contains(it.poolHash) ?: false
                             }
+                            val dRepsToPublishTo = project.dreps.filter {
+                                announcement.dreps?.contains(it.drepId) ?: false
+                            }
 
-                            val canAnnounceForStakepools = project.roles.any { it.accountId == announcement.author && it.role == ProjectRole.OWNER }
+                            val canAnnounceForStakepoolsOrDreps = project.roles.any { it.accountId == announcement.author && it.role == ProjectRole.OWNER }
 
-                            if (stakepoolsToPublishTo.isNotEmpty() && !canAnnounceForStakepools) {
+                            if (stakepoolsToPublishTo.isNotEmpty() && !canAnnounceForStakepoolsOrDreps) {
                                 Mono.error(UserNotAuthorizedToPublishException("User with account ID ${announcement.author} is not authorized to publish stakepool announcements for project $projectId to stakepools ${stakepoolsToPublishTo.joinToString(", ") { it.poolHash }}."))
-                            } else if (policiesToPublishTo.isEmpty() && stakepoolsToPublishTo.isEmpty()) {
-                                Mono.error(UserNotAuthorizedToPublishException("No valid policies or stakepools to publish for project $projectId."))
+                            } else if (dRepsToPublishTo.isNotEmpty() && !canAnnounceForStakepoolsOrDreps) {
+                                Mono.error(UserNotAuthorizedToPublishException("User with account ID ${announcement.author} is not authorized to publish dRep announcements for project $projectId to dReps ${dRepsToPublishTo.joinToString(", ") { it.drepId }}."))
+                            } else if (policiesToPublishTo.isEmpty() && stakepoolsToPublishTo.isEmpty() && dRepsToPublishTo.isEmpty()) {
+                                Mono.error(UserNotAuthorizedToPublishException("No valid policies or stakepools or dReps to publish for project $projectId."))
                             } else {
                                 // For each policy to publish to, check if any of them are manually verified or CIP-66 and verify the user's right to publish announcements. This also executes if no policies are present
                                 Flux.fromIterable(policiesToPublishTo)
@@ -161,7 +166,7 @@ class AnnouncementsApiServiceVibrant(
             announcement.id,
         )
 
-        logger.info { "Publishing announcement ${announcement.id} for project $projectId, publishing to policies: ${announcement.policies}, stakepools: ${announcement.stakepools}" }
+        logger.info { "Publishing announcement ${announcement.id} for project $projectId, publishing to policies: ${announcement.policies}, stakepools: ${announcement.stakepools}, dReps: ${announcement.dreps}" }
         redisTemplate.opsForValue()
             .set("announcementsdata:${announcement.id}", announcement, 48, java.util.concurrent.TimeUnit.HOURS)
         rabbitTemplate.convertAndSend("announcements", announcementJob)
@@ -272,6 +277,7 @@ fun announcementFromBasicAnnouncement(
     announcement.link,
     Audience(
         policies = announcement.policies ?: emptyList(),
-        stakepools = announcement.stakepools ?: emptyList()
+        stakepools = announcement.stakepools ?: emptyList(),
+        dreps = announcement.dreps ?: emptyList(),
     )
 )

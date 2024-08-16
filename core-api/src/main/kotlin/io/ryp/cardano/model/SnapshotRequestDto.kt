@@ -7,4 +7,5 @@ data class SnapshotRequestDto @JsonCreator constructor(
     val announcementRequest: AnnouncementJobDto,
     val policyIds: List<String>,
     val stakepools: List<String>,
+    val dreps: List<String>,
 )

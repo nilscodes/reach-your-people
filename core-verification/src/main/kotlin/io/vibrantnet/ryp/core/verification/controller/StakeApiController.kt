@@ -31,4 +31,13 @@ class StakeApiController(@Autowired val service: StakeApiService) {
     @ResponseStatus(HttpStatus.OK)
     fun getStakepoolDetailsForStakeAddress(@PathVariable("stakeAddress") stakeAddress: String) =
         service.getStakepoolDetailsForStakeAddress(stakeAddress)
+
+    @RequestMapping(
+        method = [RequestMethod.GET],
+        value = ["/stake/{stakeAddress}/drep"],
+        produces = ["application/json"]
+    )
+    @ResponseStatus(HttpStatus.OK)
+    fun getDrepDetailsForStakeAddress(@PathVariable("stakeAddress") stakeAddress: String) =
+        service.getDrepDetailsForStakeAddress(stakeAddress)
 }

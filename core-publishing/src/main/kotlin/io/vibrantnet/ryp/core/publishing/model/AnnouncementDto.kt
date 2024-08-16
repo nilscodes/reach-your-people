@@ -2,6 +2,7 @@ package io.vibrantnet.ryp.core.publishing.model
 
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty
+import io.ryp.shared.model.Audience
 import java.time.OffsetDateTime
 import java.util.*
 

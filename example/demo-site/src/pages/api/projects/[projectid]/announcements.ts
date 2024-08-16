@@ -18,6 +18,7 @@ export default async function handler(
     const basicAnnouncement = req.body;
     basicAnnouncement.author = session.userId;
     try {
+      console.log(JSON.stringify(basicAnnouncement, null, 2));
       const response = await corePublishingApi.publishAnnouncementForProject(projectId, basicAnnouncement, {
         headers: {
           'Content-Type': 'application/json'

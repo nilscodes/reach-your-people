@@ -17,6 +17,7 @@ import { LinkExternalAccount200Response, LinkExternalAccount200ResponseSettingsE
 import { useEffect, useState } from 'react';
 import { useApi } from '@/contexts/ApiProvider';
 import { StakepoolDetails } from '@/lib/types/StakepoolDetails';
+import { DRepDetails } from '@/lib/ryp-verification-api';
 
 interface WalletSettingsProps extends BoxProps {
   wallet: LinkExternalAccount200Response;
@@ -27,6 +28,8 @@ export default function WalletSettings({ wallet, onChangeWalletSettings, ...prop
   const [currentWalletSettings, setCurrentWalletSettings] = useState(wallet);
   const [stakepoolLoading, setStakepoolLoading] = useState(true);
   const [stakepoolDetails, setStakepoolDetails] = useState<StakepoolDetails | null>(null);
+  const [dRepLoading, setDRepLoading] = useState(true);
+  const [dRepDetails, setDRepDetails] = useState<DRepDetails | null>(null);
   const { t } = useTranslation('accounts');
   const api = useApi();
 
@@ -53,14 +56,25 @@ export default function WalletSettings({ wallet, onChangeWalletSettings, ...prop
           setStakepoolLoading(false);
         });
     }
+    const loadDRep = async () => {
+      setDRepLoading(true);
+      api.getDRepDetailsForStakeAddress(wallet.externalAccount.referenceId)
+        .then((drepForWallet) => {
+          setDRepDetails(drepForWallet);
+        })
+        .finally(() => {
+          setDRepLoading(false);
+        });
+    }
     loadStakepool();
+    loadDRep();
   }, []);
 
   const tokensEnabled = currentWalletSettings.settings?.includes(LinkExternalAccount200ResponseSettingsEnum.FungibleTokenAnnouncements)
     || currentWalletSettings.settings?.includes(LinkExternalAccount200ResponseSettingsEnum.NonFungibleTokenAnnouncements)
     || currentWalletSettings.settings?.includes(LinkExternalAccount200ResponseSettingsEnum.RichFungibleTokenAnnouncements);
   const spoEnabled = currentWalletSettings.settings?.includes(LinkExternalAccount200ResponseSettingsEnum.StakepoolAnnouncements);
-  // const drepEnabled = currentWalletSettings.settings?.includes(LinkExternalAccount200ResponseSettingsEnum.DrepAnnouncements);
+  const dRepEnabled = currentWalletSettings.settings?.includes(LinkExternalAccount200ResponseSettingsEnum.DrepAnnouncements);
 
   return (<Box as="form" bg="bg.surface" boxShadow="sm" borderRadius="lg" {...props}>
     <Stack spacing="5" px={{ base: '4', md: '6' }} py={{ base: '5', md: '6' }} divider={<StackDivider />}>
@@ -101,10 +115,13 @@ export default function WalletSettings({ wallet, onChangeWalletSettings, ...prop
             <Trans i18nKey='accounts:settings.drep.description' components={[<NextLink key="" href='/projects/drep' />]}></Trans>
           </Text>
         </Stack>
-        <VStack alignItems="flex-end">
-          <Switch colorScheme="brand" isChecked={false} disabled onChange={(e) => updateWalletSettings(e.target.checked, [LinkExternalAccount200ResponseSettingsEnum.DrepAnnouncements])} />
-          <Tag colorScheme="brand">{t('soonTag')}</Tag>
-        </VStack>
+        <Stack direction={{ base: 'column-reverse', md: 'row' }} alignItems={{ base: 'flex-end', md: 'flex-start' }} justifyContent='flex-end' spacing="4">
+          <Box>
+            {dRepLoading && (<Skeleton height="6" width="15" />)}
+            {!dRepLoading && dRepDetails !== null && (<Wrap spacing="2"><Tag title={dRepDetails.displayName}>{dRepDetails.drepView}</Tag></Wrap>)}
+          </Box>
+          <Switch colorScheme="brand" isChecked={dRepEnabled} onChange={(e) => updateWalletSettings(e.target.checked, [LinkExternalAccount200ResponseSettingsEnum.DrepAnnouncements])} />
+        </Stack>
       </Stack>
     </Stack>
   </Box>);

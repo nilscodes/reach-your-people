@@ -2,6 +2,7 @@ package io.vibrantnet.ryp.core.publishing.controller
 
 import io.mockk.every
 import io.mockk.mockk
+import io.ryp.shared.model.Audience
 import io.vibrantnet.ryp.core.loadJsonFromResource
 import io.vibrantnet.ryp.core.publishing.model.*
 import io.vibrantnet.ryp.core.publishing.service.AnnouncementsApiService

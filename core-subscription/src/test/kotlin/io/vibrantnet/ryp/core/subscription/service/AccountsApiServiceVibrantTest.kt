@@ -546,6 +546,7 @@ internal class AccountsApiServiceVibrantTest {
             )
         }
         every { verifyService.getStakepoolDetailsForStakeAddress("stake1herpderp") } answers { Mono.empty() }
+        every { verifyService.getDRepDetailsForStakeAddress("stake1herpderp") } answers { Mono.empty() }
 
         every { projectRepository.findByPoliciesPolicyIdIn(listOf("policy1", "policy2")) } returns listOf(makeProject(1), makeProject(2))
         every { accountRepository.findById(12) } returns java.util.Optional.of(account)

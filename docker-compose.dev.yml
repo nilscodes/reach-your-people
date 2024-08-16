@@ -36,6 +36,19 @@ services:
         ports:
             - "8072:8072"
 
+    core-events:
+        image: core-events:latest
+        container_name: core_events_dev
+        environment:
+            - DB_SYNC_POSTGRES_URL=jdbc:postgresql://cardano-db-sync-postgres:5432/cexplorer
+            - DB_SYNC_POSTGRES_PASSWORD=
+            - BLOCKFROST_URL=https://cardano-mainnet.blockfrost.io/api/v0
+            - BLOCKFROST_PROJECT_ID=
+            - RABBITMQ_PASSWORD=
+
+        ports:
+            - "8073:8073"
+
     core-redirect:
         image: core-redirect:latest
         container_name: core_redirect_dev

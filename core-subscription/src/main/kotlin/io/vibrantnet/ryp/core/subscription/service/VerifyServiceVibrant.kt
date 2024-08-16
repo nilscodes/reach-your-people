@@ -1,6 +1,7 @@
 package io.vibrantnet.ryp.core.subscription.service
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import io.ryp.cardano.model.DRepDetailsDto
 import io.ryp.cardano.model.StakepoolDetailsDto
 import io.ryp.cardano.model.TokenOwnershipInfoWithAssetCount
 import org.springframework.beans.factory.annotation.Qualifier
@@ -63,6 +64,24 @@ class VerifyServiceVibrant(
                 }
                 .doOnNext {
                     redisTemplate.opsForValue().set("stakeAddress:pool:$stakeAddress", it, 10, TimeUnit.MINUTES)
+                }
+        }
+    }
+
+    override fun getDRepDetailsForStakeAddress(stakeAddress: String): Mono<DRepDetailsDto> {
+        val cachedRaw = redisTemplate.opsForValue().get("stakeAddress:drep:$stakeAddress")
+        return if (cachedRaw != null) {
+            Mono.just(objectMapper.convertValue(cachedRaw, DRepDetailsDto::class.java))
+        } else {
+            coreVerificationClient.get()
+                .uri("/stake/$stakeAddress/drep")
+                .retrieve()
+                .bodyToMono(DRepDetailsDto::class.java)
+                .onErrorResume(WebClientResponseException::class.java) { ex ->
+                    if (ex.statusCode.value() == 404) Mono.empty() else Mono.error(ex)
+                }
+                .doOnNext {
+                    redisTemplate.opsForValue().set("stakeAddress:drep:$stakeAddress", it, 10, TimeUnit.MINUTES)
                 }
         }
     }
