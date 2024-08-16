@@ -6,6 +6,7 @@ include:
   - local: 'core-redirect/.gitlab-ci-core-redirect.yml'
   - local: 'core-points/.gitlab-ci-core-points.yml'
   - local: 'core-billing/.gitlab-ci-core-billing.yml'
+  - local: 'core-events/.gitlab-ci-core-events.yml'
   - local: 'integrations/discord/.gitlab-ci-discord.yml'
   - local: 'integrations/twilio/.gitlab-ci-twilio.yml'
   - local: 'integrations/webpush/.gitlab-ci-webpush.yml'
@@ -49,6 +50,7 @@ gradle-build:
         - "core-redirect/**/*"
         - "core-points/**/*"
         - "core-billing/**/*"
+        - "core-events/**/*"
         - "core-api/**/*"
         - "integrations/vibrant/**/*"
         - "build.gradle.kts"
@@ -79,6 +81,8 @@ gradle-build:
       - core-points/build/jacoco.xml
       - core-billing/build/libs
       - core-billing/build/jacoco.xml
+      - core-events/build/libs
+      - core-events/build/jacoco.xml
       - core-api/build/libs
       - core-api/build/jacoco.xml
       - integrations/vibrant/build/libs

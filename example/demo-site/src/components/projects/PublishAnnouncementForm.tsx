@@ -26,6 +26,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { useApi } from '@/contexts/ApiProvider';
 import { PublishingPermissions } from '@/lib/ryp-publishing-api';
 import { StakepoolSelection } from './StakepoolSelection';
+import { DRepSelection } from './DRepSelection';
 
 
 interface AnnouncementFormProps {
@@ -51,11 +52,13 @@ export default function PublishAnnouncementForm({ project, onSubmit }: Announcem
     defaultValues: {
       policies: project.policies.map((policy) => policy.policyId),
       stakepools: project.stakepools.map((stakepool) => stakepool.poolHash),
+      dreps: project.dreps.map((dRep) => dRep.drepId),
     },
   });
   const { ref } = register('title', { required: true });
-  register('policies', { required: project.stakepools.length === 0 });
-  register('stakepools', { required: project.policies.length === 0 });
+  register('policies', { required: project.stakepools.length === 0 && project.dreps.length === 0 });
+  register('stakepools', { required: project.policies.length === 0 && project.dreps.length === 0 });
+  register('dreps', { required: project.stakepools.length === 0 && project.policies.length === 0 });
 
   useEffect(() => {
     const fetchPublishingPermissions = async () => {
@@ -85,13 +88,18 @@ export default function PublishAnnouncementForm({ project, onSubmit }: Announcem
     setValue('stakepools', values);
   };
 
+  const changeDReps = (values: any) => {
+    setValue('dreps', values);
+  };
+
   // For later, if we want to validate that at least one policy or stakepool is selected
   // const watchPolicies = watch('policies');
   // const watchStakepools = watch('stakepools');
+  // const watchDReps = watch('dReps');
 
   // const validateAtLeastOneSelection = () => {
-  //   if (watchPolicies.length === 0 && watchStakepools.length === 0) {
-  //     setError('policies', { type: 'manual', message: 'At least one policy or stakepool must be selected' });
+  //   if (watchPolicies.length === 0 && watchStakepools.length === 0 && watchDReps.length === 0) {
+  //     setError('policies', { type: 'manual', message: 'At least one policy or stakepool or dRep must be selected' });
   //   } else {
   //     clearErrors('policies');
   //   }
@@ -120,6 +128,16 @@ export default function PublishAnnouncementForm({ project, onSubmit }: Announcem
                 onChange={changeStakepools}
               />
               <FormErrorMessage>{errors.stakepools && t('publish.form.stakepoolsError')}</FormErrorMessage>
+            </Stack>
+          </FormControl>)}
+          {project.dreps.length > 0 && (<FormControl id="dReps" isRequired isInvalid={!!errors.dreps}>
+            <FormLabel>{t('publish.form.dReps')}</FormLabel>
+            <Stack w="100%">
+              <DRepSelection
+                project={project}
+                onChange={changeDReps}
+              />
+              <FormErrorMessage>{errors.dreps && t('publish.form.dRepsError')}</FormErrorMessage>
             </Stack>
           </FormControl>)}
           <FormControl id="title" isRequired isInvalid={!!errors.title}>

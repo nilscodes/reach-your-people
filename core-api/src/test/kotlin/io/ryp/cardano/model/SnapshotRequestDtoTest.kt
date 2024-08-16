@@ -26,6 +26,7 @@ internal class SnapshotRequestDtoTest {
             ),
             policyIds = listOf("policyId"),
             stakepools = listOf("stakepool"),
+            dreps = listOf("drep"),
         )
         val objectMapper = createDefaultObjectMapper()
 
@@ -38,7 +39,8 @@ internal class SnapshotRequestDtoTest {
                     "snapshotId": "00000000-0000-0000-0000-000000000002"
                 },
                 "policyIds": ["policyId"],
-                "stakepools": ["stakepool"]
+                "stakepools": ["stakepool"],
+                "dreps": ["drep"]
             }
             """.trimIndent(), objectMapper.writeValueAsString(dto), false
         )

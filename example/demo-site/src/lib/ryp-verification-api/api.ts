@@ -26,6 +26,49 @@ import { BASE_PATH, COLLECTION_FORMATS, BaseAPI, RequiredError, operationServerM
 /**
  * 
  * @export
+ * @interface DRepDetails
+ */
+export interface DRepDetails {
+    /**
+     * The dRep pubkey blake hash in hex
+     * @type {string}
+     * @memberof DRepDetails
+     */
+    'drepId': string;
+    /**
+     * The dRep ID of a dRep, in viewable Bech32 format
+     * @type {string}
+     * @memberof DRepDetails
+     */
+    'drepView': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof DRepDetails
+     */
+    'displayName': string;
+    /**
+     * Epoch when the collected information applies
+     * @type {number}
+     * @memberof DRepDetails
+     */
+    'currentEpoch': number;
+    /**
+     * Epoch until currently marked as active, if available - considered inactive if empty (either newly registered or no longer active).
+     * @type {number}
+     * @memberof DRepDetails
+     */
+    'activeUntil'?: number;
+    /**
+     * Delegation in lovelace, at the epoch boundary matching the epoch property
+     * @type {number}
+     * @memberof DRepDetails
+     */
+    'delegation': number;
+}
+/**
+ * 
+ * @export
  * @interface StakepoolDetails
  */
 export interface StakepoolDetails {
@@ -172,6 +215,44 @@ export interface TokenOwnershipInfoWithAssetCount {
     'assetCount': number;
 }
 /**
+ * 
+ * @export
+ * @interface TransactionSummary
+ */
+export interface TransactionSummary {
+    /**
+     * The transaction hash in hex format
+     * @type {string}
+     * @memberof TransactionSummary
+     */
+    'transactionHash': string;
+    /**
+     * 
+     * @type {Array<TxOutputSummary>}
+     * @memberof TransactionSummary
+     */
+    'outputs': Array<TxOutputSummary>;
+}
+/**
+ * 
+ * @export
+ * @interface TxOutputSummary
+ */
+export interface TxOutputSummary {
+    /**
+     * 
+     * @type {string}
+     * @memberof TxOutputSummary
+     */
+    'address': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof TxOutputSummary
+     */
+    'lovelace': number;
+}
+/**
  * The base64 encoded JSON object that is the content of your VRF verification key file. It should have three properties,
  * @export
  * @interface VrfVerificationKey
@@ -239,6 +320,74 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
             localVarRequestOptions.data = serializeDataIfNeeded(stakepoolVerification, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Get dRep details
+         * @param {string} drepId The dRep ID of a dRep
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getDRepDetails: async (drepId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'drepId' is not null or undefined
+            assertParamExists('getDRepDetails', 'drepId', drepId)
+            const localVarPath = `/dreps/{drepId}`
+                .replace(`{${"drepId"}}`, encodeURIComponent(String(drepId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Get dRep details for a given stake address, if currently delegated
+         * @param {string} stakeAddress The staking address of a wallet in view format
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getDrepDetailsForStakeAddress: async (stakeAddress: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'stakeAddress' is not null or undefined
+            assertParamExists('getDrepDetailsForStakeAddress', 'stakeAddress', stakeAddress)
+            const localVarPath = `/stake/{stakeAddress}/drep`
+                .replace(`{${"stakeAddress"}}`, encodeURIComponent(String(stakeAddress)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -325,6 +474,40 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
             assertParamExists('getStakepoolDetailsForStakeAddress', 'stakeAddress', stakeAddress)
             const localVarPath = `/stake/{stakeAddress}/pool`
                 .replace(`{${"stakeAddress"}}`, encodeURIComponent(String(stakeAddress)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Get transaction summary
+         * @param {string} transactionHash The hash of the transaction
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getTransactionSummary: async (transactionHash: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'transactionHash' is not null or undefined
+            assertParamExists('getTransactionSummary', 'transactionHash', transactionHash)
+            const localVarPath = `/transactions/{transactionHash}/summary`
+                .replace(`{${"transactionHash"}}`, encodeURIComponent(String(transactionHash)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -492,6 +675,32 @@ export const DefaultApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @summary Get dRep details
+         * @param {string} drepId The dRep ID of a dRep
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getDRepDetails(drepId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DRepDetails>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getDRepDetails(drepId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DefaultApi.getDRepDetails']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Get dRep details for a given stake address, if currently delegated
+         * @param {string} stakeAddress The staking address of a wallet in view format
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getDrepDetailsForStakeAddress(stakeAddress: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DRepDetails>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getDrepDetailsForStakeAddress(stakeAddress, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DefaultApi.getDrepDetailsForStakeAddress']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
          * @summary Get policy IDs and asset counts for a stake address
          * @param {string} stakeAddress The staking address of a wallet in view format
          * @param {*} [options] Override http request option.
@@ -527,6 +736,19 @@ export const DefaultApiFp = function(configuration?: Configuration) {
             const localVarAxiosArgs = await localVarAxiosParamCreator.getStakepoolDetailsForStakeAddress(stakeAddress, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['DefaultApi.getStakepoolDetailsForStakeAddress']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Get transaction summary
+         * @param {string} transactionHash The hash of the transaction
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getTransactionSummary(transactionHash: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TransactionSummary>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getTransactionSummary(transactionHash, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DefaultApi.getTransactionSummary']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -596,6 +818,26 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
         },
         /**
          * 
+         * @summary Get dRep details
+         * @param {string} drepId The dRep ID of a dRep
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getDRepDetails(drepId: string, options?: any): AxiosPromise<DRepDetails> {
+            return localVarFp.getDRepDetails(drepId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Get dRep details for a given stake address, if currently delegated
+         * @param {string} stakeAddress The staking address of a wallet in view format
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getDrepDetailsForStakeAddress(stakeAddress: string, options?: any): AxiosPromise<DRepDetails> {
+            return localVarFp.getDrepDetailsForStakeAddress(stakeAddress, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @summary Get policy IDs and asset counts for a stake address
          * @param {string} stakeAddress The staking address of a wallet in view format
          * @param {*} [options] Override http request option.
@@ -623,6 +865,16 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
          */
         getStakepoolDetailsForStakeAddress(stakeAddress: string, options?: any): AxiosPromise<StakepoolDetails> {
             return localVarFp.getStakepoolDetailsForStakeAddress(stakeAddress, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Get transaction summary
+         * @param {string} transactionHash The hash of the transaction
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getTransactionSummary(transactionHash: string, options?: any): AxiosPromise<TransactionSummary> {
+            return localVarFp.getTransactionSummary(transactionHash, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -684,6 +936,30 @@ export class DefaultApi extends BaseAPI {
 
     /**
      * 
+     * @summary Get dRep details
+     * @param {string} drepId The dRep ID of a dRep
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DefaultApi
+     */
+    public getDRepDetails(drepId: string, options?: RawAxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).getDRepDetails(drepId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Get dRep details for a given stake address, if currently delegated
+     * @param {string} stakeAddress The staking address of a wallet in view format
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DefaultApi
+     */
+    public getDrepDetailsForStakeAddress(stakeAddress: string, options?: RawAxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).getDrepDetailsForStakeAddress(stakeAddress, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
      * @summary Get policy IDs and asset counts for a stake address
      * @param {string} stakeAddress The staking address of a wallet in view format
      * @param {*} [options] Override http request option.
@@ -716,6 +992,18 @@ export class DefaultApi extends BaseAPI {
      */
     public getStakepoolDetailsForStakeAddress(stakeAddress: string, options?: RawAxiosRequestConfig) {
         return DefaultApiFp(this.configuration).getStakepoolDetailsForStakeAddress(stakeAddress, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Get transaction summary
+     * @param {string} transactionHash The hash of the transaction
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DefaultApi
+     */
+    public getTransactionSummary(transactionHash: string, options?: RawAxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).getTransactionSummary(transactionHash, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

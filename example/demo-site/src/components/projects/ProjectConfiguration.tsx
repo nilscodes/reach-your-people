@@ -4,6 +4,7 @@ import ProjectCategory from "@/lib/types/ProjectCategory";
 import { ComponentType } from "react";
 import { ProjectData } from "./NewProject";
 import StakepoolConfiguration from "./StakepoolConfiguration";
+import DRepConfiguration from "./DRepConfiguration";
 
 export type ProjectConfigurationProps = {
     account: Account;
@@ -16,7 +17,7 @@ const configurationsMap: Record<ProjectCategory, ComponentType<ProjectConfigurat
     [ProjectCategory.DeFi]: NFTConfiguration,
     [ProjectCategory.NFT]: NFTConfiguration,
     [ProjectCategory.SPO]: StakepoolConfiguration,
-    [ProjectCategory.dRep]: NFTConfiguration,
+    [ProjectCategory.dRep]: DRepConfiguration,
     [ProjectCategory.DAO]: NFTConfiguration,
     [ProjectCategory.Other]: NFTConfiguration,
 };

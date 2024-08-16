@@ -1,6 +1,7 @@
 package io.vibrantnet.ryp.core.publishing.persistence
 
 import com.fasterxml.jackson.annotation.JsonFormat
+import io.ryp.shared.model.Audience
 import io.vibrantnet.ryp.core.publishing.model.*
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.Id

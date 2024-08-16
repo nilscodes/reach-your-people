@@ -33,6 +33,9 @@ class RabbitConfig {
     fun telegramQueue() = Queue("telegram")
 
     @Bean
+    fun eventNotificationsQueue() = Queue("event-notifications")
+
+    @Bean
     fun discordStatisticsQueue() = Queue("statistics-discord")
 
     @Bean

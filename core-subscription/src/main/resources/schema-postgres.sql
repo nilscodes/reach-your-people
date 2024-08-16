@@ -5,6 +5,7 @@ DROP TABLE IF EXISTS "project_tags";
 DROP TABLE IF EXISTS "project_policies";
 DROP TABLE IF EXISTS "project_roles";
 DROP TABLE IF EXISTS "project_stakepools";
+DROP TABLE IF EXISTS "project_dreps";
 DROP TABLE IF EXISTS "projects";
 DROP TABLE IF EXISTS "external_accounts";
 DROP TABLE IF EXISTS "account_settings";
@@ -103,6 +104,14 @@ CREATE TABLE "project_stakepools"
     "verification_time"  timestamp   NOT NULL
 );
 
+CREATE TABLE "project_dreps"
+(
+    "project_id"         INT         NOT NULL,
+    "drep_id"            varchar(56) NOT NULL,
+    "verification_nonce" varchar(64) NOT NULL,
+    "verification_time"  timestamp   NOT NULL
+);
+
 CREATE TABLE "project_roles"
 (
     "project_id" INT      NOT NULL,
@@ -120,6 +129,9 @@ ALTER TABLE "project_policies"
     ADD FOREIGN KEY ("project_id") REFERENCES "projects" ("project_id") ON DELETE CASCADE;
 
 ALTER TABLE "project_stakepools"
+    ADD FOREIGN KEY ("project_id") REFERENCES "projects" ("project_id") ON DELETE CASCADE;
+
+ALTER TABLE "project_dreps"
     ADD FOREIGN KEY ("project_id") REFERENCES "projects" ("project_id") ON DELETE CASCADE;
 
 ALTER TABLE "project_roles"

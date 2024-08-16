@@ -1,6 +1,7 @@
 package io.vibrantnet.ryp.core.verification.service
 
 import io.ryp.cardano.model.TokenOwnershipInfoWithAssetCount
+import io.vibrantnet.ryp.core.verification.persistence.DrepDao
 import io.vibrantnet.ryp.core.verification.persistence.StakepoolDao
 import io.vibrantnet.ryp.core.verification.persistence.TokenDao
 import org.springframework.stereotype.Service
@@ -10,10 +11,14 @@ import reactor.core.publisher.Flux
 class StakeApiServiceVibrant(
     val tokenDao: TokenDao,
     val stakepoolDao: StakepoolDao,
+    val drepDao: DrepDao,
 ) : StakeApiService {
     override fun getMultiAssetCountForStakeAddress(stakeAddress: String): Flux<TokenOwnershipInfoWithAssetCount> =
         Flux.fromIterable(tokenDao.getMultiAssetListForStakeAddress(stakeAddress))
 
     override fun getStakepoolDetailsForStakeAddress(stakeAddress: String) =
         stakepoolDao.getStakepoolDetailsForStakeAddress(stakeAddress)
+
+    override fun getDrepDetailsForStakeAddress(stakeAddress: String) =
+        drepDao.getDrepDetailsForStakeAddress(stakeAddress)
 }

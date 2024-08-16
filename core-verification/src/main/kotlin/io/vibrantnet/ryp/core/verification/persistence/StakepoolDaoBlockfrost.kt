@@ -1,6 +1,6 @@
 package io.vibrantnet.ryp.core.verification.persistence
 
-import io.ryp.cardano.model.DelegationInfoDto
+import io.ryp.cardano.model.StakepoolDelegationInfoDto
 import io.ryp.cardano.model.StakepoolDetailsDto
 import io.vibrantnet.ryp.core.verification.model.PartialPoolMetadata
 import org.springframework.beans.factory.annotation.Qualifier
@@ -38,15 +38,15 @@ class StakepoolDaoBlockfrost(
         TODO("Not yet implemented")
     }
 
-    override fun getActiveDelegation(poolHash: String): List<DelegationInfoDto> {
+    override fun getActiveDelegation(poolHash: String): List<StakepoolDelegationInfoDto> {
         TODO("Not yet implemented")
     }
 
-    override fun getActiveDelegationWithoutAmount(poolHash: String): List<DelegationInfoDto> {
+    override fun getActiveDelegationWithoutAmount(poolHash: String): List<StakepoolDelegationInfoDto> {
         TODO("Not yet implemented")
     }
 
-    override fun getDelegationInEpoch(poolHash: String, epochNo: Int): List<DelegationInfoDto> {
+    override fun getDelegationInEpoch(poolHash: String, epochNo: Int): List<StakepoolDelegationInfoDto> {
         TODO("Not yet implemented")
     }
 }

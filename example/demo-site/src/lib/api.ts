@@ -8,7 +8,7 @@ import { BasicAnnouncement, PublishingPermissions } from "./ryp-publishing-api";
 import { Achievement } from "./types/Achievement";
 import { TestStatusObject } from "./types/TestStatus";
 import { StakepoolDetails } from "./types/StakepoolDetails";
-import { StakepoolVerification } from "./ryp-verification-api";
+import { DRepDetails, StakepoolVerification } from "./ryp-verification-api";
 import { StakepoolSignup } from "@/components/projects/NewProject";
 import { Bill } from "./ryp-billing-api";
 
@@ -45,6 +45,10 @@ export class RypSiteApi {
 
   async getStakepoolDetailsForStakeAddress(stakeAddress: string): Promise<StakepoolDetails> {
     return (await axios.get(`${this.baseUrl}/stake/${stakeAddress}/pool`)).data;
+  }
+
+  async getDRepDetailsForStakeAddress(stakeAddress: string): Promise<DRepDetails> {
+    return (await axios.get(`${this.baseUrl}/stake/${stakeAddress}/drep`)).data;
   }
 
   async unlinkExternalAccount(externalAccountId: number): Promise<void> {
@@ -169,6 +173,10 @@ export class RypSiteApi {
 
   async getStakepoolDetails(poolHash: string): Promise<StakepoolDetails> {
     return (await axios.get(`${this.baseUrl}/cardano/stakepools/${poolHash}`)).data;
+  }
+
+  async getDRepDetails(drepId: string): Promise<DRepDetails> {
+    return (await axios.get(`${this.baseUrl}/cardano/dreps/${drepId}`)).data;
   }
 
   async startStakepoolVerification(poolHash: string): Promise<StakepoolVerification> {

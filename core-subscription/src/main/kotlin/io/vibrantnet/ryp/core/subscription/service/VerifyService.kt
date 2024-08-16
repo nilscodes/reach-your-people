@@ -1,5 +1,6 @@
 package io.vibrantnet.ryp.core.subscription.service
 
+import io.ryp.cardano.model.DRepDetailsDto
 import io.ryp.cardano.model.StakepoolDetailsDto
 import io.ryp.cardano.model.TokenOwnershipInfoWithAssetCount
 import reactor.core.publisher.Flux
@@ -13,4 +14,8 @@ interface VerifyService {
     fun getStakepoolDetailsForStakeAddress(
         stakeAddress: String,
     ): Mono<StakepoolDetailsDto>
+
+    fun getDRepDetailsForStakeAddress(
+        stakeAddress: String,
+    ): Mono<DRepDetailsDto>
 }

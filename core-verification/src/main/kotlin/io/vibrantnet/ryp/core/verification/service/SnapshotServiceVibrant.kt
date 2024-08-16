@@ -6,6 +6,7 @@ import io.vibrantnet.ryp.core.verification.persistence.TokenDao
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ryp.cardano.model.SnapshotStakeAddressDto
 import io.ryp.cardano.model.SnapshotType
+import io.vibrantnet.ryp.core.verification.persistence.DrepDao
 import io.vibrantnet.ryp.core.verification.persistence.StakepoolDao
 import org.springframework.amqp.rabbit.annotation.RabbitListener
 import org.springframework.amqp.rabbit.core.RabbitTemplate
@@ -19,6 +20,7 @@ val logger = KotlinLogging.logger {}
 class SnapshotServiceVibrant(
     val tokenDao: TokenDao,
     val stakepoolDao: StakepoolDao,
+    val drepDao: DrepDao,
     val redisTemplate: RedisTemplate<String, Any>,
     val rabbitTemplate: RabbitTemplate
 ) {
@@ -35,6 +37,11 @@ class SnapshotServiceVibrant(
             snapshot.addAll(
                 stakepoolDao.getActiveDelegationWithoutAmount(poolHash)
                     .map { SnapshotStakeAddressDto(it.stakeAddress, SnapshotType.STAKEPOOL) })
+        }
+        snapshotRequest.dreps.forEach { dRepId ->
+            snapshot.addAll(
+                drepDao.getActiveDelegationWithoutAmount(dRepId)
+                    .map { SnapshotStakeAddressDto(it.stakeAddress, SnapshotType.DREP) })
         }
         val snapshotUuid = UUID.randomUUID()
         if (snapshot.isNotEmpty()) {

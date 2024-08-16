@@ -31,33 +31,46 @@ class SubscriptionServiceVibrant(
     @Transactional
     fun prepareRecipients(announcementJob: AnnouncementJobDto) {
         logger.info { "Preparing recipients for announcement ${announcementJob.announcementId} for project ${announcementJob.projectId}" }
-        projectsService.getProject(announcementJob.projectId).blockOptional().ifPresent {
-            // TODO Decide if we want to check if policies/stakepools have been removed from the project in the meantime. Currently, we ignore the project info and just make sure it still exists
-            val announcementRaw = redisTemplate.opsForValue()["announcementsdata:${announcementJob.announcementId}"]
-            val announcement = objectMapper.convertValue(announcementRaw, BasicAnnouncementWithIdDto::class.java)
-            val policiesToAnnounceTo = announcement.policies ?: emptyList()
-            val stakepoolsToAnnounceTo = announcement.stakepools ?: emptyList()
-            if (policiesToAnnounceTo.isEmpty() && stakepoolsToAnnounceTo.isEmpty()) {
-                logger.info { "No policies or stakepools found for announcement ${announcementJob.announcementId}, publishing immediately and only to direct subscribers." }
+        val announcementRaw = redisTemplate.opsForValue()["announcementsdata:${announcementJob.announcementId}"]
+        val announcement = objectMapper.convertValue(announcementRaw, BasicAnnouncementWithIdDto::class.java)
+        logger.debug { "Announcement type for ${announcementJob.announcementId} is ${announcement.type}" }
+        val policiesToAnnounceTo = announcement.policies ?: emptyList()
+        val stakepoolsToAnnounceTo = announcement.stakepools ?: emptyList()
+        val dRepsToAnnounceTo = announcement.dreps ?: emptyList()
+        // TODO if announcement type is event-based, we might determine to look up explicit subscribers by looking up for example the SPO/dRep by ID? Could also be considered a responsibility of the event service
+        val project = if (announcementJob.projectId > 0) {
+            projectsService.getProject(announcementJob.projectId).blockOptional()
+        } else Optional.empty()
+        // TODO Decide if we want to check if policies/stakepools/dReps have been removed from the project in the meantime. Currently, we ignore the project info and just make sure it still exists
+        if (policiesToAnnounceTo.isEmpty() && stakepoolsToAnnounceTo.isEmpty() && dRepsToAnnounceTo.isEmpty()) {
+            logger.info { "No policies or stakepools or dReps found for announcement ${announcementJob.announcementId}, publishing immediately and only to direct subscribers if matching project is available." }
+            project.ifPresent {
                 val recipients = getExplicitlySubscribedAccounts(announcementJob.projectId)
                 redisTemplate.opsForList().rightPushAll("announcements:${announcementJob.announcementId}", recipients)
-                redisTemplate.expire("announcements:${announcementJob.announcementId}", 48, java.util.concurrent.TimeUnit.HOURS)
+                redisTemplate.expire(
+                    "announcements:${announcementJob.announcementId}",
+                    48,
+                    java.util.concurrent.TimeUnit.HOURS
+                )
                 rabbitTemplate.convertAndSend("completed", announcementJob.announcementId)
-            } else {
-                logger.info { "Policies and stakepools found for announcement ${announcementJob.announcementId}, sending snapshot request for ${policiesToAnnounceTo.size} policies and ${stakepoolsToAnnounceTo.size} stakepools." }
-                rabbitTemplate.convertAndSend("snapshot", SnapshotRequestDto(announcementJob, policiesToAnnounceTo, stakepoolsToAnnounceTo))
             }
+        } else {
+            logger.info { "Policies or stakepools or dReps found for announcement ${announcementJob.announcementId}, sending snapshot request for ${policiesToAnnounceTo.size} policies and ${stakepoolsToAnnounceTo.size} stakepools and ${dRepsToAnnounceTo.size} dReps." }
+            rabbitTemplate.convertAndSend("snapshot", SnapshotRequestDto(announcementJob, policiesToAnnounceTo, stakepoolsToAnnounceTo, dRepsToAnnounceTo))
         }
     }
 
     private fun getExplicitlySubscribedAccounts(projectId: Long): List<AnnouncementRecipientDto> {
-        val recipients = externalAccountRepository.findExternalAccountsByProjectIdAndSubscriptionStatus(
-            projectId = projectId,
-            status = SubscriptionStatus.SUBSCRIBED
-        ).map {
-            announcementRecipientDtoFromExternalAccount(it, SubscriptionStatus.SUBSCRIBED)
+        return if (projectId > 0) {
+            externalAccountRepository.findExternalAccountsByProjectIdAndSubscriptionStatus(
+                projectId = projectId,
+                status = SubscriptionStatus.SUBSCRIBED
+            ).map {
+                announcementRecipientDtoFromExternalAccount(it, SubscriptionStatus.SUBSCRIBED)
+            }
+        } else {
+            emptyList()
         }
-        return recipients
     }
 
     private fun announcementRecipientDtoFromExternalAccount(it: ExternalAccountWithAccountProjection, subscriptionStatus: SubscriptionStatus) =
@@ -122,6 +135,13 @@ class SubscriptionServiceVibrant(
             listOf(SubscriptionStatus.BLOCKED, SubscriptionStatus.MUTED),
             ExternalAccountSettingsUtil.settingsFromSet(setOf(ExternalAccountSetting.STAKEPOOL_ANNOUNCEMENTS), '0')
         )
-        return tokenAccountIds + stakepoolAccountIds
+        val dRepWallets = snapshotData.filter { it.snapshotType == SnapshotType.DREP }.map { it.stakeAddress }
+        val dRepAccountIds = externalAccountRepository.findEligibleAccountsByWallet(
+            announcementJob.projectId,
+            dRepWallets,
+            listOf(SubscriptionStatus.BLOCKED, SubscriptionStatus.MUTED),
+            ExternalAccountSettingsUtil.settingsFromSet(setOf(ExternalAccountSetting.DREP_ANNOUNCEMENTS), '0')
+        )
+        return tokenAccountIds + stakepoolAccountIds + dRepAccountIds
     }
 }

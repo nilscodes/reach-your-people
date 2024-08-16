@@ -44,6 +44,10 @@ data class ProjectDto @JsonCreator constructor(
     val stakepools: Set<StakepoolDto> = emptySet(),
 
     @field:Valid
+    @JsonProperty("dreps")
+    val dreps: Set<DRepDto>  = emptySet(),
+
+    @field:Valid
     @JsonProperty("roles")
     val roles: Set<ProjectRoleAssignmentDto> = emptySet(),
 
@@ -65,6 +69,18 @@ data class StakepoolDto @JsonCreator constructor(
     @JsonProperty("poolHash")
     @field:Pattern(regexp="^[A-Fa-f0-9]{56}$")
     val poolHash: String,
+
+    @JsonProperty("verificationNonce")
+    val verificationNonce: String,
+
+    @JsonProperty("verificationTime")
+    val verificationTime: OffsetDateTime? = null,
+)
+
+data class DRepDto @JsonCreator constructor(
+    @JsonProperty("drepId")
+    @field:Pattern(regexp="^[A-Fa-f0-9]{56}$")
+    val drepId: String,
 
     @JsonProperty("verificationNonce")
     val verificationNonce: String,

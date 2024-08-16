@@ -59,6 +59,13 @@ components:
       schema:
         type: string
       description: The hash of a Cardano stakepool
+    drepId:
+      name: drepId
+      in: path
+      required: true
+      schema:
+        type: string
+      description: The dRep ID of a dRep
     projectId:
       name: projectId
       in: path
@@ -122,7 +129,7 @@ components:
         dreps:
           type: array
           items:
-            $ref: '#/components/schemas/Drep'
+            $ref: '#/components/schemas/DRep'
         stakepools:
           type: array
           items:
@@ -165,7 +172,7 @@ components:
         dreps:
           type: array
           items:
-            $ref: '#/components/schemas/Drep'
+            $ref: '#/components/schemas/DRep'
         stakepools:
           type: array
           items:
@@ -200,19 +207,25 @@ components:
     ProjectId:
       type: integer
       format: int64
-    Drep:
+    DRep:
       type: object
+      x-stoplight:
+        id: ef8422a08fafe
+      required:
+        - drepId
+        - verificationNonce
       properties:
-        id:
-          type: integer
-          format: int64
-        name:
-          type: string
         drepId:
+          $ref: '#/components/schemas/DRepID'
+        verificationNonce:
           type: string
-          pattern: '^drep1[0-9a-z]{38}$'
-        bech32:
+          x-stoplight:
+            id: cf3rvz34e82ml
+        verificationTime:
           type: string
+          format: date-time
+          example: '2021-11-10T13:20:57Z'
+          readOnly: true
     Stakepool:
       type: object
       required:
@@ -255,6 +268,36 @@ components:
           format: uri
         description:
           type: string
+    DRepDetails:
+      type: object
+      x-stoplight:
+        id: 9d7120d3587ac
+      title: DRepDetails
+      required:
+        - drepId
+        - drepView
+        - displayName
+        - currentEpoch
+        - delegation
+      properties:
+        drepId:
+          $ref: '#/components/schemas/DRepID'
+        drepView:
+          $ref: '#/components/schemas/DRepView'
+        displayName:
+          type: string
+        currentEpoch:
+          type: integer
+          format: int32
+          description: Epoch when the collected information applies
+        activeUntil:
+          type: integer
+          format: int32
+          description: 'Epoch until currently marked as active, if available - considered inactive if empty (either newly registered or no longer active).'
+        delegation:
+          type: integer
+          format: int64
+          description: 'Delegation in lovelace, at the epoch boundary matching the epoch property'
     Policy:
       type: object
       properties:
@@ -367,6 +410,16 @@ components:
       description: 'The pool ID of a stakepool, in viewable Bech32 format'
       example: pool1uyhvepgdsd7s07q5cdx9vdemnar4axpe0e9edw2chyd8dpgqnsffq
       pattern: '^pool1[a-zA-Z0-9]{53}$'
+    DRepID:
+      type: string
+      description: The dRep pubkey blake hash in hex
+      example: 4519f294d80b0fcc6697bde8f36629be8ebf9527be023fe73673f1a9
+      pattern: '^[A-Fa-f0-9]{56}$'
+    DRepView:
+      type: string
+      description: 'The dRep ID of a dRep, in viewable Bech32 format'
+      example: drep1g5vl99xcpv8uce5hhh50xe3fh68tl9f8hcprleekw0c6jhhr45f
+      pattern: '^drep1[a-zA-Z0-9]{51}$'
     StakeAddressView:
       type: string
       description: 'The staking address of a wallet, in viewable Bech32 format'

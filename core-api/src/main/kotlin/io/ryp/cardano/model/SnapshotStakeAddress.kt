@@ -8,4 +8,5 @@ data class SnapshotStakeAddressDto(
 enum class SnapshotType {
     STAKEPOOL,
     POLICY,
+    DREP,
 }

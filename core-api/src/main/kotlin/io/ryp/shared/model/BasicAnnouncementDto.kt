@@ -3,6 +3,8 @@ package io.ryp.shared.model
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
+import io.ryp.cardano.model.EventNotificationType
+import io.ryp.cardano.model.ValidDRepIDList
 import io.ryp.cardano.model.ValidPolicyList
 import io.ryp.cardano.model.ValidStakepoolHashList
 import java.util.*
@@ -30,9 +32,24 @@ data class BasicAnnouncementDto @JsonCreator constructor(
     @JsonProperty("stakepools")
     @field:ValidStakepoolHashList
     val stakepools: List<String>? = null,
+
+    @JsonProperty("dreps")
+    @field:ValidDRepIDList
+    val dreps: List<String>? = null,
 ) {
     fun toBasicAnnouncementWithIdDto(id: UUID, link: String): BasicAnnouncementWithIdDto {
-        return BasicAnnouncementWithIdDto(id, type, author, title, content, link, externalLink, policies, stakepools)
+        return BasicAnnouncementWithIdDto(
+            id,
+            type,
+            author,
+            title,
+            content,
+            link,
+            externalLink,
+            policies,
+            stakepools,
+            dreps
+        )
     }
 }
 
@@ -66,11 +83,22 @@ data class BasicAnnouncementWithIdDto @JsonCreator constructor(
     @JsonProperty("stakepools")
     @field:ValidStakepoolHashList
     val stakepools: List<String>? = null,
+
+    @JsonProperty("dreps")
+    @field:ValidDRepIDList
+    val dreps: List<String>? = null,
 )
 
 enum class AnnouncementType {
     STANDARD,
     TEST,
+    GOVERNANCE_VOTE;
+
+    companion object {
+        fun fromEventType(type: EventNotificationType) = when (type) {
+            EventNotificationType.GOVERNANCE_VOTE -> GOVERNANCE_VOTE
+        }
+    }
 }
 
 

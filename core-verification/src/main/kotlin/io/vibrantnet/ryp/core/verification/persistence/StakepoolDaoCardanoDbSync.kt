@@ -2,7 +2,7 @@ package io.vibrantnet.ryp.core.verification.persistence
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.ryp.cardano.model.StakepoolDetailsDto
-import io.ryp.cardano.model.DelegationInfoDto
+import io.ryp.cardano.model.StakepoolDelegationInfoDto
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.jdbc.core.JdbcTemplate
@@ -146,21 +146,21 @@ class StakepoolDaoCardanoDbSync(
         )
     }
 
-    override fun getActiveDelegation(poolHash: String): List<DelegationInfoDto> {
+    override fun getActiveDelegation(poolHash: String): List<StakepoolDelegationInfoDto> {
         return jdbcTemplate.query(SQL_GET_ACTIVE_DELEGATION_TO_POOL, { rs, _ ->
-            DelegationInfoDto(poolHash, rs.getLong("amount"), rs.getString("view"))
+            StakepoolDelegationInfoDto(poolHash, rs.getLong("amount"), rs.getString("view"))
         }, poolHash)
     }
 
-    override fun getActiveDelegationWithoutAmount(poolHash: String): List<DelegationInfoDto> {
+    override fun getActiveDelegationWithoutAmount(poolHash: String): List<StakepoolDelegationInfoDto> {
         return jdbcTemplate.query(SQL_GET_ACTIVE_DELEGATION_TO_POOL_WITHOUT_AMOUNT, { rs, _ ->
-            DelegationInfoDto(poolHash, 1, rs.getString("view"))
+            StakepoolDelegationInfoDto(poolHash, 1, rs.getString("view"))
         }, poolHash)
     }
 
-    override fun getDelegationInEpoch(poolHash: String, epochNo: Int): List<DelegationInfoDto> {
+    override fun getDelegationInEpoch(poolHash: String, epochNo: Int): List<StakepoolDelegationInfoDto> {
         return jdbcTemplate.query(SQL_GET_DELEGATION_TO_POOL_IN_EPOCH, { rs, _ ->
-            DelegationInfoDto(poolHash, rs.getLong("amount"), rs.getString("view"))
+            StakepoolDelegationInfoDto(poolHash, rs.getLong("amount"), rs.getString("view"))
         }, poolHash, epochNo)
     }
 }

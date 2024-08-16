@@ -8,6 +8,7 @@ import StandardContentWithHeader from '../StandardContentWithHeader';
 import { useRouter } from 'next/router';
 import ProjectPolicies from './ProjectPolicies';
 import ProjectStakepools from './ProjectStakepools';
+import ProjectDReps from './ProjectDReps';
 
 type ProjectPageProps = {
   account: Account | null;
@@ -39,5 +40,6 @@ export default function ProjectPage({ account, project }: ProjectPageProps) {
     </Container>
     {project.policies.length > 0 && <ProjectPolicies project={project} />}
     {project.stakepools.length > 0 && <ProjectStakepools project={project} />}
+    {project.dreps.length > 0 && <ProjectDReps project={project} />}
   </StandardContentWithHeader>);
 }
