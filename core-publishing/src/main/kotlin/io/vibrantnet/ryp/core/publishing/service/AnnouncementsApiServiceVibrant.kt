@@ -241,7 +241,7 @@ class AnnouncementsApiServiceVibrant(
             // TODO can be done better
             BasicProjectDto(
                 id = 0,
-                name = "RYP",
+                name = "dRep Tracker",
                 logo = "",
                 url = "https://ryp.io",
             )

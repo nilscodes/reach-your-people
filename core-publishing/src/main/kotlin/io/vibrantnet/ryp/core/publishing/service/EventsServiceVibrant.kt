@@ -30,9 +30,12 @@ class EventsServiceVibrant(
                     type = AnnouncementType.fromEventType(eventNotification.type),
                     author = 0L,
                     title = "Governance activity (vote)",
-                    content = "${eventNotification.comment} / ${eventNotification.transactionHash}",
+                    content = "Your delegated representative voted **YES** on a treasury withdrawal proposal for 3,000,000 ADA with the title: *Bringing the Cardano Logo to Twitter hashtags*\n\n"
+                            + "**Their submitted comment**\n"
+                    + "${eventNotification.comment}\n\n"
+                     + "**Link to transaction**\n<https://preview.cardanoscan.io/transaction/${eventNotification.transactionHash}>",
                     link = shortLink,
-                    externalLink = "https://preview.cardanoscan.io",
+                    externalLink = "",
                     policies = eventNotification.audience.policies,
                     stakepools = eventNotification.audience.stakepools,
                     dreps = eventNotification.audience.dreps
