@@ -46,7 +46,7 @@ import NextLink from '../NextLink';
 const poolHashRegex = /^[a-f0-9]{56}$/i;
 const CIP_0022_DOMAIN = 'ryp.io';
 
-export default function StakepoolConfiguration({ type, formData, onSubmit }: ProjectConfigurationProps) {
+export default function StakepoolConfiguration({ type, onSubmit }: ProjectConfigurationProps) {
     const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
     const [logoErrors, setLogoErrors] = useState<string[]>([]);
     const [selectedLogo, setSelectedLogo] = useState<File | null>(null);
@@ -197,9 +197,19 @@ export default function StakepoolConfiguration({ type, formData, onSubmit }: Pro
         }
         const signature = watch(`stakepool.verification.signature`);
         const completedVerification = { ...stakepoolVerification, signature, vrfVerificationKey };
-        api.testStakepoolVerification(stakepoolVerification.poolHash, completedVerification).then((verificationResult) => {
+        api.testStakepoolVerification(stakepoolVerification.poolHash, completedVerification).then(async (verificationResult) => {
             if (verificationResult) {
                 setValue(`stakepool.verification`, verificationResult);
+                // Immediately initiate the creation, so there is no additional click needed. If it fails, the button to click is still available
+                try {
+                    await handleSubmit(finalizeSubmit)();
+                } catch (e) {
+                    toast({
+                        title: t('add.form.stakepools.verificationFailed'),
+                        status: 'error',
+                        isClosable: true,
+                    });
+                }
                 setCurrentVerificationStep(3);
             } else {
                 setChallengeError(t('add.form.stakepools.challengeSignatureError'));

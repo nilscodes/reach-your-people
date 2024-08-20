@@ -74,13 +74,18 @@ export default async function handler(
           ContentType: file.mimetype!,
         };
 
-        // TODO create several blobs for different sizes
-        const uploadCommand = new PutObjectCommand(uploadParams);
-        await s3Client.send(uploadCommand);
-        const updatedProject = await coreSubscriptionApi.updateProject(newProject.data.id, {
-          logo: s3Name,
-        });
-        res.status(updatedProject.status).json(updatedProject.data);
+        try { // Nested try since we will ignore failed uploads and simply let them upload again later if this happens, instead of holding up the process.
+          // TODO create several blobs for different sizes
+          const uploadCommand = new PutObjectCommand(uploadParams);
+          await s3Client.send(uploadCommand);
+          const updatedProject = await coreSubscriptionApi.updateProject(newProject.data.id, {
+            logo: s3Name,
+          });
+          res.status(updatedProject.status).json(updatedProject.data);
+        } catch (err) {
+          console.error(err);
+          res.status(newProject.status).json(newProject.data);
+        }
       }
     } catch(err: any) {
       console.error(err);

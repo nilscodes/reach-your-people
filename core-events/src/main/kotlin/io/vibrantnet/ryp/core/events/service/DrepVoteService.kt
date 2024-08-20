@@ -73,7 +73,7 @@ class DrepVoteService(
                     }
                 }
                 .map { it.body.comment }
-                .block() // REALLY BLOCK?
+                .block() // TODO REALLY BLOCK?
         } else {
             null
         }

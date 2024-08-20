@@ -77,6 +77,7 @@ export default function NFTConfiguration({ type, formData, onSubmit }: ProjectCo
     const [policies, setPolicies] = useState<Record<string, TokenPolicyWithId>>(formData.policies as Record<string, TokenPolicyWithId>);
     const [logoErrors, setLogoErrors] = useState<string[]>([]);
     const [selectedLogo, setSelectedLogo] = useState<File | null>(null);
+    const [submitting, setSubmitting] = useState<boolean>(false);
     const nameRef = useRef<HTMLInputElement | null>(null);
     const { t } = useTranslation('publish');
     const {
@@ -96,7 +97,7 @@ export default function NFTConfiguration({ type, formData, onSubmit }: ProjectCo
         setAvatarUrl(fileUrl);
     };
 
-    const finalizeSubmit = (data: ProjectData) => {
+    const finalizeSubmit = async (data: ProjectData) => {
         if (!selectedLogo) {
             setLogoErrors(['add.form.logoRequired']);
             return;
@@ -108,7 +109,12 @@ export default function NFTConfiguration({ type, formData, onSubmit }: ProjectCo
             }
         }
         data.logo = selectedLogo;
-        onSubmit(data);
+        setSubmitting(true);
+        try {
+            await onSubmit(data);
+        } finally {
+            setSubmitting(false);
+        }
     }
 
     const removePolicyWithId = (id: string) => {
@@ -250,7 +256,7 @@ export default function NFTConfiguration({ type, formData, onSubmit }: ProjectCo
                 
 
                 <Flex direction="row-reverse">
-                    <Button onClick={handleSubmit(finalizeSubmit)}>{t('add.form.createTokenBasedProject')}</Button>
+                    <Button onClick={handleSubmit(finalizeSubmit)} isLoading={submitting}>{t('add.form.createTokenBasedProject')}</Button>
                 </Flex>
             </Stack>
         </Stack>
