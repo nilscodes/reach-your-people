@@ -10,7 +10,7 @@ export type ProjectConfigurationProps = {
     account: Account;
     type: ProjectCategory;
     formData: ProjectData;
-    onSubmit: (formData: ProjectData) => void;
+    onSubmit: (formData: ProjectData) => Promise<void>;
 };
 
 const configurationsMap: Record<ProjectCategory, ComponentType<ProjectConfigurationProps>> = {

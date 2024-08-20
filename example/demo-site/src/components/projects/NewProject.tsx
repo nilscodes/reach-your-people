@@ -1,4 +1,4 @@
-import { Button, Container, Stack, VStack } from '@chakra-ui/react'
+import { Button, Container, Stack, useToast, VStack } from '@chakra-ui/react'
 import { Account } from '../../lib/ryp-subscription-api';
 import ProjectTypeSelection from './ProjectTypeSelection';
 import { useState } from 'react';
@@ -44,6 +44,7 @@ export default function NewProject({ account }: NewProjectProps) {
   const [projectType, setProjectType] = useState<ProjectCategory | null>(null)
   const api = useApi();
   const router = useRouter();
+  const toast = useToast();
   const { t } = useTranslation('publish');
 
   const addNewProject = async (projectData: ProjectData) => {
@@ -60,8 +61,19 @@ export default function NewProject({ account }: NewProjectProps) {
         .filter((policy) => policy.policyId.length > 0 && policy.projectName.length > 0)
         .map((policy) => ({ name: policy.projectName, policyId: policy.policyId })),
     }
-    await api.addNewProject(newProject, projectData.logo, projectData.stakepool);
-    router.push('/publish');
+    try {
+      await api.addNewProject(newProject, projectData.logo, projectData.stakepool);
+      router.push('/publish');
+    } catch (e) {
+      toast({
+        title: t('errorCreatingProject'),
+        status: "error",
+        isClosable: true,
+        position: "top",
+        variant: "solid",
+      });
+    }
+    
   }
 
   const pickType = (type: ProjectCategory) => {

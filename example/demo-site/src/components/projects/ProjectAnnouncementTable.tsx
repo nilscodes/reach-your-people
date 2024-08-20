@@ -53,7 +53,12 @@ export const ProjectAnnouncementTable = ({ projectId, announcements, authors }: 
           </Box>
           <Box px={{ base: '4', md: '6' }} pb="5">
             <HStack spacing="3" justify="space-between">
-              {!isMobile && (
+              {!isMobile && announcements.length === 0 && (
+                <Text color="fg.muted" textStyle="sm">
+                  {t('announcementsPagingFooterEmpty')}
+                </Text>
+              )}
+              {!isMobile && announcements.length > 0 && (
                 <Text color="fg.muted" textStyle="sm">
                   {t('announcementsPagingFooter', { first: 1, last: announcements.length, total: announcements.length })}
                 </Text>
