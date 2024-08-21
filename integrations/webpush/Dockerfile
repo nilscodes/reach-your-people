@@ -2,17 +2,15 @@ FROM node:alpine AS build
 
 WORKDIR /app
 COPY . .
-WORKDIR /app/shared
-RUN npm install
-RUN npm run build
-WORKDIR /app/webpush
-RUN npm install
-RUN npm run build
+RUN npm install && \
+    npm run --workspace=@vibrantnet/integration-shared build && \
+    npm run --workspace=@vibrantnet/ryp-integration-webpush build
 
 FROM node:alpine AS run
 WORKDIR /app
 COPY --from=build ./app/webpush/dist ./dist
 COPY --from=build ./app/webpush/package* ./
+COPY --from=build ./app/shared ./node_modules/@vibrantnet/integration-shared
 RUN npm install --omit=dev && chown -R node:node dist
 USER node
 CMD ["node", "./dist"]

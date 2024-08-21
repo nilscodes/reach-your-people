@@ -1,5 +1,5 @@
 {
-  "name": "ryp-integration-telegram",
+  "name": "@vibrantnet/ryp-integration-telegram",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -12,6 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@vibrantnet/integration-shared": "^0.0.1",
     "amqplib": "^0.10.4",
     "dotenv": "^16.4.5",
     "node-telegram-bot-api": "^0.66.0",
