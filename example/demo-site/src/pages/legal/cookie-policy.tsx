@@ -1,11 +1,11 @@
 import Head from "next/head";
-import TermlyTermsAndConditions from "@/components/legal/TermlyTermsAndConditions";
+import TermlyCookiePolicy from "@/components/legal/TermlyCookiePolicy";
 
 export default function Home() {
   return (<>
     <Head>
       <title>RYP: Terms and Conditions</title>
     </Head>
-    <TermlyTermsAndConditions />
+    <TermlyCookiePolicy />
   </>);
 }
