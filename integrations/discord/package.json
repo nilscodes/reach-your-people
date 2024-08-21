@@ -1,5 +1,5 @@
 {
-  "name": "ryp-integration-discord",
+  "name": "@vibrantnet/ryp-integration-discord",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -12,13 +12,14 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@types/amqplib": "^0.10.5",
+    "@vibrantnet/integration-shared": "^0.0.1",
     "amqplib": "^0.10.4",
     "discord.js": "^14.15.3",
     "dotenv": "^16.4.5",
     "pino": "^9.2.0"
   },
   "devDependencies": {
+    "@types/amqplib": "^0.10.5",
     "ts-node": "^10.9.2",
     "typescript": "^5.5.3"
   }
