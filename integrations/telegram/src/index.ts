@@ -3,7 +3,7 @@ if (process.env.NODE_ENV !== 'production') {
 }
 import { pino } from 'pino'
 import amqplib from 'amqplib'
-import { stripMarkdown } from "./markdownTools";
+import { augmentAnnouncementIfRequired, initializeTranslations, MessageDto, StatisticsUpdateDto, stripMarkdownTelegram, t } from "@vibrantnet/integration-shared"
 import TelegramBot from 'node-telegram-bot-api';
 
 const token = process.env.TELEGRAM_BOT_TOKEN as string;
@@ -11,46 +11,13 @@ const bot = new TelegramBot(token);
 
 const logger = pino({ level: process.env.LOG_LEVEL || 'info' });
 
-type BasicAnnouncementDto = {
-  id: string;
-  author: number;
-  title: string;
-  content: string;
-  link: string;
-  externalLink?: string;
-}
-
-type BasicProjectDto = {
-  id: number;
-  name: string;
-  url: string;
-  logo: string;
-}
-
-type MessageDto = {
-  referenceId: string; // Unused
-  announcement: BasicAnnouncementDto;
-  metadata?: string; // Base64 encoded subscription for Push API
-  project: BasicProjectDto;
-}
-
-type StatisticsDto = {
-  delivered?: number;
-  failures?: number;
-  views?: number;
-}
-
-type StatisticsUpdateDto = {
-  announcementId: string;
-  statistics: StatisticsDto;
-}
-
 const sendStatistics = async (channel: amqplib.Channel, queueName: string, statisticsUpdate: StatisticsUpdateDto) => {
   await channel.assertQueue(queueName);
   channel.sendToQueue(queueName, Buffer.from(JSON.stringify(statisticsUpdate)));
 };
 
 const connectToAmqp = async () => {
+  await initializeTranslations();
   const rabbitPw = process.env.RABBITMQ_PASSWORD as string;
   try {
     const conn = await amqplib.connect(`amqp://${process.env.RABBITMQ_USER}:${encodeURIComponent(rabbitPw)}@${process.env.RABBITMQ_HOST}`);
@@ -58,8 +25,10 @@ const connectToAmqp = async () => {
       name: 'telegram',
       consume: async (queueChannel: amqplib.Channel, msg: MessageDto) => {
         try {
-          const attachLink = msg.announcement.externalLink ? `\n\n[Read more](${msg.announcement.externalLink})` : '';
-          const body = stripMarkdown(`# ${msg.announcement.title}\n\n${msg.announcement.content}${attachLink}\n\n[${msg.announcement.link}](${msg.announcement.link})`);
+          const finalAnnouncement = augmentAnnouncementIfRequired(msg.announcement, msg.language);
+          const readMore = t('readMore', msg.language);
+          const attachLink = finalAnnouncement.externalLink ? `\n\n[${readMore}](${finalAnnouncement.externalLink})` : '';
+          const body = stripMarkdownTelegram(`# ${finalAnnouncement.title}\n\n${finalAnnouncement.content}${attachLink}\n\n[${finalAnnouncement.link}](${finalAnnouncement.link})`);
           const telegramMessage = await bot.sendMessage(msg.referenceId, body, { parse_mode: 'MarkdownV2' });
           logger.debug({ msg: 'Telegram message sent successfully:', telegramMessage });
           sendStatistics(queueChannel, 'statistics-telegram', {

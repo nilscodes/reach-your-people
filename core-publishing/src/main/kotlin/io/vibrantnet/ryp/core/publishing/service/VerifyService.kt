@@ -1,11 +1,16 @@
 package io.vibrantnet.ryp.core.publishing.service
 
+import io.ryp.cardano.model.StakepoolDetailsDto
 import reactor.core.publisher.Mono
 
-fun interface VerifyService {
+interface VerifyService {
     fun verifyCip66(
         policyId: String,
         serviceName: String,
         referenceId: String,
     ): Mono<Boolean>
+
+    fun getStakepoolDetails(
+        poolHash: String,
+    ): Mono<StakepoolDetailsDto>
 }

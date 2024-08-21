@@ -1,0 +1,8 @@
+{
+  "newAnnouncementTextMessage": "A new announcement has been posted by \"{{projectName}}\", a project you are following. Read more at {{externalLink}}",
+  "newAnnouncementSubject": "RYP: New announcement from {{projectName}}",
+  "newEventSubject": "RYP: {{title}}",
+  "readMore": "Read more",
+  "via": "{{projectName}} via RYP.io",
+  "linkToAnnouncement": "Link to announcement"
+}

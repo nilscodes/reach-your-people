@@ -6,6 +6,7 @@ integration-sendgrid-docker:
         - if: $CI_PIPELINE_SOURCE == "merge_request_event"
           changes:
               - "integrations/sendgrid/**/*"
+              - "integrations/shared/**/*"
               - ".gitlab-ci.yml"
     image: docker:latest
     stage: docker
@@ -14,7 +15,7 @@ integration-sendgrid-docker:
     before_script:
         - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
     script:
-        - cd integrations/sendgrid
+        - cd integrations
         - |
             if [[ "$CI_COMMIT_BRANCH" == "$CI_DEFAULT_BRANCH" ]]; then
               tag=""
@@ -23,7 +24,7 @@ integration-sendgrid-docker:
               tag=":$CI_COMMIT_REF_SLUG"
               echo "Running on branch '$CI_COMMIT_BRANCH': tag = $tag"
             fi
-        - docker build --pull -t "$CI_REGISTRY_IMAGE/integration-sendgrid${tag}" .
+        - docker build --pull -t "$CI_REGISTRY_IMAGE/integration-sendgrid${tag}" -f sendgrid/Dockerfile .
         - docker push "$CI_REGISTRY_IMAGE/integration-sendgrid${tag}"
 
 #integration-sendgrid-dependency-check:

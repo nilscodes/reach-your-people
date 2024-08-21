@@ -14,7 +14,6 @@
   "dependencies": {
     "amqplib": "^0.10.4",
     "dotenv": "^16.4.5",
-    "marked": "^12.0.2",
     "node-telegram-bot-api": "^0.66.0",
     "pino": "^9.2.0"
   },

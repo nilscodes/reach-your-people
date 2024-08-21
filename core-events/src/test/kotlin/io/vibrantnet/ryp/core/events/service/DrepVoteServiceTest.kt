@@ -4,9 +4,10 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import io.mockk.*
+import io.ryp.cardano.model.EventNotification
 import io.vibrantnet.ryp.core.events.model.DRepVoteDetailsDto
 import io.vibrantnet.ryp.core.events.persistence.DrepVoteDao
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.amqp.rabbit.core.RabbitTemplate
@@ -42,5 +43,18 @@ internal class DrepVoteServiceTest {
         service.checkForNewVotes()
         verify { rabbitTemplate wasNot Called }
         assertEquals(setOf(1L), service.drepVoteIds)
+    }
+
+    @Test
+    fun `if a new vote is detected, it should be sent as a notification and added to the list`() {
+        service.drepVoteIds.add(1)
+        every { drepVoteDao.getDrepVotesWithIdsHigherThan(any()) } answers {
+            Flux.fromIterable(listOf(
+                DRepVoteDetailsDto(2, "x", 1, "drep", null)
+            ))
+        }
+        service.checkForNewVotes()
+        verify { rabbitTemplate.convertAndSend("event-notifications", any<EventNotification>()) }
+        assertEquals(setOf(1L, 2L), service.drepVoteIds)
     }
 }

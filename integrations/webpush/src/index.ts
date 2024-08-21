@@ -4,7 +4,7 @@ if (process.env.NODE_ENV !== 'production') {
 import webpush from 'web-push';
 import { pino } from 'pino'
 import amqplib from 'amqplib'
-import { stripMarkdown } from "./markdownTools";
+import { stripMarkdown, initializeTranslations, StatisticsUpdateDto, MessageDto, augmentAnnouncementIfRequired } from '@vibrantnet/integration-shared';
 
 const vapidDetails = {
   subject: process.env.VAPID_SUBJECT!,
@@ -20,46 +20,13 @@ webpush.setVapidDetails(
 
 const logger = pino({ level: process.env.LOG_LEVEL || 'info' });
 
-type BasicAnnouncementDto = {
-  id: string;
-  author: number;
-  title: string;
-  content: string;
-  link: string;
-  externalLink?: string;
-}
-
-type BasicProjectDto = {
-  id: number;
-  name: string;
-  url: string;
-  logo: string;
-}
-
-type MessageDto = {
-  referenceId: string; // Unused
-  announcement: BasicAnnouncementDto;
-  metadata?: string; // Base64 encoded subscription for Push API
-  project: BasicProjectDto;
-}
-
-type StatisticsDto = {
-  delivered?: number;
-  failures?: number;
-  views?: number;
-}
-
-type StatisticsUpdateDto = {
-  announcementId: string;
-  statistics: StatisticsDto;
-}
-
 const sendStatistics = async (channel: amqplib.Channel, queueName: string, statisticsUpdate: StatisticsUpdateDto) => {
   await channel.assertQueue(queueName);
   channel.sendToQueue(queueName, Buffer.from(JSON.stringify(statisticsUpdate)));
 };
 
 const connectToAmqp = async () => {
+  await initializeTranslations();
   const rabbitPw = process.env.RABBITMQ_PASSWORD as string;
   try {
     const conn = await amqplib.connect(`amqp://${process.env.RABBITMQ_USER}:${encodeURIComponent(rabbitPw)}@${process.env.RABBITMQ_HOST}`);
@@ -69,12 +36,13 @@ const connectToAmqp = async () => {
         if (msg.metadata !== undefined) {
           const subscription = JSON.parse(Buffer.from(msg.metadata, 'base64').toString());
           try {
-            const body = stripMarkdown(msg.announcement.content);
+            const finalAnnouncement = augmentAnnouncementIfRequired(msg.announcement, msg.language);
+            const body = stripMarkdown(finalAnnouncement.content);
             const payload = JSON.stringify({
-              title: msg.announcement.title,
+              title: finalAnnouncement.title,
               body,
               icon: '/logo192.png',
-              url: msg.announcement.link,
+              url: finalAnnouncement.link,
             });
             const response = await webpush.sendNotification(subscription, payload);
             logger.debug({ msg: 'Notification sent successfully:', response });
@@ -128,19 +96,3 @@ const connectToAmqp = async () => {
   }
 };
 connectToAmqp();
-
-// console.log(stripMarkdown(`## Big
-
-// **To fly**
-
-// - Check
-// - Dreck
-// - Zeck
-
-// *x*
-
-// ![The Logo of the cool thing](https://ryp.vibrantnet.io/logo192.png)
-
-// 1. Food
-// 2. Brood
-// 3. Zood`));
