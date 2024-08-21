@@ -3,5 +3,6 @@
   "moderate": false,
   "high": true,
   "critical": true,
-  "report-type": "summary"
+  "report-type": "summary",
+  "package-manager": "npm"
 }

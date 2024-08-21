@@ -20,6 +20,9 @@ data class MessageDto @JsonCreator constructor(
 
     @JsonProperty("referenceName")
     val referenceName: String? = null,
+
+    @JsonProperty("language")
+    val language: String = "en",
 )
 
 data class BasicProjectDto @JsonCreator constructor(

@@ -1,0 +1,7 @@
+{
+  "retirement": {
+    "title": "ACTION REQUIRED: Your Cardano stake pool is retiring",
+    "message": "Your Cardano stake pool **{{poolNameOrHash}}**{{optionalTicker}} is retiring. You will need to re-delegate your ADA to another stake pool to continue earning rewards. You can find a list of available stake pools on many of the Cardano blockchain explorers, or in your wallet:\n\n- https://adapools.org/pool\n- https://cexplorer.io/pool\n- https://pooltool.io/pools",
+    "textMessage": "Your Cardano stake pool {{tickerOrHash}} is retiring. You will need to re-delegate your ADA to another stake pool to continue earning rewards."
+  }
+}

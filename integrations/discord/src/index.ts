@@ -4,6 +4,7 @@ if (process.env.NODE_ENV !== 'production') {
 import { Client, EmbedBuilder, GatewayIntentBits } from 'discord.js';
 import pino from 'pino'
 import amqplib from 'amqplib'
+import { augmentAnnouncementIfRequired, initializeTranslations, MessageDto, StatisticsUpdateDto, t } from "@vibrantnet/integration-shared"
 
 const client = new Client({
   intents: [GatewayIntentBits.DirectMessages],
@@ -19,60 +20,13 @@ client.on('ready', () => {
 
 client.login(process.env.TOKEN);
 
-type BasicAnnouncementDto = {
-  id: string;
-  author: number;
-  title: string;
-  content: string;
-  link: string;
-  externalLink?: string;
-}
-
-type BasicProjectDto = {
-  id: number;
-  name: string;
-  url: string;
-  logo: string;
-}
-
-type MessageDto = {
-  referenceId: string; // Discord snowflake for the user ID we want to DM
-  announcement: BasicAnnouncementDto;
-  project: BasicProjectDto;
-}
-
-type StatisticsDto = {
-  delivered?: number;
-  failures?: number;
-  views?: number;
-}
-
-type StatisticsUpdateDto = {
-  announcementId: string;
-  statistics: StatisticsDto;
-}
-
-type AnnouncementTextMessages = {
-  [key: string]: {
-    [lang: string]: string;
-  };
-};
-
-const announcementTextMessages: AnnouncementTextMessages = {
-  'author': {
-    'en': '{0} via RYP.io'
-  },
-  'link': {
-    'en': 'Link to announcement'
-  }
-}
-
 const sendStatistics = async (channel: amqplib.Channel, queueName: string, statisticsUpdate: StatisticsUpdateDto) => {
   await channel.assertQueue(queueName);
   channel.sendToQueue(queueName, Buffer.from(JSON.stringify(statisticsUpdate)));
 };
 
 const connectToAmqp = async () => {
+  await initializeTranslations();
   const rabbitPw = process.env.RABBITMQ_PASSWORD as string;
   try {
     const conn = await amqplib.connect(`amqp://${process.env.RABBITMQ_USER}:${encodeURIComponent(rabbitPw)}@${process.env.RABBITMQ_HOST}`) as any; // The Connection class has some weird typescript conflict that seems unresolvable at this time with these versions
@@ -80,23 +34,25 @@ const connectToAmqp = async () => {
       name: 'discord',
       consume: async (queueChannel: amqplib.Channel, client: Client, msg: MessageDto) => {
         try {
+          const finalAnnouncement = augmentAnnouncementIfRequired(msg.announcement, msg.language);
           const user = await client.users.fetch(msg.referenceId);
           if (user) {
             try {
+              const authorName = t('via', msg.language, { projectName: msg.project.name });
               // Make a nice Discord embed
               const baseEmbed = new EmbedBuilder()
                 .setColor('#FF145F')
-                .setTitle(msg.announcement.title)
+                .setTitle(finalAnnouncement.title)
                 .setAuthor({
-                  name: announcementTextMessages['author']['en'].replace('{0}', msg.project.name),
+                  name: authorName,
                   iconURL: `${RYP_BASE_URL}/logo192.png`,
                   url: `${RYP_BASE_URL}/projects/${msg.project.id}`,
                 })
-                .setDescription(msg.announcement.content)
+                .setDescription(finalAnnouncement.content)
                 .setTimestamp()
                 .setFields([{
-                  name: announcementTextMessages['link']['en'],
-                  value: msg.announcement.link,
+                  name: t('linkToAnnouncement', msg.language),
+                  value: finalAnnouncement.link,
                 }])
                 await user.send({ embeds: [baseEmbed] });
                 sendStatistics(queueChannel, 'statistics-discord', {

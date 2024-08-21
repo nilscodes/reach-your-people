@@ -1,5 +1,10 @@
 package io.vibrantnet.ryp.core.publishing.service
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.fasterxml.jackson.module.kotlin.registerKotlinModule
+import io.ryp.cardano.model.StakepoolDetailsDto
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.jupiter.api.AfterAll
@@ -46,6 +51,35 @@ internal class VerifyServiceVibrantTest {
         StepVerifier.create(result)
             .expectError()
             .verify()
+    }
+
+    @Test
+    fun `stakepool details are properly retrieved`() {
+        val poolHash = "be80794a946cf5e578846fc81e3c62ac13f4ab3335e0f5dc046edad4"
+        val stakepoolDetails = StakepoolDetailsDto(
+            poolHash = poolHash,
+            name = "Vibrant Stakepool",
+            ticker = "VIBRNT",
+            description = "A stakepool that is vibrant",
+            homepage = "https://vibrant.io",
+        )
+        val stakepoolDetailsPayload = configureObjectMapper().writeValueAsString(stakepoolDetails)
+        mockBackend.enqueue(
+            MockResponse().setResponseCode(200).setBody(stakepoolDetailsPayload).addHeader("Content-Type", "application/json")
+        )
+        val verifyService = VerifyServiceVibrant(
+            WebClient.builder().baseUrl(String.format("http://localhost:%s", mockBackend.port)).build()
+        )
+        val result = verifyService.getStakepoolDetails(poolHash)
+        StepVerifier.create(result)
+            .expectNext(stakepoolDetails)
+            .verifyComplete()
+    }
+
+    private fun configureObjectMapper(): ObjectMapper {
+        return jacksonObjectMapper()
+            .registerKotlinModule()
+            .registerModule(JavaTimeModule())
     }
 
     companion object {

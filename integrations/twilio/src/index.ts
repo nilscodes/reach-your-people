@@ -5,6 +5,7 @@ import express from 'express';
 import twilio, { Twilio } from 'twilio';
 import pino from 'pino';
 import amqplib from 'amqplib'
+import { AnnouncementType, initializeTranslations, MessageDto, StatisticsUpdateDto, t } from '@vibrantnet/integration-shared';
 
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
@@ -18,7 +19,6 @@ const port = process.env.PORT || 3000;
 
 app.use(express.json());
 
-// POST endpoint to start the verification process
 app.post('/startVerification', async (req, res) => {
   const { phoneNumber, channel } = req.body;
   logger.info(`Starting verification for ${phoneNumber} via ${channel}`);
@@ -60,65 +60,13 @@ app.listen(port, () => {
   logger.info(`Server running at http://localhost:${port}`);
 });
 
-type BasicAnnouncementDto = {
-  id: string;
-  author: number;
-  title: string;
-  content: string;
-  link: string;
-  externalLink?: string;
-}
-
-type BasicProjectDto = {
-  id: number;
-  name: string;
-  url: string;
-  logo: string;
-}
-
-type MessageDto = {
-  referenceId: string; // Phone number
-  announcement: BasicAnnouncementDto;
-  metadata?: string;
-  project: BasicProjectDto;
-}
-
-type AnnouncementTextMessages = {
-  [key: string]: {
-    [lang: string]: string;
-  };
-};
-
-type StatisticsDto = {
-  delivered?: number;
-  failures?: number;
-  views?: number;
-}
-
-type StatisticsUpdateDto = {
-  announcementId: string;
-  statistics: StatisticsDto;
-}
-
-const announcementTextMessages: AnnouncementTextMessages = {
-  'newAnnouncement': {
-    'en': 'A new announcement has been posted by "{0}", a project you are following. Read more at {1}'
-  }
-}
-
-type EventKey = keyof typeof announcementTextMessages;
-type LangKey = keyof typeof announcementTextMessages[EventKey];
-
-const getTextForEvent = (lang: LangKey, event: EventKey) => {
-  return announcementTextMessages[event][lang];
-}
-
 const sendStatistics = async (channel: amqplib.Channel, queueName: string, statisticsUpdate: StatisticsUpdateDto) => {
   await channel.assertQueue(queueName);
   channel.sendToQueue(queueName, Buffer.from(JSON.stringify(statisticsUpdate)));
 };
 
 const connectToAmqp = async () => {
+  await initializeTranslations();
   const rabbitPw = process.env.RABBITMQ_PASSWORD as string;
   const rabbitMqPort = +(process.env.RABBITMQ_PORT || 5672);
   try {
@@ -128,8 +76,8 @@ const connectToAmqp = async () => {
       consume: async (queueChannel: amqplib.Channel, client: Twilio, msg: MessageDto) => {
         logger.debug({ msg: `Received message with ID ${msg.announcement} for user with phone number ${msg.referenceId}` });
         const shortenedProjectName = msg.project.name.length > 20 ? msg.project.name.substring(0, 20) + '…' : msg.project.name;
-        const announcementTextMessage = getTextForEvent('en', 'newAnnouncement');
-        const announcementText = announcementTextMessage.replace('{0}', shortenedProjectName).replace('{1}', msg.announcement.link);
+
+        const announcementText = createAnnouncementTextForType(msg, shortenedProjectName);
         try {
             const message = await client.messages
                 .create({
@@ -184,4 +132,18 @@ const connectToAmqp = async () => {
   }
 };
 connectToAmqp();
+
+function createAnnouncementTextForType(msg: MessageDto, shortenedProjectName: string) {
+  if (msg.announcement.type === AnnouncementType.STAKEPOOL_RETIREMENT) {
+    const tickerOrHash = msg.announcement.metadata?.poolTicker || msg.announcement.metadata?.poolHash;
+    return t('retirement.textMessage', msg.language, {
+      ns: 'stakepool-cardano',
+      tickerOrHash,
+    });
+  }
+  return t('newAnnouncementTextMessage', msg.language, {
+    projectName: shortenedProjectName,
+    link: msg.announcement.link,
+  });
+}
 

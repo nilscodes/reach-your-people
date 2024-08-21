@@ -1,0 +1,8 @@
+{
+  "governanceVoteTitle": "Governance activity (vote)",
+  "drepVoteYes": "YES",
+  "drepVoteNo": "NO",
+  "drepVoteAbstain": "ABSTAIN",
+  "drepTreasuryVote": "Your delegated representative voted **{{vote}}** on a treasury withdrawal proposal for {{amount}} ADA with the title: *{{proposalTitle}}*\n\n**Their submitted comment**\n{{comment}}\n\n**Link to transaction**\n<https://preview.cardanoscan.io/transaction/{{transactionHash}}>"
+
+}

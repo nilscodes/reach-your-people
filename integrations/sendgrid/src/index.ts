@@ -6,7 +6,7 @@ import amqplib from 'amqplib'
 import sgMail from '@sendgrid/mail';
 import fs from 'fs';
 import path from 'path';
-import { htmlizeMarkdown, stripMarkdown } from './markdownTools';
+import { htmlizeMarkdown, stripMarkdown, initializeTranslations, MessageDto, StatisticsUpdateDto, t, augmentAnnouncementIfRequired, AnnouncementType } from '@vibrantnet/integration-shared';
 import mjml2html from 'mjml'
 
 const apiKey = process.env.SENDGRID_API_KEY!;
@@ -14,66 +14,9 @@ const fromEmail = process.env.SENDGRID_FROM || '';
 sgMail.setApiKey(apiKey);
 const logger = pino({ level: process.env.LOG_LEVEL || 'info' });
 
-type BasicAnnouncementDto = {
-  id: string;
-  author: number;
-  title: string;
-  content: string;
-  link: string;
-  externalLink?: string;
-}
-
-type BasicProjectDto = {
-  id: number;
-  name: string;
-  url: string;
-  logo: string;
-}
-
-type MessageDto = {
-  referenceId: string; // Email for email type, google ID for google
-  referenceName: string; // Email for google
-  announcement: BasicAnnouncementDto;
-  metadata?: string;
-  project: BasicProjectDto;
-}
-
-type AnnouncementTextMessages = {
-  [key: string]: {
-    [lang: string]: string;
-  };
-};
-
-type StatisticsDto = {
-  delivered?: number;
-  failures?: number;
-  views?: number;
-}
-
-type StatisticsUpdateDto = {
-  announcementId: string;
-  statistics: StatisticsDto;
-}
-
-const announcementTextMessages: AnnouncementTextMessages = {
-  'newAnnouncementSubject': {
-    'en': 'RYP: New announcement from {0}'
-  },
-  'ctaButtonText': {
-    'en': 'Read more'
-  }
-}
-
-type EventKey = keyof typeof announcementTextMessages;
-type LangKey = keyof typeof announcementTextMessages[EventKey];
-
 const isDev = process.env.NODE_ENV !== 'production';
 const templatePath = path.join(__dirname, isDev ? '../templates/single-announcement.mjml' : 'templates/single-announcement.mjml');
 const singleAnnouncementTemplate = fs.readFileSync(templatePath, 'utf8');
-
-const getTextForEvent = (lang: LangKey, event: EventKey) => {
-  return announcementTextMessages[event][lang];
-}
 
 const sendStatistics = async (channel: amqplib.Channel, queueName: string, statisticsUpdate: StatisticsUpdateDto) => {
   await channel.assertQueue(queueName);
@@ -81,6 +24,7 @@ const sendStatistics = async (channel: amqplib.Channel, queueName: string, stati
 };
 
 const connectToAmqp = async () => {
+  await initializeTranslations();
   const rabbitPw = process.env.RABBITMQ_PASSWORD as string;
   const rabbitMqPort = +(process.env.RABBITMQ_PORT || 5672);
   try {
@@ -106,23 +50,23 @@ async function setupQueue(queueName: string, conn: any) {
     name: queueName,
     consume: async (queueChannel: amqplib.Channel, msg: MessageDto) => {
       const to = queueName === 'email' ? msg.referenceId : msg.referenceName;
-      logger.debug({ msg: `Received message with ID ${msg.announcement} for user with email ${to} on queue ${queueName}` });
+      logger.debug({ msg: `Received message for announcement ID ${msg.announcement.id} for user with email ${to} on queue ${queueName}` });
+      const finalAnnouncement = augmentAnnouncementIfRequired(msg.announcement, msg.language);
       const shortenedProjectName = msg.project.name.length > 20 ? msg.project.name.substring(0, 20) + '…' : msg.project.name;
-      const announcementTextMessage = getTextForEvent('en', 'newAnnouncementSubject');
-      const subject = announcementTextMessage.replace('{0}', shortenedProjectName);
-      const ctaText = getTextForEvent('en', 'ctaButtonText');
+      const subject = generateSubject(msg, shortenedProjectName);
+      const ctaText = t('readMore', msg.language);
       try {
-        const text = stripMarkdown(`# ${msg.announcement.title}\n\n${msg.announcement.content}`);
+        const text = stripMarkdown(`# ${finalAnnouncement.title}\n\n${finalAnnouncement.content}`);
         const placeholders = {
           headerImageUrl: 'https://www.ryp.io/email_header_dark.png',
-          title: msg.announcement.title,
+          title: finalAnnouncement.title,
           preview: text.substring(0, 100),
-          announcementBody: await htmlizeMarkdown(`${msg.announcement.content}`),
+          announcementBody: await htmlizeMarkdown(`${finalAnnouncement.content}`),
           unsubscribeLink: `https://www.ryp.io/login/mail/unsubscribe?email=${to}`,
           preferencesLink: 'https://www.ryp.io/account',
           footerImageUrl: 'https://www.ryp.io/email_footer_dark.png',
           ctaText,
-          ctaUrl: msg.announcement.link,
+          ctaUrl: finalAnnouncement.link,
         } as any;
 
         let renderedTemplate = singleAnnouncementTemplate;
@@ -177,5 +121,12 @@ async function setupQueue(queueName: string, conn: any) {
       }
     });
   }
+}
+
+function generateSubject(msg: MessageDto, shortenedProjectName: string) {
+  if (msg.announcement.type === AnnouncementType.STAKEPOOL_RETIREMENT) {
+    return t('newEventSubject', msg.language, { title: t('retirement.title', msg.language, { ns: 'stakepool-cardano' }) });
+  }
+  return t('newAnnouncementSubject', msg.language, { projectName: shortenedProjectName });
 }
 

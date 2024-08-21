@@ -1,5 +1,5 @@
 {
-  "name": "webpush",
+  "name": "ryp-integration-webpush",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -16,7 +16,6 @@
     "@types/amqplib": "^0.10.5",
     "amqplib": "^0.10.4",
     "dotenv": "^16.4.5",
-    "marked": "^12.0.2",
     "pino": "^9.2.0",
     "web-push": "^3.6.7"
   },

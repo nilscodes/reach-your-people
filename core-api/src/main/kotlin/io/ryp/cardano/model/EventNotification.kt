@@ -11,4 +11,5 @@ data class EventNotification(
 
 enum class EventNotificationType {
     GOVERNANCE_VOTE,
+    STAKEPOOL_RETIREMENT,
 }

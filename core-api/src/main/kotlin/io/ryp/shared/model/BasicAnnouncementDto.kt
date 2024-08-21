@@ -87,16 +87,22 @@ data class BasicAnnouncementWithIdDto @JsonCreator constructor(
     @JsonProperty("dreps")
     @field:ValidDRepIDList
     val dreps: List<String>? = null,
+
+    @JsonProperty("metadata")
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    val metadata: Map<String, String>? = null,
 )
 
 enum class AnnouncementType {
     STANDARD,
     TEST,
-    GOVERNANCE_VOTE;
+    GOVERNANCE_VOTE,
+    STAKEPOOL_RETIREMENT;
 
     companion object {
         fun fromEventType(type: EventNotificationType) = when (type) {
             EventNotificationType.GOVERNANCE_VOTE -> GOVERNANCE_VOTE
+            EventNotificationType.STAKEPOOL_RETIREMENT -> STAKEPOOL_RETIREMENT
         }
     }
 }
