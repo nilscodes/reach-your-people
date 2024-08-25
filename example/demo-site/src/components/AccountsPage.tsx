@@ -3,10 +3,11 @@ import { Container, Box, Stack, Tabs, TabList, Tab, TabIndicator, TabPanels, Tab
 import { Account, GetLinkedExternalAccounts200ResponseInner } from '../lib/ryp-subscription-api';
 import useTranslation from 'next-translate/useTranslation';
 import LinkedAccounts from './LinkedAccounts';
-import WalletSettingsList from './wallets/WalletSettingsList';
+import WalletSettingsList from './notifications/WalletSettingsList';
 import Achievements from './account/Achievements';
 import { Achievement } from '@/lib/types/Achievement';
 import PremiumAccount from './account/PremiumAccount';
+import NotificationSettings from './notifications/NotificationSettings';
 
 
 type AccountsPageProps = {
@@ -17,8 +18,8 @@ type AccountsPageProps = {
   achievements?: Achievement[];
 };
 
-const tabs = ['accounts', 'wallets', 'achievements', 'premium'];
-const tabUrls = ['/account', '/account/wallets', '/account/achievements', '/account/premium'];
+const tabs = ['accounts', 'notifications', 'achievements', 'premium'];
+const tabUrls = ['/account', '/account/notifications', '/account/achievements', '/account/premium'];
 
 export default function AccountsPage({ account, accountSettings, linkedAccounts, achievements, currentTab }: AccountsPageProps) {
   const [tabIndex, setTabIndex] = useState(tabs.indexOf(currentTab));
@@ -49,7 +50,7 @@ export default function AccountsPage({ account, accountSettings, linkedAccounts,
             <LinkedAccounts account={account} linkedAccounts={linkedAccounts} accountSettings={accountSettings} />
           </TabPanel>
           <TabPanel>
-            <WalletSettingsList account={account} wallets={linkedAccounts.filter((account) => account.externalAccount.type === 'cardano')} />
+            <NotificationSettings account={account} wallets={linkedAccounts.filter((account) => account.externalAccount.type === 'cardano')} />
           </TabPanel>
           <TabPanel>
             <Achievements account={account} achievements={achievements ?? []} />

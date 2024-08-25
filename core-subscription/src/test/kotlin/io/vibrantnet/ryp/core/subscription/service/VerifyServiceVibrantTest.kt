@@ -4,7 +4,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import io.mockk.*
-import io.ryp.cardano.model.StakepoolDetailsDto
+import io.ryp.cardano.model.stakepools.StakepoolDetailsDto
 import io.ryp.cardano.model.TokenOwnershipInfoWithAssetCount
 import io.vibrantnet.ryp.core.loadJsonFromResource
 import okhttp3.mockwebserver.MockResponse

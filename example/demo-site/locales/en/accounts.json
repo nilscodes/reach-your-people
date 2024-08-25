@@ -1,7 +1,7 @@
 {
     "tabs": {
         "accounts": "Accounts",
-        "wallets": "Wallets",
+        "notifications": "Notifications",
         "achievements": "Achievements",
         "premium": "Premium"
     },
@@ -117,6 +117,18 @@
             "description": "By default, subscribe to all communications from your delegated representatives. You can unsubscribe from specific dReps under <0>Projects</0>."
         }
     },
+
+    "globalNotificationsTitle": "Global Notification Settings",
+    "globalNotificationsDescription": "Manage your notification settings and determine which subscriptions are active by default for notifications.",
+    "cardanoNotificationSettings": "Cardano Notifications",
+
+    "cardanoSettings": {
+        "governance": {
+            "title": "Governance Activity",
+            "description": "Receive notifications about governance activity on the Cardano blockchain, such as consitutional committee votes, proposals, and other governance-related activities. This does NOT include votes from Stakepools and dReps. Make sure to turn on dRep and SPO notifications in your respective wallets for the votes from your dRep and SPO. You can also subscribe to other dReps you are interested in on the <0>Projects</0> page."
+        }
+    },
+
     "soonTag": "Soon",
     "firstSteps": {
         "title": "First Steps",

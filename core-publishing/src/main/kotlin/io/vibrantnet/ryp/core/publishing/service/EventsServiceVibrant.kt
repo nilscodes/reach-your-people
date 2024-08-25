@@ -44,11 +44,11 @@ class EventsServiceVibrant(
                     policies = eventNotification.audience.policies,
                     stakepools = eventNotification.audience.stakepools,
                     dreps = eventNotification.audience.dreps,
+                    global = eventNotification.audience.global,
                     metadata = metadata,
                 )
                 announcementsApiServiceVibrant.createAnnouncement(announcementWithId, 0)
                     .map {
-                        println(announcementWithId)
                         publishEventAnnouncement(announcementWithId)
                     }
             }.subscribe()
@@ -58,9 +58,11 @@ class EventsServiceVibrant(
         return when (eventNotification.type) {
             EventNotificationType.GOVERNANCE_VOTE ->
                 Mono.just(mapOf(
-                    "drepId" to eventNotification.audience.dreps.first(),
+                    "drepId" to (eventNotification.audience.dreps.firstOrNull() ?: ""),
+                    "poolHash" to (eventNotification.audience.stakepools.firstOrNull() ?: ""),
                     "transactionHash" to eventNotification.transactionHash,
-                    "comment" to (eventNotification.comment ?: ""),
+                    "transactionIndex" to eventNotification.transactionIndex.toString(),
+                    "comment" to (eventNotification.metadata["comment"] ?: ""),
                 ))
 
             EventNotificationType.STAKEPOOL_RETIREMENT -> {
@@ -71,10 +73,19 @@ class EventsServiceVibrant(
                         mapOf(
                             "poolHash" to poolHash,
                             "transactionHash" to eventNotification.transactionHash,
+                            "transactionIndex" to eventNotification.transactionIndex.toString(),
                             "poolName" to it.name,
                             "poolTicker" to it.ticker,
                         )
                     }.switchIfEmpty(Mono.just(mapOf("poolHash" to poolHash, "transactionHash" to eventNotification.transactionHash)))
+            }
+            EventNotificationType.GOVERNANCE_ACTION_NEW_PROPOSAL -> {
+                Mono.just(mapOf(
+                    "transactionHash" to eventNotification.transactionHash,
+                    "transactionIndex" to eventNotification.transactionIndex.toString(),
+                    "proposalType" to (eventNotification.metadata["type"] ?: ""),
+                    "title" to (eventNotification.metadata["title"] ?: ""),
+                ))
             }
             else -> Mono.just(emptyMap())
         }
@@ -84,11 +95,12 @@ class EventsServiceVibrant(
         announcement: BasicAnnouncementWithIdDto,
     ): Mono<Unit> {
         val announcementJob = AnnouncementJobDto(
-            0,
-            announcement.id,
+            projectId = 0,
+            announcementId = announcement.id,
+            global = announcement.global,
         )
 
-        logger.info { "Publishing event notification ${announcement.id} for event, publishing to policies: ${announcement.policies}, stakepools: ${announcement.stakepools}, dReps: ${announcement.dreps}" }
+        logger.info { "Publishing event notification ${announcement.id} for event, publishing to policies: ${announcement.policies}, stakepools: ${announcement.stakepools}, dReps: ${announcement.dreps}, global: ${announcement.global}" }
         redisTemplate.opsForValue()
             .set("announcementsdata:${announcement.id}", announcement, 48, java.util.concurrent.TimeUnit.HOURS)
         rabbitTemplate.convertAndSend("announcements", announcementJob)

@@ -1,4 +1,4 @@
-package io.ryp.cardano.model
+package io.ryp.cardano.model.stakepools
 
 data class StakepoolDelegationInfoDto(
     val poolHash: String,

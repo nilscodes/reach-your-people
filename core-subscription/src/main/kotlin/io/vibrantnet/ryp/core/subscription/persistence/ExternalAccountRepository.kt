@@ -110,4 +110,25 @@ WHERE lea.account_id IN (SELECT s.account_id
         @Param("projectId") projectId: Long,
         @Param("status") status: SubscriptionStatus,
     ): List<ExternalAccountWithAccountProjection>
+
+    @Query(value = """
+SELECT DISTINCT 
+    ea.external_account_id as id,
+    ea.external_reference_id as reference_id,
+    ea.external_reference_name as reference_name,
+    ea.display_name as display_name,
+    ea.registration_time as registration_time,
+    ea.account_type as type,
+    ea.metadata as metadata,
+    lea.account_id as account_id
+FROM "accounts" a
+JOIN "linked_external_accounts" lea
+ON a.account_id = lea.account_id
+JOIN "external_accounts" ea
+ON ea.external_account_id = lea.external_account_id
+            WHERE a.cardano_settings & cast(:requiredSettings as bit(16)) = cast(:requiredSettings as bit(16))
+            AND lea.role=:requiredRole
+            AND lea.settings & B'0000000000100000' = B'0000000000100000'
+""", nativeQuery = true)
+    fun findExternalAccountsForGlobalAudience(requiredRole: Int, requiredSettings: String): List<ExternalAccountWithAccountProjection>
 }

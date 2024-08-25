@@ -4,9 +4,9 @@ import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
 import io.ryp.cardano.model.EventNotificationType
-import io.ryp.cardano.model.ValidDRepIDList
 import io.ryp.cardano.model.ValidPolicyList
-import io.ryp.cardano.model.ValidStakepoolHashList
+import io.ryp.cardano.model.governance.ValidDRepIDList
+import io.ryp.cardano.model.stakepools.ValidStakepoolHashList
 import java.util.*
 
 data class BasicAnnouncementDto @JsonCreator constructor(
@@ -36,6 +36,10 @@ data class BasicAnnouncementDto @JsonCreator constructor(
     @JsonProperty("dreps")
     @field:ValidDRepIDList
     val dreps: List<String>? = null,
+
+    @JsonProperty("global")
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    val global: List<GlobalAnnouncementAudience> = emptyList(),
 ) {
     fun toBasicAnnouncementWithIdDto(id: UUID, link: String): BasicAnnouncementWithIdDto {
         return BasicAnnouncementWithIdDto(
@@ -48,7 +52,8 @@ data class BasicAnnouncementDto @JsonCreator constructor(
             externalLink,
             policies,
             stakepools,
-            dreps
+            dreps,
+            global,
         )
     }
 }
@@ -88,21 +93,31 @@ data class BasicAnnouncementWithIdDto @JsonCreator constructor(
     @field:ValidDRepIDList
     val dreps: List<String>? = null,
 
+    @JsonProperty("global")
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    val global: List<GlobalAnnouncementAudience> = emptyList(),
+
     @JsonProperty("metadata")
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     val metadata: Map<String, String>? = null,
 )
 
+enum class GlobalAnnouncementAudience {
+    GOVERNANCE_CARDANO,
+}
+
 enum class AnnouncementType {
     STANDARD,
     TEST,
     GOVERNANCE_VOTE,
-    STAKEPOOL_RETIREMENT;
+    STAKEPOOL_RETIREMENT,
+    GOVERNANCE_ACTION_NEW_PROPOSAL;
 
     companion object {
         fun fromEventType(type: EventNotificationType) = when (type) {
             EventNotificationType.GOVERNANCE_VOTE -> GOVERNANCE_VOTE
             EventNotificationType.STAKEPOOL_RETIREMENT -> STAKEPOOL_RETIREMENT
+            EventNotificationType.GOVERNANCE_ACTION_NEW_PROPOSAL -> GOVERNANCE_ACTION_NEW_PROPOSAL
         }
     }
 }

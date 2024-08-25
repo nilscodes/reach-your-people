@@ -466,6 +466,10 @@ components:
           format: date-time
           example: '2020-05-02T14:00:00Z'
           readOnly: true
+        cardanoSettings:
+          type: array
+          items:
+            $ref: '#/components/schemas/CardanoSetting'
     AccountPartial:
       title: AccountPartial
       x-stoplight:
@@ -475,6 +479,10 @@ components:
         displayName:
           type: string
           example: Jim Jergens
+        cardanoSettings:
+          type: array
+          items:
+            $ref: '#/components/schemas/CardanoSetting'
       description: ''
     AccountId:
       title: AccountId
@@ -483,6 +491,13 @@ components:
       example: 12
       description: An ID identifying a single RYP account
       readOnly: true
+    CardanoSetting:
+      title: CardanoSetting
+      type: string
+      enum:
+        - GOVERNANCE_ACTION_ANNOUNCEMENTS
+      examples:
+        - GOVERNANCE_ACTION_ANNOUNCEMENTS
     ExternalAccount:
       type: object
       required:

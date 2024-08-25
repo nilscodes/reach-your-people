@@ -11,5 +11,8 @@ data class Audience @JsonCreator constructor(
     val stakepools: List<String> = emptyList(),
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    val dreps: List<String> = emptyList()
+    val dreps: List<String> = emptyList(),
+
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    val global: List<GlobalAnnouncementAudience> = emptyList()
 )

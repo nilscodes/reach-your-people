@@ -1,5 +1,6 @@
 package io.ryp.cardano.model
 
+import io.ryp.cardano.model.stakepools.VrfVerificationKey
 import io.ryp.core.createDefaultObjectMapper
 import nl.jqno.equalsverifier.EqualsVerifier
 import org.junit.jupiter.api.Test

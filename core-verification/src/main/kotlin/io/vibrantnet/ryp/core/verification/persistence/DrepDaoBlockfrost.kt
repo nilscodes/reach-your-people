@@ -1,7 +1,7 @@
 package io.vibrantnet.ryp.core.verification.persistence
 
-import io.ryp.cardano.model.DRepDelegationInfoDto
-import io.ryp.cardano.model.DRepDetailsDto
+import io.ryp.cardano.model.governance.DRepDelegationInfoDto
+import io.ryp.cardano.model.governance.DRepDetailsDto
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.stereotype.Repository

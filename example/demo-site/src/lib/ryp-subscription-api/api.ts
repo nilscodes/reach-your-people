@@ -49,6 +49,12 @@ export interface Account {
     'premiumUntil'?: any;
     /**
      * 
+     * @type {any}
+     * @memberof Account
+     */
+    'cardanoSettings'?: any;
+    /**
+     * 
      * @type {string}
      * @memberof Account
      */
@@ -78,6 +84,12 @@ export interface Account1 {
      * @memberof Account1
      */
     'premiumUntil'?: any;
+    /**
+     * 
+     * @type {any}
+     * @memberof Account1
+     */
+    'cardanoSettings'?: any;
     /**
      * 
      * @type {string}
@@ -110,7 +122,20 @@ export interface AccountPartial {
      * @memberof AccountPartial
      */
     'displayName'?: string;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof AccountPartial
+     */
+    'cardanoSettings'?: Array<AccountPartialCardanoSettingsEnum>;
 }
+
+export const AccountPartialCardanoSettingsEnum = {
+    GovernanceActionAnnouncements: 'GOVERNANCE_ACTION_ANNOUNCEMENTS'
+} as const;
+
+export type AccountPartialCardanoSettingsEnum = typeof AccountPartialCardanoSettingsEnum[keyof typeof AccountPartialCardanoSettingsEnum];
+
 /**
  * 
  * @export

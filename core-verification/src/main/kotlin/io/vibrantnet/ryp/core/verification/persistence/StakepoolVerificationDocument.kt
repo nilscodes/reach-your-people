@@ -1,7 +1,7 @@
 package io.vibrantnet.ryp.core.verification.persistence
 
 import com.fasterxml.jackson.annotation.JsonFormat
-import io.ryp.cardano.model.StakepoolVerificationDto
+import io.ryp.cardano.model.stakepools.StakepoolVerificationDto
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document

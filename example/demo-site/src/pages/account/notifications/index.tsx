@@ -8,7 +8,7 @@ import { Account, GetLinkedExternalAccounts200ResponseInner } from "../../../lib
 import Head from "next/head";
 import AccountsPage from "@/components/AccountsPage";
 
-export default function WalletsHome({
+export default function NotificationsHome({
   account,
   linkedAccounts,
   accountSettings,
@@ -20,7 +20,7 @@ export default function WalletsHome({
       <Head>
         <title>RYP: Wallet Settings</title>
       </Head>
-      <AccountsPage account={account} linkedAccounts={linkedAccounts} accountSettings={accountSettings} currentTab="wallets" />
+      <AccountsPage account={account} linkedAccounts={linkedAccounts} accountSettings={accountSettings} currentTab="notifications" />
     </>);
   }
 

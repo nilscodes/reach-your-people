@@ -2,7 +2,7 @@ package io.vibrantnet.ryp.core.verification.controller
 
 import io.mockk.every
 import io.mockk.mockk
-import io.ryp.cardano.model.StakepoolDetailsDto
+import io.ryp.cardano.model.stakepools.StakepoolDetailsDto
 import io.ryp.cardano.model.TokenOwnershipInfoWithAssetCount
 import io.vibrantnet.ryp.core.loadJsonFromResource
 import io.vibrantnet.ryp.core.verification.service.StakeApiService
@@ -56,7 +56,8 @@ class StakeApiControllerIntegrationTest {
     fun `getting stake pool details for a stake address works`() {
         val stakeAddress = "stake1baked"
         every { stakeApiService.getStakepoolDetailsForStakeAddress(stakeAddress) } answers {
-            Mono.just(StakepoolDetailsDto(
+            Mono.just(
+                StakepoolDetailsDto(
                 poolHash = "0b80b4ac493eb53970282b9d19174d44892ca86a52e080fb013eed5b",
                 ticker = "VIBRN",
                 name = "Vibrant",

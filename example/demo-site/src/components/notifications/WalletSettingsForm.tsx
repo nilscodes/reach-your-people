@@ -14,7 +14,7 @@ export default function WalletSettingsForm({ wallet }: { wallet: LinkExternalAcc
     const updateWalletSettings = async () => {
       await api.updateLinkedExternalAccountSettings(wallet.externalAccount.id!, currentWalletSettings.settings!)
     }
-    updateWalletSettings();    
+    updateWalletSettings(); // TODO this calls the update API on every load, because API gets set - does not look right
   }, [currentWalletSettings, api, wallet.externalAccount.id])
 
   return (<Container py={{ base: '4', md: '8' }} px="0">

@@ -1,7 +1,7 @@
 package io.vibrantnet.ryp.core.subscription.service
 
-import io.ryp.cardano.model.DRepDetailsDto
-import io.ryp.cardano.model.StakepoolDetailsDto
+import io.ryp.cardano.model.governance.DRepDetailsDto
+import io.ryp.cardano.model.stakepools.StakepoolDetailsDto
 import io.ryp.cardano.model.TokenOwnershipInfoWithAssetCount
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono

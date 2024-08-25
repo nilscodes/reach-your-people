@@ -1,4 +1,4 @@
-package io.ryp.cardano.model
+package io.ryp.cardano.model.stakepools
 
 import io.mockk.mockk
 import jakarta.validation.ConstraintValidatorContext

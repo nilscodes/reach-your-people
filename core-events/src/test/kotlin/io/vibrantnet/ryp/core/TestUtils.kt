@@ -1,11 +1,16 @@
 package io.vibrantnet.ryp.core
 
-import java.nio.file.Files
-import java.nio.file.Paths
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.SerializationFeature
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 
-fun loadJsonFromResource(path: String): String {
-    val resourceUrl = Any::class::class.java.classLoader.getResource(path)
-        ?: throw IllegalArgumentException("Resource not found: $path")
-    val resourcePath = Paths.get(resourceUrl.toURI())
-    return Files.readString(resourcePath)
-}
+/*
+ * As close to the default Spring Boot ObjectMapper as possible.
+ */
+fun createDefaultObjectMapper(): ObjectMapper = jacksonObjectMapper()
+    .registerKotlinModule()
+    .registerModules(JavaTimeModule())
+    .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+    .disable(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS)

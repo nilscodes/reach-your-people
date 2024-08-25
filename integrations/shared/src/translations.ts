@@ -15,7 +15,7 @@ export async function initializeTranslations(options: InitOptions = {}): Promise
     backend: {
       loadPath: `${__dirname}/locales/{{lng}}/{{ns}}.json`, // Load from fixed path
     },
-    ns: ['common', 'stakepool-cardano'],
+    ns: ['common', 'stakepool-cardano', 'governance-cardano'],
     defaultNS: 'common',
     ...options,
   });

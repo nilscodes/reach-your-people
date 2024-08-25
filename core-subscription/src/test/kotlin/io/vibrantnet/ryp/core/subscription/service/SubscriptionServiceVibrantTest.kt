@@ -11,7 +11,8 @@ import io.ryp.cardano.model.SnapshotRequestDto
 import io.ryp.cardano.model.SnapshotStakeAddressDto
 import io.ryp.cardano.model.SnapshotType
 import io.ryp.shared.model.*
-import io.vibrantnet.ryp.core.subscription.controller.makeProjectDto
+import io.vibrantnet.ryp.core.subscription.model.CardanoSetting
+import io.vibrantnet.ryp.core.subscription.persistence.CardanoSettingsUtil
 import io.vibrantnet.ryp.core.subscription.persistence.ExternalAccountRepository
 import io.vibrantnet.ryp.core.subscription.persistence.ExternalAccountWithAccountProjection
 import org.junit.jupiter.api.BeforeEach
@@ -20,13 +21,11 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate
 import org.springframework.data.redis.core.ListOperations
 import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.data.redis.core.ValueOperations
-import reactor.core.publisher.Mono
 import java.time.OffsetDateTime
 import java.util.*
 
 internal class SubscriptionServiceVibrantTest {
 
-    private val projectsService = mockk<ProjectsApiService>()
     private val externalAccountRepository = mockk<ExternalAccountRepository>()
     private val redisTemplate = mockk<RedisTemplate<String, Any>>()
     private val opsForList = mockk<ListOperations<String, Any>>()
@@ -36,7 +35,6 @@ internal class SubscriptionServiceVibrantTest {
         .registerKotlinModule()
         .registerModule(JavaTimeModule())
     private val subscriptionServiceVibrant = SubscriptionServiceVibrant(
-        projectsService,
         externalAccountRepository,
         redisTemplate,
         rabbitTemplate,
@@ -54,10 +52,7 @@ internal class SubscriptionServiceVibrantTest {
     }
 
     @Test
-    fun `preparing recipients should just retrieve explicit subscribers and send to complete queue if no policies are found`() {
-        every { projectsService.getProject(420) } answers {
-            Mono.just(makeProjectDto(420).copy(policies = emptySet()))
-        }
+    fun `preparing recipients should just retrieve explicit subscribers and send to complete queue if no policies, stakepools or dRep IDs are found`() {
         every { externalAccountRepository.findExternalAccountsByProjectIdAndSubscriptionStatus(420, SubscriptionStatus.SUBSCRIBED) } returns listOf(
             makeExternalAccountWithAccountProjection(40),
             makeExternalAccountWithAccountProjection(41),
@@ -65,20 +60,37 @@ internal class SubscriptionServiceVibrantTest {
         val announcementId = UUID.randomUUID()
         every { opsForValue["announcementsdata:$announcementId"] } returns TEST_ANNOUNCEMENT
 
-        subscriptionServiceVibrant.prepareRecipients(AnnouncementJobDto(420, announcementId))
+        val announcement = AnnouncementJobDto(announcementId, 420)
+        subscriptionServiceVibrant.prepareRecipients(announcement)
 
         verify(exactly = 1) {
             opsForList.rightPushAll("announcements:$announcementId", any())
             redisTemplate.expire("announcements:$announcementId", 48, java.util.concurrent.TimeUnit.HOURS)
         }
-        verify(exactly = 1) { rabbitTemplate.convertAndSend("completed", announcementId) }
+        verify(exactly = 1) { rabbitTemplate.convertAndSend("completed", announcement) }
+    }
+
+    @Test
+    fun `preparing recipients should sent to global subscribers and send to complete queue if global announcement is made`() {
+        every { externalAccountRepository.findExternalAccountsForGlobalAudience(ExternalAccountRole.OWNER.ordinal, CardanoSettingsUtil.settingsFromSet(setOf(CardanoSetting.GOVERNANCE_ACTION_ANNOUNCEMENTS))) } returns listOf(
+            makeExternalAccountWithAccountProjection(40),
+            makeExternalAccountWithAccountProjection(41),
+        )
+        val announcementId = UUID.randomUUID()
+        every { opsForValue["announcementsdata:$announcementId"] } returns TEST_ANNOUNCEMENT
+
+        val announcement = AnnouncementJobDto(announcementId, 0, null, listOf(GlobalAnnouncementAudience.GOVERNANCE_CARDANO))
+        subscriptionServiceVibrant.prepareRecipients(announcement)
+
+        verify(exactly = 1) {
+            opsForList.rightPushAll("announcements:$announcementId", any())
+            redisTemplate.expire("announcements:$announcementId", 48, java.util.concurrent.TimeUnit.HOURS)
+        }
+        verify(exactly = 1) { rabbitTemplate.convertAndSend("completed", announcement) }
     }
 
     @Test
     fun `preparing recipients should send snapshot request if policies are present in the announcement`() {
-        every { projectsService.getProject(420) } answers {
-            Mono.just(makeProjectDto(420))
-        }
         every { externalAccountRepository.findExternalAccountsByProjectIdAndSubscriptionStatus(420, SubscriptionStatus.SUBSCRIBED) } returns listOf(
             makeExternalAccountWithAccountProjection(40),
             makeExternalAccountWithAccountProjection(41),
@@ -86,7 +98,7 @@ internal class SubscriptionServiceVibrantTest {
         val announcementId = UUID.randomUUID()
         every { opsForValue["announcementsdata:$announcementId"] } returns TEST_ANNOUNCEMENT.copy(policies = listOf("df6fe8ac7a40d0be2278d7d0048bc01877533d48852d5eddf2724058", "4523c5e21d409b81c95b45b0aea275b8ea1406e6cafea5583b9f8a5f"))
 
-        val announcement = AnnouncementJobDto(420, announcementId)
+        val announcement = AnnouncementJobDto(announcementId, 420)
         subscriptionServiceVibrant.prepareRecipients(announcement)
 
         verify(exactly = 0) {
@@ -106,7 +118,7 @@ internal class SubscriptionServiceVibrantTest {
     fun `snapshot completion should lead to an announcement being sent with the right recipients`() {
         val announcementId = UUID.randomUUID()
         val snapshotId = UUID.randomUUID()
-        val announcement = AnnouncementJobDto(420, announcementId, snapshotId)
+        val announcement = AnnouncementJobDto(announcementId, 420, snapshotId)
         every { opsForList.range("snapshot:$snapshotId", 0, -1) } returns listOf(
             SnapshotStakeAddressDto("123", SnapshotType.POLICY),
             SnapshotStakeAddressDto("456", SnapshotType.POLICY),
@@ -137,7 +149,7 @@ internal class SubscriptionServiceVibrantTest {
     fun `an account that is subscribed through token ownership and explicit subscribed is not messaged twice`() {
         val announcementId = UUID.randomUUID()
         val snapshotId = UUID.randomUUID()
-        val announcement = AnnouncementJobDto(420, announcementId, snapshotId)
+        val announcement = AnnouncementJobDto(announcementId, 420, snapshotId)
         every { opsForList.range("snapshot:$snapshotId", 0, -1) } returns listOf(
             SnapshotStakeAddressDto("123", SnapshotType.POLICY),
             SnapshotStakeAddressDto("456", SnapshotType.POLICY),
@@ -166,7 +178,7 @@ internal class SubscriptionServiceVibrantTest {
         // This needs some additional work down the line as the project status is simply orphaned in this case
         val announcementId = UUID.randomUUID()
         val snapshotId = UUID.randomUUID()
-        val announcement = AnnouncementJobDto(420, announcementId, snapshotId)
+        val announcement = AnnouncementJobDto(announcementId, 420, snapshotId)
         every { opsForList.range("snapshot:$snapshotId", 0, -1) } returns listOf(
             SnapshotStakeAddressDto("123", SnapshotType.POLICY),
             SnapshotStakeAddressDto("456", SnapshotType.POLICY),

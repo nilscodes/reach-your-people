@@ -20,7 +20,8 @@ internal class AnnouncementJobDtoTest {
         val dto = AnnouncementJobDto(
             projectId = 12,
             announcementId = uuid1,
-            snapshotId = uuid2
+            snapshotId = uuid2,
+            global = listOf(GlobalAnnouncementAudience.GOVERNANCE_CARDANO)
         )
         val objectMapper = createDefaultObjectMapper()
 
@@ -28,7 +29,8 @@ internal class AnnouncementJobDtoTest {
             {
               "projectId": 12,
               "announcementId": "00000000-0000-0000-0000-000000000001",
-              "snapshotId": "00000000-0000-0000-0000-000000000002"
+              "snapshotId": "00000000-0000-0000-0000-000000000002",
+              "global": ["GOVERNANCE_CARDANO"]
             }
             """.trimIndent(), objectMapper.writeValueAsString(dto), false)
     }

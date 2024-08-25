@@ -6,6 +6,8 @@ import io.ryp.cardano.model.SnapshotRequestDto
 import io.ryp.cardano.model.SnapshotStakeAddressDto
 import io.ryp.cardano.model.SnapshotType
 import io.ryp.shared.model.*
+import io.vibrantnet.ryp.core.subscription.model.CardanoSetting
+import io.vibrantnet.ryp.core.subscription.persistence.CardanoSettingsUtil
 import io.vibrantnet.ryp.core.subscription.persistence.ExternalAccountRepository
 import io.vibrantnet.ryp.core.subscription.persistence.ExternalAccountSettingsUtil
 import io.vibrantnet.ryp.core.subscription.persistence.ExternalAccountWithAccountProjection
@@ -16,11 +18,8 @@ import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.stereotype.Service
 import java.util.*
 
-val logger = KotlinLogging.logger {}
-
 @Service
 class SubscriptionServiceVibrant(
-    private val projectsService: ProjectsApiService,
     private val externalAccountRepository: ExternalAccountRepository,
     private val redisTemplate: RedisTemplate<String, Any>,
     private val rabbitTemplate: RabbitTemplate,
@@ -33,26 +32,22 @@ class SubscriptionServiceVibrant(
         logger.info { "Preparing recipients for announcement ${announcementJob.announcementId} for project ${announcementJob.projectId}" }
         val announcementRaw = redisTemplate.opsForValue()["announcementsdata:${announcementJob.announcementId}"]
         val announcement = objectMapper.convertValue(announcementRaw, BasicAnnouncementWithIdDto::class.java)
-        logger.debug { "Announcement type for ${announcementJob.announcementId} is ${announcement.type}" }
+        logger.debug { "Announcement type for ${announcementJob.announcementId} is ${announcement.type} " }
         val policiesToAnnounceTo = announcement.policies ?: emptyList()
         val stakepoolsToAnnounceTo = announcement.stakepools ?: emptyList()
         val dRepsToAnnounceTo = announcement.dreps ?: emptyList()
         // TODO if announcement type is event-based, we might determine to look up explicit subscribers by looking up for example the SPO/dRep by ID? Could also be considered a responsibility of the event service
-        val project = if (announcementJob.projectId > 0) {
-            projectsService.getProject(announcementJob.projectId).blockOptional()
-        } else Optional.empty()
-        // TODO Decide if we want to check if policies/stakepools/dReps have been removed from the project in the meantime. Currently, we ignore the project info and just make sure it still exists
         if (policiesToAnnounceTo.isEmpty() && stakepoolsToAnnounceTo.isEmpty() && dRepsToAnnounceTo.isEmpty()) {
-            logger.info { "No policies or stakepools or dReps found for announcement ${announcementJob.announcementId}, publishing immediately and only to direct subscribers if matching project is available." }
-            project.ifPresent {
-                val recipients = getExplicitlySubscribedAccounts(announcementJob.projectId)
+            logger.info { "No policies or stakepools or dReps found for announcement ${announcementJob.announcementId}, publishing without snapshot and only to direct subscribers of project ${announcementJob.projectId} or global audience ${announcement.global}." }
+            val recipients = getExplicitlySubscribedAccounts(announcementJob.projectId, announcementJob.global)
+            if (recipients.isNotEmpty()) {
                 redisTemplate.opsForList().rightPushAll("announcements:${announcementJob.announcementId}", recipients)
                 redisTemplate.expire(
                     "announcements:${announcementJob.announcementId}",
                     48,
                     java.util.concurrent.TimeUnit.HOURS
                 )
-                rabbitTemplate.convertAndSend("completed", announcementJob.announcementId)
+                rabbitTemplate.convertAndSend("completed", announcementJob)
             }
         } else {
             logger.info { "Policies or stakepools or dReps found for announcement ${announcementJob.announcementId}, sending snapshot request for ${policiesToAnnounceTo.size} policies and ${stakepoolsToAnnounceTo.size} stakepools and ${dRepsToAnnounceTo.size} dReps." }
@@ -60,7 +55,16 @@ class SubscriptionServiceVibrant(
         }
     }
 
-    private fun getExplicitlySubscribedAccounts(projectId: Long): List<AnnouncementRecipientDto> {
+    private fun getExplicitlySubscribedAccounts(
+        projectId: Long,
+        announcementAudiences: List<GlobalAnnouncementAudience>
+    ) = if (projectId > 0) {
+        getExplicitlySubscribedAccountsForProject(projectId)
+    } else {
+        getGloballySubscribedAccountsForAnnouncementType(announcementAudiences)
+    }
+
+    private fun getExplicitlySubscribedAccountsForProject(projectId: Long): List<AnnouncementRecipientDto> {
         return if (projectId > 0) {
             externalAccountRepository.findExternalAccountsByProjectIdAndSubscriptionStatus(
                 projectId = projectId,
@@ -72,6 +76,20 @@ class SubscriptionServiceVibrant(
             emptyList()
         }
     }
+
+    private fun getGloballySubscribedAccountsForAnnouncementType(announcementAudiences: List<GlobalAnnouncementAudience>): List<AnnouncementRecipientDto> {
+        return announcementAudiences.flatMap { audienceType ->
+            val settingsForAudienceType = getSettingsForAudienceType(audienceType)
+            externalAccountRepository.findExternalAccountsForGlobalAudience(ExternalAccountRole.OWNER.ordinal, settingsForAudienceType).map {
+                announcementRecipientDtoFromExternalAccount(it, SubscriptionStatus.SUBSCRIBED)
+            }
+        }
+    }
+
+    private fun getSettingsForAudienceType(audienceType: GlobalAnnouncementAudience) =
+        when(audienceType) {
+            GlobalAnnouncementAudience.GOVERNANCE_CARDANO -> CardanoSettingsUtil.settingsFromSet(setOf(CardanoSetting.GOVERNANCE_ACTION_ANNOUNCEMENTS))
+        }
 
     private fun announcementRecipientDtoFromExternalAccount(it: ExternalAccountWithAccountProjection, subscriptionStatus: SubscriptionStatus) =
         AnnouncementRecipientDto(
@@ -102,7 +120,7 @@ class SubscriptionServiceVibrant(
         val recipients = externalAccounts.map {
             announcementRecipientDtoFromExternalAccount(it, SubscriptionStatus.DEFAULT)
         }.toMutableSet()
-        val explicitlySubscribed = getExplicitlySubscribedAccounts(announcementJob.projectId)
+        val explicitlySubscribed = getExplicitlySubscribedAccounts(announcementJob.projectId, announcementJob.global)
         val onlyExplicitlySubscribed = explicitlySubscribed.filter { recipient ->
             recipients.none { it.externalAccountId == recipient.externalAccountId }
         }
@@ -143,5 +161,9 @@ class SubscriptionServiceVibrant(
             ExternalAccountSettingsUtil.settingsFromSet(setOf(ExternalAccountSetting.DREP_ANNOUNCEMENTS), '0')
         )
         return tokenAccountIds + stakepoolAccountIds + dRepAccountIds
+    }
+
+    companion object {
+        private val logger = KotlinLogging.logger {}
     }
 }

@@ -176,6 +176,10 @@ class  AccountsApiServiceVibrant(
                 }
                 save = true
             }
+            if (accountPartialDto.cardanoSettings != null) {
+                account.cardanoSettingsFromSet(accountPartialDto.cardanoSettings)
+                accountRepository.updateCardanoSettings(accountId, account.cardanoSettings)
+            }
             return if (save) {
                 Mono.just(accountRepository.save(account).toDto())
             } else {

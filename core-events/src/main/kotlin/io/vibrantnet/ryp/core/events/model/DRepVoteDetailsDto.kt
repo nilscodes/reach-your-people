@@ -7,6 +7,7 @@ import io.ryp.shared.model.Audience
 data class DRepVoteDetailsDto(
     val id: Long,
     val transactionHash: String,
+    val transactionIndex: Int,
     val proposalId: Long,
     val drepId: String,
     val votingAnchorUrl: String?
@@ -15,10 +16,11 @@ data class DRepVoteDetailsDto(
         return EventNotification(
             type = EventNotificationType.GOVERNANCE_VOTE,
             transactionHash = transactionHash,
+            transactionIndex = transactionIndex,
             audience = Audience(
                 dreps = listOf(drepId),
             ),
-            comment = voteComment
+            metadata = mapOf("comment" to (voteComment ?: ""))
         )
 
     }

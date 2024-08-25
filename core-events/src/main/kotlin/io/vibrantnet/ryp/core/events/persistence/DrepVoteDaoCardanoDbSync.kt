@@ -8,9 +8,10 @@ import reactor.core.publisher.Flux
 import java.sql.ResultSet
 
 const val SQL_GET_DREP_VOTES_ABOVE_ID = """
-    SELECT 
+SELECT 
     vp.id AS id,
     encode(tx.hash, 'hex') as transactionHash,
+    vp.index as index,
     vp.gov_action_proposal_id AS proposalId,
     encode(dh.raw, 'hex') AS drepId,
     va.url AS votingAnchorUrl
@@ -34,19 +35,20 @@ class DrepVoteDaoCardanoDbSync(
     private val jdbcTemplate: JdbcTemplate,
 ) : DrepVoteDao {
     override fun getDrepVotesWithIdsHigherThan(voteId: Long): Flux<DRepVoteDetailsDto> {
-            val newVotes = jdbcTemplate.query(SQL_GET_DREP_VOTES_ABOVE_ID, { rs, _ ->
-                mapVotingProcedure(rs)
-            }, voteId)
+        val newVotes = jdbcTemplate.query(SQL_GET_DREP_VOTES_ABOVE_ID, { rs, _ ->
+            mapVotingProcedure(rs)
+        }, voteId)
         return Flux.fromIterable(newVotes)
     }
 
 
     private fun mapVotingProcedure(rs: ResultSet) = DRepVoteDetailsDto(
-            id = rs.getLong("id"),
-            transactionHash = rs.getString("transactionHash"),
-            proposalId = rs.getLong("proposalId"),
-            drepId = rs.getString("drepId"),
-            votingAnchorUrl = rs.getString("votingAnchorUrl")
-        )
+        id = rs.getLong("id"),
+        transactionHash = rs.getString("transactionHash"),
+        transactionIndex = rs.getInt("index"),
+        proposalId = rs.getLong("proposalId"),
+        drepId = rs.getString("drepId"),
+        votingAnchorUrl = rs.getString("votingAnchorUrl")
+    )
 
 }

@@ -3,7 +3,7 @@ package io.vibrantnet.ryp.core.verification.service
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
-import io.ryp.cardano.model.StakepoolDetailsDto
+import io.ryp.cardano.model.stakepools.StakepoolDetailsDto
 import io.ryp.cardano.model.TokenOwnershipInfoWithAssetCount
 import io.vibrantnet.ryp.core.verification.persistence.DrepDao
 import io.vibrantnet.ryp.core.verification.persistence.StakepoolDao

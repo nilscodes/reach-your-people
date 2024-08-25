@@ -18,6 +18,7 @@ import { useEffect, useState } from 'react';
 import { useApi } from '@/contexts/ApiProvider';
 import { StakepoolDetails } from '@/lib/types/StakepoolDetails';
 import { DRepDetails } from '@/lib/ryp-verification-api';
+import { getDRepIdDisplayName } from '@/lib/cardanoutil';
 
 interface WalletSettingsProps extends BoxProps {
   wallet: LinkExternalAccount200Response;
@@ -118,7 +119,7 @@ export default function WalletSettings({ wallet, onChangeWalletSettings, ...prop
         <Stack direction={{ base: 'column-reverse', md: 'row' }} alignItems={{ base: 'flex-end', md: 'flex-start' }} justifyContent='flex-end' spacing="4">
           <Box>
             {dRepLoading && (<Skeleton height="6" width="15" />)}
-            {!dRepLoading && dRepDetails !== null && (<Wrap spacing="2"><Tag title={dRepDetails.displayName}>{dRepDetails.drepView}</Tag></Wrap>)}
+            {!dRepLoading && dRepDetails !== null && (<Wrap spacing="2"><Tag title={dRepDetails.displayName}>{getDRepIdDisplayName(dRepDetails.drepView)}</Tag></Wrap>)}
           </Box>
           <Switch colorScheme="brand" isChecked={dRepEnabled} onChange={(e) => updateWalletSettings(e.target.checked, [LinkExternalAccount200ResponseSettingsEnum.DrepAnnouncements])} />
         </Stack>

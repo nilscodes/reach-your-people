@@ -1,0 +1,20 @@
+{
+  "governance": {
+    "newProposal": {
+      "title": "New governance action proposed",
+      "message": "A new governance action of the type _{{proposalType}}_ has been proposed for the Cardano blockchain.\n\n**Title**\n{{proposalTitle}}\n\nPlease review the proposal and engage with your dRep or Stakepool operator if necessary to let them know what your opinion towards the proposal is.",
+      "unknownTitle": "Unknown title (Proposal had no anchor data)",
+      "textMessage": "A new governance action of the type {{proposalType}} has been proposed for the Cardano blockchain. Find out more at {{url}}"
+    },
+    "proposalTypes": {
+      "MOTION_NO_CONFIDENCE": "Motion of no confidence",
+      "COMMITTEE_UPDATE": "Constitutional Committee update",
+      "CONSTITUTION_UPDATE": "Change to the constitution or guardrails",
+      "HARD_FORK_INITIATION": "Hard fork initiation",
+      "PROTOCOL_PARAMETER_CHANGE": "Protocol parameter change",
+      "TREASURY_WITHDRAWALS": "Treasury withdrawal",
+      "INFO": "Informational",
+      "UNKNOWN": "Unknown"
+    }
+  }
+}
