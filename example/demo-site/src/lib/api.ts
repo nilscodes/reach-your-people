@@ -3,7 +3,7 @@ import { Project, ProjectCreationRequest } from "./types/Project";
 import { Subscription } from "./types/Subscription";
 import { SubscriptionStatus } from "./types/SubscriptionStatus";
 import { AnnouncementFormData } from "@/components/projects/PublishAnnouncement";
-import { GetLinkedExternalAccounts200ResponseInner, GetLinkedExternalAccounts200ResponseInnerSettingsEnum, ProjectNotificationSetting, Setting } from "./ryp-subscription-api";
+import { Account, AccountPartialCardanoSettingsEnum, GetLinkedExternalAccounts200ResponseInner, GetLinkedExternalAccounts200ResponseInnerSettingsEnum, ProjectNotificationSetting, Setting } from "./ryp-subscription-api";
 import { BasicAnnouncement, PublishingPermissions } from "./ryp-publishing-api";
 import { Achievement } from "./types/Achievement";
 import { TestStatusObject } from "./types/TestStatus";
@@ -165,6 +165,10 @@ export class RypSiteApi {
 
   async updateReferralShortcode(shortcode: string): Promise<string> {
     return (await axios.post(`${this.baseUrl}/account/settings/referralurl`, { shortcode })).data.referralUrl;
+  }
+
+  async updateAccountCardanoSettings(settings: AccountPartialCardanoSettingsEnum[]): Promise<Account> {
+    return (await axios.post(`${this.baseUrl}/account/settings/cardano`, { settings })).data;
   }
 
   async submitReferredBy(referredBy: number): Promise<void> {

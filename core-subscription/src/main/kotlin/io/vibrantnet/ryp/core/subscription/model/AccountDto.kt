@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty
 import jakarta.validation.constraints.Size
 import java.time.OffsetDateTime
+import java.util.*
 
 data class AccountDto @JsonCreator constructor(
     @JsonProperty("displayName", required = true)
@@ -18,4 +19,11 @@ data class AccountDto @JsonCreator constructor(
 
     @JsonProperty("premiumUntil")
     val premiumUntil: OffsetDateTime? = null,
+
+    @JsonProperty("cardanoSettings")
+    val cardanoSettings: Set<CardanoSetting> = EnumSet.allOf(CardanoSetting::class.java),
 )
+
+enum class CardanoSetting {
+    GOVERNANCE_ACTION_ANNOUNCEMENTS,
+}

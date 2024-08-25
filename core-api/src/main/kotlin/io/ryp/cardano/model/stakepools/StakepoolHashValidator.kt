@@ -1,4 +1,4 @@
-package io.ryp.cardano.model
+package io.ryp.cardano.model.stakepools
 
 import jakarta.validation.Constraint
 import jakarta.validation.ConstraintValidator
@@ -7,17 +7,17 @@ import jakarta.validation.Payload
 import kotlin.reflect.KClass
 
 @MustBeDocumented
-@Constraint(validatedBy = [DRepIDValidator::class])
+@Constraint(validatedBy = [StakepoolHashValidator::class])
 @Target(AnnotationTarget.FIELD, AnnotationTarget.VALUE_PARAMETER)
 @Retention(AnnotationRetention.RUNTIME)
-annotation class ValidDRepIDList(
-    val message: String = "Invalid dRep ID format",
+annotation class ValidStakepoolHashList(
+    val message: String = "Invalid pool hash format",
     val groups: Array<KClass<*>> = [],
     val payload: Array<KClass<out Payload>> = []
 )
 
-class DRepIDValidator : ConstraintValidator<ValidDRepIDList, List<String>?> {
-    private val pattern = "^[A-Za-z0-9]{56}$".toRegex()
+class StakepoolHashValidator : ConstraintValidator<ValidStakepoolHashList, List<String>?> {
+    private val pattern = "^[A-Fa-f0-9]{56}$".toRegex()
 
     override fun isValid(value: List<String>?, context: ConstraintValidatorContext): Boolean {
         if (value == null) {

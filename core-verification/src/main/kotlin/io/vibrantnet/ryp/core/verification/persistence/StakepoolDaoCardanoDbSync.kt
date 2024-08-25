@@ -1,8 +1,8 @@
 package io.vibrantnet.ryp.core.verification.persistence
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import io.ryp.cardano.model.StakepoolDetailsDto
-import io.ryp.cardano.model.StakepoolDelegationInfoDto
+import io.ryp.cardano.model.stakepools.StakepoolDetailsDto
+import io.ryp.cardano.model.stakepools.StakepoolDelegationInfoDto
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.jdbc.core.JdbcTemplate

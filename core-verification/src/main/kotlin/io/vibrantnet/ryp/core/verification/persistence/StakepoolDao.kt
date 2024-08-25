@@ -1,7 +1,7 @@
 package io.vibrantnet.ryp.core.verification.persistence
 
-import io.ryp.cardano.model.StakepoolDelegationInfoDto
-import io.ryp.cardano.model.StakepoolDetailsDto
+import io.ryp.cardano.model.stakepools.StakepoolDelegationInfoDto
+import io.ryp.cardano.model.stakepools.StakepoolDetailsDto
 import reactor.core.publisher.Mono
 
 interface StakepoolDao {

@@ -1,4 +1,4 @@
-package io.ryp.cardano.model
+package io.ryp.cardano.model.stakepools
 
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty

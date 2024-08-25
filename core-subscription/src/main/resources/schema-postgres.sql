@@ -13,10 +13,11 @@ DROP TABLE IF EXISTS "accounts";
 
 CREATE TABLE "accounts"
 (
-    "account_id"    BIGSERIAL PRIMARY KEY,
-    "display_name"  varchar(200) NOT NULL,
-    "create_time"   timestamp    NOT NULL,
-    "premium_until" timestamp    NULL
+    "account_id"       BIGSERIAL PRIMARY KEY,
+    "display_name"     varchar(200) NOT NULL,
+    "create_time"      timestamp    NOT NULL,
+    "premium_until"    timestamp    NULL,
+    "cardano_settings" BIT(16)      NOT NULL DEFAULT B'1111111111111111'
 );
 
 CREATE TABLE "account_settings"
@@ -30,11 +31,11 @@ CREATE TABLE "account_settings"
 CREATE TABLE "linked_external_accounts"
 (
     "link_id"             BIGSERIAL PRIMARY KEY,
-    "account_id"          BIGINT NOT NULL,
+    "account_id"          BIGINT    NOT NULL,
     "link_time"           timestamp NOT NULL,
-    "role"                smallint NOT NULL,
-    "external_account_id" BIGINT NOT NULL,
-    "settings" BIT(16) NOT NULL DEFAULT B'1111111111111111',
+    "role"                smallint  NOT NULL,
+    "external_account_id" BIGINT    NOT NULL,
+    "settings"            BIT(16)   NOT NULL DEFAULT B'1111111111111111',
     "last_confirmed"      timestamp,
     "last_tested"         timestamp,
     UNIQUE ("account_id", "role", "external_account_id")

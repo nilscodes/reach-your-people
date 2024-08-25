@@ -1,4 +1,4 @@
-package io.ryp.cardano.model
+package io.ryp.cardano.model.stakepools
 
 import io.ryp.core.createDefaultObjectMapper
 import nl.jqno.equalsverifier.EqualsVerifier

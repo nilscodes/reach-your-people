@@ -1,4 +1,4 @@
-package io.ryp.cardano.model
+package io.ryp.cardano.model.governance
 
 data class DRepDelegationInfoDto(
     val drepId: String,

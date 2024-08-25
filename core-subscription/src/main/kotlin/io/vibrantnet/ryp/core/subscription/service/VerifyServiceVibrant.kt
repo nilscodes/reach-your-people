@@ -1,8 +1,8 @@
 package io.vibrantnet.ryp.core.subscription.service
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import io.ryp.cardano.model.DRepDetailsDto
-import io.ryp.cardano.model.StakepoolDetailsDto
+import io.ryp.cardano.model.governance.DRepDetailsDto
+import io.ryp.cardano.model.stakepools.StakepoolDetailsDto
 import io.ryp.cardano.model.TokenOwnershipInfoWithAssetCount
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.data.redis.core.RedisTemplate

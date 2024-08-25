@@ -1,6 +1,6 @@
 package io.vibrantnet.ryp.core.verification.service
 
-import io.ryp.cardano.model.DRepDetailsDto
+import io.ryp.cardano.model.governance.DRepDetailsDto
 import reactor.core.publisher.Mono
 
 fun interface DrepsApiService {

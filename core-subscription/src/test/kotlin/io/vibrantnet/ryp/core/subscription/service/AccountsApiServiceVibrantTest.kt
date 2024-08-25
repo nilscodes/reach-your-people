@@ -2,6 +2,8 @@ package io.vibrantnet.ryp.core.subscription.service
 
 import io.mockk.*
 import io.ryp.cardano.model.TokenOwnershipInfoWithAssetCount
+import io.ryp.cardano.model.governance.DRepDetailsDto
+import io.ryp.cardano.model.stakepools.StakepoolDetailsDto
 import io.ryp.shared.model.*
 import io.vibrantnet.ryp.core.subscription.model.*
 import io.vibrantnet.ryp.core.subscription.persistence.*
@@ -64,7 +66,7 @@ internal class AccountsApiServiceVibrantTest {
     @Test
     fun `getting an account by id works`() {
         val now = OffsetDateTime.now()
-        every { accountRepository.findById(12) } returns java.util.Optional.of(
+        every { accountRepository.findById(12) } returns Optional.of(
             Account(
                 id = 12,
                 displayName = "test",
@@ -85,7 +87,7 @@ internal class AccountsApiServiceVibrantTest {
 
     @Test
     fun `correct exception thrown when getting account by ID fails`() {
-        every { accountRepository.findById(12) } returns java.util.Optional.empty()
+        every { accountRepository.findById(12) } returns Optional.empty()
         assertThrows(NoSuchElementException::class.java) {
             service.getAccountById(12).block()
         }
@@ -94,7 +96,7 @@ internal class AccountsApiServiceVibrantTest {
     @Test
     fun `getting an account by provider and reference ID of an external account works`() {
         val now = OffsetDateTime.now()
-        every { externalAccountRepository.findByTypeAndReferenceId("discord", "123") } returns java.util.Optional.of(
+        every { externalAccountRepository.findByTypeAndReferenceId("discord", "123") } returns Optional.of(
             makeExternalAccount(1, now)
         )
         every { accountRepository.findByLinkedExternalAccountsExternalAccountId(1) } returns listOf(makeAccount(now))
@@ -117,7 +119,7 @@ internal class AccountsApiServiceVibrantTest {
                 "discord",
                 "123"
             )
-        } returns java.util.Optional.empty()
+        } returns Optional.empty()
         assertThrows(NoSuchElementException::class.java) {
             service.findAccountByProviderAndReferenceId("discord", "123").block()
         }
@@ -126,7 +128,7 @@ internal class AccountsApiServiceVibrantTest {
     @Test
     fun `getting an account by provider and reference ID throws an exception if no matching account is found`() {
         val now = OffsetDateTime.now()
-        every { externalAccountRepository.findByTypeAndReferenceId("discord", "123") } returns java.util.Optional.of(
+        every { externalAccountRepository.findByTypeAndReferenceId("discord", "123") } returns Optional.of(
             makeExternalAccount(1, now)
         )
         every { accountRepository.findByLinkedExternalAccountsExternalAccountId(1) } returns emptyList()
@@ -139,7 +141,7 @@ internal class AccountsApiServiceVibrantTest {
     fun `getting an existing linked external accounts works`() {
         val now = OffsetDateTime.now()
         val account = makeAccount(now)
-        every { accountRepository.findById(12) } returns java.util.Optional.of(account)
+        every { accountRepository.findById(12) } returns Optional.of(account)
         val linkedExternalAccounts = service.getLinkedExternalAccounts(12)
         StepVerifier.create(linkedExternalAccounts)
             .expectNext(
@@ -156,8 +158,8 @@ internal class AccountsApiServiceVibrantTest {
     fun `linking an external account works`() {
         val account = makeAccount(OffsetDateTime.now())
         val externalAccount = makeExternalAccount(2, OffsetDateTime.now())
-        every { accountRepository.findById(12) } returns java.util.Optional.of(account)
-        every { externalAccountRepository.findById(2) } returns java.util.Optional.of(externalAccount)
+        every { accountRepository.findById(12) } returns Optional.of(account)
+        every { externalAccountRepository.findById(2) } returns Optional.of(externalAccount)
         val slot = slot<LinkedExternalAccount>()
         // Returns called argument with the ID set
         every { linkedExternalAccountRepository.save(capture(slot)) } answers {
@@ -185,8 +187,8 @@ internal class AccountsApiServiceVibrantTest {
     @Test
     fun `linking an external account that already exists throws the appropriate exception`() {
         val account = makeAccount(OffsetDateTime.now())
-        every { accountRepository.findById(12) } returns java.util.Optional.of(account)
-        every { externalAccountRepository.findById(1) } returns java.util.Optional.of(
+        every { accountRepository.findById(12) } returns Optional.of(account)
+        every { externalAccountRepository.findById(1) } returns Optional.of(
             makeExternalAccount(
                 1,
                 OffsetDateTime.now()
@@ -201,7 +203,7 @@ internal class AccountsApiServiceVibrantTest {
     @Test
     fun `unlinking an external account works and does not delete the external account if not the last link`() {
         val account = makeAccount(OffsetDateTime.now())
-        every { accountRepository.findById(12) } returns java.util.Optional.of(account)
+        every { accountRepository.findById(12) } returns Optional.of(account)
         every { accountRepository.findByLinkedExternalAccountsExternalAccountId(1) } returns listOf(
             makeAccount(
                 OffsetDateTime.now(),
@@ -217,7 +219,7 @@ internal class AccountsApiServiceVibrantTest {
     @Test
     fun `unlinking an external account works and does delete the external account if it was the last link`() {
         val account = makeAccount(OffsetDateTime.now())
-        every { accountRepository.findById(12) } returns java.util.Optional.of(account)
+        every { accountRepository.findById(12) } returns Optional.of(account)
         every { accountRepository.findByLinkedExternalAccountsExternalAccountId(1) } returns emptyList()
         every { externalAccountRepository.deleteById(1) } just Runs
         every { linkedExternalAccountRepository.deleteDirectly(any()) } just Runs
@@ -229,7 +231,7 @@ internal class AccountsApiServiceVibrantTest {
     @Test
     fun `unlinking a non-existing external accounts throws an appropriate exception`() {
         val account = makeAccount(OffsetDateTime.now())
-        every { accountRepository.findById(12) } returns java.util.Optional.of(account)
+        every { accountRepository.findById(12) } returns Optional.of(account)
         val slot = slot<Account>()
         every { accountRepository.save(capture(slot)) } answers { slot.captured }
         assertThrows(NoSuchElementException::class.java) {
@@ -240,7 +242,7 @@ internal class AccountsApiServiceVibrantTest {
     @Test
     fun `updating an account with changes saves`() {
         val account = makeAccount(OffsetDateTime.now())
-        every { accountRepository.findById(12) } returns java.util.Optional.of(account)
+        every { accountRepository.findById(12) } returns Optional.of(account)
         val slot = slot<Account>()
         every { accountRepository.save(capture(slot)) } answers { slot.captured }
         val updatedAccount = service.updateAccountById(12, AccountPartialDto(displayName = "new name"))
@@ -259,7 +261,7 @@ internal class AccountsApiServiceVibrantTest {
     @Test
     fun `updating an account with no effective changes is a no-op`() {
         val account = makeAccount(OffsetDateTime.now())
-        every { accountRepository.findById(12) } returns java.util.Optional.of(account)
+        every { accountRepository.findById(12) } returns Optional.of(account)
         val updatedAccount = service.updateAccountById(12, AccountPartialDto(displayName = "test"))
         verify(exactly = 0) { accountRepository.save(any()) }
         StepVerifier.create(updatedAccount)
@@ -276,7 +278,7 @@ internal class AccountsApiServiceVibrantTest {
     @Test
     fun `updating an account without providing any change data is a no-op`() {
         val account = makeAccount(OffsetDateTime.now())
-        every { accountRepository.findById(12) } returns java.util.Optional.of(account)
+        every { accountRepository.findById(12) } returns Optional.of(account)
         val updatedAccount = service.updateAccountById(12, AccountPartialDto())
         verify(exactly = 0) { accountRepository.save(any()) }
         StepVerifier.create(updatedAccount)
@@ -291,10 +293,38 @@ internal class AccountsApiServiceVibrantTest {
     }
 
     @Test
+    fun `updating an account that is missing throws an error`() {
+        every { accountRepository.findById(12) } returns Optional.empty()
+        val result = service.updateAccountById(12, AccountPartialDto(displayName = "test"))
+        StepVerifier.create(result)
+            .verifyError(NoSuchElementException::class.java)
+    }
+
+    @Test
+    fun `updating Cardano settings of an account triggers no standard save but a custom SQL call`() {
+        val account = makeAccount(OffsetDateTime.now())
+        every { accountRepository.findById(12) } returns Optional.of(account)
+        every { accountRepository.updateCardanoSettings(any(), any()) } just Runs
+        val updatedAccount = service.updateAccountById(12, AccountPartialDto(cardanoSettings = setOf(CardanoSetting.GOVERNANCE_ACTION_ANNOUNCEMENTS)))
+        verify(exactly = 0) { accountRepository.save(any()) }
+        verify(exactly = 1) { accountRepository.updateCardanoSettings(12, "1111111111111111") }
+        StepVerifier.create(updatedAccount)
+            .expectNext(
+                AccountDto(
+                    id = 12,
+                    displayName = "test",
+                    createTime = account.createTime,
+                    cardanoSettings = setOf(CardanoSetting.GOVERNANCE_ACTION_ANNOUNCEMENTS),
+                )
+            )
+            .verifyComplete()
+    }
+
+    @Test
     fun `updating premium time when the existing premium time is in the past pushes the date out from now instead of the expired timestamp`() {
         val account = makeAccount(OffsetDateTime.now())
         account.premiumUntil = OffsetDateTime.now().minusMonths(1)
-        every { accountRepository.findById(12) } returns java.util.Optional.of(account)
+        every { accountRepository.findById(12) } returns Optional.of(account)
         val slot = slot<Account>()
         every { accountRepository.save(capture(slot)) } answers { slot.captured }
         val updatedAccount = service.extendPremium(12, Duration.of(1, ChronoUnit.DAYS))
@@ -309,7 +339,7 @@ internal class AccountsApiServiceVibrantTest {
     fun `updating premium time when the existing premium time is in the future pushes it out from that date instead of now`() {
         val account = makeAccount(OffsetDateTime.now())
         account.premiumUntil = OffsetDateTime.now().plusMonths(1)
-        every { accountRepository.findById(12) } returns java.util.Optional.of(account)
+        every { accountRepository.findById(12) } returns Optional.of(account)
         val slot = slot<Account>()
         every { accountRepository.save(capture(slot)) } answers { slot.captured }
         val updatedAccount = service.extendPremium(12, Duration.of(90, ChronoUnit.DAYS))
@@ -361,7 +391,7 @@ internal class AccountsApiServiceVibrantTest {
     @Test
     fun `updating linked external account with only settings works`() {
         val account = makeAccount(OffsetDateTime.now())
-        every { accountRepository.findById(12) } returns java.util.Optional.of(account)
+        every { accountRepository.findById(12) } returns Optional.of(account)
         val linkedExternalAccount = account.linkedExternalAccounts.first()
         val slot = slot<LinkedExternalAccount>()
         every { linkedExternalAccountRepository.save(capture(slot)) } answers { slot.captured }
@@ -390,7 +420,7 @@ internal class AccountsApiServiceVibrantTest {
     @Test
     fun `updating linked external account with only lastConfirmed works`() {
         val account = makeAccount(OffsetDateTime.now())
-        every { accountRepository.findById(12) } returns java.util.Optional.of(account)
+        every { accountRepository.findById(12) } returns Optional.of(account)
         val linkedExternalAccount = account.linkedExternalAccounts.first()
         val slot = slot<LinkedExternalAccount>()
         every { linkedExternalAccountRepository.save(capture(slot)) } answers { slot.captured }
@@ -415,7 +445,7 @@ internal class AccountsApiServiceVibrantTest {
     @Test
     fun `updating linked external account with only lastTested works`() {
         val account = makeAccount(OffsetDateTime.now())
-        every { accountRepository.findById(12) } returns java.util.Optional.of(account)
+        every { accountRepository.findById(12) } returns Optional.of(account)
         val linkedExternalAccount = account.linkedExternalAccounts.first()
         val slot = slot<LinkedExternalAccount>()
         every { linkedExternalAccountRepository.save(capture(slot)) } answers { slot.captured }
@@ -440,7 +470,7 @@ internal class AccountsApiServiceVibrantTest {
     @Test
     fun `cannot update a linked external account if the account is not an owner of the external account`() {
         val account = makeAccount(OffsetDateTime.now(), 12, ExternalAccountRole.ADMIN)
-        every { accountRepository.findById(12) } returns java.util.Optional.of(account)
+        every { accountRepository.findById(12) } returns Optional.of(account)
 
         val result = service.updateLinkedExternalAccount(12, 1, LinkedExternalAccountPartialDto(
             settings = setOf(ExternalAccountSetting.DREP_ANNOUNCEMENTS)
@@ -453,7 +483,7 @@ internal class AccountsApiServiceVibrantTest {
     @Test
     fun `cannot update linked external account if not associated with the presented account`() {
         val account = makeAccount(OffsetDateTime.now())
-        every { accountRepository.findById(12) } returns java.util.Optional.of(account)
+        every { accountRepository.findById(12) } returns Optional.of(account)
 
         val result = service.updateLinkedExternalAccount(12, 2, LinkedExternalAccountPartialDto(
             settings = setOf(ExternalAccountSetting.DREP_ANNOUNCEMENTS)
@@ -466,8 +496,8 @@ internal class AccountsApiServiceVibrantTest {
     @Test
     fun `subscribing account to project works`() {
         val account = makeAccount(OffsetDateTime.now())
-        every { accountRepository.findById(12) } returns java.util.Optional.of(account)
-        every { projectRepository.findById(1) } returns java.util.Optional.of(makeProject(1))
+        every { accountRepository.findById(12) } returns Optional.of(account)
+        every { projectRepository.findById(1) } returns Optional.of(makeProject(1))
         val slot = slot<Account>()
         every { accountRepository.save(capture(slot)) } answers { slot.captured }
         val updatedAccount = service.subscribeAccountToProject(12, 1, NewSubscriptionDto(status = SubscriptionStatus.SUBSCRIBED))
@@ -479,8 +509,8 @@ internal class AccountsApiServiceVibrantTest {
 
     @Test
     fun `subscribing with account that does not exist returns an error`() {
-        every { accountRepository.findById(12) } returns java.util.Optional.empty()
-        every { projectRepository.findById(1) } returns java.util.Optional.of(makeProject(1))
+        every { accountRepository.findById(12) } returns Optional.empty()
+        every { projectRepository.findById(1) } returns Optional.of(makeProject(1))
         val result = service.subscribeAccountToProject(12, 1, NewSubscriptionDto(status = SubscriptionStatus.SUBSCRIBED))
         StepVerifier.create(result)
             .verifyError(NoSuchElementException::class.java)
@@ -488,8 +518,8 @@ internal class AccountsApiServiceVibrantTest {
 
     @Test
     fun `subscribing to a project that does not exist returns an error`() {
-        every { accountRepository.findById(12) } returns java.util.Optional.of(makeAccount(OffsetDateTime.now()))
-        every { projectRepository.findById(1) } returns java.util.Optional.empty()
+        every { accountRepository.findById(12) } returns Optional.of(makeAccount(OffsetDateTime.now()))
+        every { projectRepository.findById(1) } returns Optional.empty()
         val result = service.subscribeAccountToProject(12, 1, NewSubscriptionDto(status = SubscriptionStatus.SUBSCRIBED))
         StepVerifier.create(result)
             .verifyError(NoSuchElementException::class.java)
@@ -499,7 +529,7 @@ internal class AccountsApiServiceVibrantTest {
     fun `unsubscribing from a project works if already subscribed`() {
         val account = makeAccount(OffsetDateTime.now())
         account.subscriptions.add(Subscription(1, SubscriptionStatus.SUBSCRIBED))
-        every { accountRepository.findById(12) } returns java.util.Optional.of(account)
+        every { accountRepository.findById(12) } returns Optional.of(account)
         val slot = slot<Account>()
         every { accountRepository.save(capture(slot)) } answers { slot.captured }
         val updatedAccount = service.unsubscribeAccountFromProject(12, 1)
@@ -510,17 +540,76 @@ internal class AccountsApiServiceVibrantTest {
 
     @Test
     fun `unsubscribing from a project with an account that does not exist returns an error`() {
-        every { accountRepository.findById(12) } returns java.util.Optional.empty()
+        every { accountRepository.findById(12) } returns Optional.empty()
         val result = service.unsubscribeAccountFromProject(12, 1)
         StepVerifier.create(result)
             .verifyError(NoSuchElementException::class.java)
     }
 
     @Test
-    fun `getting all subscriptions of an account works and merges settings correctly`() {
+    fun `getting all subscriptions of an account works and merges settings correctly if only token policies are present`() {
+        val account = prepareSubscribedTestAccount()
+        every { verifyService.getPoliciesInWallet("stake1herpderp") } answers {
+            Flux.fromIterable(
+                listOf(
+                    TokenOwnershipInfoWithAssetCount("stake1herpderp", "policy1", 1),
+                    TokenOwnershipInfoWithAssetCount("stake1herpderp", "policy2", 2),
+                )
+            )
+        }
+        every { verifyService.getStakepoolDetailsForStakeAddress("stake1herpderp") } answers { Mono.empty() }
+        every { verifyService.getDRepDetailsForStakeAddress("stake1herpderp") } answers { Mono.empty() }
+
+        every { projectRepository.findByPoliciesPolicyIdIn(listOf("policy1", "policy2")) } returns listOf(makeProject(1), makeProject(2))
+        every { accountRepository.findById(12) } returns Optional.of(account)
+        val subscriptions = service.getAllSubscriptionsForAccount(12)
+        verifyRetrievedSubscriptions(subscriptions)
+    }
+
+    @Test
+    fun `getting all subscriptions of an account works and merges settings correctly if only stake pools are present`() {
+        val account = prepareSubscribedTestAccount()
+        every { verifyService.getPoliciesInWallet("stake1herpderp") } answers { Flux.empty() }
+        every { verifyService.getStakepoolDetailsForStakeAddress("stake1herpderp") } answers { Mono.just(
+            StakepoolDetailsDto("poolHash", "poolName", "poolTicker", "poolUrl", "poolDescription")
+        ) }
+        every { verifyService.getDRepDetailsForStakeAddress("stake1herpderp") } answers { Mono.empty() }
+
+        every { projectRepository.findByStakepoolsPoolHashIn(listOf("poolHash")) } returns listOf(makeProject(1), makeProject(2))
+        every { accountRepository.findById(12) } returns Optional.of(account)
+        val subscriptions = service.getAllSubscriptionsForAccount(12)
+        verifyRetrievedSubscriptions(subscriptions)
+    }
+
+    @Test
+    fun `getting all subscriptions of an account works and merges settings correctly if only dReps are present`() {
+        val account = prepareSubscribedTestAccount()
+        every { verifyService.getPoliciesInWallet("stake1herpderp") } answers { Flux.empty() }
+        every { verifyService.getStakepoolDetailsForStakeAddress("stake1herpderp") } answers { Mono.empty() }
+        every { verifyService.getDRepDetailsForStakeAddress("stake1herpderp") } answers {
+            Mono.just(DRepDetailsDto("drepId", "drepView", "Drep Guy", 12, 5000, 16))
+        }
+
+        every { projectRepository.findByDrepsDrepIdIn(listOf("drepId")) } returns listOf(makeProject(1), makeProject(2))
+        every { accountRepository.findById(12) } returns Optional.of(account)
+        val subscriptions = service.getAllSubscriptionsForAccount(12)
+        verifyRetrievedSubscriptions(subscriptions)
+    }
+
+    private fun prepareSubscribedTestAccount(): Account {
         val account = makeAccount(OffsetDateTime.now())
-        account.subscriptions.add(Subscription(1, SubscriptionStatus.BLOCKED)) // The explicit unsubscribe will override the wallet-based subscription
-        account.subscriptions.add(Subscription(3, SubscriptionStatus.SUBSCRIBED)) // This one will be kept because there is no wallet-based override
+        account.subscriptions.add(
+            Subscription(
+                1,
+                SubscriptionStatus.BLOCKED
+            )
+        ) // The explicit unsubscribe will override the wallet-based subscription
+        account.subscriptions.add(
+            Subscription(
+                3,
+                SubscriptionStatus.SUBSCRIBED
+            )
+        ) // This one will be kept because there is no wallet-based override
         account.linkedExternalAccounts.add(
             LinkedExternalAccount(
                 id = 879,
@@ -537,20 +626,11 @@ internal class AccountsApiServiceVibrantTest {
                 linkTime = OffsetDateTime.now(),
             )
         )
-        every { verifyService.getPoliciesInWallet("stake1herpderp") } answers {
-            Flux.fromIterable(
-                listOf(
-                    TokenOwnershipInfoWithAssetCount("stake1herpderp", "policy1", 1),
-                    TokenOwnershipInfoWithAssetCount("stake1herpderp", "policy2", 2),
-                )
-            )
-        }
-        every { verifyService.getStakepoolDetailsForStakeAddress("stake1herpderp") } answers { Mono.empty() }
-        every { verifyService.getDRepDetailsForStakeAddress("stake1herpderp") } answers { Mono.empty() }
+        return account
+    }
 
-        every { projectRepository.findByPoliciesPolicyIdIn(listOf("policy1", "policy2")) } returns listOf(makeProject(1), makeProject(2))
-        every { accountRepository.findById(12) } returns java.util.Optional.of(account)
-        val subscriptions = service.getAllSubscriptionsForAccount(12)
+
+    private fun verifyRetrievedSubscriptions(subscriptions: Flux<ProjectSubscriptionDto>) {
         StepVerifier.create(subscriptions.collectList())
             .assertNext {
                 it.containsAll(
@@ -580,7 +660,7 @@ internal class AccountsApiServiceVibrantTest {
     fun `getting settings for an account works`() {
         val account = makeAccount(OffsetDateTime.now())
         account.settings = mutableSetOf(EmbeddableSetting("TEST", "test"), EmbeddableSetting("ROLLTOP", "false"))
-        every { accountRepository.findById(12) } returns java.util.Optional.of(account)
+        every { accountRepository.findById(12) } returns Optional.of(account)
         val settings = service.getSettingsForAccount(12)
         StepVerifier.create(settings)
             .expectNext(
@@ -597,7 +677,7 @@ internal class AccountsApiServiceVibrantTest {
     @Test
     fun `updating account settings works if the setting is not already set`() {
         val account = makeAccount(OffsetDateTime.now())
-        every { accountRepository.findById(12) } returns java.util.Optional.of(account)
+        every { accountRepository.findById(12) } returns Optional.of(account)
         val slot = slot<Account>()
         every { accountRepository.save(capture(slot)) } answers { slot.captured }
         val updatedSettings = service.updateAccountSetting(12, "TEST", SettingDto("TEST", "test"))
@@ -613,7 +693,7 @@ internal class AccountsApiServiceVibrantTest {
     fun `updating account settings work if the setting is already set`() {
         val account = makeAccount(OffsetDateTime.now())
         account.settings = mutableSetOf(EmbeddableSetting("TEST", "test"))
-        every { accountRepository.findById(12) } returns java.util.Optional.of(account)
+        every { accountRepository.findById(12) } returns Optional.of(account)
         val slot = slot<Account>()
         every { accountRepository.save(capture(slot)) } answers { slot.captured }
         val updatedSettings = service.updateAccountSetting(12, "TEST", SettingDto("TEST", "new value"))
@@ -629,7 +709,7 @@ internal class AccountsApiServiceVibrantTest {
     fun `deleting account settings works`() {
         val account = makeAccount(OffsetDateTime.now())
         account.settings = mutableSetOf(EmbeddableSetting("TEST", "test"))
-        every { accountRepository.findById(12) } returns java.util.Optional.of(account)
+        every { accountRepository.findById(12) } returns Optional.of(account)
         val slot = slot<Account>()
         every { accountRepository.save(capture(slot)) } answers { slot.captured }
         val updatedSettings = service.deleteAccountSetting(12, "TEST")
@@ -670,12 +750,12 @@ internal class AccountsApiServiceVibrantTest {
             makeLinkedExternalAccount(12, OffsetDateTime.now(), ExternalAccountRole.OWNER, 576),
             createTime = OffsetDateTime.now(),
         )
-        every { accountRepository.findById(12) } returns java.util.Optional.of(account)
-        every { projectRepository.findById(1) } returns java.util.Optional.of(project)
+        every { accountRepository.findById(12) } returns Optional.of(account)
+        every { projectRepository.findById(1) } returns Optional.of(project)
         every { projectNotificationSettingRepository.findByAccountIdAndProjectId(12, 1) } returns listOf(existingNotificationSetting1, existingNotificationSetting2)
         every { projectNotificationSettingRepository.save(any()) } answers { firstArg<ProjectNotificationSetting>() }
         every { projectNotificationSettingRepository.delete(any()) } just Runs
-        every { linkedExternalAccountRepository.findById(2000) } returns java.util.Optional.of(makeLinkedExternalAccount(12, OffsetDateTime.now(), ExternalAccountRole.OWNER, 2000))
+        every { linkedExternalAccountRepository.findById(2000) } returns Optional.of(makeLinkedExternalAccount(12, OffsetDateTime.now(), ExternalAccountRole.OWNER, 2000))
         val updatedSettings = service.updateNotificationsSettingsForAccountAndProject(12, 1, listOf(ProjectNotificationSettingDto(
             projectId = 1,
             externalAccountLinkId = 2000,
@@ -707,12 +787,12 @@ internal class AccountsApiServiceVibrantTest {
             makeLinkedExternalAccount(12, OffsetDateTime.now(), ExternalAccountRole.OWNER, 91),
             createTime = OffsetDateTime.now(),
         )
-        every { accountRepository.findById(12) } returns java.util.Optional.of(account)
-        every { projectRepository.findById(1) } returns java.util.Optional.of(project)
+        every { accountRepository.findById(12) } returns Optional.of(account)
+        every { projectRepository.findById(1) } returns Optional.of(project)
         every { projectNotificationSettingRepository.findByAccountIdAndProjectId(12, 1) } returns listOf(existingNotificationSetting1)
         every { projectNotificationSettingRepository.save(any()) } answers { firstArg<ProjectNotificationSetting>() }
         every { projectNotificationSettingRepository.delete(any()) } just Runs
-        every { linkedExternalAccountRepository.findById(2000) } returns java.util.Optional.of(makeLinkedExternalAccount(12, OffsetDateTime.now(), ExternalAccountRole.ADMIN, 2000))
+        every { linkedExternalAccountRepository.findById(2000) } returns Optional.of(makeLinkedExternalAccount(12, OffsetDateTime.now(), ExternalAccountRole.ADMIN, 2000))
         val updatedSettings = service.updateNotificationsSettingsForAccountAndProject(12, 1, listOf(ProjectNotificationSettingDto(
             projectId = 1,
             externalAccountLinkId = 2000,
@@ -732,12 +812,12 @@ internal class AccountsApiServiceVibrantTest {
             makeLinkedExternalAccount(12, OffsetDateTime.now(), ExternalAccountRole.OWNER, 91),
             createTime = OffsetDateTime.now(),
         )
-        every { accountRepository.findById(12) } returns java.util.Optional.of(account)
-        every { projectRepository.findById(1) } returns java.util.Optional.of(project)
+        every { accountRepository.findById(12) } returns Optional.of(account)
+        every { projectRepository.findById(1) } returns Optional.of(project)
         every { projectNotificationSettingRepository.findByAccountIdAndProjectId(12, 1) } returns listOf(existingNotificationSetting1)
         every { projectNotificationSettingRepository.save(any()) } answers { firstArg<ProjectNotificationSetting>() }
         every { projectNotificationSettingRepository.delete(any()) } just Runs
-        every { linkedExternalAccountRepository.findById(2000) } returns java.util.Optional.of(makeLinkedExternalAccount(13, OffsetDateTime.now(), ExternalAccountRole.ADMIN, 2000))
+        every { linkedExternalAccountRepository.findById(2000) } returns Optional.of(makeLinkedExternalAccount(13, OffsetDateTime.now(), ExternalAccountRole.ADMIN, 2000))
         val updatedSettings = service.updateNotificationsSettingsForAccountAndProject(12, 1, listOf(ProjectNotificationSettingDto(
             projectId = 1,
             externalAccountLinkId = 2000,
@@ -855,6 +935,7 @@ internal class AccountsApiServiceVibrantTest {
         linkedExternalAccounts = mutableSetOf(
             makeLinkedExternalAccount(id, now, role)
         ),
+        cardanoSettings = "1111111111111111",
     )
 
     private fun makeLinkedExternalAccount(

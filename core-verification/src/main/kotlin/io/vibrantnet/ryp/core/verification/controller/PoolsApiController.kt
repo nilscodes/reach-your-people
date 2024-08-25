@@ -1,6 +1,6 @@
 package io.vibrantnet.ryp.core.verification.controller
 
-import io.ryp.cardano.model.StakepoolVerificationDto
+import io.ryp.cardano.model.stakepools.StakepoolVerificationDto
 import io.vibrantnet.ryp.core.verification.service.PoolsApiService
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus

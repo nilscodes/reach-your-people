@@ -1,5 +1,6 @@
 package io.vibrantnet.ryp.core.events.service
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import io.vibrantnet.ryp.core.events.persistence.StakepoolDao
 import org.springframework.amqp.rabbit.core.RabbitTemplate
 import org.springframework.scheduling.annotation.Scheduled
@@ -27,5 +28,9 @@ class StakepoolRetirementService(
         } else {
             poolRetirementIds.addAll(newPoolRetirements.map { it.id }.toIterable())
         }
+    }
+
+    companion object {
+        private val logger = KotlinLogging.logger {}
     }
 }

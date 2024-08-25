@@ -25,7 +25,9 @@ internal class BasicAnnouncementDtoTest {
             content = "content",
             externalLink = "https://ryp.io",
             policies = listOf("4523c5e21d409b81c95b45b0aea275b8ea1406e6cafea5583b9f8a5f"),
-            stakepools = listOf("be80794a946cf5e578846fc81e3c62ac13f4ab3335e0f5dc046edad4")
+            stakepools = listOf("be80794a946cf5e578846fc81e3c62ac13f4ab3335e0f5dc046edad4"),
+            dreps = listOf("drep123"),
+            global = listOf(GlobalAnnouncementAudience.GOVERNANCE_CARDANO)
         )
 
         val result = dto.toBasicAnnouncementWithIdDto(id, link)
@@ -39,6 +41,8 @@ internal class BasicAnnouncementDtoTest {
         assertEquals(dto.externalLink, result.externalLink)
         assertEquals(dto.policies, result.policies)
         assertEquals(dto.stakepools, result.stakepools)
+        assertEquals(dto.dreps, result.dreps)
+        assertEquals(dto.global, result.global)
     }
 
     @Test
@@ -50,7 +54,9 @@ internal class BasicAnnouncementDtoTest {
             content = "This is a test announcement",
             externalLink = "https://ryp.io/announcements/12",
             policies = listOf("test-policy"),
-            stakepools = listOf("test-stakepool")
+            stakepools = listOf("test-stakepool"),
+            dreps = listOf("test-drep"),
+            global = listOf(GlobalAnnouncementAudience.GOVERNANCE_CARDANO)
         )
         val objectMapper = createDefaultObjectMapper()
 
@@ -62,7 +68,9 @@ internal class BasicAnnouncementDtoTest {
               "content": "This is a test announcement",
               "externalLink": "https://ryp.io/announcements/12",
               "policies": ["test-policy"],
-              "stakepools": ["test-stakepool"]
+              "stakepools": ["test-stakepool"],
+              "dreps": ["test-drep"],
+              "global": ["GOVERNANCE_CARDANO"]
             }
             """.trimIndent(), objectMapper.writeValueAsString(dto), false)
     }

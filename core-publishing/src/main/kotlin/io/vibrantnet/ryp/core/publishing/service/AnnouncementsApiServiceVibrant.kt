@@ -35,6 +35,9 @@ class AnnouncementsApiServiceVibrant(
         projectId: Long,
         announcement: BasicAnnouncementDto
     ): Mono<AnnouncementDto> {
+        if (announcement.global.isNotEmpty()) {
+            return Mono.error(IllegalArgumentException("Global announcements are not supported through manual publishing."))
+        }
         val linkedAccountsForAuthor = subscriptionService.getLinkedExternalAccounts(announcement.author)
         val announcementId = UUID.randomUUID()
         return redirectService.createShortUrlWithFallback("announcements/${announcementId}")
@@ -162,11 +165,11 @@ class AnnouncementsApiServiceVibrant(
         projectId: Long,
     ): Mono<Unit> {
         val announcementJob = AnnouncementJobDto(
-            projectId,
-            announcement.id,
+            projectId = projectId,
+            announcementId = announcement.id,
         )
 
-        logger.info { "Publishing announcement ${announcement.id} for project $projectId, publishing to policies: ${announcement.policies}, stakepools: ${announcement.stakepools}, dReps: ${announcement.dreps}" }
+        logger.info { "Publishing announcement ${announcement.id} for project $projectId, publishing to policies: ${announcement.policies}, stakepools: ${announcement.stakepools}, dReps: ${announcement.dreps}, global: ${announcement.global}" }
         redisTemplate.opsForValue()
             .set("announcementsdata:${announcement.id}", announcement, 48, java.util.concurrent.TimeUnit.HOURS)
         rabbitTemplate.convertAndSend("announcements", announcementJob)

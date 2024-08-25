@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.node.BinaryNode
 import com.fasterxml.jackson.dataformat.cbor.CBORFactory
-import io.ryp.cardano.model.StakepoolVerificationDto
+import io.ryp.cardano.model.stakepools.StakepoolVerificationDto
 import io.vibrantnet.ryp.core.verification.CoreVerificationConfiguration
 import io.vibrantnet.ryp.core.verification.model.ExpiredCip22Verification
 import io.vibrantnet.ryp.core.verification.model.InvalidCip22Verification
@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service
 import reactor.core.publisher.Mono
 import java.nio.charset.StandardCharsets
 import java.security.SecureRandom
+import java.time.OffsetDateTime
 
 @Service
 class PoolsApiServiceVibrant(
@@ -42,8 +43,8 @@ class PoolsApiServiceVibrant(
                     poolHash = poolHash,
                     vrfVerificationKey = null,
                     signature = null,
-                    createTime = java.time.OffsetDateTime.now(),
-                    expirationTime = java.time.OffsetDateTime.now().plusMinutes(config.cip22.expirationMinutes)
+                    createTime = OffsetDateTime.now(),
+                    expirationTime = OffsetDateTime.now().plusMinutes(config.cip22.expirationMinutes)
                 )
                 redisTemplate.opsForValue().set(
                     "$CIP_0022:$poolHash",

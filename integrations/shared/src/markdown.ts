@@ -58,6 +58,10 @@ export function stripMarkdown(markdown: string): string {
   return processTokens(tokensToProcess).trim();
 }
 
+function telegramEscape(text: string): string {
+  return text.replace(/([_*[\]()~`>#+-=|{}.!])/g, '\\$1');
+}
+
 export function stripMarkdownTelegram(markdown: string): string {
   const tokensToProcess = marked.lexer(markdown);
 
@@ -68,7 +72,7 @@ export function stripMarkdownTelegram(markdown: string): string {
       switch (token.type) {
         case 'text':
           // escape dots, minus, braces and parens and angled brackets since they are special characters in Telegram V2 markdown
-          result += token.text.replace(/\./gm, '\\.').replace(/\(/gm, '\\(').replace(/\)/gm, '\\)').replace(/-/gm, '\\-').replace(/{/gm, '\\{').replace(/}/gm, '\\}').replace(/</gm, '\\<').replace(/>/gm, '\\>');
+          result += telegramEscape(token.text);
           break;
         case 'list':
           // eslint-disable-next-line @typescript-eslint/no-use-before-define
@@ -90,10 +94,14 @@ export function stripMarkdownTelegram(markdown: string): string {
           result += `[${token.text.replace(/\./gm, '\\.')}](${token.href})`;
           break;
         case 'link':
-          result += `[${token.text.replace(/\./gm, '\\.')}](${token.href})`;
+          if (token.href === token.text) {
+            result += telegramEscape(token.href);
+          } else {
+            result += `[${telegramEscape(token.text)}](${token.href})`;
+          }
           break;
         case 'strong':
-          result += `**${processTokens(token.tokens!)}**`;
+          result += `*${processTokens(token.tokens!)}*`;
           break;
         case 'em':
           result += `_${processTokens(token.tokens!)}_`;
@@ -108,7 +116,6 @@ export function stripMarkdownTelegram(markdown: string): string {
           result += `__${processTokens(token.tokens!)}__`;
           break;
         default:
-          console.log(token.type);
           if ('tokens' in token && token.tokens) {
             result += processTokens(token.tokens);
           }

@@ -1,7 +1,7 @@
 package io.vibrantnet.ryp.core.verification.service
 
-import io.ryp.cardano.model.StakepoolDetailsDto
-import io.ryp.cardano.model.StakepoolVerificationDto
+import io.ryp.cardano.model.stakepools.StakepoolDetailsDto
+import io.ryp.cardano.model.stakepools.StakepoolVerificationDto
 import reactor.core.publisher.Mono
 
 interface PoolsApiService {

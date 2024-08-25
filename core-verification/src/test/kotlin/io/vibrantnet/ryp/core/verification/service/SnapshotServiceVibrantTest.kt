@@ -1,7 +1,12 @@
 package io.vibrantnet.ryp.core.verification.service
 
 import io.mockk.*
-import io.ryp.cardano.model.*
+import io.ryp.cardano.model.SnapshotRequestDto
+import io.ryp.cardano.model.SnapshotStakeAddressDto
+import io.ryp.cardano.model.SnapshotType
+import io.ryp.cardano.model.TokenOwnershipInfoWithAssetCount
+import io.ryp.cardano.model.governance.DRepDelegationInfoDto
+import io.ryp.cardano.model.stakepools.StakepoolDelegationInfoDto
 import io.ryp.shared.model.AnnouncementJobDto
 import io.vibrantnet.ryp.core.verification.persistence.DrepDao
 import io.vibrantnet.ryp.core.verification.persistence.StakepoolDao
@@ -44,7 +49,7 @@ internal class SnapshotServiceVibrantTest {
         every { redisTemplate.expire(any(), any(), any()) } returns true
         every { rabbitTemplate.convertAndSend("snapshotcompleted", any<SnapshotRequestDto>()) } just Runs
 
-        service.processSnapshot(SnapshotRequestDto(AnnouncementJobDto(12, announcementUuid, null), listOf("4523c5e21d409b81c95b45b0aea275b8ea1406e6cafea5583b9f8a5f"), listOf("poolHash"), listOf("drepid")))
+        service.processSnapshot(SnapshotRequestDto(AnnouncementJobDto(announcementUuid, 12, null), listOf("4523c5e21d409b81c95b45b0aea275b8ea1406e6cafea5583b9f8a5f"), listOf("poolHash"), listOf("drepid")))
 
         verify(exactly = 1) {
             opsForList.rightPushAll(match { it.startsWith("snapshot:") }, eq(listOf(
@@ -73,7 +78,7 @@ internal class SnapshotServiceVibrantTest {
         every { redisTemplate.expire(any(), any(), any()) } returns true
         every { rabbitTemplate.convertAndSend("snapshotcompleted", any<SnapshotRequestDto>()) } just Runs
 
-        service.processSnapshot(SnapshotRequestDto(AnnouncementJobDto(12, announcementUuid, null), listOf("4523c5e21d409b81c95b45b0aea275b8ea1406e6cafea5583b9f8a5f"), listOf("poolHash"), listOf("drepid")))
+        service.processSnapshot(SnapshotRequestDto(AnnouncementJobDto(announcementUuid, 12, null), listOf("4523c5e21d409b81c95b45b0aea275b8ea1406e6cafea5583b9f8a5f"), listOf("poolHash"), listOf("drepid")))
 
         verify(exactly = 0) {
             opsForList.rightPushAll(any(), any())

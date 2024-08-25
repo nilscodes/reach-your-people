@@ -27,7 +27,7 @@ internal class StakepoolRetirementServiceTest {
     fun `on startup, should not send notifications for existing retirements`() {
         every { stakepoolDao.getStakepoolRetirementsWithIdsHigherThan(any()) } answers {
             Flux.fromIterable(listOf(
-                StakepoolRetirementDto(1, "x", "pool")
+                StakepoolRetirementDto(1, "x", 0, "pool")
             ))
         }
         service.checkForNewRetiredStakepools()
@@ -40,7 +40,7 @@ internal class StakepoolRetirementServiceTest {
         service.poolRetirementIds.add(1)
         every { stakepoolDao.getStakepoolRetirementsWithIdsHigherThan(any()) } answers {
             Flux.fromIterable(listOf(
-                StakepoolRetirementDto(2, "y", "pool2")
+                StakepoolRetirementDto(2, "y", 0, "pool2")
             ))
         }
         service.checkForNewRetiredStakepools()

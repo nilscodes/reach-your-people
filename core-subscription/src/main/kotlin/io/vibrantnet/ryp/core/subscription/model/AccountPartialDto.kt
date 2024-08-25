@@ -7,5 +7,8 @@ import jakarta.validation.constraints.Size
 data class AccountPartialDto @JsonCreator constructor(
     @JsonProperty("displayName")
     @field:Size(min = 1, max = 200)
-    val displayName: String? = null
+    val displayName: String? = null,
+
+    @JsonProperty("cardanoSettings")
+    val cardanoSettings: Set<CardanoSetting>? = null,
 )

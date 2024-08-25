@@ -256,7 +256,7 @@ internal class AnnouncementsApiServiceVibrantTest {
 
         every { subscriptionService.getProject(82) } answers { Mono.just(makeProjectDto(82)) }
         every { rabbitTemplate.convertAndSend(any(), any<MessageDto>()) } just Runs
-        announcementsApiService.sendAnnouncementToSubscribers(AnnouncementJobDto(82, uuid))
+        announcementsApiService.sendAnnouncementToSubscribers(AnnouncementJobDto(uuid, 82))
 
         verify(exactly = 1) { rabbitTemplate.convertAndSend("discord", MessageDto(
             "123",
@@ -297,7 +297,7 @@ internal class AnnouncementsApiServiceVibrantTest {
 
         every { subscriptionService.getProject(82) } answers { Mono.just(makeProjectDto(82)) }
         every { rabbitTemplate.convertAndSend(any(), any<MessageDto>()) } just Runs
-        announcementsApiService.sendAnnouncementToSubscribers(AnnouncementJobDto(82, uuid))
+        announcementsApiService.sendAnnouncementToSubscribers(AnnouncementJobDto(uuid, 82))
 
         // Announcement should be sent to google queue
         verify(exactly = 1) { rabbitTemplate.convertAndSend("google", MessageDto(
@@ -327,7 +327,7 @@ internal class AnnouncementsApiServiceVibrantTest {
         }
 
         every { subscriptionService.getProject(82) } answers { Mono.just(makeProjectDto(82)) }
-        announcementsApiService.sendAnnouncementToSubscribers(AnnouncementJobDto(82, uuid))
+        announcementsApiService.sendAnnouncementToSubscribers(AnnouncementJobDto(uuid, 82))
 
         // Announcement status should be updated to FAILED
         verify(exactly = 1) { announcementUpdateService.updateAnnouncementStatus(uuid.toString(), AnnouncementStatus.FAILED) }
@@ -351,15 +351,33 @@ internal class AnnouncementsApiServiceVibrantTest {
             .verifyComplete()
     }
 
+    @Test
+    fun `reject any and all global announcements via manual publishing`() {
+        val result = announcementsApiService.publishAnnouncementForProject(82, makeTestAnnouncement(
+            global = listOf(GlobalAnnouncementAudience.GOVERNANCE_CARDANO),
+        ))
+
+        StepVerifier.create(result)
+            .expectError(IllegalArgumentException::class.java)
+            .verify()
+
+        verify { subscriptionService wasNot Called }
+        verify(exactly = 0) { rabbitTemplate.convertAndSend("announcements", any<AnnouncementJobDto>()) }
+    }
+
     private fun makeTestAnnouncement(
         policies: List<String>? = null,
         stakepools: List<String>? = null,
+        dreps: List<String>? = null,
+        global: List<GlobalAnnouncementAudience> = emptyList(),
     ) = BasicAnnouncementDto(
         title = "Test Announcement",
         content = "This is a test announcement",
         author = 12,
         policies = policies,
         stakepools = stakepools,
+        dreps = dreps,
+        global = global,
     )
 
     private fun makeProjectDto(projectId: Long, manuallyVerified: OffsetDateTime? = OffsetDateTime.now()) = ProjectDto(

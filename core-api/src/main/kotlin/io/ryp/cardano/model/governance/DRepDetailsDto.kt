@@ -1,4 +1,4 @@
-package io.ryp.cardano.model
+package io.ryp.cardano.model.governance
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import jakarta.validation.constraints.Min

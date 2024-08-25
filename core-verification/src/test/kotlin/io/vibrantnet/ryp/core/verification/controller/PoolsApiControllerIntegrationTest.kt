@@ -2,8 +2,8 @@ package io.vibrantnet.ryp.core.verification.controller
 
 import io.mockk.every
 import io.mockk.mockk
-import io.ryp.cardano.model.StakepoolVerificationDto
-import io.ryp.cardano.model.VrfVerificationKey
+import io.ryp.cardano.model.stakepools.StakepoolVerificationDto
+import io.ryp.cardano.model.stakepools.VrfVerificationKey
 import io.vibrantnet.ryp.core.loadJsonFromResource
 import io.vibrantnet.ryp.core.verification.service.PoolsApiService
 import org.junit.jupiter.api.Test

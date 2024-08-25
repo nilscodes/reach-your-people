@@ -28,6 +28,7 @@ internal class ProjectTest {
             tags = mutableSetOf("tag1", "tag2"),
             policies = mutableSetOf(Policy("name", PolicyId("ceb5dedd6cda3f0b4a98919b5d3827e15e324771642b57e0e6aabd57"))),
             stakepools = mutableSetOf(Stakepool("hash", "nonce", now)),
+            dreps = mutableSetOf(DRep("drepId", "nonce", now)),
             roles = mutableSetOf(ProjectRoleAssignment(ProjectRole.OWNER, 5)),
         )
         val dto = project.toDto()
@@ -43,6 +44,7 @@ internal class ProjectTest {
             tags = mutableSetOf("tag1", "tag2"),
             policies = mutableSetOf(PolicyDto("name", "ceb5dedd6cda3f0b4a98919b5d3827e15e324771642b57e0e6aabd57")),
             stakepools = mutableSetOf(StakepoolDto("hash", "nonce", now)),
+            dreps = mutableSetOf(DRepDto("drepId", "nonce", now)),
             roles = mutableSetOf(ProjectRoleAssignmentDto(ProjectRole.OWNER, 5)),
         ), dto)
     }

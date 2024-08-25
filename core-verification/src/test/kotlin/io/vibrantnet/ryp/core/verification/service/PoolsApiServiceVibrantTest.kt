@@ -6,9 +6,9 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import io.mockk.*
-import io.ryp.cardano.model.StakepoolDetailsDto
-import io.ryp.cardano.model.StakepoolVerificationDto
-import io.ryp.cardano.model.VrfVerificationKey
+import io.ryp.cardano.model.stakepools.StakepoolDetailsDto
+import io.ryp.cardano.model.stakepools.StakepoolVerificationDto
+import io.ryp.cardano.model.stakepools.VrfVerificationKey
 import io.vibrantnet.ryp.core.verification.CoreVerificationConfiguration
 import io.vibrantnet.ryp.core.verification.model.ExpiredCip22Verification
 import io.vibrantnet.ryp.core.verification.model.InvalidCip22Verification
