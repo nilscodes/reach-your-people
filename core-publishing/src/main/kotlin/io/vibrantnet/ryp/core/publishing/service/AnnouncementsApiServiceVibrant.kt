@@ -59,36 +59,41 @@ class AnnouncementsApiServiceVibrant(
 
                             val canAnnounceForStakepoolsOrDreps = project.roles.any { it.accountId == announcement.author && it.role == ProjectRole.OWNER }
 
-                            if (stakepoolsToPublishTo.isNotEmpty() && !canAnnounceForStakepoolsOrDreps) {
-                                Mono.error(UserNotAuthorizedToPublishException("User with account ID ${announcement.author} is not authorized to publish stakepool announcements for project $projectId to stakepools ${stakepoolsToPublishTo.joinToString(", ") { it.poolHash }}."))
-                            } else if (dRepsToPublishTo.isNotEmpty() && !canAnnounceForStakepoolsOrDreps) {
-                                Mono.error(UserNotAuthorizedToPublishException("User with account ID ${announcement.author} is not authorized to publish dRep announcements for project $projectId to dReps ${dRepsToPublishTo.joinToString(", ") { it.drepId }}."))
-                            } else if (policiesToPublishTo.isEmpty() && stakepoolsToPublishTo.isEmpty() && dRepsToPublishTo.isEmpty()) {
-                                Mono.error(UserNotAuthorizedToPublishException("No valid policies or stakepools or dReps to publish for project $projectId."))
-                            } else {
-                                // For each policy to publish to, check if any of them are manually verified or CIP-66 and verify the user's right to publish announcements. This also executes if no policies are present
-                                Flux.fromIterable(policiesToPublishTo)
-                                    .concatMap { policy ->
-                                        getAllVerificationStatusForAllLinkedAccounts(linkedAccountsForAuthor, policy)
-                                    }
-                                    .collectList()
-                                    .flatMap { verifiedStatuses ->
-                                        val allPoliciesVerified = verifiedStatuses.isNotEmpty() && verifiedStatuses.all { it.isPublishingAllowed() }
-
-                                        if (policiesToPublishTo.isNotEmpty() && !allPoliciesVerified) {
-                                            Mono.error(
-                                                UserNotAuthorizedToPublishException(
-                                                    "User with account ID ${announcement.author} is not authorized to publish policy announcements for project $projectId to policies ${
-                                                        policiesToPublishTo.joinToString(
-                                                            ", "
-                                                        ) { it.policyId }
-                                                    }."
-                                                )
-                                            )
-                                        } else {
-                                            checkVerificationStatusAndPublish(announcementWithId, projectId)
+                            when {
+                                stakepoolsToPublishTo.isNotEmpty() && !canAnnounceForStakepoolsOrDreps -> {
+                                    Mono.error(UserNotAuthorizedToPublishException("User with account ID ${announcement.author} is not authorized to publish stakepool announcements for project $projectId to stakepools ${stakepoolsToPublishTo.joinToString(", ") { it.poolHash }}."))
+                                }
+                                dRepsToPublishTo.isNotEmpty() && !canAnnounceForStakepoolsOrDreps -> {
+                                    Mono.error(UserNotAuthorizedToPublishException("User with account ID ${announcement.author} is not authorized to publish dRep announcements for project $projectId to dReps ${dRepsToPublishTo.joinToString(", ") { it.drepId }}."))
+                                }
+                                policiesToPublishTo.isEmpty() && stakepoolsToPublishTo.isEmpty() && dRepsToPublishTo.isEmpty() -> {
+                                    Mono.error(UserNotAuthorizedToPublishException("No valid policies or stakepools or dReps to publish for project $projectId."))
+                                }
+                                else -> {
+                                    // For each policy to publish to, check if any of them are manually verified or CIP-66 and verify the user's right to publish announcements. This also executes if no policies are present
+                                    Flux.fromIterable(policiesToPublishTo)
+                                        .concatMap { policy ->
+                                            getAllVerificationStatusForAllLinkedAccounts(linkedAccountsForAuthor, policy)
                                         }
-                                    }
+                                        .collectList()
+                                        .flatMap { verifiedStatuses ->
+                                            val allPoliciesVerified = verifiedStatuses.isNotEmpty() && verifiedStatuses.all { it.isPublishingAllowed() }
+
+                                            if (policiesToPublishTo.isNotEmpty() && !allPoliciesVerified) {
+                                                Mono.error(
+                                                    UserNotAuthorizedToPublishException(
+                                                        "User with account ID ${announcement.author} is not authorized to publish policy announcements for project $projectId to policies ${
+                                                            policiesToPublishTo.joinToString(
+                                                                ", "
+                                                            ) { it.policyId }
+                                                        }."
+                                                    )
+                                                )
+                                            } else {
+                                                checkVerificationStatusAndPublish(announcementWithId, projectId)
+                                            }
+                                        }
+                                }
                             }
                         }.thenReturn(persistedAnn)
                 }.map {
