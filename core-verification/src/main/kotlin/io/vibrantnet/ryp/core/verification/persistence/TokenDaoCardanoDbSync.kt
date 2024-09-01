@@ -8,10 +8,27 @@ import org.springframework.stereotype.Repository
 import java.sql.Types
 import java.util.*
 
-const val GET_SNAPSHOT_OF_STAKES_BY_POLICIES =
-    "SELECT encode(ma.policy, 'hex') AS policy, sa.view AS stakeview, SUM(mto.quantity) AS number FROM utxo_view u JOIN ma_tx_out mto ON u.id = mto.tx_out_id JOIN multi_asset ma ON mto.ident = ma.id JOIN stake_address sa ON u.stake_address_id = sa.id WHERE ma.policy IN (%s) GROUP BY policy, sa.view"
-const val GET_ALL_MULTI_ASSET_NAMES_IN_STAKE_ADDRESS_ALL =
-    "SELECT encode(ma.policy, 'hex') AS policy, SUM(mto.quantity) as number FROM utxo_view u JOIN ma_tx_out mto ON u.id = mto.tx_out_id JOIN multi_asset ma ON mto.ident = ma.id JOIN stake_address sa ON u.stake_address_id = sa.id WHERE sa.view=? GROUP BY policy"
+const val GET_SNAPSHOT_OF_STAKES_BY_POLICIES = """
+SELECT encode(ma.policy, 'hex') AS policy, sa.view AS stakeview, SUM(mto.quantity) AS number
+FROM tx_out u
+         JOIN ma_tx_out mto ON u.id = mto.tx_out_id
+         JOIN multi_asset ma ON mto.ident = ma.id
+         JOIN stake_address sa ON u.stake_address_id = sa.id
+WHERE u.consumed_by_tx_id IS NULL
+  AND ma.policy IN (%s)
+GROUP BY policy, sa.view
+"""
+const val GET_ALL_MULTI_ASSET_NAMES_IN_STAKE_ADDRESS_ALL = """
+SELECT encode(ma.policy, 'hex') AS policy, SUM(mto.quantity) as number
+FROM tx_out u
+         JOIN ma_tx_out mto ON u.id = mto.tx_out_id
+         JOIN multi_asset ma ON mto.ident = ma.id
+         JOIN stake_address sa ON u.stake_address_id = sa.id
+WHERE u.consumed_by_tx_id IS NULL
+  AND sa.view=?
+GROUP BY policy
+"""
+
 
 @Repository
 @ConditionalOnProperty(prefix = "io.vibrantnet.ryp", name = ["type"], havingValue = "cardano-db-sync")
