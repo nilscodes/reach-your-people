@@ -92,8 +92,9 @@ const val SQL_GET_ACTIVE_DELEGATION_TO_POOL = """
         SELECT sum(total) AS amount, view
         FROM
             (SELECT sum(value) total, stake.view AS view
-             FROM utxo_view
-                      INNER JOIN stake ON utxo_view.stake_address_id=stake.addr_id
+             FROM tx_out
+                      INNER JOIN stake ON tx_out.stake_address_id=stake.addr_id
+             WHERE tx_out.consumed_by_tx_id IS NULL
              GROUP BY stake.view
              UNION SELECT sum(amount), stake.view
              FROM reward
